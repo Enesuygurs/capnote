@@ -1248,7 +1248,7 @@ div#newNoteNav {
   overflow: hidden;
 }
 .viewer-header {
-  padding: 24px;
+  padding: 18px 26px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   background: var(--bg-secondary);
   display: flex;
