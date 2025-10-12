@@ -11,7 +11,7 @@
   --secondary-color: #fbbf24;
   --accent-color: #06b6d4; /* Arka Plan Renkleri */
   --bg-primary: #ffffff;
-  --bg-secondary: #f8fafc;
+  --bg-secondary: #fdfdfd;
   --bg-tertiary: #f1f5f9;
   --bg-dark: #1e293b; /* Metin Renkleri */
   --text-primary: #1e293b;
@@ -1246,7 +1246,7 @@ div#newNoteNav {
 }
 .viewer-header {
   padding: 18px 26px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgb(81 81 81 / 6%);
   background: var(--bg-secondary);
   display: flex;
   justify-content: space-between;
@@ -1302,7 +1302,7 @@ div#newNoteNav {
   flex: 1;
   padding: 32px;
   overflow-y: auto;
-  background: #fafbfc;
+  background: #fdfdfd;
 }
 
 .formatted-content {
@@ -1314,8 +1314,8 @@ div#newNoteNav {
 
 .viewer-stats {
   padding: 12px 24px;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  background: #fafbfc;
+  border-top: 1px solid rgb(161 161 161 / 6%);
+  background: #fdfdfd;
   display: flex;
   gap: 24px;
   font-size: 12px;
@@ -2334,7 +2334,7 @@ div#newNoteNav {
    ============================================ */
 [data-theme='dark'] {
   --bg-primary: #1a1a1a;
-  --bg-secondary: #242424;
+  --bg-secondary: #181818;
   --bg-tertiary: #2e2e2e;
   --bg-dark: #0d0d0d;
 
@@ -2476,8 +2476,7 @@ div#newNoteNav {
 }
 
 [data-theme='dark'] .sidebar {
-  background: var(--sidebar-div-bg);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  background: #181818;
 }
 
 [data-theme='dark'] .main-content {
@@ -2533,7 +2532,7 @@ div#newNoteNav {
 
 [data-theme='dark'] .viewer-header {
   background: var(--viewer-header-bg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgb(87 87 87 / 10%);
 }
 
 [data-theme='dark'] .modal-content {
@@ -2924,7 +2923,7 @@ div#newNoteNav {
 
 [data-theme='dark'] .viewer-stats {
   background: var(--bg-secondary);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgb(87 87 87 / 10%);
 }
 
 [data-theme='dark'] .select-selected {
