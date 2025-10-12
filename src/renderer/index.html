@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Günlük & Not Defteri</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=Roboto+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="titlebar">
+      <div class="titlebar-drag">
+        <button class="hamburger-btn" id="hamburgerBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="titlebar-buttons">
+          <button id="settingsBtn" class="titlebar-action-btn" title="Ayarlar">
+            <i class="fas fa-cog"></i>
+          </button>
+          <button id="homeBtn" class="titlebar-action-btn" title="Ana Sayfa">
+            <i class="fas fa-home"></i>
+          </button>
+          <button id="newNoteBtn" class="titlebar-action-btn" title="Yeni Not">
+            <i class="fas fa-plus"></i>
+          </button>
+        </div>
+        <div class="titlebar-title">📖 Günlük & Not Defteri</div>
+      </div>
+      <div class="titlebar-controls">
+        <button class="titlebar-button minimize" id="minimizeBtn">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button class="titlebar-button maximize" id="maximizeBtn">
+          <i class="fas fa-square"></i>
+        </button>
+        <button class="titlebar-button close" id="closeBtn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="app">
+      <!-- Sidebar -->
+      <div class="sidebar" id="sidebar">
+        <!-- Sidebar Header -->
+        <div class="sidebar-header">
+          <div class="user-profile">
+            <div class="user-avatar">
+              <span>GD</span>
+            </div>
+            <span class="user-name">Anonymous</span>
+          </div>
+        </div>
+
+        <!-- Sidebar Content -->
+        <div class="sidebar-content">
+          <!-- Navigation Menu -->
+          <nav class="sidebar-nav">
+            <div class="nav-section">
+              <div class="nav-item" id="newNoteNav">
+                <i class="fas fa-edit nav-icon"></i>
+                <span class="nav-text">Yeni Not</span>
+              </div>
+              <div class="nav-item" data-filter="all">
+                <i class="fas fa-sticky-note nav-icon"></i>
+                <span class="nav-text">Tüm Notlar</span>
+              </div>
+              <div class="nav-item" data-filter="today">
+                <i class="fas fa-calendar-day nav-icon"></i>
+                <span class="nav-text">Bugün</span>
+              </div>
+              <div class="nav-item" data-filter="favorites">
+                <i class="fas fa-heart nav-icon"></i>
+                <span class="nav-text">Favoriler</span>
+              </div>
+            </div>
+
+            <div class="nav-section">
+              <div class="nav-section-header">
+                <div class="nav-section-title">Kategoriler</div>
+                <div class="nav-section-controls">
+                  <button class="nav-control-btn" id="addFolderBtn" title="Klasör Ekle">
+                    <i class="fas fa-plus"></i>
+                  </button>
+                  <button class="nav-control-btn" id="searchBtn" title="Ara">
+                    <i class="fas fa-search"></i>
+                  </button>
+                  <button class="nav-control-btn" id="sortBtn" title="Sırala">
+                    <i class="fas fa-sort-amount-down"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Search Container (initially hidden) -->
+              <div class="search-container hidden" id="searchContainer">
+                <div class="search-wrapper">
+                  <i class="fas fa-search search-icon"></i>
+                  <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Notlarda ara..."
+                    class="search-input"
+                  />
+                </div>
+              </div>
+
+              <!-- Sort Options (initially hidden) -->
+              <div class="sort-dropdown hidden" id="sortDropdown">
+                <div class="sort-option active" data-value="date-desc">📅 Tarih (Yeni → Eski)</div>
+                <div class="sort-option" data-value="date-asc">📅 Tarih (Eski → Yeni)</div>
+                <div class="sort-option" data-value="title-asc">🔤 Başlık (A → Z)</div>
+                <div class="sort-option" data-value="title-desc">🔤 Başlık (Z → A)</div>
+              </div>
+
+              <!-- Notes List Container (full width) -->
+              <div class="notes-list-container" id="notesListContainer">
+                <div class="notes-list" id="notesList">
+                  <!-- Notlar buraya dinamik olarak eklenecek -->
+                </div>
+              </div>
+
+              <!-- Folders List (directly under categories) -->
+              <div class="folders-list" id="foldersList">
+                <!-- Klasörler buraya dinamik olarak eklenecek -->
+              </div>
+            </div>
+          </nav>
+        </div>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+          <div class="nav-item" id="invitePeople">
+            <i class="fas fa-user-plus nav-icon"></i>
+            <span class="nav-text">Kişi Davet Et</span>
+          </div>
+          <div class="nav-item" id="helpSupport">
+            <i class="fas fa-cog nav-icon"></i>
+            <span class="nav-text">Ayarlar</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ana İçerik -->
+      <div class="main-content">
+        <!-- Karşılama Ekranı -->
+        <div id="welcomeScreen" class="welcome-screen">
+          <div class="welcome-content">
+            <i class="fas fa-book-open welcome-icon"></i>
+            <h2>Günlük Defterinize Hoş Geldiniz</h2>
+            <p>Düşüncelerinizi yazın, anılarınızı kaydedin ve hayatınızı belgelendirin</p>
+            <div class="quick-stats">
+              <div class="stat-item">
+                <i class="fas fa-sticky-note"></i>
+                <span id="totalNotes">0</span>
+                <small>Toplam Not</small>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-calendar"></i>
+                <span id="daysActive">0</span>
+                <small>Aktif Gün</small>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-pen"></i>
+                <span id="totalWords">0</span>
+                <small>Toplam Kelime</small>
+              </div>
+            </div>
+            <button id="startFirstNote" class="btn-primary btn-large">
+              <i class="fas fa-pen"></i> İlk Notunuzu Yazın
+            </button>
+          </div>
+        </div>
+
+        <!-- Not Editörü -->
+        <div id="noteEditor" class="note-editor hidden">
+          <div class="editor-header">
+            <div class="title-section">
+              <input
+                type="text"
+                id="noteTitle"
+                placeholder="Not başlığı..."
+                class="note-title-input"
+              />
+              <div class="note-meta">
+                <span id="noteDate"></span>
+                <span id="wordCount">0 kelime</span>
+                <span id="charCount">0 karakter</span>
+              </div>
+            </div>
+            <div class="editor-actions">
+              <button id="saveNoteBtn" class="btn-icon" title="Kaydet">
+                <i class="fas fa-save"></i>
+              </button>
+              <button id="cancelNoteBtn" class="btn-icon" title="İptal">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Formatting Toolbar -->
+          <div class="formatting-toolbar">
+            <div class="format-group">
+              <div class="custom-select format-custom-select" id="fontFamily">
+                <div class="select-selected">Inter</div>
+                <div class="select-items select-hide">
+                  <div data-value="Inter" class="select-item active">Inter</div>
+                  <div data-value="Crimson Text" class="select-item">Crimson Text</div>
+                  <div data-value="Roboto Mono" class="select-item">Roboto Mono</div>
+                  <div data-value="Georgia" class="select-item">Georgia</div>
+                  <div data-value="Arial" class="select-item">Arial</div>
+                </div>
+              </div>
+              <div class="custom-select format-custom-select" id="fontSize">
+                <div class="select-selected">14px</div>
+                <div class="select-items select-hide">
+                  <div data-value="12" class="select-item">12px</div>
+                  <div data-value="14" class="select-item active">14px</div>
+                  <div data-value="16" class="select-item">16px</div>
+                  <div data-value="18" class="select-item">18px</div>
+                  <div data-value="20" class="select-item">20px</div>
+                  <div data-value="24" class="select-item">24px</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="format-group">
+              <button class="format-btn" data-format="bold" title="Kalın">
+                <i class="fas fa-bold"></i>
+              </button>
+              <button class="format-btn" data-format="italic" title="İtalik">
+                <i class="fas fa-italic"></i>
+              </button>
+              <button class="format-btn" data-format="underline" title="Altı çizili">
+                <i class="fas fa-underline"></i>
+              </button>
+            </div>
+
+            <div class="format-group">
+              <input
+                type="color"
+                id="textColor"
+                class="color-picker"
+                value="#000000"
+                title="Metin rengi"
+              />
+              <input
+                type="color"
+                id="bgColor"
+                class="color-picker"
+                value="#ffffff"
+                title="Arka plan rengi"
+              />
+            </div>
+
+            <div class="format-group">
+              <button class="format-btn" data-align="left" title="Sola hizala">
+                <i class="fas fa-align-left"></i>
+              </button>
+              <button class="format-btn" data-align="center" title="Ortala">
+                <i class="fas fa-align-center"></i>
+              </button>
+              <button class="format-btn" data-align="right" title="Sağa hizala">
+                <i class="fas fa-align-right"></i>
+              </button>
+              <button class="format-btn" data-align="justify" title="İki yana yasla">
+                <i class="fas fa-align-justify"></i>
+              </button>
+            </div>
+
+            <div class="format-group">
+              <button class="format-btn" id="insertList" title="Madde listesi ekle">
+                <i class="fas fa-list-ul"></i>
+              </button>
+              <button class="format-btn" id="insertChecklist" title="Görev listesi ekle">
+                <i class="fas fa-tasks"></i>
+              </button>
+              <button class="format-btn" id="insertNumberedList" title="Numaralı liste ekle">
+                <i class="fas fa-list-ol"></i>
+              </button>
+            </div>
+
+            <div class="format-group">
+              <button class="format-btn" id="insertDate" title="Tarih ekle">
+                <i class="fas fa-calendar-plus"></i>
+              </button>
+              <button class="format-btn" id="insertTime" title="Saat ekle">
+                <i class="fas fa-clock"></i>
+              </button>
+            </div>
+
+            <div class="format-group">
+              <button class="format-btn" id="toggleSidebar" title="Yan paneli aç/kapat">
+                <i class="fas fa-columns"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="editor-content">
+            <div class="note-content">
+              <div
+                id="noteContentEditable"
+                class="rich-editor"
+                contenteditable="true"
+                placeholder="Düşüncelerinizi yazın..."
+              ></div>
+            </div>
+
+            <div class="editor-sidebar">
+              <div class="sidebar-section">
+                <h4><i class="fas fa-smile"></i> Ruh Hali</h4>
+                <div class="mood-selector">
+                  <button class="mood-btn" data-mood="😊" title="Mutlu">😊</button>
+                  <button class="mood-btn" data-mood="😢" title="Üzgün">😢</button>
+                  <button class="mood-btn" data-mood="😡" title="Kızgın">😡</button>
+                  <button class="mood-btn" data-mood="😴" title="Yorgun">😴</button>
+                  <button class="mood-btn" data-mood="😍" title="Aşık">😍</button>
+                  <button class="mood-btn" data-mood="🤔" title="Düşünceli">🤔</button>
+                  <button class="mood-btn" data-mood="😎" title="Havalı">😎</button>
+                  <button class="mood-btn" data-mood="🙄" title="Sıkılmış">🙄</button>
+                </div>
+              </div>
+
+              <div class="sidebar-section">
+                <h4><i class="fas fa-cloud-sun"></i> Hava Durumu</h4>
+                <div class="weather-selector">
+                  <button class="weather-btn" data-weather="☀️" title="Güneşli">☀️</button>
+                  <button class="weather-btn" data-weather="⛅" title="Parçalı bulutlu">⛅</button>
+                  <button class="weather-btn" data-weather="☁️" title="Bulutlu">☁️</button>
+                  <button class="weather-btn" data-weather="🌧️" title="Yağmurlu">🌧️</button>
+                  <button class="weather-btn" data-weather="⛈️" title="Fırtınalı">⛈️</button>
+                  <button class="weather-btn" data-weather="❄️" title="Karlı">❄️</button>
+                </div>
+              </div>
+
+              <div class="sidebar-section">
+                <h4><i class="fas fa-tags"></i> Etiketler</h4>
+                <div class="tags-container">
+                  <input type="text" id="tagInput" placeholder="Etiket ekle..." />
+                  <div id="tagsList" class="tags-list"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Not Görüntüleyici -->
+        <div id="noteViewer" class="note-viewer hidden">
+          <div class="viewer-header">
+            <div class="viewer-title-section">
+              <h2 id="viewerTitle"></h2>
+              <div class="viewer-meta">
+                <span id="viewerDate"></span>
+                <span id="viewerMood"></span>
+                <span id="viewerWeather"></span>
+                <div id="viewerTags" class="viewer-tags"></div>
+              </div>
+            </div>
+            <div class="viewer-actions">
+              <button id="favoriteViewBtn" class="btn-icon" title="Favorilere ekle/çıkar">
+                <i class="far fa-heart"></i>
+              </button>
+              <button id="editNoteBtn" class="btn-icon" title="Düzenle">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button id="duplicateNoteBtn" class="btn-icon" title="Kopyala">
+                <i class="fas fa-copy"></i>
+              </button>
+              <button id="exportNoteBtn" class="btn-icon" title="Dışa aktar">
+                <i class="fas fa-download"></i>
+              </button>
+              <button id="deleteNoteBtn" class="btn-icon btn-icon-danger" title="Sil">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="viewer-content">
+            <div id="viewerText" class="formatted-content"></div>
+          </div>
+
+          <div class="viewer-stats">
+            <div class="stat">
+              <i class="fas fa-font"></i>
+              <span id="viewerWordCount">0 kelime</span>
+            </div>
+            <div class="stat">
+              <i class="fas fa-stopwatch"></i>
+              <span id="readingTime">~0 dk okuma</span>
+            </div>
+            <div class="stat">
+              <i class="fas fa-calendar"></i>
+              <span id="lastModified">Son güncelleme</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mood/Weather Picker Modal -->
+    <div id="pickerModal" class="modal hidden">
+      <div class="modal-content picker-modal">
+        <div class="modal-header">
+          <h3 id="pickerTitle">Seçim Yap</h3>
+          <button class="modal-close" id="closePickerModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div id="pickerContent" class="picker-content">
+          <!-- Dinamik içerik -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div id="exportModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Notu Dışa Aktar</h3>
+          <button class="modal-close" id="closeExportModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="export-options">
+          <button class="export-btn" data-type="txt">
+            <i class="fas fa-file-alt"></i>
+            Düz Metin (.txt)
+          </button>
+          <button class="export-btn" data-type="html">
+            <i class="fas fa-code"></i>
+            HTML (.html)
+          </button>
+          <button class="export-btn" data-type="pdf">
+            <i class="fas fa-file-pdf"></i>
+            PDF (.pdf)
+          </button>
+          <button class="export-btn" data-type="json">
+            <i class="fas fa-file-code"></i>
+            JSON (.json)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+      <div class="modal-content settings-modal">
+        <div class="modal-header">
+          <h3><i class="fas fa-cog"></i> Ayarlar</h3>
+          <button class="modal-close" id="closeSettingsModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="settings-content">
+          <div class="settings-section">
+            <h4><i class="fas fa-palette"></i> Görünüm</h4>
+            <div class="setting-item">
+              <div class="setting-info">
+                <label>Karanlık Mod</label>
+                <small>Gözlerinizi yormasın</small>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="darkModeToggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4><i class="fas fa-file-import"></i> İçe/Dışa Aktarma</h4>
+            <div class="setting-item">
+              <div class="setting-info">
+                <label>Not İçe Aktar</label>
+                <small>JSON dosyasından notları içe aktarın</small>
+              </div>
+              <button id="importNotesBtn" class="btn-outline btn-small">
+                <i class="fas fa-upload"></i> İçe Aktar
+              </button>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <label>Tüm Notları Dışa Aktar</label>
+                <small>Tüm notlarınızı yedekleyin</small>
+              </div>
+              <button id="exportAllNotesBtn" class="btn-outline btn-small">
+                <i class="fas fa-download"></i> Dışa Aktar
+              </button>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4><i class="fas fa-info-circle"></i> Uygulama Bilgileri</h4>
+            <div class="setting-item">
+              <div class="setting-info">
+                <label>Versiyon</label>
+                <small>Günlük & Not Defteri v1.0.0</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Onay Modalı -->
+    <div id="confirmModal" class="modal hidden">
+      <div class="modal-content confirm-modal">
+        <div class="confirm-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <div class="confirm-text">
+          <h3>İşlemi Onayla</h3>
+          <p id="confirmMessage">Bu işlemi gerçekleştirmek istediğinizden emin misiniz?</p>
+        </div>
+        <div class="modal-actions">
+          <button id="cancelBtn" class="btn-outline">İptal</button>
+          <button id="confirmBtn" class="btn-danger">Onayla</button>
+        </div>
+        <button class="modal-close" id="closeConfirmModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Password Modal -->
+    <div id="passwordModal" class="modal hidden">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="passwordModalTitle">Şifre Girin</h3>
+          <button class="modal-close" id="closePasswordModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="passwordMessage" class="form-message"></div>
+          <div class="form-group">
+            <label for="passwordInput">Şifre:</label>
+            <input
+              type="password"
+              id="passwordInput"
+              class="form-input"
+              placeholder="Şifre girin..."
+              autocomplete="off"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelPasswordBtn" class="btn btn-secondary">İptal</button>
+          <button id="confirmPasswordBtn" class="btn btn-primary">Onayla</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Klasör Ekleme Modal -->
+    <div id="folderModal" class="modal hidden">
+      <div class="modal-content folder-modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <i class="fas fa-folder-plus"></i>
+            <h3>Yeni Klasör</h3>
+          </div>
+          <button class="modal-close" id="closeFolderModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="folderNameInput">Klasör Adı</label>
+            <input
+              type="text"
+              id="folderNameInput"
+              class="form-input"
+              placeholder="Klasör adını girin..."
+              maxlength="50"
+            />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelFolderBtn" class="btn btn-secondary">İptal</button>
+          <button id="createFolderBtn" class="btn btn-primary">Oluştur</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div id="contextMenu" class="context-menu hidden">
+      <div class="context-menu-item" id="deleteFolderMenuItem">
+        <i class="fas fa-trash"></i>
+        <span>Klasörü Sil</span>
+      </div>
+    </div>
+
+    <!-- Bildirim -->
+    <div id="notification" class="notification hidden">
+      <div class="notification-content">
+        <i id="notificationIcon" class="fas fa-info-circle"></i>
+        <span id="notificationText"></span>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
