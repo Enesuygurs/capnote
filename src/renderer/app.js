@@ -38,8 +38,12 @@ class CapnoteApp {
     this.updateUI();
     this.updateStats();
 
-    // Load last viewed note if available
-    this.loadLastViewedNote();
+  // Make sure the current filter (default: 'all') is applied so
+  // the corresponding nav item appears active on startup
+  this.changeFilter(this.currentFilter);
+
+  // Load last viewed note if available
+  this.loadLastViewedNote();
   }
 
   initializeElements() {
