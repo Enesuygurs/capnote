@@ -1,6 +1,6 @@
-# Sesli Günlük Uygulaması
+# Capnote
 
-Electron.js kullanılarak geliştirilmiş sesli günlük uygulaması.
+Electron.js kullanılarak geliştirilmiş modern not ve günlük uygulaması (Capnote).
 
 ## Özellikler
 

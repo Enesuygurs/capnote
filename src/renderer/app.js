@@ -1,11 +1,11 @@
-/**
- * Günlük & Not Defteri Uygulaması
- * Modern ve zengin özellikli günlük uygulaması
+/*
+ * Capnote
+ * Modern ve zengin özellikli not ve günlük uygulaması
  * @author Valkyr
  * @version 1.0.0
  */
 
-class DiaryApp {
+class CapnoteApp {
   constructor() {
     this.currentNote = null;
     this.notes = [];
@@ -755,8 +755,8 @@ class DiaryApp {
 
   async loadNotes() {
     try {
-      const savedNotes = localStorage.getItem('diary-notes');
-      this.notes = savedNotes ? JSON.parse(savedNotes) : [];
+  const savedNotes = localStorage.getItem('capnote-notes');
+  this.notes = savedNotes ? JSON.parse(savedNotes) : [];
 
       // Eski notlarda eksik property'leri ekle
       this.notes.forEach((note) => {
@@ -789,8 +789,8 @@ class DiaryApp {
 
   async loadFolders() {
     try {
-      const savedFolders = localStorage.getItem('diary-folders');
-      this.folders = savedFolders ? JSON.parse(savedFolders) : [];
+  const savedFolders = localStorage.getItem('capnote-folders');
+  this.folders = savedFolders ? JSON.parse(savedFolders) : [];
     } catch (error) {
       console.error('Klasörler yüklenirken hata:', error);
       this.folders = [];
@@ -799,7 +799,7 @@ class DiaryApp {
 
   async saveNotes() {
     try {
-      localStorage.setItem('diary-notes', JSON.stringify(this.notes));
+  localStorage.setItem('capnote-notes', JSON.stringify(this.notes));
     } catch (error) {
       console.error('Notlar kaydedilirken hata:', error);
       this.showNotification('Notlar kaydedilemedi!', 'error');
@@ -808,7 +808,7 @@ class DiaryApp {
 
   async saveFolders() {
     try {
-      localStorage.setItem('diary-folders', JSON.stringify(this.folders));
+  localStorage.setItem('capnote-folders', JSON.stringify(this.folders));
     } catch (error) {
       console.error('Klasörler kaydedilirken hata:', error);
       this.showNotification('Klasörler kaydedilemedi!', 'error');
@@ -3170,8 +3170,8 @@ class DiaryApp {
 
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-  window.app = new DiaryApp();
+  window.app = new CapnoteApp();
 });
 
 // Export for global access
-window.DiaryApp = DiaryApp;
+window.CapnoteApp = CapnoteApp;
