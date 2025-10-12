@@ -222,7 +222,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 4px 12px; /* reduced vertical padding */
+  padding: 6px 10px;
   border-radius: 8px;
   transition: var(--transition-fast);
   cursor: pointer;
@@ -261,7 +261,7 @@ body {
 
 /* Navigation */
 .sidebar-nav {
-  padding: 16px 12px;
+  padding: 12px 12px;
   flex-shrink: 0;
 }
 
@@ -1317,7 +1317,7 @@ div#newNoteNav {
 }
 
 .viewer-stats {
-  padding: 16px 24px;
+  padding: 12px 24px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   background: #fafbfc;
   display: flex;
