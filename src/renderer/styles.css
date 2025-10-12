@@ -213,7 +213,7 @@ body {
 
 /* Sidebar Header */
 .sidebar-header {
-  padding: 16px 16px 0px 16px;
+  padding: 12px 16px 0px 16px; /* slightly reduced top padding */
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -221,7 +221,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 8px 12px;
+  padding: 4px 12px; /* reduced vertical padding */
   border-radius: 8px;
   transition: var(--transition-fast);
   cursor: pointer;
