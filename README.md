@@ -1,122 +1,44 @@
-# Capnote
+# Capnote — Minimal Desktop Notepad & Journal
 
-Electron.js kullanılarak geliştirilmiş modern not ve günlük uygulaması (Capnote).
+Capnote is a lightweight, modern desktop app for quick notes and journaling. It focuses on a clean writing experience, local storage, and fast editing tools — optimized for daily use.
 
-## Özellikler
+![capnote](assets/icons/capnote.svg)
 
-- **Sesli Not Alma**: Web Speech API kullanarak konuşmanızı metne dönüştürme
-- **Not Yönetimi**: Notları kaydetme, düzenleme ve silme
-- **Arama**: Notlar arasında arama yapma
-- **Çapraz Platform**: Windows, macOS ve Linux desteği
-- **Modern Arayüz**: Kullanıcı dostu ve minimalist tasarım
+## Features
 
-## Kurulum
+- **Rich editor:** bold, italic, underline, alignment, lists and checklists.
+- **Formatting controls:** font family & size, text/background color, copy/duplicate notes.
+- **Organization:** tags, folders, favorites and quick search/filtering.
+- **Security:** lock notes with a password and temporarily unlock for viewing.
+- **Auto-save & status:** automatic saving with save-state tracking and undo support.
+- **Statistics:** word/character counts and estimated reading time.
+- **Themes & shortcuts:** dark/light theme and keyboard shortcuts (Ctrl/Cmd+N, Ctrl/Cmd+S, Esc, etc.).
 
-### Gereksinimler
-- Node.js (14.0 veya üstü)
-- npm veya yarn
+## How to Use
 
-### Adımlar
+Run from source (developer):
 
-1. Projeyi klonlayın veya indirin
-2. Bağımlılıkları yükleyin:
-   ```cmd
-   npm install
-   ```
-
-3. Uygulamayı geliştirme modunda çalıştırın:
-   ```cmd
-   npm run dev
-   ```
-
-4. Üretim için derleyin:
-   ```cmd
-   npm run build
-   ```
-
-## Kullanım
-
-1. **Yeni Not Oluşturma**: "Yeni Not" butonuna tıklayın
-2. **Ses Kaydı**: Kırmızı mikrofon butonuna basarak konuşmaya başlayın
-3. **Kaydetme**: Konuşmanız otomatik olarak metne dönüştürülür, "Kaydet" butonuna tıklayın
-4. **Not Görüntüleme**: Sol panelden istediğiniz nota tıklayın
-5. **Düzenleme**: Not görüntülerken "Düzenle" butonunu kullanın
-6. **Arama**: Üst kısımdaki arama kutusunu kullanın
-
-## Teknik Detaylar
-
-### Kullanılan Teknolojiler
-- **Electron.js**: Masaüstü uygulama çerçevesi
-- **Web Speech API**: Ses tanıma
-- **Electron Store**: Veri depolama
-- **HTML/CSS/JavaScript**: Arayüz geliştirme
-
-### Proje Yapısı
-```
-src/
-├── main.js              # Ana Electron süreci
-├── preload.js           # Güvenlik köprüsü
-├── index.html           # Ana HTML dosyası
-├── styles.css           # CSS stilleri
-├── app.js              # Ana uygulama mantığı
-└── speech-recognition.js # Ses tanıma modülü
-```
-
-### Ses Tanıma
-- **Dil**: Türkçe (tr-TR) varsayılan
-- **Sürekli Dinleme**: Evet
-- **Ara Sonuçlar**: Gerçek zamanlı görüntüleme
-- **Hata Yönetimi**: Kapsamlı hata yakalama
-
-### Veri Depolama
-- **Electron Store**: Ana depolama çözümü
-- **JSON Format**: Basit ve okunabilir veri formatı
-- **Yerel Depolama**: Tüm veriler yerel olarak saklanır
-
-## Klavye Kısayolları
-
-- `Ctrl/Cmd + N`: Yeni not oluştur
-- `Ctrl/Cmd + S`: Notu kaydet
-- `Esc`: İptal et / Modal'ı kapat
-
-## Geliştirme
-
-### Debug Modu
-```cmd
+```powershell
+npm install
 npm run dev
 ```
-Bu komut uygulamayı geliştirici araçlarıyla birlikte açar.
 
-### Build Komutları
-- `npm run build`: Tüm platformlar için build
-- `npm run build-win`: Sadece Windows için
-- `npm run build-mac`: Sadece macOS için
-- `npm run build-linux`: Sadece Linux için
+Start normally:
 
-## Sorun Giderme
+```powershell
+npm start
+```
 
-### Ses Tanıma Çalışmıyor
-1. Mikrofon izinlerini kontrol edin
-2. İnternet bağlantınızı kontrol edin
-3. Tarayıcı/uygulama ses ayarlarını kontrol edin
+Packaging (example):
 
-### Notlar Kaydedilmiyor
-1. Dosya izinlerini kontrol edin
-2. Disk alanını kontrol edin
-3. Uygulamayı yeniden başlatın
+```powershell
+npm run build      # all platforms (uses electron-builder)
+npm run build-win  # Windows
+```
 
-## Katkıda Bulunma
+No cloud sync is enabled by default — data is stored locally. Use the app's export/import functions to move notes between machines.
 
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/AmazingFeature`)
-3. Commit edin (`git commit -m 'Add some AmazingFeature'`)
-4. Push edin (`git push origin feature/AmazingFeature`)
-5. Pull Request oluşturun
+## License
 
-## Lisans
+This project is licensed under the MIT License — see `LICENSE` for details.
 
-Bu proje MIT lisansı altında dağıtılmaktadır.
-
-## İletişim
-
-Herhangi bir sorunuz veya öneriniz için issue açabilirsiniz.
