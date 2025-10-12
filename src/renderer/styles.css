@@ -2179,7 +2179,8 @@ div#newNoteNav {
 
 /* Pinned and locked note indicators */
 .note-item.pinned {
-  border-left: 4px solid var(--warning-color);
+  border-left: 3px solid var(--warning-color);
+  background-color: rgba(0, 0, 0, 0.03); /* very light grey for pinned notes */
 }
 
 .note-item.locked .note-item-preview {
@@ -2506,7 +2507,8 @@ div#newNoteNav {
 }
 
 [data-theme='dark'] .note-item.pinned {
-  border-left: 4px solid var(--warning-color);
+  border-left: 3px solid var(--warning-color);
+  background-color: rgba(255, 255, 255, 0.02); /* subtle overlay in dark mode */
 }
 
 [data-theme='dark'] .formatting-toolbar {
