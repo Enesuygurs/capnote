@@ -2,8 +2,6 @@
 
 Capnote is a lightweight, modern desktop app for quick notes and journaling. It focuses on a clean writing experience, local storage, and fast editing tools — optimized for daily use.
 
-![capnote](assets/icons/capnote.svg)
-
 ## Features
 
 - **Rich editor:** bold, italic, underline, alignment, lists and checklists.
