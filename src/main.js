@@ -8,6 +8,21 @@ const path = require('path');
 const fs = require('fs');
 const Store = require('electron-store');
 
+// Enable hot reload in development using electron-reloader
+try {
+  const isDev = process.argv.includes('--dev') || process.env.NODE_ENV !== 'production';
+  if (isDev) {
+    // eslint-disable-next-line import/no-extraneous-dependencies, global-require
+    require('electron-reloader')(module, {
+      watchRenderer: true,
+      debug: false,
+    });
+    console.log('Electron reloader enabled (dev mode)');
+  }
+} catch (err) {
+  // If electron-reloader isn't installed, ignore silently in production or CI
+}
+
 // Veri deposu başlatma
 const store = new Store();
 

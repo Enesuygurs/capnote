@@ -1,10 +1,3 @@
-/*
- * Capnote
- * Modern ve zengin özellikli not ve günlük uygulaması
- * @author Valkyr
- * @version 1.0.0
- */
-
 class CapnoteApp {
   constructor() {
     this.currentNote = null;
