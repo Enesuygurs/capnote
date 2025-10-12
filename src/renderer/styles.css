@@ -781,11 +781,6 @@ div#newNoteNav {
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
-[data-theme='dark'] .sidebar-footer {
-  background: var(--bg-secondary);
-  border-top-color: rgba(255, 255, 255, 0.08);
-}
-
 [data-theme='dark'] .nav-submenu {
   border-left-color: rgba(255, 255, 255, 0.08);
 }
@@ -795,6 +790,7 @@ div#newNoteNav {
   border-color: rgba(255, 255, 255, 0.08);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
+
 .note-item {
   display: flex;
   align-items: center;
@@ -2349,7 +2345,6 @@ div#newNoteNav {
   --titlebar-buttons-bg: transparent;
 
   --sidebar-div-bg: #1a1a1a;
-  --sidebar-header-bg: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   --sidebar-filters-bg: #1a1a1a;
   --filter-tabs-bg: #1a1a1a;
   --filter-tab-bg: #2e2e2e;
@@ -2485,17 +2480,8 @@ div#newNoteNav {
   border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-[data-theme='dark'] .sidebar-header {
-  background: var(--sidebar-header-bg);
-}
-
 [data-theme='dark'] .main-content {
   background: var(--main-content-bg);
-}
-
-[data-theme='dark'] .note-item {
-  background: transparent;
-  border: none;
 }
 
 [data-theme='dark'] .note-item-header {
@@ -2527,7 +2513,7 @@ div#newNoteNav {
   background: rgba(245, 158, 11, 0.2);
   color: var(--text-light);
   border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.15);
+  /*box-shadow: 0 2px 12px rgba(245, 158, 11, 0.15);*/
 }
 
 [data-theme='dark'] .note-item.pinned {
