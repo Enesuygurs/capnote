@@ -2494,8 +2494,8 @@ div#newNoteNav {
 }
 
 [data-theme='dark'] .note-item {
-  background: var(--note-item-bg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  border: none;
 }
 
 [data-theme='dark'] .note-item-header {
@@ -2508,6 +2508,7 @@ div#newNoteNav {
 
 [data-theme='dark'] .note-item:hover {
   border-color: var(--primary-color);
+  background: #232323;
 }
 
 [data-theme='dark'] .nav-item:hover {
