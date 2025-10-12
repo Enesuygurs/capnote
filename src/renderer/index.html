@@ -372,6 +372,9 @@
               <button id="duplicateNoteBtn" class="btn-icon" title="Kopyala">
                 <i class="fas fa-copy"></i>
               </button>
+              <button id="historyBtn" class="btn-icon" title="Not geçmişini göster">
+                <i class="fas fa-history"></i>
+              </button>
               <button id="exportNoteBtn" class="btn-icon" title="Dışa aktar">
                 <i class="fas fa-download"></i>
               </button>
@@ -443,6 +446,26 @@
             <i class="fas fa-file-code"></i>
             JSON (.json)
           </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Note History Modal -->
+    <div id="noteHistoryModal" class="modal hidden">
+      <div class="modal-content history-modal">
+        <div class="modal-header">
+          <div class="modal-title">
+            <h3>Not Geçmişi</h3>
+          </div>
+          <button class="modal-close" id="closeHistoryModal">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body" id="historyBody">
+          <!-- history entries will be injected here -->
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="historyCloseBtn">Kapat</button>
         </div>
       </div>
     </div>

@@ -3463,6 +3463,59 @@ input:checked + .toggle-slider:before {
   background: var(--bg-secondary);
 }
 
+/* Note history modal styles */
+#noteHistoryModal .modal-content.history-modal {
+  max-width: 520px;
+  width: 95%;
+  padding: 0;
+}
+
+#noteHistoryModal .modal-body {
+  padding: 18px 20px;
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.history-entry,
+.history-item {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.history-entry.created {
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+
+.history-list {
+  margin-top: 8px;
+}
+
+.history-empty {
+  padding: 12px;
+  color: var(--text-secondary);
+}
+
+/* Align note history modal footer buttons to the right and add spacing */
+#noteHistoryModal .modal-footer {
+  justify-content: flex-end;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+#noteHistoryModal .modal-header {
+  padding: 16px 20px;
+}
+
+#noteHistoryModal .modal-title h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
 /* Folder count styling */
 .folder-count {
   background: var(--bg-tertiary);
