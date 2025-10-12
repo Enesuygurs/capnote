@@ -3407,8 +3407,10 @@ input:checked + .toggle-slider:before {
 }
 
 #folderModal .btn-secondary:hover {
-  background: var(--bg-hover);
+  /* Keep the same background and only slightly adjust border/text to avoid full transparency */
+  background: var(--bg-tertiary);
   color: var(--text-primary);
+  border-color: rgba(0,0,0,0.06);
 }
 
 #folderModal .btn-primary {
@@ -3417,9 +3419,10 @@ input:checked + .toggle-slider:before {
 }
 
 #folderModal .btn-primary:hover {
-  background: #4f46e5;
+  /* Use theme primary hover instead of hardcoded blue */
+  background: var(--primary-hover);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.18);
 }
 
 #folderModal .modal-close {
