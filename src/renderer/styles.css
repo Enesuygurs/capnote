@@ -2515,6 +2515,19 @@ div#newNoteNav {
   /*box-shadow: 0 2px 12px rgba(245, 158, 11, 0.15);*/
 }
 
+/* Make active note's text, icons and action buttons yellow in dark theme (match light theme) */
+[data-theme='dark'] .note-item.active,
+[data-theme='dark'] .note-item.active .note-item-title,
+[data-theme='dark'] .note-item.active .nav-icon,
+[data-theme='dark'] .note-item.active .note-item-stats {
+  color: var(--primary-color) !important;
+}
+
+[data-theme='dark'] .note-item.active .note-tag {
+  background: rgba(245,158,11,0.15);
+  color: var(--primary-color) !important;
+}
+
 [data-theme='dark'] .note-item.pinned {
   border-left: 3px solid var(--warning-color);
   background-color: rgba(255, 255, 255, 0.02); /* subtle overlay in dark mode */
