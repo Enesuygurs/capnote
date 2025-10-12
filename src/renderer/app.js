@@ -88,6 +88,10 @@ class CapnoteApp {
     this.viewerWordCount = document.getElementById('viewerWordCount');
     this.readingTime = document.getElementById('readingTime');
     this.lastModified = document.getElementById('lastModified');
+  this.noteHistoryModal = document.getElementById('noteHistoryModal');
+  this.historyBody = document.getElementById('historyBody');
+  this.closeHistoryModal = document.getElementById('closeHistoryModal');
+  this.historyCloseBtn = document.getElementById('historyCloseBtn');
 
     // Editor meta bilgileri
     this.noteDate = document.getElementById('noteDate');
@@ -409,6 +413,14 @@ class CapnoteApp {
       this.updateCurrentDate();
       this.trackContentChanges();
     });
+
+  // History button opens history modal (instead of clicking date)
+  this.historyBtn = document.getElementById('historyBtn');
+  this.historyBtn?.addEventListener('click', () => this.openNoteHistory());
+
+    // History modal close handlers
+    this.closeHistoryModal?.addEventListener('click', () => this.hideModal(this.noteHistoryModal));
+    this.historyCloseBtn?.addEventListener('click', () => this.hideModal(this.noteHistoryModal));
 
     this.noteTitle.addEventListener('keydown', (e) => {
       if (e.key === 'Tab') {
@@ -888,6 +900,9 @@ class CapnoteApp {
       },
     };
 
+    // initialize history
+    this.currentNote.history = [{ type: 'created', ts: this.currentNote.createdAt }];
+
     // Save last viewed note (new note)
     this.saveLastViewedNote(this.currentNote.id);
 
@@ -995,7 +1010,18 @@ class CapnoteApp {
 
     this.currentNote.title = title;
     this.currentNote.content = content;
-    this.currentNote.updatedAt = new Date().toISOString();
+    const nowIso = new Date().toISOString();
+    this.currentNote.updatedAt = nowIso;
+    // Maintain history of updates (timestamp strings)
+    if (!this.currentNote.history) this.currentNote.history = [];
+    // If this is a new note (no createdAt), set createdAt and initialize history
+    if (!this.currentNote.createdAt) {
+      this.currentNote.createdAt = nowIso;
+      this.currentNote.history.push({ type: 'created', ts: nowIso });
+    } else {
+      // record update
+      this.currentNote.history.push({ type: 'updated', ts: nowIso });
+    }
     this.currentNote.mood = this.selectedMood;
     this.currentNote.weather = this.selectedWeather;
     this.currentNote.tags = [...this.tags];
@@ -1273,6 +1299,43 @@ class CapnoteApp {
       tagElement.textContent = tag;
       this.viewerTags.appendChild(tagElement);
     });
+  }
+
+  openNoteHistory() {
+    if (!this.currentNote) return;
+    const hist = this.currentNote.history || [];
+    this.historyBody.innerHTML = '';
+
+    // Show createdAt at the top
+    const created = this.currentNote.createdAt ? new Date(this.currentNote.createdAt) : null;
+    if (created) {
+      const el = document.createElement('div');
+      el.className = 'history-entry created';
+      el.innerHTML = `<strong>Oluşturuldu:</strong> ${created.toLocaleString('tr-TR')}`;
+      this.historyBody.appendChild(el);
+    }
+
+    // Render only non-created history entries (created is shown above)
+    const updates = hist.filter((h) => h.type !== 'created');
+    if (updates.length > 0) {
+      const list = document.createElement('div');
+      list.className = 'history-list';
+      updates.forEach((h) => {
+        const d = new Date(h.ts);
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `<span class="history-type">Güncellendi</span> <span class="history-ts">${d.toLocaleString('tr-TR')}</span>`;
+        list.appendChild(item);
+      });
+      this.historyBody.appendChild(list);
+    } else {
+      const empty = document.createElement('div');
+      empty.className = 'history-empty';
+      empty.textContent = 'Bu not için geçmiş kaydı yok.';
+      this.historyBody.appendChild(empty);
+    }
+
+    this.showModal(this.noteHistoryModal);
   }
 
   updateNotesList() {
