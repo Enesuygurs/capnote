@@ -2442,7 +2442,6 @@ div#newNoteNav {
 
 [data-theme='dark'] .titlebar {
   background: var(--titlebar-div-bg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] .titlebar-title {
@@ -2550,19 +2549,29 @@ div#newNoteNav {
 
 [data-theme='dark'] .modal-content {
   background: var(--modal-content-bg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
 }
 
 [data-theme='dark'] .modal-overlay {
   background: var(--modal-overlay-bg);
 }
 
-[data-theme='dark'] .modal-body {
-  background: var(--modal-body-bg);
+[data-theme='dark'] .modal-body,
+[data-theme='dark'] .modal-header,
+[data-theme='dark'] .modal-footer {
+  background: transparent;
+  color: var(--text-light);
 }
 
-[data-theme='dark'] .modal-header {
-  background: var(--modal-header-bg);
+[data-theme='dark'] .modal-close {
+  color: var(--text-secondary);
+}
+
+[data-theme='dark'] .modal-close:hover {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-light);
 }
 
 [data-theme='dark'] .modal-footer {
@@ -2759,7 +2768,7 @@ div#newNoteNav {
 }
 
 [data-theme='dark'] .modal-body {
-  background: var(--bg-secondary);
+  background: transparent;
 }
 
 [data-theme='dark'] .btn-primary {
@@ -3307,6 +3316,30 @@ input:checked + .toggle-slider:before {
 [data-theme='dark'] #passwordModal .form-input:focus {
   border-color: var(--primary-color);
   background: var(--bg-secondary);
+}
+
+[data-theme='dark'] #folderModal .modal-content,
+[data-theme='dark'] #noteHistoryModal .modal-content,
+[data-theme='dark'] #exportModal .modal-content,
+[data-theme='dark'] #pickerModal .modal-content {
+  background: var(--modal-content-bg);
+  border-color: rgba(255,255,255,0.04);
+  color: var(--text-light);
+}
+
+[data-theme='dark'] #folderModal .modal-close,
+[data-theme='dark'] #noteHistoryModal .modal-close,
+[data-theme='dark'] #exportModal .modal-close,
+[data-theme='dark'] #pickerModal .modal-close {
+  color: var(--text-secondary);
+}
+
+[data-theme='dark'] #folderModal .modal-close:hover,
+[data-theme='dark'] #noteHistoryModal .modal-close:hover,
+[data-theme='dark'] #exportModal .modal-close:hover,
+[data-theme='dark'] #pickerModal .modal-close:hover {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-light);
 }
 
 /* ============================== */
