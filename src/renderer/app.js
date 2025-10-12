@@ -1987,8 +1987,11 @@ class CapnoteApp {
   }
 
   hideModal(modal) {
+    // Remove the visible class and hide immediately to avoid perceived lag.
+    // Previously we waited for the CSS transition before hiding which caused
+    // a delay when users expected the popup to close right away.
     modal.classList.remove('show');
-    setTimeout(() => modal.classList.add('hidden'), 250);
+    modal.classList.add('hidden');
   }
 
   hideAllModals() {
