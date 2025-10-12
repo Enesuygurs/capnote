@@ -1286,7 +1286,14 @@ class CapnoteApp {
     // Stats
     this.viewerWordCount.textContent = `${note.wordCount || 0} kelime`;
     this.readingTime.textContent = `~${Math.max(1, Math.ceil((note.wordCount || 0) / 200))} dk okuma`;
-    this.lastModified.textContent = updatedDate.toLocaleDateString('tr-TR');
+    // Show date + time for last modified (e.g. 12.10.2025 14:35)
+    this.lastModified.textContent = updatedDate.toLocaleString('tr-TR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
 
     this.updateFavoriteButtons();
   }
