@@ -2438,6 +2438,7 @@ div#newNoteNav {
   --text-secondary: #c0c0c0;
   --text-muted: #888888;
   --text-light: #ffffff;
+  --bg-hover: rgba(255,255,255,0.04); /* Dark subtle hover */
 }
 
 [data-theme='dark'] body {
@@ -2507,6 +2508,18 @@ div#newNoteNav {
 
 [data-theme='dark'] .note-item:hover {
   border-color: var(--primary-color);
+}
+
+[data-theme='dark'] .nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-light);
+}
+
+/* Keep active nav item appearance when hovered in dark theme */
+[data-theme='dark'] .nav-item.active:hover,
+[data-theme='dark'] .nav-item.active:focus {
+  background: var(--primary-light);
+  color: var(--primary-color);
 }
 
 [data-theme='dark'] .note-item.active {
