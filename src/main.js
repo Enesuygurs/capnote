@@ -5,6 +5,7 @@
 
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const Store = require('electron-store');
 
 // Veri deposu başlatma
@@ -16,6 +17,16 @@ let mainWindow;
  * Ana pencereyi oluşturur ve yapılandırır
  */
 function createWindow() {
+  // Determine icon path (prefer .ico on Windows if available)
+  const iconsDir = path.join(__dirname, '..', 'assets', 'icons');
+  let iconPath = path.join(iconsDir, 'capnote-512.png');
+  if (process.platform === 'win32') {
+    const icoPath = path.join(iconsDir, 'capnote.ico');
+    if (fs.existsSync(icoPath)) {
+      iconPath = icoPath;
+    }
+  }
+
   // Ana pencereyi oluştur
   mainWindow = new BrowserWindow({
     width: 1000,
@@ -32,6 +43,7 @@ function createWindow() {
     show: false,
     vibrancy: 'under-window',
     transparent: false,
+    icon: iconPath,
   });
 
   // HTML dosyasını yükle

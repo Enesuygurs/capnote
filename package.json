@@ -1,7 +1,7 @@
 {
-  "name": "sesli-gunluk",
+  "name": "capnote",
   "version": "1.0.0",
-  "description": "Sesli notlar alan masaüstü günlük uygulaması",
+  "description": "Capnote — modern masaüstü not ve günlük uygulaması",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
@@ -16,7 +16,7 @@
   },
   "keywords": [
     "electron",
-    "diary",
+    "capnote",
     "voice",
     "speech-to-text",
     "notes"
@@ -35,13 +35,14 @@
     "electron-store": "^8.1.0"
   },
   "build": {
-    "appId": "com.valkyr.sesligunluk",
-    "productName": "Sesli Günlük",
+    "appId": "com.valkyr.capnote",
+    "productName": "Capnote",
     "directories": {
       "output": "dist"
     },
     "files": [
       "src/**/*",
+      "assets/**/*",
       "package.json"
     ],
     "win": {
