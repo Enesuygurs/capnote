@@ -3647,6 +3647,16 @@ input:checked + .toggle-slider:before {
 
 #noteHistoryModal .modal-footer .btn {
   margin: 0 auto !important;
+  /* Match folder modal cancel button */
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+#noteHistoryModal .modal-footer .btn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: rgba(0,0,0,0.06);
 }
 
 #noteHistoryModal .modal-header {
