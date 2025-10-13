@@ -16,6 +16,7 @@
   --accent-color-rgba-15: rgba(245, 158, 11, 0.15);
   --accent-color-rgba-20: rgba(245, 158, 11, 0.2);
   --accent-color-rgba-30: rgba(245, 158, 11, 0.3);
+  --accent-color-rgba-18: rgba(245, 158, 11, 0.18);
   --bg-primary: #ffffff;
   --bg-secondary: #fdfdfd;
   --bg-tertiary: #f1f5f9;
@@ -3114,6 +3115,8 @@ div#newNoteNav {
 #accentYellow { background: #f59e0b; }
 #accentCherry { background: #e11d48; }
 #accentApple { background: #22c55e; }
+#accentPurple { background: #8b5cf6; }
+#accentBlue { background: #3b82f6; }
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -3578,10 +3581,10 @@ input:checked + .toggle-slider:before {
 }
 
 #folderModal .btn-primary:hover {
-  /* Use theme primary hover instead of hardcoded blue */
-  background: var(--primary-hover);
+  /* Use accent hover color and shadow so hover matches selected accent */
+  background: var(--accent-color);
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.18);
+  box-shadow: 0 6px 16px var(--accent-color-rgba-18);
 }
 
 #folderModal .modal-close {
