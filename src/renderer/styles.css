@@ -3280,7 +3280,8 @@ input:checked + .toggle-slider:before {
 }
 
 #settingsModal .modal-header h3::before {
-  content: '⚙️';
+  /* Settings modal uses an explicit <i> icon in the HTML; disable the pseudo-element to avoid duplicate icons */
+  content: none;
 }
 
 #pickerModal .modal-header h3::before {
