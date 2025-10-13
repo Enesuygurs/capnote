@@ -119,6 +119,9 @@ class CapnoteApp {
     this.settingsBtn = document.getElementById('settingsBtn');
     this.helpSupport = document.getElementById('helpSupport');
     this.darkModeToggle = document.getElementById('darkModeToggle');
+  this.accentYellowBtn = document.getElementById('accentYellow');
+  this.accentCherryBtn = document.getElementById('accentCherry');
+  this.accentAppleBtn = document.getElementById('accentApple');
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
@@ -196,6 +199,10 @@ class CapnoteApp {
     this.newNoteBtn.addEventListener('click', () => this.createNewNote());
     this.settingsBtn.addEventListener('click', () => this.showSettingsModal());
     this.helpSupport.addEventListener('click', () => this.showSettingsModal());
+  // Accent swatches
+  this.accentYellowBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#f59e0b'));
+  this.accentCherryBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#e11d48'));
+  this.accentAppleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#22c55e'));
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
     this.saveNoteBtn.addEventListener('click', () => this.saveNote());
     this.cancelNoteBtn.addEventListener('click', () => this.cancelEdit());
@@ -2654,11 +2661,41 @@ class CapnoteApp {
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
     this.darkModeToggle.checked = isDarkMode;
     this.applyTheme(isDarkMode);
+    // Load accent color
+    const accent = localStorage.getItem('accentColor') || null;
+    if (accent) this.setAccentColor(accent, {persist:false});
   }
 
   saveSettings() {
     // Save dark mode preference
     localStorage.setItem('darkMode', this.darkModeToggle.checked);
+  }
+
+  setAccentColor(hex, options = { persist: true }) {
+    if (!hex) return;
+    // normalize hex to lowercase
+    const color = hex.toLowerCase();
+    // apply primary-ish variable and accent variable
+    document.documentElement.style.setProperty('--primary-color', color);
+    document.documentElement.style.setProperty('--accent-color', color);
+
+    // derive some rgba variants for existing rules that expect alpha variants
+    // naive conversion for the common yellow used previously (245,158,11)
+    // we'll generate rgba using a small helper to convert hex -> r,g,b
+    function hexToRgb(h) {
+      const hex = h.replace('#','');
+      const bigint = parseInt(hex.length===3?hex.split('').map(c=>c+c).join(''):hex,16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return [r,g,b];
+    }
+    const [r,g,b] = hexToRgb(color);
+    document.documentElement.style.setProperty('--accent-color-rgba-15', `rgba(${r}, ${g}, ${b}, 0.15)`);
+    document.documentElement.style.setProperty('--accent-color-rgba-20', `rgba(${r}, ${g}, ${b}, 0.2)`);
+    document.documentElement.style.setProperty('--accent-color-rgba-30', `rgba(${r}, ${g}, ${b}, 0.3)`);
+
+    if (options.persist !== false) localStorage.setItem('accentColor', color);
   }
 
   toggleDarkMode(enabled) {

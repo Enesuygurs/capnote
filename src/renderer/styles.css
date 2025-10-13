@@ -9,7 +9,13 @@
   --primary-color: #f59e0b;
   --primary-hover: #d97706;
   --secondary-color: #fbbf24;
-  --accent-color: #06b6d4; 
+  /* Accent used for active highlights (default yellow) */
+  --accent-color: #f59e0b;
+  --accent-color-rgba-10: rgba(245, 158, 11, 0.1);
+  --accent-color-rgba-12: rgba(245, 158, 11, 0.12);
+  --accent-color-rgba-15: rgba(245, 158, 11, 0.15);
+  --accent-color-rgba-20: rgba(245, 158, 11, 0.2);
+  --accent-color-rgba-30: rgba(245, 158, 11, 0.3);
   --bg-primary: #ffffff;
   --bg-secondary: #fdfdfd;
   --bg-tertiary: #f1f5f9;
@@ -814,14 +820,14 @@ div#newNoteNav {
 }
 
 .note-item.active {
-  background: rgba(245, 158, 11, 0.15);
+  background: var(--accent-color-rgba-15);
   color: var(--primary-color);
   font-weight: 500;
 }
 
 /* Ensure folder notes get identical active styling */
 .note-item.active, .folder-note-item.active {
-  background: rgba(245, 158, 11, 0.15);
+  background: var(--accent-color-rgba-15);
   color: var(--primary-color) !important;
   font-weight: 500;
 }
@@ -1635,7 +1641,7 @@ div#newNoteNav {
   margin: 0 auto 24px;
   font-size: 24px;
   color: white;
-  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+  box-shadow: 0 8px 25px var(--accent-color-rgba-30);
 }
 
 .confirm-text h3 {
@@ -2252,7 +2258,7 @@ div#newNoteNav {
 
 .note-action-btn.pinned {
   color: var(--warning-color);
-  background: rgba(245, 158, 11, 0.1);
+  background: var(--accent-color-rgba-10);
 }
 
 .note-action-btn.locked {
@@ -2546,7 +2552,7 @@ div#newNoteNav {
 }
 
 [data-theme='dark'] .note-item.active {
-  background: rgba(245, 158, 11, 0.2);
+  background: var(--accent-color-rgba-20);
   color: var(--text-light);
   border-color: rgba(245, 158, 11, 0.4);
   /*box-shadow: 0 2px 12px rgba(245, 158, 11, 0.15);*/
@@ -2567,7 +2573,7 @@ div#newNoteNav {
 
 /* Dark theme: make folder notes active look like regular active notes */
 [data-theme='dark'] .folder-note-item.active {
-  background: rgba(245, 158, 11, 0.2);
+  background: var(--accent-color-rgba-20);
   color: var(--text-light);
 }
 
@@ -3088,6 +3094,26 @@ div#newNoteNav {
 }
 
 /* Toggle Switch */
+
+.theme-swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.swatch-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+}
+
+.swatch-btn:focus { outline: none; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+#accentYellow { background: var(--accent-color); }
+#accentCherry { background: #e11d48; }
+#accentApple { background: #22c55e; }
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -3772,7 +3798,7 @@ div#newNoteNav {
 .folder-note-item.active {
   /* Match the main note active appearance (light theme):
      subtle primary tint background, primary-color text */
-  background: rgba(245, 158, 11, 0.15);
+  background: var(--accent-color-rgba-15);
   color: var(--primary-color);
   font-weight: 500;
 }
