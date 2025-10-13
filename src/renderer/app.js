@@ -124,6 +124,7 @@ class CapnoteApp {
   this.accentAppleBtn = document.getElementById('accentApple');
   this.accentPurpleBtn = document.getElementById('accentPurple');
   this.accentBlueBtn = document.getElementById('accentBlue');
+  this.syncFolderAccentToggle = document.getElementById('syncFolderAccentToggle');
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
@@ -207,6 +208,12 @@ class CapnoteApp {
   this.accentAppleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#22c55e'));
   this.accentPurpleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#8b5cf6'));
   this.accentBlueBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#3b82f6'));
+  this.syncFolderAccentToggle?.addEventListener('change', (e) => {
+    const enabled = e.currentTarget.checked;
+    localStorage.setItem('syncFolderAccent', enabled ? '1' : '0');
+    this.applyFolderAccentSync(enabled);
+    this.updateFoldersList();
+  });
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
     this.saveNoteBtn.addEventListener('click', () => this.saveNote());
     this.cancelNoteBtn.addEventListener('click', () => this.cancelEdit());
@@ -2675,11 +2682,18 @@ class CapnoteApp {
     // Load accent color
     const accent = localStorage.getItem('accentColor') || null;
     if (accent) this.setAccentColor(accent, {persist:false});
+
+    // Load sync-folder-accent preference
+    const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
+    if (this.syncFolderAccentToggle) this.syncFolderAccentToggle.checked = syncFolders;
+    if (syncFolders) this.applyFolderAccentSync(true);
   }
 
   saveSettings() {
     // Save dark mode preference
     localStorage.setItem('darkMode', this.darkModeToggle.checked);
+    // Save sync-folder-accent preference
+    if (this.syncFolderAccentToggle) localStorage.setItem('syncFolderAccent', this.syncFolderAccentToggle.checked ? '1' : '0');
   }
 
   setAccentColor(hex, options = { persist: true }) {
@@ -2708,6 +2722,51 @@ class CapnoteApp {
   document.documentElement.style.setProperty('--accent-color-rgba-18', `rgba(${r}, ${g}, ${b}, 0.18)`);
 
     if (options.persist !== false) localStorage.setItem('accentColor', color);
+    // If sync option enabled, apply accent color to all folder icons
+    const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
+    if (syncFolders) this.applyFolderAccentSync(true);
+  }
+
+  applyFolderAccentSync(enabled) {
+    // If enabled, set every folder color to the current accent color
+    if (!this.folders) return;
+    if (enabled) {
+      // Save backup of original colors if not already saved
+      const existingBackup = localStorage.getItem('folderColorsBackup');
+      if (!existingBackup) {
+        const backup = {};
+        this.folders.forEach((f) => {
+          backup[f.id] = f.color;
+        });
+        try {
+          localStorage.setItem('folderColorsBackup', JSON.stringify(backup));
+        } catch (e) {
+          console.warn('Could not save folder color backup', e);
+        }
+      }
+
+      const accent = localStorage.getItem('accentColor') || getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#f59e0b';
+      this.folders = this.folders.map((f) => ({ ...f, color: accent }));
+    } else {
+      // Restore from backup if available
+      const backupStr = localStorage.getItem('folderColorsBackup');
+      if (backupStr) {
+        try {
+          const backup = JSON.parse(backupStr || '{}');
+          this.folders = this.folders.map((f) => ({ ...f, color: backup[f.id] || f.color }));
+        } catch (e) {
+          console.warn('Failed to parse folder color backup', e);
+        }
+        // Remove backup after restore
+        try { localStorage.removeItem('folderColorsBackup'); } catch (e) {}
+      }
+    }
+
+    // Persist changes and refresh UI
+    this.saveFolders();
+    this.updateFoldersList();
+    // Make sure folder notes are repopulated after DOM rebuild
+    this.updateFolderNotes();
   }
 
   toggleDarkMode(enabled) {
@@ -2949,15 +3008,30 @@ class CapnoteApp {
   }
 
   getRandomFolderColor() {
+    // If sync-to-accent is enabled, return the accent color
+    const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
+    if (syncFolders) {
+      return localStorage.getItem('accentColor') || getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#f59e0b';
+    }
+
+    // Extended palette (16 colors)
     const colors = [
-      '#3B82F6',
-      '#10B981',
-      '#F59E0B',
-      '#EF4444',
-      '#8B5CF6',
-      '#06B6D4',
-      '#F97316',
-      '#EC4899',
+      '#3B82F6', // blue
+      '#1E40AF', // indigo
+      '#06B6D4', // teal
+      '#0891B2', // cyan
+      '#10B981', // green
+      '#065F46', // dark green
+      '#84CC16', // lime
+      '#F59E0B', // amber
+      '#F97316', // orange
+      '#EA580C', // deep orange
+      '#EF4444', // red
+      '#BE185D', // magenta
+      '#EC4899', // pink
+      '#8B5CF6', // purple
+      '#7C3AED', // deep purple
+      '#64748B', // slate
     ];
     return colors[Math.floor(Math.random() * colors.length)];
   }
@@ -2970,6 +3044,18 @@ class CapnoteApp {
     this.folders.forEach((folder) => {
       const folderElement = this.createFolderElement(folder);
       this.foldersList.appendChild(folderElement);
+    });
+    // Ensure folder notes are populated after rebuilding the DOM
+    this.updateFolderNotes();
+    // Restore visibility according to header expanded state
+    document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
+      const folderId = container.getAttribute('data-folder-id');
+      const header = document.querySelector(`.folder-item[data-folder-id="${folderId}"]`);
+      if (header && header.classList.contains('expanded')) {
+        container.style.display = 'block';
+      } else {
+        container.style.display = 'none';
+      }
     });
   }
 
