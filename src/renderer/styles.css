@@ -794,12 +794,12 @@ div#newNoteNav {
 .note-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px 12px;
-  border-radius: 6px;
+  gap: 8px;
+  padding: 6px 12px; /* match .nav-subitem */
+  border-radius: 4px; /* match .nav-subitem */
   cursor: pointer;
   transition: var(--transition-fast);
-  font-size: 14px;
+  font-size: 13px; /* match folder note font-size */
   color: var(--text-secondary);
   margin-bottom: 2px;
   position: relative;
@@ -819,13 +819,28 @@ div#newNoteNav {
   font-weight: 500;
 }
 
+/* Ensure folder notes get identical active styling */
+.note-item.active, .folder-note-item.active {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--primary-color) !important;
+  font-weight: 500;
+}
+
+.note-item.active .nav-icon,
+.folder-note-item.active .nav-icon,
+.note-item.active .nav-text,
+.folder-note-item.active .nav-text {
+  color: var(--primary-color) !important;
+  opacity: 1 !important;
+}
+
 .note-item-header {
   display: none;
 }
 
 .note-item .nav-icon {
   width: 16px;
-  font-size: 14px;
+  font-size: 13px; /* slightly smaller to match folder items */
   text-align: center;
   opacity: 0.8;
   transition: opacity var(--transition-fast);
@@ -883,7 +898,7 @@ div#newNoteNav {
 .note-item-actions {
   position: absolute;
   right: 0;
-  margin-right: 8px;
+  margin-right: 4px; /* tighter to match folder layout */
   display: flex;
   gap: 4px;
   opacity: 0;
@@ -900,10 +915,10 @@ div#newNoteNav {
 }
 
 .note-action-btn {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border: none;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.08);
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -2550,6 +2565,17 @@ div#newNoteNav {
   color: var(--primary-color) !important;
 }
 
+/* Dark theme: make folder notes active look like regular active notes */
+[data-theme='dark'] .folder-note-item.active {
+  background: rgba(245, 158, 11, 0.2);
+  color: var(--text-light);
+}
+
+[data-theme='dark'] .folder-note-item.active .nav-icon,
+[data-theme='dark'] .folder-note-item.active .nav-text {
+  color: var(--primary-color) !important;
+}
+
 [data-theme='dark'] .note-item.pinned {
   border-left: 3px solid var(--warning-color);
   background-color: rgba(255, 255, 255, 0.02); /* subtle overlay in dark mode */
@@ -3717,11 +3743,16 @@ div#newNoteNav {
 }
 
 .folder-note-item {
-  padding: 4px 8px;
-  margin: 2px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px; /* match .note-item */
+  margin-bottom: 2px;
   border-radius: 4px;
-  font-size: 12px;
-  transition: all 0.2s ease;
+  font-size: 13px; /* match main note size */
+  transition: var(--transition-fast);
+  position: relative;
+  overflow: hidden;
 }
 
 .folder-note-item:hover {
@@ -3729,13 +3760,21 @@ div#newNoteNav {
 }
 
 .folder-note-item.active {
-  background: var(--primary-color);
-  color: white;
+  /* Match the main note active appearance (light theme):
+     subtle primary tint background, primary-color text */
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.folder-note-item.active .nav-icon,
+.folder-note-item.active .nav-text {
+  color: var(--primary-color);
 }
 
 .folder-note-item .nav-icon {
-  font-size: 11px;
-  opacity: 0.7;
+  font-size: 13px; /* match .note-item nav-icon */
+  opacity: 0.8;
 }
 
 .folder-note-item.dragging {
