@@ -122,6 +122,8 @@ class CapnoteApp {
   this.accentYellowBtn = document.getElementById('accentYellow');
   this.accentCherryBtn = document.getElementById('accentCherry');
   this.accentAppleBtn = document.getElementById('accentApple');
+  this.accentPurpleBtn = document.getElementById('accentPurple');
+  this.accentBlueBtn = document.getElementById('accentBlue');
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
@@ -203,6 +205,8 @@ class CapnoteApp {
   this.accentYellowBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#f59e0b'));
   this.accentCherryBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#e11d48'));
   this.accentAppleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#22c55e'));
+  this.accentPurpleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#8b5cf6'));
+  this.accentBlueBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#3b82f6'));
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
     this.saveNoteBtn.addEventListener('click', () => this.saveNote());
     this.cancelNoteBtn.addEventListener('click', () => this.cancelEdit());
@@ -2694,6 +2698,7 @@ class CapnoteApp {
     document.documentElement.style.setProperty('--accent-color-rgba-15', `rgba(${r}, ${g}, ${b}, 0.15)`);
     document.documentElement.style.setProperty('--accent-color-rgba-20', `rgba(${r}, ${g}, ${b}, 0.2)`);
     document.documentElement.style.setProperty('--accent-color-rgba-30', `rgba(${r}, ${g}, ${b}, 0.3)`);
+  document.documentElement.style.setProperty('--accent-color-rgba-18', `rgba(${r}, ${g}, ${b}, 0.18)`);
 
     if (options.persist !== false) localStorage.setItem('accentColor', color);
   }
