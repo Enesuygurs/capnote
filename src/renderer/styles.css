@@ -3840,7 +3840,7 @@ div#newNoteNav {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 6px 10px;
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.2s ease;

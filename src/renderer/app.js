@@ -2966,6 +2966,14 @@ class CapnoteApp {
   // ============================================
 
   showFolderModal() {
+    this._renamingFolderId = null;
+    // Ensure modal title/button show create mode
+    const titleEl = this.folderModal.querySelector('.modal-title h3');
+    const iconEl = this.folderModal.querySelector('.modal-title i');
+    const createBtn = document.getElementById('createFolderBtn');
+    if (titleEl) titleEl.textContent = 'Yeni Klasör';
+    if (iconEl) { iconEl.className = 'fas fa-folder-plus'; }
+    if (createBtn) createBtn.textContent = 'Oluştur';
     this.folderNameInput.value = '';
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
@@ -2982,6 +2990,13 @@ class CapnoteApp {
     // Pre-fill folder modal and set renaming flag
     this.folderNameInput.value = folder.name;
     this._renamingFolderId = folder.id;
+    // Update modal to show rename mode
+    const titleEl = this.folderModal.querySelector('.modal-title h3');
+    const iconEl = this.folderModal.querySelector('.modal-title i');
+    const createBtn = document.getElementById('createFolderBtn');
+    if (titleEl) titleEl.textContent = 'Klasörü Yeniden Adlandır';
+    if (iconEl) { iconEl.className = 'fas fa-edit'; }
+    if (createBtn) createBtn.textContent = 'Kaydet';
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
   }
