@@ -873,7 +873,7 @@ class CapnoteApp {
     this.currentNote = note;
     this.showViewer();
     this.displayNote(note);
-    this.updateNotesList(); // Active durumunu güncelle
+    this.setActiveNoteInList(this.currentNote.id); // Only update active class
   }
 
   createNewNote() {
@@ -1237,7 +1237,7 @@ class CapnoteApp {
     // Show viewer mode and display note
     this.showViewer();
     this.displayNote(note);
-    this.updateNotesList(); // Active durumunu güncelle
+    this.setActiveNoteInList(this.currentNote.id); // Only update active class
   }
 
   displayNote(note) {
@@ -1358,6 +1358,31 @@ class CapnoteApp {
 
     // Also update folder notes for custom folders
     this.updateFolderNotes();
+  }
+
+  // Update only the active state in existing DOM note lists without full re-render
+  setActiveNoteInList(noteId) {
+    // Clear previous active in main notes list
+    const prevActive = this.notesList.querySelector('.note-item.active');
+    if (prevActive && prevActive.getAttribute('data-note-id') != noteId) {
+      prevActive.classList.remove('active');
+    }
+
+    // Set new active in main notes list
+    const newActive = this.notesList.querySelector(`.note-item[data-note-id="${noteId}"]`);
+    if (newActive) {
+      newActive.classList.add('active');
+    }
+
+    // Also update any folder note lists
+    document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
+      const prev = container.querySelector('.folder-note-item.active');
+      if (prev && prev.getAttribute('data-note-id') != noteId) {
+        prev.classList.remove('active');
+      }
+      const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
+      if (current) current.classList.add('active');
+    });
   }
 
   updateFolderNotes() {
@@ -2358,7 +2383,7 @@ class CapnoteApp {
       this.saveLastViewedNote(note.id);
       this.showViewer();
       this.displayNote(note);
-      this.updateNotesList();
+  this.setActiveNoteInList(this.currentNote.id);
 
       this.showNotification('Not geçici olarak açıldı', 'info');
     } else if (password !== null) {
