@@ -2452,10 +2452,10 @@ class CapnoteApp {
         } else {
           this.updateNotesList();
         }
-        this.updateStats();
+    this.updateStats();
 
-        // After any delete action, show all notes so UI isn't stuck inside a folder view
-        this.changeFilter('all');
+    // If user is viewing Favorites, refresh the list so it includes/excludes updated favorites
+    if (this.currentFilter === 'favorites') this.updateNotesList();
 
         // If deleted note was current note, show welcome or select another
         if (this.currentNote && this.currentNote.id === noteId) {
@@ -2941,8 +2941,7 @@ class CapnoteApp {
     this.updateFoldersList();
     this.hideFolderModal();
     this.showNotification(`"${name}" klasörü oluşturuldu!`, 'success');
-    // After folder changes show all notes so user sees everything
-    this.changeFilter('all');
+    if (this.currentFilter === 'favorites') this.updateNotesList();
   }
 
   getRandomFolderColor() {
@@ -3172,8 +3171,8 @@ class CapnoteApp {
       `"${note.title || 'Başlıksız not'}" ${folderName} klasörüne taşındı`,
       'success'
     );
-    // Ensure the main All view is active after moving notes so user sees them
-    this.changeFilter('all');
+  // Keep the current filter selected after moving notes
+  if (this.currentFilter === 'favorites') this.updateNotesList();
   }
 
   // Action button functions
@@ -3195,8 +3194,7 @@ class CapnoteApp {
     } else {
       this.updateNotesList();
     }
-    // After changing note metadata (favorite/pin/lock) show all notes to avoid hidden folder state
-    this.changeFilter('all');
+  // Keep the current filter selected after toggling metadata
 
     const message = note.isFavorite ? 'Favorilere eklendi' : 'Favorilerden çıkarıldı';
     this.showNotification(message, 'success');
@@ -3303,6 +3301,9 @@ class CapnoteApp {
       this.updateNotesList();
     }
 
+    // If viewing favorites, refresh it to reflect pin changes where applicable
+    if (this.currentFilter === 'favorites') this.updateNotesList();
+
     const message = note.isPinned ? 'Not sabitlendi' : 'Sabitleme kaldırıldı';
     this.showNotification(message, 'success');
   }
@@ -3341,6 +3342,7 @@ class CapnoteApp {
     } else {
       this.updateNotesList();
     }
+    if (this.currentFilter === 'favorites') this.updateNotesList();
   }
 
   // Context menu functions
@@ -3389,10 +3391,9 @@ class CapnoteApp {
       // Save and update
       this.saveNotes();
       this.saveFolders();
-  this.updateFoldersList();
-  this.updateStats();
-  // After deleting a folder show all notes
-  this.changeFilter('all');
+    this.updateFoldersList();
+    this.updateStats();
+    if (this.currentFilter === 'favorites') this.updateNotesList();
 
       // Clear selection if current note was in deleted folder
       if (this.currentNote && this.currentNote.folderId == folderIdToDelete) {
