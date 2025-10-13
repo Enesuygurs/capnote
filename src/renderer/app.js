@@ -1376,18 +1376,49 @@ class CapnoteApp {
 
     // Also update any folder note lists
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
+      const folderId = container.getAttribute('data-folder-id');
       const prev = container.querySelector('.folder-note-item.active');
       if (prev && prev.getAttribute('data-note-id') != noteId) {
         prev.classList.remove('active');
       }
       const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
-      if (current) current.classList.add('active');
+      if (current) {
+        current.classList.add('active');
+      }
     });
+
+    // If folder item wasn't found (likely due to render timing), retry once on the next frame
+    const foundInFolder = Array.from(document.querySelectorAll('.folder-notes-container[data-folder-id]')).some((container) =>
+      !!container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`)
+    );
+    if (!foundInFolder) {
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
+          const folderId = container.getAttribute('data-folder-id');
+          const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
+          if (current) {
+            current.classList.add('active');
+          }
+        });
+      });
+
+      // Also schedule a fallback after a short delay in case other async updates occur
+      setTimeout(() => {
+        document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
+          const folderId = container.getAttribute('data-folder-id');
+          const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
+          if (current) {
+            current.classList.add('active');
+          }
+        });
+      }, 50);
+    }
   }
 
   updateFolderNotes() {
     // Update custom folder notes
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
+      const folderIdLog = container.getAttribute('data-folder-id');
       const folderId = container.getAttribute('data-folder-id');
       container.innerHTML = '';
       let folderNotes = this.notes.filter((note) => note.folderId == folderId);
@@ -1419,7 +1450,7 @@ class CapnoteApp {
 
       const sortedFolderNotes = this.getSortedNotes(folderNotes);
       sortedFolderNotes.forEach((note) => {
-        const noteElement = this.createNoteElement(note);
+        const noteElement = this.createFolderNoteElement(note);
         container.appendChild(noteElement);
       });
     });
@@ -2960,28 +2991,79 @@ class CapnoteApp {
 
   createFolderNoteElement(note) {
     const div = document.createElement('div');
-    div.className = 'nav-subitem folder-note-item';
-    div.setAttribute('data-note-id', note.id);
+    // Keep folder-note-item but also include note-item so styles and actions match main list
+    div.className = 'nav-subitem folder-note-item note-item fade-in';
     div.draggable = true;
+    div.setAttribute('data-note-id', note.id);
 
     if (this.currentNote && this.currentNote.id === note.id) {
       div.classList.add('active');
     }
 
-    const title = note.title || 'Başlıksız not';
+    const title = note.title || 'Başlıksız Not';
     const truncatedTitle = title.length > 15 ? title.substring(0, 15) + '...' : title;
 
     div.innerHTML = `
             <i class="fas fa-file-alt nav-icon"></i>
-            <span class="nav-text">${this.escapeHtml(truncatedTitle)}</span>
+            <span class="nav-text note-item-title">${this.escapeHtml(truncatedTitle)}</span>
+            <div class="note-item-actions">
+                <button class="note-action-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
+                        data-note-id="${note.id}"
+                        title="${note.isFavorite ? 'Favorilerden çıkar' : 'Favorilere ekle'}">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <button class="note-action-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
+                        data-note-id="${note.id}"
+                        title="${note.isPinned ? 'Sabitlemeyi kaldır' : 'Sabitle'}">
+                    <i class="fas fa-thumbtack"></i>
+                </button>
+                <button class="note-action-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
+                        data-note-id="${note.id}"
+                        title="${note.isLocked ? 'Kilidi aç' : 'Kilitle'}">
+                    <i class="fas fa-lock"></i>
+                </button>
+                <button class="note-action-btn delete-btn" 
+                        data-note-id="${note.id}"
+                        title="Notu sil">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
         `;
 
-    // Add click event to open note
-    div.addEventListener('click', () => {
-      this.openNote(note);
+    // Click selects note unless an action button was clicked
+    div.addEventListener('click', (e) => {
+      if (!e.target.closest('.note-action-btn')) {
+        this.selectNote(note);
+      }
     });
 
-    // Add drag events
+    // Wire action buttons
+    const favoriteBtn = div.querySelector('.favorite-btn');
+    const pinBtn = div.querySelector('.pin-btn');
+    const lockBtn = div.querySelector('.lock-btn');
+    const deleteBtn = div.querySelector('.delete-btn');
+
+    favoriteBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleFavorite(note.id);
+    });
+
+    pinBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.togglePin(note.id);
+    });
+
+    lockBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleLock(note.id);
+    });
+
+    deleteBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.deleteNoteById(note.id);
+    });
+
+    // Drag events
     div.addEventListener('dragstart', (e) => {
       e.dataTransfer.setData('text/plain', note.id);
       div.classList.add('dragging');
@@ -2989,6 +3071,19 @@ class CapnoteApp {
 
     div.addEventListener('dragend', () => {
       div.classList.remove('dragging');
+    });
+
+    // Hover title truncation behavior
+    const titleElement = div.querySelector('.note-item-title');
+    const originalTitle = title;
+    const hoverTruncated = title.length > 6 ? title.substring(0, 6) + '...' : title;
+
+    div.addEventListener('mouseenter', () => {
+      if (titleElement) titleElement.textContent = hoverTruncated;
+    });
+
+    div.addEventListener('mouseleave', () => {
+      if (titleElement) titleElement.textContent = originalTitle;
     });
 
     return div;
@@ -3135,7 +3230,7 @@ class CapnoteApp {
 
     const sortedFolderNotes = this.getSortedNotes(folderNotes);
     sortedFolderNotes.forEach((note) => {
-      const noteElement = this.createNoteElement(note);
+      const noteElement = this.createFolderNoteElement(note);
       folderContainer.appendChild(noteElement);
     });
   }
