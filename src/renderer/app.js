@@ -1514,9 +1514,9 @@ class CapnoteApp {
       // Then sort by selected criteria
       switch (this.currentSort) {
         case 'date-asc':
-          return new Date(a.updatedAt || a.createdAt) - new Date(b.updatedAt || b.createdAt);
+          return new Date(a.createdAt) - new Date(b.createdAt);
         case 'date-desc':
-          return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt);
+          return new Date(b.createdAt) - new Date(a.createdAt);
         case 'updated-asc':
           return new Date(a.updatedAt || a.createdAt) - new Date(b.updatedAt || b.createdAt);
         case 'updated-desc':
