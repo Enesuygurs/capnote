@@ -2454,6 +2454,9 @@ class CapnoteApp {
         }
         this.updateStats();
 
+        // After any delete action, show all notes so UI isn't stuck inside a folder view
+        this.changeFilter('all');
+
         // If deleted note was current note, show welcome or select another
         if (this.currentNote && this.currentNote.id === noteId) {
           this.currentNote = null;
@@ -2938,6 +2941,8 @@ class CapnoteApp {
     this.updateFoldersList();
     this.hideFolderModal();
     this.showNotification(`"${name}" klasörü oluşturuldu!`, 'success');
+    // After folder changes show all notes so user sees everything
+    this.changeFilter('all');
   }
 
   getRandomFolderColor() {
@@ -3145,10 +3150,8 @@ class CapnoteApp {
 
     // Update only the affected folders
     if (oldFolderId === 'default' || !oldFolderId) {
-      // Note was moved from main list, update main list
       this.updateNotesList();
     } else {
-      // Note was moved from another folder, update that folder
       this.updateSpecificFolder(oldFolderId);
     }
 
@@ -3169,6 +3172,8 @@ class CapnoteApp {
       `"${note.title || 'Başlıksız not'}" ${folderName} klasörüne taşındı`,
       'success'
     );
+    // Ensure the main All view is active after moving notes so user sees them
+    this.changeFilter('all');
   }
 
   // Action button functions
@@ -3190,6 +3195,8 @@ class CapnoteApp {
     } else {
       this.updateNotesList();
     }
+    // After changing note metadata (favorite/pin/lock) show all notes to avoid hidden folder state
+    this.changeFilter('all');
 
     const message = note.isFavorite ? 'Favorilere eklendi' : 'Favorilerden çıkarıldı';
     this.showNotification(message, 'success');
@@ -3382,9 +3389,10 @@ class CapnoteApp {
       // Save and update
       this.saveNotes();
       this.saveFolders();
-      this.updateNotesList();
-      this.updateFoldersList();
-      this.updateStats();
+  this.updateFoldersList();
+  this.updateStats();
+  // After deleting a folder show all notes
+  this.changeFilter('all');
 
       // Clear selection if current note was in deleted folder
       if (this.currentNote && this.currentNote.folderId == folderIdToDelete) {
