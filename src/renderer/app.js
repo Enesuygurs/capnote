@@ -141,6 +141,7 @@ class CapnoteApp {
     // Context menu
     this.contextMenu = document.getElementById('contextMenu');
     this.deleteFolderMenuItem = document.getElementById('deleteFolderMenuItem');
+  this.renameFolderMenuItem = document.getElementById('renameFolderMenuItem');
 
     // Bildirim
     this.notification = document.getElementById('notification');
@@ -237,6 +238,7 @@ class CapnoteApp {
 
     // Context menu
     this.deleteFolderMenuItem?.addEventListener('click', () => this.deleteSelectedFolder());
+  this.renameFolderMenuItem?.addEventListener('click', () => this.renameSelectedFolder());
 
     // Hide context menu when clicking elsewhere
     document.addEventListener('click', () => this.hideContextMenu());
@@ -2973,6 +2975,17 @@ class CapnoteApp {
     this.hideModal(this.folderModal);
   }
 
+  renameSelectedFolder() {
+    if (!this.selectedFolderId) return;
+    const folder = this.folders.find((f) => f.id == this.selectedFolderId);
+    if (!folder) return;
+    // Pre-fill folder modal and set renaming flag
+    this.folderNameInput.value = folder.name;
+    this._renamingFolderId = folder.id;
+    this.showModal(this.folderModal);
+    this.folderNameInput.focus();
+  }
+
   async createFolder() {
     const name = this.folderNameInput.value.trim();
 
@@ -2989,6 +3002,20 @@ class CapnoteApp {
     // Check if folder name exists
     if (this.folders.some((folder) => folder.name.toLowerCase() === name.toLowerCase())) {
       this.showNotification('Bu isimde bir klasör zaten var!', 'warning');
+      return;
+    }
+
+    // If we're in rename mode, update the existing folder
+    if (this._renamingFolderId) {
+      const folder = this.folders.find((f) => f.id == this._renamingFolderId);
+      if (folder) {
+        folder.name = name;
+        await this.saveFolders();
+        this.updateFoldersList();
+        this.hideFolderModal();
+        this.showNotification(`"${name}" olarak yeniden adlandırıldı.`, 'success');
+      }
+      this._renamingFolderId = null;
       return;
     }
 
