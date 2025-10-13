@@ -617,7 +617,7 @@ div#newNoteNav {
   padding: 8px 12px 8px 36px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  background: var(--bg-secondary);
+  background: #f5f5f5;
   color: var(--text-primary);
   font-size: 14px;
   transition: var(--transition-fast);
@@ -625,8 +625,7 @@ div#newNoteNav {
 
 .search-input:focus {
   outline: none;
-  border-color: var(--primary-color);
-  background: var(--bg-primary);
+  background: #f1f1f1;
 }
 
 .search-input::placeholder {
@@ -2804,10 +2803,6 @@ div#newNoteNav {
   background: var(--sort-select-bg);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: var(--text-primary);
-}
-
-[data-theme='dark'] .notes-list {
-  background: var(--notes-list-bg);
 }
 
 [data-theme='dark'] .format-btn:hover {
