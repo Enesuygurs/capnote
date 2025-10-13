@@ -1543,7 +1543,8 @@ div#newNoteNav {
 
 .modal-header {
   padding: 24px 24px 16px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  /* border-bottom removed to match design request */
+  border-bottom: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1554,6 +1555,14 @@ div#newNoteNav {
   font-weight: 600;
   color: var(--text-primary);
   flex: 1;
+}
+
+/* Add a small emoji icon before every modal title. Override per-modal if needed. */
+.modal-header h3::before {
+  content: "📌"; /* default emoji, can be changed per modal */
+  display: inline-block;
+  margin-right: 10px;
+  transform: translateY(1px);
 }
 
 .modal-header {
@@ -3190,7 +3199,7 @@ input:checked + .toggle-slider:before {
 
 #passwordModal .modal-header {
   padding: 24px 24px 16px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: none;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3209,6 +3218,33 @@ input:checked + .toggle-slider:before {
 #passwordModal .modal-header h3::before {
   content: '🔒';
   font-size: 20px;
+}
+
+/* Per-modal emoji overrides */
+#exportModal .modal-header h3::before {
+  content: '📤';
+}
+
+#confirmModal .modal-header h3::before {
+  content: '❗';
+}
+
+#settingsModal .modal-header h3::before {
+  content: '⚙️';
+}
+
+#pickerModal .modal-header h3::before {
+  content: '🎯';
+}
+
+#noteHistoryModal .modal-header h3::before {
+  content: '🕘';
+}
+
+/* Folder modal already uses an <i> icon in the title; disable duplicate pseudo-element */
+#folderModal .modal-header h3::before,
+#folderModal .modal-title h3::before {
+  content: none;
 }
 
 #passwordModal .modal-body {
