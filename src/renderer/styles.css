@@ -1640,9 +1640,9 @@ div#newNoteNav {
 }
 
 .btn-outline {
-  background: transparent;
+  background: #f3f3f3;
   color: var(--text-secondary);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgb(161 161 161 / 10%);
   padding: 12px 24px;
   border-radius: var(--radius-lg);
   font-size: 14px;
@@ -1652,9 +1652,9 @@ div#newNoteNav {
 }
 
 .btn-outline:hover {
-  background: var(--bg-tertiary);
+  background: #efefef;
   color: var(--text-primary);
-  border-color: rgba(0, 0, 0, 0.2);
+  border-color: rgb(167 167 167 / 20%);
 }
 
 .picker-modal {
@@ -2434,6 +2434,20 @@ div#newNoteNav {
   --text-muted: #888888;
   --text-light: #ffffff;
   --bg-hover: rgba(255,255,255,0.04); /* Dark subtle hover */
+}
+
+/* Dark theme: outline button colors only */
+[data-theme='dark'] .btn-outline {
+  background: #222426; /* slightly lighter than background to stand out */
+  color: var(--text-muted); /* use muted text for secondary look */
+  border: 1px solid rgb(91 91 91 / 6%);
+  border-radius: var(--radius-lg);
+}
+
+[data-theme='dark'] .btn-outline:hover {
+  background: #2c2f31; /* subtle hover highlight in dark */
+  color: var(--text-light); /* primary readable color on dark */
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 [data-theme='dark'] body {
