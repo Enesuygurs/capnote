@@ -1514,15 +1514,15 @@ class CapnoteApp {
       // Then sort by selected criteria
       switch (this.currentSort) {
         case 'date-asc':
-          return new Date(a.createdAt) - new Date(b.createdAt);
+          return new Date(a.updatedAt || a.createdAt) - new Date(b.updatedAt || b.createdAt);
         case 'date-desc':
-          return new Date(b.createdAt) - new Date(a.createdAt);
+          return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt);
         case 'title-asc':
           return a.title.localeCompare(b.title);
         case 'title-desc':
           return b.title.localeCompare(a.title);
         default:
-          return new Date(b.createdAt) - new Date(a.createdAt);
+          return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt);
       }
     });
   }
