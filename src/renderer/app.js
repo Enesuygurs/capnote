@@ -1517,6 +1517,10 @@ class CapnoteApp {
           return new Date(a.updatedAt || a.createdAt) - new Date(b.updatedAt || b.createdAt);
         case 'date-desc':
           return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt);
+        case 'updated-asc':
+          return new Date(a.updatedAt || a.createdAt) - new Date(b.updatedAt || b.createdAt);
+        case 'updated-desc':
+          return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt);
         case 'title-asc':
           return a.title.localeCompare(b.title);
         case 'title-desc':
