@@ -1144,6 +1144,40 @@ div#newNoteNav {
   border-color: var(--accent-color-rgba-20);
 }
 
+/* Small select for settings (max pinned) */
+.select-small {
+  appearance: none;
+  -webkit-appearance: none;
+  background: linear-gradient(180deg, #fff, #fbfbfb);
+  border: 1px solid rgba(16, 24, 40, 0.06);
+  padding: 6px 10px;
+  padding-right: 34px; /* space for arrow */
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  min-width: 64px;
+  cursor: pointer;
+  position: relative;
+}
+
+.select-small:focus {
+  outline: none;
+  box-shadow: 0 6px 20px var(--accent-color-rgba-12);
+  border-color: var(--accent-color);
+}
+
+/* Custom arrow using SVG data-uri */
+.select-small {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'><path fill='%2364728B' d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+
+/* Note: styling native <option> is limited; keep them readable */
+.select-small option {
+  padding: 6px 8px;
+}
+
 /* Make the native color input swatch circular in supported browsers */
 input[type="color"].color-picker {
   -webkit-appearance: none;

@@ -118,6 +118,7 @@ class CapnoteApp {
     // Settings elements
     this.settingsBtn = document.getElementById('settingsBtn');
     this.helpSupport = document.getElementById('helpSupport');
+  this.maxPinnedSelect = document.getElementById('maxPinnedSelect');
     this.darkModeToggle = document.getElementById('darkModeToggle');
   this.accentYellowBtn = document.getElementById('accentYellow');
   this.accentCherryBtn = document.getElementById('accentCherry');
@@ -542,6 +543,8 @@ class CapnoteApp {
       .getElementById('insertNumberedList')
       .addEventListener('click', () => this.insertList('ol'));
   }
+
+  
 
   setupMoodWeatherSelectors() {
     this.moodBtns.forEach((btn) => {
@@ -2839,6 +2842,19 @@ class CapnoteApp {
     const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
     if (this.syncFolderAccentToggle) this.syncFolderAccentToggle.checked = syncFolders;
     if (syncFolders) this.applyFolderAccentSync(true);
+
+    // Load max pinned notes preference (default 3)
+    const maxPinned = parseInt(localStorage.getItem('maxPinnedNotes'), 10) || 3;
+    if (this.maxPinnedSelect) this.maxPinnedSelect.value = String(maxPinned);
+    if (this.maxPinnedSelect) {
+      this.maxPinnedSelect.addEventListener('change', (e) => {
+        const v = parseInt(e.target.value, 10);
+        if (!isNaN(v) && v >= 3 && v <= 10) {
+          localStorage.setItem('maxPinnedNotes', String(v));
+          this.showNotification('Sabit not limiti güncellendi', 'success');
+        }
+      });
+    }
   }
 
   saveSettings() {
@@ -3562,6 +3578,16 @@ class CapnoteApp {
   async togglePin(noteId) {
     const note = this.notes.find((n) => n.id == noteId);
     if (!note) return;
+
+    // If trying to pin and already 3 notes are pinned, block and notify
+    if (!note.isPinned) {
+      const pinnedCount = this.notes.filter((n) => n.isPinned).length;
+      const maxPinned = parseInt(localStorage.getItem('maxPinnedNotes'), 10) || 3;
+      if (pinnedCount >= maxPinned) {
+        this.showNotification(`En fazla ${maxPinned} not sabitlenebilir`, 'error');
+        return;
+      }
+    }
 
     note.isPinned = !note.isPinned;
     note.updatedAt = new Date().toISOString();
