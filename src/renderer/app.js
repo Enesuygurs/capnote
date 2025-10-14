@@ -1893,13 +1893,30 @@ class CapnoteApp {
       // Update text color and background color pickers based on selection
       try {
         const computedColor = window.getComputedStyle(node).color;
-        const computedBg = window.getComputedStyle(node).backgroundColor;
 
-        const textHex = this.rgbToHex(computedColor);
-        const bgHex = this.rgbToHex(computedBg);
+        // Walk up ancestors to find a visible (non-transparent) background
+        let bgNode = node;
+        let bgColor = null;
+        while (bgNode && bgNode !== this.richEditor && bgNode !== document.documentElement) {
+          const candidate = window.getComputedStyle(bgNode).backgroundColor;
+          const hex = this.rgbToHex(candidate);
+          if (hex) {
+            bgColor = hex;
+            break;
+          }
+          bgNode = bgNode.parentElement;
+        }
+
+        // If not found on ancestors, check editor background
+        if (!bgColor) {
+          const editorBg = window.getComputedStyle(this.richEditor).backgroundColor;
+          bgColor = this.rgbToHex(editorBg) || '#ffffff';
+        }
+
+        const textHex = this.rgbToHex(computedColor) || '#000000';
 
         if (this.textColor && textHex) this.textColor.value = textHex;
-        if (this.bgColor && bgHex && bgHex !== 'rgba(0, 0, 0, 0)') this.bgColor.value = bgHex;
+        if (this.bgColor && bgColor) this.bgColor.value = bgColor;
       } catch (e) {
         // ignore if any issue reading computed styles
       }
@@ -1911,16 +1928,43 @@ class CapnoteApp {
   }
 
   rgbToHex(rgb) {
-    if (!rgb || rgb === 'rgba(0, 0, 0, 0)') return '#000000';
+    if (!rgb) return null;
 
-    const rgbMatch = rgb.match(/\d+/g);
-    if (!rgbMatch || rgbMatch.length < 3) return '#000000';
+    // Handle 'transparent'
+    if (rgb === 'transparent') return null;
 
-    const r = parseInt(rgbMatch[0]);
-    const g = parseInt(rgbMatch[1]);
-    const b = parseInt(rgbMatch[2]);
+    // Match rgb() or rgba()
+    const rgbaMatch = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/i);
+    if (rgbaMatch) {
+      const r = parseInt(rgbaMatch[1], 10);
+      const g = parseInt(rgbaMatch[2], 10);
+      const b = parseInt(rgbaMatch[3], 10);
+      const a = rgbaMatch[4] !== undefined ? parseFloat(rgbaMatch[4]) : 1;
 
-    return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+      // If fully transparent, return null so we can fallback to ancestor/bg
+      if (a === 0) return null;
+
+      return (
+        '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
+      ).toLowerCase();
+    }
+
+    // If already a hex color, normalize
+    const hexMatch = rgb.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (hexMatch) {
+      let hex = rgb.toLowerCase();
+      // Expand short form #rgb to #rrggbb
+      if (hex.length === 4) {
+        hex =
+          '#' +
+          hex[1] + hex[1] +
+          hex[2] + hex[2] +
+          hex[3] + hex[3];
+      }
+      return hex;
+    }
+
+    return null;
   }
 
   insertDateTime(type) {
