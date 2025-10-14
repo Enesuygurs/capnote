@@ -142,6 +142,13 @@ class CapnoteApp {
     this.contextMenu = document.getElementById('contextMenu');
     this.deleteFolderMenuItem = document.getElementById('deleteFolderMenuItem');
   this.renameFolderMenuItem = document.getElementById('renameFolderMenuItem');
+  this.changeFolderColorMenuItem = document.getElementById('changeFolderColorMenuItem');
+  this.folderColorPicker = document.getElementById('folderColorPicker');
+  this.folderColorModal = document.getElementById('folderColorModal');
+  this.folderColorInput = document.getElementById('folderColorInput');
+  this.saveFolderColorBtn = document.getElementById('saveFolderColorBtn');
+  this.cancelFolderColorBtn = document.getElementById('cancelFolderColorBtn');
+  this.closeFolderColorModal = document.getElementById('closeFolderColorModal');
 
     // Bildirim
     this.notification = document.getElementById('notification');
@@ -237,8 +244,22 @@ class CapnoteApp {
     this.cancelFolderBtn?.addEventListener('click', () => this.hideFolderModal());
 
     // Context menu
+  this.changeFolderColorMenuItem?.addEventListener('click', () => this.openFolderColorModal());
+    this.renameFolderMenuItem?.addEventListener('click', () => this.renameSelectedFolder());
     this.deleteFolderMenuItem?.addEventListener('click', () => this.deleteSelectedFolder());
-  this.renameFolderMenuItem?.addEventListener('click', () => this.renameSelectedFolder());
+
+    // Folder color modal handlers
+    this.saveFolderColorBtn?.addEventListener('click', () => {
+      const color = this.folderColorInput.value;
+      this.applySelectedFolderColor(color);
+      this.hideModal(this.folderColorModal);
+    });
+    this.cancelFolderColorBtn?.addEventListener('click', () => {
+      this.hideModal(this.folderColorModal);
+    });
+    this.closeFolderColorModal?.addEventListener('click', () => {
+      this.hideModal(this.folderColorModal);
+    });
 
     // Hide context menu when clicking elsewhere
     document.addEventListener('click', () => this.hideContextMenu());
@@ -3538,6 +3559,65 @@ class CapnoteApp {
 
     this.hideContextMenu();
     this.showModal(this.confirmModal);
+  }
+
+  openFolderColorPicker() {
+    // Deprecated: use modal-based picker instead
+    this.openFolderColorModal();
+  }
+
+  openFolderColorModal() {
+    if (!this.selectedFolderId) return;
+    const folder = this.folders.find((f) => f.id == this.selectedFolderId);
+    if (!folder) return;
+    // Prefill modal input with current folder color
+    if (this.folderColorInput) this.folderColorInput.value = folder.color || '#3B82F6';
+    // Store the folder id on the hidden picker so the save handler can find it
+    if (this.folderColorPicker) this.folderColorPicker.dataset.folderId = folder.id;
+    this.showModal(this.folderColorModal);
+  }
+
+  applySelectedFolderColor(color) {
+    const folderId = this.selectedFolderId || (this.folderColorPicker && this.folderColorPicker.dataset.folderId);
+    if (!folderId) return;
+    const folder = this.folders.find((f) => f.id == folderId);
+    if (!folder) return;
+    folder.color = color;
+    // Persist the color change
+    this.saveFolders();
+    // Update only the folder header icon in the DOM to avoid re-rendering the entire notes list
+    this.updateFolderColorInDOM(folderId, color);
+    this.showNotification('Klasör rengi güncellendi', 'success');
+    // Clean up the dataset to avoid stale ids
+    try {
+      if (this.folderColorPicker) delete this.folderColorPicker.dataset.folderId;
+    } catch (e) {}
+  }
+
+  updateFolderColorInDOM(folderId, color) {
+    try {
+      // Update all folder header icons for this folder id (force priority to override CSS rules)
+      const headers = document.querySelectorAll(`.folder-item[data-folder-id="${folderId}"]`);
+      headers.forEach((header) => {
+        const icons = header.querySelectorAll('.nav-icon');
+        icons.forEach((icon) => {
+          try {
+            // set with priority to override any stylesheet rules
+            icon.style.setProperty('color', color, 'important');
+            icon.style.opacity = '';
+          } catch (e) {
+            icon.style.color = color;
+          }
+        });
+      });
+
+      // Intentionally do NOT change icons of notes inside the folder.
+      // Only folder header icons should change to reflect folder color.
+    } catch (e) {
+      // fallback: if DOM update fails, do full refresh
+      this.updateFoldersList();
+      this.updateFolderNotes();
+    }
   }
 }
 

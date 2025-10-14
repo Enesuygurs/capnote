@@ -1358,7 +1358,8 @@ div#newNoteNav {
    ============================================ */
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  /* Use the accent color as the primary action color (no gradient) */
+  background: var(--accent-color);
   color: white;
   border: none;
   padding: 12px 20px;
@@ -1367,7 +1368,7 @@ div#newNoteNav {
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-fast);
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   box-shadow: var(--shadow-sm);
@@ -1376,6 +1377,7 @@ div#newNoteNav {
 .btn-primary:hover {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+  filter: brightness(0.95);
 }
 
 .btn-primary:active {
@@ -2823,8 +2825,9 @@ div#newNoteNav {
 }
 
 [data-theme='dark'] .btn-primary {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
+  /* Keep primary actions using the current accent color in dark theme */
+  background: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 [data-theme='dark'] .btn-secondary {
@@ -3624,6 +3627,68 @@ input:checked + .toggle-slider:before {
   max-width: 520px;
   width: 95%;
   padding: 0;
+}
+
+/* Folder Color Modal specific styling */
+.folder-color-modal {
+  max-width: 420px;
+  width: 92%;
+  padding: 18px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.folder-color-modal .modal-body {
+  padding: 8px 2px 12px;
+}
+
+.folder-color-modal label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.folder-color-modal .form-input[type="color"] {
+  width: 72px;
+  height: 40px;
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+}
+
+.folder-color-modal .modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 12px 0 0;
+  border-top: none;
+}
+
+.folder-color-modal .modal-footer .btn-primary {
+  background: var(--accent-color);
+  color: white;
+  box-shadow: 0 6px 16px var(--accent-color-rgba-18);
+}
+
+/* Make sure Cancel button is subdued */
+.folder-color-modal .modal-footer .btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+@media (max-width: 480px) {
+  .folder-color-modal .modal-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .folder-color-modal .modal-footer .btn {
+    width: 100%;
+  }
 }
 
 #noteHistoryModal .modal-body {
