@@ -1023,8 +1023,22 @@ class CapnoteApp {
   }
 
   updateWordCount() {
-    const text = this.richEditor.textContent || '';
-    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    // Use innerText to preserve visible line breaks from the rich editor
+    let text = (this.richEditor && this.richEditor.innerText) ? this.richEditor.innerText : (this.richEditor.textContent || '');
+    // Normalize non-breaking spaces and other unicode spaces to regular spaces
+    text = text.replace(/\u00A0/g, ' ');
+    // Trim and collapse multiple whitespace (including newlines)
+    const normalized = text.trim().replace(/\s+/g, ' ');
+    // Use a Unicode-aware regex to match word tokens (letters/numbers). Some runtimes
+    // may not support \p{} escapes; provide a safe fallback.
+    let words = 0;
+    try {
+      const matches = normalized.match(/[\p{L}\p{N}]+/gu);
+      words = matches ? matches.length : 0;
+    } catch (e) {
+      // Fallback: split on whitespace (best effort)
+      words = normalized ? normalized.split(' ').filter(Boolean).length : 0;
+    }
     const chars = text.length;
 
     if (this.wordCount) {
@@ -1038,6 +1052,29 @@ class CapnoteApp {
       this.currentNote.wordCount = words;
       this.currentNote.charCount = chars;
     }
+  }
+
+  // Count words/chars from an HTML string (used when saving notes)
+  countWordsAndCharsFromHtml(html) {
+  const tmp = document.createElement('div');
+  // Ensure adjacent tags and text-to-tag boundaries have separating spaces so innerText doesn't concatenate words
+  let safeHtml = (html || '').replace(/></g, '> <');
+  // Insert a space before a '<' if it's immediately preceded by a non-space and not already separated
+  safeHtml = safeHtml.replace(/([^\s>])</g, '$1 <');
+  tmp.innerHTML = safeHtml;
+    // Use innerText to reflect visible text (preserves newlines)
+    let text = tmp.innerText || tmp.textContent || '';
+    text = text.replace(/\u00A0/g, ' ');
+    const normalized = text.trim().replace(/\s+/g, ' ');
+    let words = 0;
+    try {
+      const matches = normalized.match(/[\p{L}\p{N}]+/gu);
+      words = matches ? matches.length : 0;
+    } catch (e) {
+      words = normalized ? normalized.split(' ').filter(Boolean).length : 0;
+    }
+    const chars = text.length;
+    return { words, chars, text };
   }
 
   saveNote(silent = false) {
@@ -1065,6 +1102,10 @@ class CapnoteApp {
     }
     this.currentNote.mood = this.selectedMood;
     this.currentNote.weather = this.selectedWeather;
+  // Ensure accurate word/char counts are stored (handle multiline and HTML)
+  const counts = this.countWordsAndCharsFromHtml(content);
+  this.currentNote.wordCount = counts.words;
+  this.currentNote.charCount = counts.chars;
     this.currentNote.tags = [...this.tags];
   this.currentNote.formatting = this.getEditorFormatting();
 
@@ -1324,9 +1365,13 @@ class CapnoteApp {
     // Tags
     this.displayViewerTags(note.tags || []);
 
-    // Stats
-    this.viewerWordCount.textContent = `${note.wordCount || 0} kelime`;
-    this.readingTime.textContent = `~${Math.max(1, Math.ceil((note.wordCount || 0) / 200))} dk okuma`;
+  // Stats - compute from HTML content to avoid showing stale stored counts
+  const counts = this.countWordsAndCharsFromHtml(note.content || '');
+  // Update in-memory note counts so subsequent actions use the up-to-date value
+  note.wordCount = counts.words;
+  note.charCount = counts.chars;
+  this.viewerWordCount.textContent = `${counts.words} kelime`;
+  this.readingTime.textContent = `~${Math.max(1, Math.ceil(counts.words / 200))} dk okuma`;
     // Show date + time for last modified (e.g. 12.10.2025 14:35)
     this.lastModified.textContent = updatedDate.toLocaleString('tr-TR', {
       year: 'numeric',
@@ -2902,13 +2947,8 @@ class CapnoteApp {
     document.body.removeChild(link);
 
     URL.revokeObjectURL(url);
-
     this.showNotification(`${this.notes.length} not başarıyla dışa aktarıldı!`, 'success');
-  }
-
-  showConfirmDialog(title, message) {
     return new Promise((resolve) => {
-      this.confirmMessage.textContent = message;
       this.confirmModal.querySelector('h3').textContent = title;
 
       const handleConfirm = () => {
