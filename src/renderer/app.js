@@ -1893,6 +1893,16 @@ class CapnoteApp {
       // Update text color and background color pickers based on selection
       try {
         const computedColor = window.getComputedStyle(node).color;
+        // Update alignment buttons based on computed text alignment
+        try {
+          const textAlign = window.getComputedStyle(node).textAlign || 'left';
+          document.querySelectorAll('.format-btn[data-align]').forEach((btn) => {
+            const align = btn.dataset.align;
+            btn.classList.toggle('active', align === textAlign);
+          });
+        } catch (e) {
+          // ignore alignment update errors
+        }
 
         // Walk up ancestors to find a visible (non-transparent) background
         let bgNode = node;
