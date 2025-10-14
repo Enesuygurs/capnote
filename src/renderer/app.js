@@ -1844,8 +1844,24 @@ class CapnoteApp {
   applyAlignment(align) {
     this.restoreEditorSelection();
     this.richEditor.focus();
-    document.execCommand('justify' + align.charAt(0).toUpperCase() + align.slice(1));
+    try {
+      if (align === 'justify') {
+        // Some browsers expect 'justifyFull' for full justification
+        document.execCommand('justifyFull');
+      } else {
+        document.execCommand('justify' + align.charAt(0).toUpperCase() + align.slice(1));
+      }
+    } catch (e) {
+      // Fallback to execCommand('justify') for older engines
+      try {
+        document.execCommand('justify');
+      } catch (err) {
+        console.warn('Alignment command failed', err);
+      }
+    }
     this.captureEditorSelection();
+    // Refresh format panel to ensure buttons reflect new state
+    this.updateFormatPanelFromSelection();
   }
 
   updateFormatButtons() {
