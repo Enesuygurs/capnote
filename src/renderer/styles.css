@@ -728,8 +728,9 @@ div#newNoteNav {
 }
 
 .select-item.active {
-  background: var(--primary-light);
-  color: var(--primary-color);
+  background: var(--accent-color);
+  color: var(--text-light);
+  font-weight: 600;
 }
 
 /* Notes List */
@@ -2037,8 +2038,8 @@ div#newNoteNav {
 }
 
 .select-item.active {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  color: white;
+  background: var(--accent-color);
+  color: var(--text-light);
   font-weight: 600;
 }
 
