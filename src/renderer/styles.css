@@ -1364,6 +1364,22 @@ input[type="color"].color-picker::-moz-color-swatch {
   word-break: break-word;
 }
 
+/* Viewer list spacing: ensure lists in viewer have proper left padding */
+.viewer-content ul,
+.viewer-content ol,
+.formatted-content ul,
+.formatted-content ol {
+  margin: 8px 0;
+  padding-left: 16px;
+}
+
+.viewer-content ul li,
+.viewer-content ol li,
+.formatted-content ul li,
+.formatted-content ol li {
+  margin-bottom: 6px;
+}
+
 .viewer-stats {
   padding: 12px 24px;
   border-top: 1px solid rgb(161 161 161 / 6%);
@@ -2273,6 +2289,26 @@ input[type="color"].color-picker::-moz-color-swatch {
 .checklist-item input[type='checkbox']:checked + label {
   text-decoration: line-through;
   opacity: 0.6;
+}
+
+/* Editor list spacing: ensure ul/ol inside the editor have comfortable left padding */
+.rich-editor ul,
+.rich-editor ol {
+  margin: 8px 0;
+  padding-left: 16px;
+}
+
+.rich-editor ul {
+  list-style-type: disc;
+}
+
+.rich-editor ol {
+  list-style-type: decimal;
+}
+
+.rich-editor ul li,
+.rich-editor ol li {
+  margin-bottom: 6px;
 }
 
 /* Pinned and locked note indicators */
