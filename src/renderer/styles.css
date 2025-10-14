@@ -1594,7 +1594,15 @@ div#newNoteNav {
   display: none;
 }
 
-/* Make the folder color modal title match the folder rename modal's title icon and sizing */
+/* Make the folder color modal header match the folder rename modal's spacing and layout */
+#folderColorModal .modal-header {
+  padding: 24px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
+}
+
 #folderColorModal .modal-title {
   display: flex;
   align-items: center;
@@ -1611,12 +1619,6 @@ div#newNoteNav {
 #folderColorModal .modal-title i {
   color: var(--primary-color);
   font-size: 22px;
-}
-
-.modal-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 .modal-close {
@@ -3658,14 +3660,16 @@ input:checked + .toggle-slider:before {
 .folder-color-modal {
   max-width: 420px;
   width: 92%;
-  padding: 18px 18px 14px;
+  /* reduce outer padding so header aligns with other modals */
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0;
 }
 
 .folder-color-modal .modal-body {
-  padding: 8px 2px 12px;
+  /* match folder modal body padding for consistent spacing */
+  padding: 24px 24px 16px;
 }
 
 .folder-color-modal label {
@@ -3688,7 +3692,7 @@ input:checked + .toggle-slider:before {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
-  padding: 12px 0 0;
+  padding: 16px 24px 24px;
   border-top: none;
 }
 
