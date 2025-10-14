@@ -1588,6 +1588,31 @@ div#newNoteNav {
   transform: translateY(1px);
 }
 
+/* Disable the generic pseudo-icon for the folder color modal (we have an inline palette icon) */
+#folderColorModal .modal-header h3::before {
+  content: none;
+  display: none;
+}
+
+/* Make the folder color modal title match the folder rename modal's title icon and sizing */
+#folderColorModal .modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#folderColorModal .modal-title h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+#folderColorModal .modal-title i {
+  color: var(--primary-color);
+  font-size: 22px;
+}
+
 .modal-header {
   display: flex;
   align-items: center;
