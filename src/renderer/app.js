@@ -1890,6 +1890,20 @@ class CapnoteApp {
         this.updateCustomDropdown('fontSize', sizeValue.toString());
       }
 
+      // Update text color and background color pickers based on selection
+      try {
+        const computedColor = window.getComputedStyle(node).color;
+        const computedBg = window.getComputedStyle(node).backgroundColor;
+
+        const textHex = this.rgbToHex(computedColor);
+        const bgHex = this.rgbToHex(computedBg);
+
+        if (this.textColor && textHex) this.textColor.value = textHex;
+        if (this.bgColor && bgHex && bgHex !== 'rgba(0, 0, 0, 0)') this.bgColor.value = bgHex;
+      } catch (e) {
+        // ignore if any issue reading computed styles
+      }
+
       // ...existing code...
     } catch (e) {
       console.warn('Error updating format panel:', e);
