@@ -723,7 +723,7 @@ div#newNoteNav {
 }
 
 .select-item:hover {
-  background: var(--bg-hover);
+  background: var(--accent-color-rgba-15);
   color: var(--text-primary);
 }
 
@@ -1128,11 +1128,41 @@ div#newNoteNav {
 }
 .color-picker {
   background: transparent;
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: var(--radius-sm);
+  width: 36px;
+  height: 36px;
+  border: 2px solid rgba(0,0,0,0.06);
+  border-radius: 999px; /* circular */
   cursor: pointer;
+  padding: 2px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+.color-picker:hover,
+.color-picker:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  border-color: var(--accent-color-rgba-20);
+}
+
+/* Make the native color input swatch circular in supported browsers */
+input[type="color"].color-picker {
+  -webkit-appearance: none;
+  appearance: none;
+  padding: 2px;
+}
+
+/* WebKit/Blink: round the swatch wrapper and swatch */
+input[type="color"].color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+  border-radius: 999px;
+}
+input[type="color"].color-picker::-webkit-color-swatch {
+  border-radius: 999px;
+}
+
+/* Firefox: round the swatch */
+input[type="color"].color-picker::-moz-color-swatch {
+  border-radius: 999px;
 }
 .editor-content {
   flex: 1;
@@ -2031,8 +2061,8 @@ div#newNoteNav {
 }
 
 .select-item:hover {
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, #fef7e6 100%);
-  color: var(--primary-color);
+  background: var(--accent-color-rgba-15);
+  color: var(--text-light);
   font-weight: 600;
   padding-left: 16px;
 }
@@ -2087,6 +2117,8 @@ div#newNoteNav {
 
 .format-custom-select .select-item:hover {
   padding-left: 12px;
+  background: var(--accent-color-rgba-15);
+  color: var(--text-primary);
 }
 
 /* Styled Select with Better Options */
@@ -3054,8 +3086,8 @@ div#newNoteNav {
 }
 
 [data-theme='dark'] .select-item:hover {
-  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-  color: var(--primary-color);
+  background: var(--accent-color-rgba-20);
+  color: var(--text-light);
 }
 
 [data-theme='dark'] .select-items {
