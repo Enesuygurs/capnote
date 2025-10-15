@@ -2768,7 +2768,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .formatting-toolbar {
-  background: var(--formatting-toolbar-bg);
+  background: #181818;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -3253,8 +3253,6 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .select-selected:hover {
   background: var(--bg-tertiary);
-  /* don't change the border color on hover in dark theme */
-  border-color: transparent;
 }
 
 [data-theme='dark'] .select-item {
@@ -3291,7 +3289,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 /* Fix the last remaining white background - formatting toolbar */
 [data-theme='dark'] .formatting-toolbar {
-  background: var(--bg-tertiary);
+  background: #181818;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
