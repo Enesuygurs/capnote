@@ -2875,10 +2875,12 @@ class CapnoteApp {
     const accent = localStorage.getItem('accentColor') || null;
     if (accent) this.setAccentColor(accent, {persist:false});
 
-    // Load sync-folder-accent preference
-    const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
-    if (this.syncFolderAccentToggle) this.syncFolderAccentToggle.checked = syncFolders;
-    if (syncFolders) this.applyFolderAccentSync(true);
+  // Load sync-folder-accent preference
+  const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
+  if (this.syncFolderAccentToggle) this.syncFolderAccentToggle.checked = syncFolders;
+  // Ensure we apply or restore folder colors based on the stored preference.
+  // Calling with false will attempt to restore from the stored backup if available.
+  this.applyFolderAccentSync(syncFolders);
 
     // Load max pinned notes preference (default 3)
     const maxPinned = parseInt(localStorage.getItem('maxPinnedNotes'), 10) || 3;
@@ -3159,10 +3161,81 @@ class CapnoteApp {
         }
 
         Object.entries(data.settings).forEach(([k, v]) => {
-          localStorage.setItem(k, v);
+          // Do NOT import a foreign folderColorsBackup: backups should be local to each installation.
+          if (k === 'folderColorsBackup') return;
+          // ensure we store everything as strings (localStorage stores strings)
+          try {
+            localStorage.setItem(k, String(v));
+          } catch (e) {
+            console.warn('Could not persist imported setting', k, e);
+          }
         });
 
+        // Reload settings into UI/state
         this.loadSettings();
+
+        // Reload folders from storage so in-memory folder list is up-to-date
+        try {
+          await this.loadFolders();
+        } catch (e) {
+          console.warn('Failed to reload folders before applying accent sync', e);
+        }
+
+        // If the imported payload or the current storage indicates folder-accent sync is enabled,
+        // force-apply the accent to all folders so they reflect the newly imported accent immediately.
+        const importedSyncRaw = data.settings && data.settings.syncFolderAccent;
+        const importedAccentRaw = data.settings && data.settings.accentColor;
+        const importedSync = importedSyncRaw !== undefined
+          ? (String(importedSyncRaw) === '1' || String(importedSyncRaw) === 'true')
+          : null;
+
+        const storageSync = localStorage.getItem('syncFolderAccent') === '1';
+        const shouldSync = importedSync === null ? storageSync : importedSync;
+
+        const accentToUse = importedAccentRaw || localStorage.getItem('accentColor') || null;
+
+        if (accentToUse) {
+          // make sure CSS variables match the imported accent
+          this.setAccentColor(accentToUse, { persist: false });
+          // persist the accent in storage so applyFolderAccentSync picks it up
+          try { localStorage.setItem('accentColor', String(accentToUse)); } catch (e) {}
+        }
+
+
+        if (shouldSync) {
+          try {
+            // ensure folders are loaded then apply sync
+            await this.loadFolders();
+            // Create a fresh local backup of current folder colors so disabling sync later
+            // will restore the user's original colors (do not use imported backups).
+            try {
+              const localBackup = {};
+              (this.folders || []).forEach((f) => { localBackup[f.id] = f.color; });
+              localStorage.setItem('folderColorsBackup', JSON.stringify(localBackup));
+            } catch (e) {
+              console.warn('Could not create local folder color backup before applying sync', e);
+            }
+
+            this.applyFolderAccentSync(true);
+          } catch (e) {
+            console.warn('Failed to apply folder-accent sync after import', e);
+          }
+        }
+
+        // Extra safeguard: if sync is enabled and we have an accent, force-overwrite any folder colors
+        // to guarantee the UI reflects the imported accent (handles edge cases where backups or
+        // other storage entries may have prevented a clean sync).
+        if (shouldSync && accentToUse) {
+          try {
+            this.folders = (this.folders || []).map((f) => ({ ...f, color: String(accentToUse) }));
+            await this.saveFolders();
+            this.updateFoldersList();
+            this.updateFolderNotes();
+          } catch (e) {
+            console.warn('Failed to force-overwrite folder colors after import', e);
+          }
+        }
+
         this.showNotification('Ayarlar başarıyla yüklendi', 'success');
       } catch (err) {
         console.error('Settings import error', err);
