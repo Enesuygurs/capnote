@@ -2949,6 +2949,8 @@ class CapnoteApp {
     document.documentElement.style.setProperty('--accent-color-rgba-20', `rgba(${r}, ${g}, ${b}, 0.2)`);
     document.documentElement.style.setProperty('--accent-color-rgba-30', `rgba(${r}, ${g}, ${b}, 0.3)`);
   document.documentElement.style.setProperty('--accent-color-rgba-18', `rgba(${r}, ${g}, ${b}, 0.18)`);
+  document.documentElement.style.setProperty('--accent-color-rgba-10', `rgba(${r}, ${g}, ${b}, 0.10)`);
+  document.documentElement.style.setProperty('--accent-color-rgba-12', `rgba(${r}, ${g}, ${b}, 0.12)`);
 
     if (options.persist !== false) localStorage.setItem('accentColor', color);
     // If sync option enabled, apply accent color to all folder icons
