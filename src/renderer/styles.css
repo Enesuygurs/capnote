@@ -505,8 +505,9 @@ div#newNoteNav {
 
 .mood-btn:hover,
 .weather-btn:hover {
-  border-color: var(--primary-color);
-  transform: scale(1.1);
+  border-color: var(--accent-color);
+  background: var(--accent-color-rgba-15);
+  transform: scale(1.08);
 }
 
 .mood-btn.active,
@@ -2923,7 +2924,8 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .mood-btn:hover,
 [data-theme='dark'] .weather-btn:hover {
-  border-color: var(--primary-color);
+  border-color: var(--accent-color) !important;
+  background: var(--accent-color-rgba-12) !important;
 }
 
 [data-theme='dark'] #tagInput {
