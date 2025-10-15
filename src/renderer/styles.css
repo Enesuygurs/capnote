@@ -2766,13 +2766,20 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 /* Make small selects readable in dark theme (background, option colors and arrow) */
+
 [data-theme='dark'] .select-small {
-  background: linear-gradient(180deg, #262626, #1f1f1f);
+  /* Use a solid background to avoid a light seam at the bottom of the native popup */
+  background: #1f1f1f;
   border: 1px solid rgba(255,255,255,0.06);
   color: var(--text-primary);
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'><path fill='%23E8E8E8' d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
   background-position: right 8px center;
+  -webkit-appearance: none;
+  appearance: none;
+  overflow: hidden;
+  background-clip: padding-box;
+  border-radius: 8px;
 }
 
 [data-theme='dark'] .select-small:focus {
@@ -2783,9 +2790,13 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 /* Native option styling in Chromium/Electron — set readable bg/text */
 [data-theme='dark'] .select-small option {
-  background: #1f1f1f;
+  background-color: #1f1f1f;
   color: var(--text-primary);
+  border: none;
 }
+
+/* Hide MS expand glyph for consistency */
+.select-small::-ms-expand { display: none; }
 
 /* ============================================
    SETTINGS MODAL
