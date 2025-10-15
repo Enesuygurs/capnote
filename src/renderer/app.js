@@ -86,6 +86,7 @@ class CapnoteApp {
     this.viewerTags = document.getElementById('viewerTags');
     this.viewerText = document.getElementById('viewerText');
     this.viewerWordCount = document.getElementById('viewerWordCount');
+  this.viewerCharCount = document.getElementById('viewerCharCount');
     this.readingTime = document.getElementById('readingTime');
     this.lastModified = document.getElementById('lastModified');
   this.noteHistoryModal = document.getElementById('noteHistoryModal');
@@ -1376,7 +1377,8 @@ class CapnoteApp {
   // Update in-memory note counts so subsequent actions use the up-to-date value
   note.wordCount = counts.words;
   note.charCount = counts.chars;
-  this.viewerWordCount.textContent = `${counts.words} kelime`;
+  if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} kelime`;
+  if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} karakter`;
   // Reading time calculation (baseline 200 words per minute)
   const WPM = 200;
   if (!counts.words) {
