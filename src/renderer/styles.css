@@ -2109,6 +2109,15 @@ input[type="color"].color-picker::-moz-color-swatch {
   transition: transform var(--transition-normal);
 }
 
+/* Dark mode: make the select arrow white for visibility */
+[data-theme='dark'] .select-selected:after {
+  color: var(--text-light) !important;
+  /* Use a white-stroked SVG for the arrow so it reliably appears white in dark mode */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'><path stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/></svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .select-selected:hover {
   border-color: var(--primary-color);
   transform: translateY(-1px);
