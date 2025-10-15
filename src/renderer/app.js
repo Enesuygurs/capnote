@@ -280,11 +280,10 @@ class CapnoteApp {
         }
       });
 
-      notesListContainer.addEventListener('drop', (e) => {
+        notesListContainer.addEventListener('drop', (e) => {
         e.preventDefault();
         notesListContainer.classList.remove('drag-over');
         const noteId = e.dataTransfer.getData('text/plain');
-        console.log('Dropped note ID:', noteId, 'to main notes list');
         this.moveNoteToFolder(parseInt(noteId), 'default');
       });
     }
@@ -370,7 +369,6 @@ class CapnoteApp {
         const noteId = target.getAttribute('data-note-id');
 
         if (target.classList.contains('lock-btn') && noteId) {
-          console.log('Lock button clicked for note:', noteId);
           this.toggleLock(noteId);
         } else if (target.classList.contains('favorite-btn') && noteId) {
           this.toggleNoteFavorite(noteId);
@@ -2575,7 +2573,7 @@ class CapnoteApp {
   async lockNote(note) {
     const password = await this.showPasswordModal('Not için şifre belirleyin');
     if (password && password.trim()) {
-      console.log('Locking note:', note.title, 'with password:', password);
+  // Locking note (debug logs removed)
       note.isLocked = true;
       note.password = password.trim();
 
@@ -2585,7 +2583,7 @@ class CapnoteApp {
       this.saveNotes();
       this.updateNotesList();
       this.showNotification('Not kilitlendi', 'success');
-      console.log('Note locked successfully:', note.isLocked);
+  // Note lock result (debug logs removed)
     }
   }
 
@@ -3496,7 +3494,7 @@ class CapnoteApp {
       e.preventDefault();
       folderHeader.classList.remove('drag-over');
       const noteId = e.dataTransfer.getData('text/plain');
-      console.log('Dropped note ID:', noteId, 'on folder:', folder.id);
+  // Dropped note onto folder (debug logs removed)
       this.moveNoteToFolder(parseInt(noteId), folder.id);
     });
 
