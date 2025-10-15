@@ -1124,14 +1124,22 @@ div#newNoteNav {
   flex: 0 0 auto; /* prevent shrinking so buttons wrap instead of disappearing */
 }
 .format-btn:hover {
-  /* use a slightly stronger but still light accent tone on hover */
-  background: var(--accent-color-rgba-15);
+  /* neutral, light-gray hover (no accent) */
+  background: var(--bg-tertiary);
   color: var(--text-primary);
   transform: translateY(-1px);
 }
 .format-btn.active {
   background: var(--accent-color);
   color: var(--text-light);
+  box-shadow: 0 4px 12px var(--accent-color-rgba-18);
+}
+/* When an active formatting button is hovered, keep the active appearance
+   so hover does not neutralize the accent color. */
+.format-btn.active:hover {
+  background: var(--accent-color);
+  color: var(--text-light);
+  transform: translateY(0); /* avoid hover translate that would conflict */
   box-shadow: 0 4px 12px var(--accent-color-rgba-18);
 }
 .color-picker {
@@ -2762,6 +2770,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .format-btn:hover {
+  /* subtle neutral hover in dark mode */
   background: rgba(255,255,255,0.03);
   color: var(--text-light);
 }
@@ -2770,6 +2779,12 @@ input[type="color"].color-picker::-moz-color-swatch {
   background: var(--accent-color);
   color: var(--text-light);
   box-shadow: 0 4px 12px var(--accent-color-rgba-30);
+}
+[data-theme='dark'] .format-btn.active:hover {
+  background: var(--accent-color) !important;
+  color: var(--text-light) !important;
+  transform: translateY(0) !important;
+  box-shadow: 0 4px 12px var(--accent-color-rgba-30) !important;
 }
 
 [data-theme='dark'] .color-picker:hover,
@@ -3026,7 +3041,8 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .format-btn:hover {
-  background: var(--bg-tertiary);
+  /* ensure dark theme formatting buttons use a neutral bg on hover (no accent) */
+  background: rgba(255,255,255,0.03);
 }
 
 [data-theme='dark'] .tag-remove:hover {
