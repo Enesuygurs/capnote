@@ -2936,7 +2936,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .mood-btn,
 [data-theme='dark'] .weather-btn {
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgb(91 91 91 / 20%);
   background: var(--mood-btn-bg);
 }
 
