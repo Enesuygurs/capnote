@@ -1377,7 +1377,19 @@ class CapnoteApp {
   note.wordCount = counts.words;
   note.charCount = counts.chars;
   this.viewerWordCount.textContent = `${counts.words} kelime`;
-  this.readingTime.textContent = `~${Math.max(1, Math.ceil(counts.words / 200))} dk okuma`;
+  // Reading time calculation (baseline 200 words per minute)
+  const WPM = 200;
+  if (!counts.words) {
+    this.readingTime.textContent = `0 dk okuma`;
+  } else {
+    const seconds = Math.ceil((counts.words / WPM) * 60);
+    if (seconds < 60) {
+      this.readingTime.textContent = `~${seconds} sn okuma`;
+    } else {
+      const minutes = Math.round(seconds / 60);
+      this.readingTime.textContent = `~${minutes} dk okuma`;
+    }
+  }
     // Show date + time for last modified (e.g. 12.10.2025 14:35)
     this.lastModified.textContent = updatedDate.toLocaleString('tr-TR', {
       year: 'numeric',
