@@ -595,6 +595,11 @@ class CapnoteApp {
     this.exportAllNotesBtn.addEventListener('click', () => {
       this.exportAllNotes();
     });
+    // Settings export/import
+    this.exportSettingsBtn = document.getElementById('exportSettingsBtn');
+    this.importSettingsBtn = document.getElementById('importSettingsBtn');
+    if (this.exportSettingsBtn) this.exportSettingsBtn.addEventListener('click', () => this.exportSettings());
+    if (this.importSettingsBtn) this.importSettingsBtn.addEventListener('click', () => this.importSettings());
 
     // Modal close buttons
     document.querySelectorAll('.modal-close').forEach((btn) => {
@@ -2246,6 +2251,38 @@ class CapnoteApp {
     this.showModal(this.confirmModal);
   }
 
+  showConfirmDialog(title, message) {
+    return new Promise((resolve) => {
+      // Set up modal
+      const prevTitle = this.confirmModal.querySelector('h3')?.textContent || '';
+      const titleEl = this.confirmModal.querySelector('h3');
+      if (titleEl && title) titleEl.textContent = title;
+      this.confirmMessage.textContent = message;
+
+      const handleConfirm = () => {
+        cleanup();
+        resolve(true);
+      };
+
+      const handleCancel = () => {
+        cleanup();
+        resolve(false);
+      };
+
+      const cleanup = () => {
+        this.confirmBtn.removeEventListener('click', handleConfirm);
+        this.cancelBtn.removeEventListener('click', handleCancel);
+        if (titleEl) titleEl.textContent = prevTitle;
+        this.hideModal(this.confirmModal);
+      };
+
+      this.confirmBtn.addEventListener('click', handleConfirm);
+      this.cancelBtn.addEventListener('click', handleCancel);
+
+      this.showModal(this.confirmModal);
+    });
+  }
+
   // Notification methods
   showNotification(message, type = 'info') {
     this.notificationText.textContent = message;
@@ -3070,6 +3107,71 @@ class CapnoteApp {
 
       this.showModal(this.confirmModal);
     });
+  }
+
+  exportSettings() {
+    const keys = ['accentColor', 'darkMode', 'maxPinnedNotes', 'syncFolderAccent', 'folderColorsBackup'];
+    const settings = {};
+    keys.forEach((k) => {
+      const v = localStorage.getItem(k);
+      if (v !== null) settings[k] = v;
+    });
+
+    const payload = {
+      exportDate: new Date().toISOString(),
+      version: '1.0.0',
+      settings,
+    };
+
+    const dataStr = JSON.stringify(payload, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `capnote-settings-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    this.showNotification('Ayarlar dışa aktarıldı', 'success');
+  }
+
+  importSettings() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.style.display = 'none';
+    input.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        if (!data.settings) throw new Error('Geçersiz ayar dosyası');
+
+        const replace = await this.showConfirmDialog(
+          'Ayarları Değiştir',
+          'Ayarları tamamen değiştirmek ister misiniz? (Hayır seçerseniz sadece eksik ayarlar birleştirilecektir)'
+        );
+
+        if (replace) {
+          Object.keys(data.settings).forEach((k) => localStorage.removeItem(k));
+        }
+
+        Object.entries(data.settings).forEach(([k, v]) => {
+          localStorage.setItem(k, v);
+        });
+
+        this.loadSettings();
+        this.showNotification('Ayarlar başarıyla yüklendi', 'success');
+      } catch (err) {
+        console.error('Settings import error', err);
+        this.showNotification('Ayarlar içe aktarılırken hata oluştu: ' + err.message, 'error');
+      }
+    });
+    document.body.appendChild(input);
+    input.click();
+    document.body.removeChild(input);
   }
 
   // ============================================
