@@ -1123,7 +1123,8 @@ div#newNoteNav {
   flex: 0 0 auto; /* prevent shrinking so buttons wrap instead of disappearing */
 }
 .format-btn:hover {
-  background: var(--accent-color-rgba-10);
+  /* use a slightly stronger but still light accent tone on hover */
+  background: var(--accent-color-rgba-15);
   color: var(--text-primary);
   transform: translateY(-1px);
 }
