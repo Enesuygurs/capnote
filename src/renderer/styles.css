@@ -3253,13 +3253,14 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .select-selected:hover {
   background: var(--bg-tertiary);
-  border-color: var(--primary-color);
+  /* don't change the border color on hover in dark theme */
+  border-color: transparent;
 }
 
 [data-theme='dark'] .select-item {
   background: var(--bg-secondary);
   color: var(--text-primary);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgb(93 93 93 / 10%);
 }
 
 [data-theme='dark'] .select-item:hover {
@@ -3269,7 +3270,6 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .select-items {
   background: var(--bg-secondary);
-  border: 1px solid var(--primary-color);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
