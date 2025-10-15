@@ -2114,7 +2114,6 @@ input[type="color"].color-picker::-moz-color-swatch {
   left: 0;
   right: 0;
   z-index: 99;
-  border: 1px solid var(--primary-color);
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.12);
