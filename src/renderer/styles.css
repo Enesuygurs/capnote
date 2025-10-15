@@ -3268,6 +3268,13 @@ input[type="color"].color-picker::-moz-color-swatch {
   color: var(--text-light);
 }
 
+/* Ensure active select items keep the accent color in dark theme */
+[data-theme='dark'] .select-item.active {
+  background: var(--accent-color) !important;
+  color: var(--text-light) !important;
+  font-weight: 600;
+}
+
 [data-theme='dark'] .select-items {
   background: var(--bg-secondary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
