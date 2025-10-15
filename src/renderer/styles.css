@@ -1273,7 +1273,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 .weather-btn {
   width: 40px;
   height: 40px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(155 155 155 / 10%);
   background: var(--bg-primary);
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -2327,7 +2327,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 /* Note content area background fix */
 .note-content {
-  background: #ffffff !important;
+  background: var(--bg-secondary) !important;
   border-radius: var(--radius-lg);
   margin: 16px;
   box-shadow: var(--shadow-sm);
@@ -2936,16 +2936,16 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .note-content {
-  background: #2a2a2a !important;
+  background: #1e1e1e !important;
 }
 
 [data-theme='dark'] .rich-editor {
-  background: var(--rich-editor-bg);
+  background: #1e1e1e !important;
 }
 
 [data-theme='dark'] .mood-btn,
 [data-theme='dark'] .weather-btn {
-  border: 2px solid rgb(91 91 91 / 20%);
+  border: 1px solid rgb(91 91 91 / 20%);
   background: var(--mood-btn-bg);
 }
 
