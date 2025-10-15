@@ -98,6 +98,7 @@ class CapnoteApp {
     this.noteDate = document.getElementById('noteDate');
     this.wordCount = document.getElementById('wordCount');
     this.charCount = document.getElementById('charCount');
+  this.editorReadingTime = document.getElementById('editorReadingTime');
 
     // Filter tabs (modern navigation)
     this.filterTabs = document.querySelectorAll(
@@ -1053,6 +1054,15 @@ class CapnoteApp {
     }
     if (this.charCount) {
       this.charCount.textContent = `${chars} karakter`;
+    }
+
+    // Editor-side reading time estimate (baseline 200 WPM)
+    const WPM = 200;
+    const seconds = words ? Math.ceil((words / WPM) * 60) : 0;
+    if (this.editorReadingTime) {
+      if (!seconds) this.editorReadingTime.textContent = `0 dk okuma`;
+      else if (seconds < 60) this.editorReadingTime.textContent = `~${seconds} sn okuma`;
+      else this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} dk okuma`;
     }
 
     if (this.currentNote) {
