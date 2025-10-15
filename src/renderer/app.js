@@ -3510,6 +3510,11 @@ class CapnoteApp {
     div.draggable = true;
     div.setAttribute('data-note-id', note.id);
 
+    // Reflect pinned/locked state on the container so CSS selectors like
+    // .folder-note-item.pinned and .folder-note-item.locked apply correctly.
+    if (note.isPinned) div.classList.add('pinned');
+    if (note.isLocked) div.classList.add('locked');
+
     if (this.currentNote && this.currentNote.id === note.id) {
       div.classList.add('active');
     }
