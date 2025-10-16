@@ -998,6 +998,15 @@ class CapnoteApp {
 
     // Reset form
     this.resetFormState();
+    // Ensure any previews are hidden when entering editor
+    if (this.markdownPreview) this.hideMarkdownPreview();
+    if (this.htmlPreview) {
+      this.hideHtmlPreview();
+      // clear iframe content if exists
+      const iframe = this.htmlPreview.querySelector('iframe.preview-iframe');
+      if (iframe) iframe.srcdoc = '';
+      this.htmlPreview.innerHTML = '';
+    }
   }
 
   showViewer() {
@@ -1017,6 +1026,15 @@ class CapnoteApp {
   clearEditor() {
     this.noteTitle.value = '';
     this.richEditor.innerHTML = '';
+    if (this.markdownEditor) this.markdownEditor.value = '';
+    // clear previews
+    if (this.markdownPreview) this.hideMarkdownPreview();
+    if (this.htmlPreview) {
+      this.hideHtmlPreview();
+      const iframe = this.htmlPreview.querySelector('iframe.preview-iframe');
+      if (iframe) iframe.srcdoc = '';
+      this.htmlPreview.innerHTML = '';
+    }
   const baseFormatting = this.currentNote?.formatting || this.getDefaultFormatting();
     this.setEditorFormatting(baseFormatting);
     this.clearSavedSelection();
