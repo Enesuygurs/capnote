@@ -4247,11 +4247,19 @@ class CapnoteApp {
 
       const siblings = Array.from(folderHeader.parentElement.querySelectorAll('.folder-item, .default-folder'));
 
+      // find the currently dragging folder element (if any) and avoid setting insertion classes on it
+      const draggingEl = document.querySelector('.folder-item.dragging, .default-folder.dragging');
+      if (folderHeader === draggingEl) {
+        // If hovering over the element being dragged, clear any insertion cues and do nothing
+        folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
+        return;
+      }
+
       if (isFolderDrag) {
         // For folder drag, show only the thin insertion line (insert-before/after) when cursor is near
         // the top or bottom edge of the whole folder container. Do not show insertion when hovering over notes.
         folderHeader.classList.remove('drag-over');
-        if (nearTop) {
+          if (nearTop) {
           folderHeader.classList.add('insert-before');
           folderHeader.classList.remove('insert-after');
         } else if (nearBottom) {
@@ -4263,7 +4271,7 @@ class CapnoteApp {
         }
 
         siblings.forEach((s) => {
-          if (s !== folderHeader) {
+          if (s !== folderHeader && s !== draggingEl) {
             s.classList.remove('insert-before', 'insert-after', 'drag-over');
           }
         });
@@ -4272,7 +4280,7 @@ class CapnoteApp {
         folderHeader.classList.add('drag-over');
         folderHeader.classList.remove('insert-before', 'insert-after');
         siblings.forEach((s) => {
-          if (s !== folderHeader) {
+          if (s !== folderHeader && s !== draggingEl) {
             s.classList.remove('insert-before', 'insert-after');
           }
         });
@@ -4291,6 +4299,15 @@ class CapnoteApp {
       if (draggedFolderId) {
         const sourceId = String(draggedFolderId);
         const targetId = String(folder.id);
+        // If the dragged folder is the same DOM element as the target, ignore
+        const draggingEl = document.querySelector('.folder-item.dragging, .default-folder.dragging');
+        const targetEl = folderHeader;
+        if (draggingEl && (draggingEl === targetEl || String(draggingEl.getAttribute('data-folder-id')) === sourceId && String(targetEl.getAttribute('data-folder-id')) === sourceId)) {
+          // cleanup and ignore
+          folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
+          return;
+        }
+
         if (sourceId !== targetId) {
           // Determine whether to insert before or after based on mouse position relative to the whole container
           const containerRect = container.getBoundingClientRect();
