@@ -1107,15 +1107,50 @@ class CapnoteApp {
     this.currentNote.content = content;
     const nowIso = new Date().toISOString();
     this.currentNote.updatedAt = nowIso;
-    // Maintain history of updates (timestamp strings)
-    if (!this.currentNote.history) this.currentNote.history = [];
-    // If this is a new note (no createdAt), set createdAt and initialize history
-    if (!this.currentNote.createdAt) {
-      this.currentNote.createdAt = nowIso;
-      this.currentNote.history.push({ type: 'created', ts: nowIso });
-    } else {
-      // record update
-      this.currentNote.history.push({ type: 'updated', ts: nowIso });
+    // Minimal DOM update to avoid full re-render and animations:
+    // - remove the note element from its previous container
+    // - append to target folder container only if it's visible (expanded)
+    // - update folder counts in the sidebar
+    try {
+      // Remove any existing DOM instances from previous container
+      document.querySelectorAll(`[data-note-id="${noteId}"]`).forEach((el) => {
+        const parentFolderContainer = el.closest('.folder-notes-container');
+        if (parentFolderContainer) {
+          // remove from old folder container
+          parentFolderContainer.removeChild(el);
+        } else {
+          // remove from main notes list if present
+          const mainList = document.getElementById('notesList');
+          if (mainList && mainList.contains(el)) mainList.removeChild(el);
+        }
+      });
+
+      // If destination folder container exists and is expanded, append the existing element
+      if (folderId !== 'default') {
+        const targetContainer = document.querySelector(`.folder-notes-container[data-folder-id="${folderId}"]`);
+        const header = document.querySelector(`.folder-item[data-folder-id="${folderId}"]`);
+        if (targetContainer && header && header.classList.contains('expanded')) {
+          // create a folder note element if it doesn't exist in DOM
+          let existing = document.querySelector(`[data-note-id="${noteId}"]`);
+          if (!existing) {
+            const noteEl = this.createFolderNoteElement(note);
+            targetContainer.appendChild(noteEl);
+          } else {
+            targetContainer.appendChild(existing);
+          }
+        }
+      }
+
+      // Update folder count badges for old and new folder
+      if (oldFolderId && oldFolderId !== 'default') this.updateFolderCountInDOM(oldFolderId);
+      if (folderId && folderId !== 'default') this.updateFolderCountInDOM(folderId);
+
+      // Update action buttons / states for this note (no full re-render)
+      this.updateActionButtonStates(noteId);
+    } catch (e) {
+      // fallback to safe full updates if DOM manipulation fails
+      this.updateNotesList();
+      this.updateFoldersList();
     }
     this.currentNote.mood = this.selectedMood;
     this.currentNote.weather = this.selectedWeather;
@@ -3720,44 +3755,89 @@ class CapnoteApp {
 
   async moveNoteToFolder(noteId, folderId) {
     const note = this.notes.find((n) => n.id === noteId);
-    if (!note) {
-      return;
-    }
+    if (!note) return;
 
     const oldFolderId = note.folderId || 'default';
+    // No-op if nothing changed
+    if (oldFolderId === (folderId || 'default')) return;
+
     note.folderId = folderId;
     note.updatedAt = new Date().toISOString();
 
-    await this.saveNotes();
+    try {
+      await this.saveNotes();
 
-    // Update only the affected folders
-    if (oldFolderId === 'default' || !oldFolderId) {
+      // Remove any existing DOM nodes representing this note (main list and folder lists)
+      const mainNoteEl = document.querySelector(`.note-item[data-note-id="${noteId}"]`);
+      if (mainNoteEl && mainNoteEl.parentElement) mainNoteEl.parentElement.removeChild(mainNoteEl);
+
+      document.querySelectorAll(`.folder-note-item[data-note-id="${noteId}"]`).forEach((el) => {
+        if (el && el.parentElement) el.parentElement.removeChild(el);
+      });
+
+      // Determine current search/filter so we only insert the note where it should be visible
+      const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
+      const searchTerm = this.normalizeForSearch(rawSearch);
+
+      // Update folder count badges for old and new folders
+      if (oldFolderId && oldFolderId !== 'default') this.updateFolderCountInDOM(oldFolderId);
+      if (folderId && folderId !== 'default') this.updateFolderCountInDOM(folderId);
+
+      // Insert into destination if it should be visible under current filter/search
+      if (folderId && folderId !== 'default') {
+        const folderContainer = document.querySelector(`.folder-notes-container[data-folder-id="${folderId}"]`);
+        if (folderContainer) {
+          // Respect current filter (today/favorites) and search
+          let visible = true;
+          if (this.currentFilter === 'today') {
+            visible = new Date(note.createdAt).toDateString() === new Date().toDateString();
+          } else if (this.currentFilter === 'favorites') {
+            visible = !!note.isFavorite;
+          }
+          if (searchTerm) visible = visible && this.noteMatchesSearch(note, searchTerm);
+
+          if (visible) {
+            const newEl = this.createFolderNoteElement(note);
+            folderContainer.appendChild(newEl);
+          }
+        }
+      } else {
+        // Moved to main list
+        let visible = true;
+        if (this.currentFilter === 'today') {
+          visible = new Date(note.createdAt).toDateString() === new Date().toDateString();
+        } else if (this.currentFilter === 'favorites') {
+          visible = !!note.isFavorite;
+        } else {
+          // default: only notes without folder are shown in main list
+          visible = !note.folderId || note.folderId === 'default';
+        }
+        if (searchTerm) visible = visible && this.noteMatchesSearch(note, searchTerm);
+
+        if (visible && this.notesList) {
+          const newEl = this.createNoteElement(note);
+          // Prepend to keep recent ordering without rebuilding entire list
+          this.notesList.insertBefore(newEl, this.notesList.firstChild);
+        }
+      }
+
+      // Update any action-button states that may appear in multiple places
+      this.updateActionButtonStates(noteId);
+
+      // If viewing a special filter that depends on membership (favorites), refresh the view
+      if (this.currentFilter === 'favorites') this.updateNotesList();
+    } catch (error) {
+      console.error('Hata: not taşıma sırasında', error);
+      // Fallback: ensure consistent UI by falling back to full updates
       this.updateNotesList();
-    } else {
-      this.updateSpecificFolder(oldFolderId);
-      this.updateFolderCountInDOM(oldFolderId);
+      this.updateFoldersList();
     }
 
-    if (folderId !== 'default') {
-      // Note was moved to a folder, update that folder
-      this.updateSpecificFolder(folderId);
-      this.updateFolderCountInDOM(folderId);
-    } else {
-      // Note was moved to main list, update main list
-      this.updateNotesList();
-    }
-
-    // Show notification
     const folderName =
       folderId === 'default'
         ? 'Notlar'
         : this.folders.find((f) => f.id === folderId)?.name || 'Bilinmeyen Klasör';
-    this.showNotification(
-      `"${note.title || 'Başlıksız not'}" ${folderName} klasörüne taşındı`,
-      'success'
-    );
-  // Keep the current filter selected after moving notes
-  if (this.currentFilter === 'favorites') this.updateNotesList();
+    this.showNotification(`"${note.title || 'Başlıksız not'}" ${folderName} klasörüne taşındı`, 'success');
   }
 
   // Action button functions
