@@ -4237,16 +4237,31 @@ class CapnoteApp {
       }
 
       // decide whether insertion would be before or after based on cursor position
-      const rect = folderHeader.getBoundingClientRect();
-      const isBefore = (e.clientY - rect.top) < (rect.height / 2);
+      // but use the entire folder container (header + notes) so we don't allow inserting between header and its notes
+      const containerRect = container.getBoundingClientRect();
+      const headerRect = folderHeader.getBoundingClientRect();
+      const edgeThreshold = Math.max(8, Math.min(20, headerRect.height / 2));
+
+      const nearTop = (e.clientY - containerRect.top) <= edgeThreshold;
+      const nearBottom = (containerRect.bottom - e.clientY) <= edgeThreshold;
 
       const siblings = Array.from(folderHeader.parentElement.querySelectorAll('.folder-item, .default-folder'));
 
       if (isFolderDrag) {
-        // For folder drag, show only the thin insertion line (insert-before/after). Don't show the dashed border.
+        // For folder drag, show only the thin insertion line (insert-before/after) when cursor is near
+        // the top or bottom edge of the whole folder container. Do not show insertion when hovering over notes.
         folderHeader.classList.remove('drag-over');
-        folderHeader.classList.toggle('insert-before', isBefore);
-        folderHeader.classList.toggle('insert-after', !isBefore);
+        if (nearTop) {
+          folderHeader.classList.add('insert-before');
+          folderHeader.classList.remove('insert-after');
+        } else if (nearBottom) {
+          folderHeader.classList.add('insert-after');
+          folderHeader.classList.remove('insert-before');
+        } else {
+          // in the middle of the folder (over notes) - hide insertion cues
+          folderHeader.classList.remove('insert-before', 'insert-after');
+        }
+
         siblings.forEach((s) => {
           if (s !== folderHeader) {
             s.classList.remove('insert-before', 'insert-after', 'drag-over');
@@ -4277,9 +4292,22 @@ class CapnoteApp {
         const sourceId = String(draggedFolderId);
         const targetId = String(folder.id);
         if (sourceId !== targetId) {
-          // Determine whether to insert before or after based on mouse position
-          const rect = folderHeader.getBoundingClientRect();
-          const insertBefore = (e.clientY - rect.top) < (rect.height / 2);
+          // Determine whether to insert before or after based on mouse position relative to the whole container
+          const containerRect = container.getBoundingClientRect();
+          const headerRect = folderHeader.getBoundingClientRect();
+          const edgeThreshold = Math.max(8, Math.min(20, headerRect.height / 2));
+          const nearTop = (e.clientY - containerRect.top) <= edgeThreshold;
+          const nearBottom = (containerRect.bottom - e.clientY) <= edgeThreshold;
+
+          let insertBefore = false;
+          if (nearTop) insertBefore = true;
+          else if (nearBottom) insertBefore = false;
+          else {
+            // If not near top/bottom, ignore the drop as an insertion — default to no-op
+            folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
+            return;
+          }
+
           // cleanup visual classes
           folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
           this.reorderFolders(sourceId, targetId, insertBefore);
