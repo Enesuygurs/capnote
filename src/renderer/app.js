@@ -3538,6 +3538,15 @@ class CapnoteApp {
     });
   }
 
+  // Update the visible count badge for a specific folder in the sidebar
+  updateFolderCountInDOM(folderId) {
+    if (!folderId || folderId === 'default') return;
+    const countEl = document.querySelector(`.folder-item[data-folder-id="${folderId}"] .folder-count`);
+    if (!countEl) return;
+    const count = this.notes.filter((n) => n.folderId === folderId).length;
+    countEl.textContent = count;
+  }
+
   createFolderElement(folder) {
     const container = document.createElement('div');
     container.className = 'folder-container';
@@ -3726,11 +3735,13 @@ class CapnoteApp {
       this.updateNotesList();
     } else {
       this.updateSpecificFolder(oldFolderId);
+      this.updateFolderCountInDOM(oldFolderId);
     }
 
     if (folderId !== 'default') {
       // Note was moved to a folder, update that folder
       this.updateSpecificFolder(folderId);
+      this.updateFolderCountInDOM(folderId);
     } else {
       // Note was moved to main list, update main list
       this.updateNotesList();
