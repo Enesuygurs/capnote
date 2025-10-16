@@ -384,8 +384,6 @@ body {
   font-size: 13px;
   line-height: 1.5;
   margin: 0.8em 0;
-  /* Use a subtle, translucent accent-tinted shadow instead of a black one */
-  box-shadow: 0 6px 12px color-mix(in srgb, var(--primary-color) 18%, transparent 82%);
 }
 .code-copy-btn {
   position: absolute;
@@ -1123,7 +1121,7 @@ div#newNoteNav {
 
 /* Yeni Not Butonu - Karanlık Tema */
 [data-theme='dark'] div#newNoteNav {
-  background: #e1e1e114;
+  background: #5d5d5d14;
 }
 
 [data-theme='dark'] .notes-list-header {
@@ -1498,9 +1496,12 @@ div#newNoteNav {
 }
 .color-picker:hover,
 .color-picker:focus {
+  /* match neutral hover used by other formatting buttons */
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px var(--accent-color-rgba-12);
-  border-color: var(--accent-color);
+  box-shadow: none;
+  border-color: rgba(0,0,0,0.06);
 }
 
 /* Small select for settings (max pinned) */
@@ -3143,8 +3144,11 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .color-picker:hover,
 [data-theme='dark'] .color-picker:focus {
-  box-shadow: 0 6px 18px var(--accent-color-rgba-20);
-  border-color: var(--accent-color);
+  /* neutral dark-mode hover to match other buttons */
+  background: rgba(255,255,255,0.03);
+  color: var(--text-light);
+  box-shadow: none;
+  border-color: rgba(255,255,255,0.02);
 }
 
 [data-theme='dark'] .editor-sidebar {
