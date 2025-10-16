@@ -757,17 +757,6 @@ div#newNoteNav {
   display: none;
 }
 
-.search-input {
-  width: 100%;
-  padding: 6px 8px 6px 28px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  font-size: 12px;
-  transition: var(--transition-fast);
-}
-
 .search-wrapper {
   position: relative;
   display: flex;
@@ -785,9 +774,9 @@ div#newNoteNav {
 .search-input {
   width: 100%;
   padding: 8px 12px 8px 36px;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgb(229 229 229 / 79%);
   border-radius: 6px;
-  background: #f5f5f5;
+  background: #f9f9f9;
   color: var(--text-primary);
   font-size: 14px;
   transition: var(--transition-fast);
@@ -941,7 +930,7 @@ div#newNoteNav {
 
 [data-theme='dark'] .search-input {
   background: var(--bg-tertiary);
-  border-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgb(47 47 47 / 79%);
 }
 
 [data-theme='dark'] .search-input:focus {
@@ -1442,7 +1431,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 .weather-btn {
   width: 40px;
   height: 40px;
-  border: 2px solid rgb(155 155 155 / 10%);
+  border: 1px solid rgb(155 155 155 / 10%);
   background: var(--bg-primary);
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -3210,7 +3199,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .search-container {
-  background: var(--search-container-bg);
+  background: transparent;
 }
 
 [data-theme='dark'] .search-container input {
@@ -3963,7 +3952,6 @@ input:checked + .toggle-slider:before {
 
 #folderModal .form-input:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 #folderModal .form-input::placeholder {
