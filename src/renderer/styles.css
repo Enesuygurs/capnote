@@ -343,15 +343,18 @@ body {
 }
 
 .markdown-preview pre {
-  background: #0b1220; /* dark code background similar to GitHub dark */
+  /* Boxed code block for preview */
+  background: var(--gh-code-bg, #0b1220);
   color: #e6edf3;
-  padding: 12px 14px;
-  border-radius: 6px;
+  padding: 14px 16px;
+  border-radius: 8px;
   overflow: auto;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
   font-size: 13px;
   line-height: 1.5;
-  margin: 0.8em 0;
+  margin: 0.9em 0;
+  border: 1px solid rgba(0,0,0,0.32);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.25);
 }
 .markdown-preview code {
   background: rgba(27,31,35,0.05);
@@ -361,6 +364,55 @@ body {
   font-size: 13px;
 }
 .markdown-preview pre code { background: transparent; padding: 0; }
+
+/* Ensure code blocks inside the editor/viewer get the same boxed treatment */
+.note-content pre,
+.note-content code,
+.note-content pre code,
+.viewerText pre,
+.viewerText code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+}
+.note-content pre,
+.viewerText pre {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  padding: 12px 14px;
+  border-radius: 8px;
+  overflow: auto;
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0.8em 0;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 6px 12px rgba(16,24,40,0.04);
+}
+.note-content code,
+.viewerText code {
+  background: rgba(0,0,0,0.04);
+  padding: 0.15em 0.35em;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* Dark theme adjustments for code blocks */
+[data-theme='dark'] .markdown-preview pre {
+  background: #0b1220;
+  color: #e6edf3;
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.5);
+}
+[data-theme='dark'] .note-content pre,
+[data-theme='dark'] .viewerText pre {
+  background: #0f1724;
+  color: #e6edf3;
+  border: 1px solid rgba(255,255,255,0.04);
+  box-shadow: 0 6px 12px rgba(2,6,23,0.45);
+}
+[data-theme='dark'] .note-content code,
+[data-theme='dark'] .viewerText code {
+  background: rgba(255,255,255,0.03);
+  color: #e6edf3;
+}
 
 .markdown-preview table {
   width: 100%;
