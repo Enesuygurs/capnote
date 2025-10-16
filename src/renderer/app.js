@@ -78,6 +78,7 @@ class CapnoteApp {
   this.markdownPreview = document.getElementById('markdownPreview');
   this.toggleHtmlBtn = document.getElementById('toggleHtmlBtn');
   this.htmlPreview = document.getElementById('htmlPreview');
+  this.insertCodeBlockBtn = document.getElementById('insertCodeBlockBtn');
 
     // Formatting toolbar
     this.fontFamilyDropdown = document.getElementById('fontFamily');
@@ -247,6 +248,7 @@ class CapnoteApp {
   // Markdown toggle and preview
   if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.addEventListener('click', () => this.toggleMarkdownMode());
   if (this.toggleHtmlBtn) this.toggleHtmlBtn.addEventListener('click', () => this.toggleHtmlMode());
+  if (this.insertCodeBlockBtn) this.insertCodeBlockBtn.addEventListener('click', () => this.insertCodeBlock());
   if (this.markdownEditor) this.markdownEditor.addEventListener('input', () => {
     // If preview is visible, live-update it (debounced would be better, but keep simple)
     if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
@@ -514,6 +516,76 @@ class CapnoteApp {
 
     // Checkbox listeners
     this.setupCheckboxListeners();
+  }
+
+  insertCodeBlock() {
+    // Insert a fenced code block at the current caret/selection in the appropriate editor.
+    const fenceTemplate = "```language\n// your code here\n```\n";
+
+    // If markdown editor is visible, insert into textarea at cursor
+    if (this.markdownEditor && !this.markdownEditor.classList.contains('hidden')) {
+      this.insertAtCursor(this.markdownEditor, fenceTemplate);
+      // update preview if visible
+      if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
+        this.renderMarkdownPreview(this.markdownEditor.value);
+      }
+      this.markdownEditor.focus();
+      this.trackContentChanges();
+      return;
+    }
+
+    // Otherwise, insert into rich contenteditable as a <pre><code> block
+    if (this.richEditor) {
+      this.insertPreCodeForRichEditor();
+      this.trackContentChanges();
+      return;
+    }
+  }
+
+  insertAtCursor(textarea, text) {
+    const start = textarea.selectionStart || 0;
+    const end = textarea.selectionEnd || 0;
+    const value = textarea.value || '';
+    const before = value.substring(0, start);
+    const after = value.substring(end);
+    textarea.value = before + text + after;
+    const caret = before.length + text.length - (text.endsWith('\n') ? 1 : 0);
+    textarea.selectionStart = textarea.selectionEnd = caret;
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  insertPreCodeForRichEditor() {
+    try {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) {
+        // append at the end
+        const pre = document.createElement('pre');
+        const code = document.createElement('code');
+        code.textContent = '// your code here';
+        pre.appendChild(code);
+        this.richEditor.appendChild(pre);
+        return;
+      }
+      const range = sel.getRangeAt(0);
+      const pre = document.createElement('pre');
+      const code = document.createElement('code');
+      code.textContent = '// your code here';
+      pre.appendChild(code);
+      range.deleteContents();
+      range.insertNode(pre);
+      // move caret after inserted node
+      range.setStartAfter(pre);
+      range.setEndAfter(pre);
+      sel.removeAllRanges();
+      sel.addRange(range);
+    } catch (e) {
+      // fallback: append
+      const pre = document.createElement('pre');
+      const code = document.createElement('code');
+      code.textContent = '// your code here';
+      pre.appendChild(code);
+      this.richEditor.appendChild(pre);
+    }
   }
 
   setupFormattingToolbar() {
