@@ -866,7 +866,7 @@ class CapnoteApp {
   }
 
   confirmClearAllContent() {
-    this.showConfirm('Tüm içeriği (notlar, klasörler ve ayarlar) silmek istiyor musunuz? Bu işlem geri alınamaz.', async () => {
+    this.showConfirm('Uygulamayı sıfırlamak istiyor musunuz? (Notlar, klasörler ve ayarlar varsayılanlara dönecek). Bu işlem geri alınamaz.', async () => {
       await this.clearAllContent();
     });
   }
@@ -908,17 +908,54 @@ class CapnoteApp {
       // Reset application data
       this.notes = [];
       this.folders = [];
+
+      // Remove stored data keys
       try { localStorage.removeItem('capnote-notes'); } catch (e) {}
       try { localStorage.removeItem('capnote-folders'); } catch (e) {}
       try { localStorage.removeItem('last-viewed-note'); } catch (e) {}
-      // Optionally clear other app-specific keys like settings
+
+      // Reset settings to defaults by removing known keys
       try { localStorage.removeItem('capnote-settings'); } catch (e) {}
+      try { localStorage.removeItem('accentColor'); } catch (e) {}
+      try { localStorage.removeItem('darkMode'); } catch (e) {}
+      try { localStorage.removeItem('maxPinnedNotes'); } catch (e) {}
+      try { localStorage.removeItem('syncFolderAccent'); } catch (e) {}
+      try { localStorage.removeItem('folderColorsBackup'); } catch (e) {}
+
+      // Persist empty notes/folders
       await this.saveNotes();
       await this.saveFolders();
+
+      // Reset in-memory settings/state to defaults
+      // Default accent used elsewhere in the app
+      const defaultAccent = '#f59e0b';
+      // Apply default accent visually (do not persist since we removed storage)
+      this.setAccentColor(defaultAccent, { persist: false });
+
+      // Reset theme to light/default
+      this.applyTheme(false);
+      if (this.darkModeToggle) this.darkModeToggle.checked = false;
+
+      // Reset max pinned to default (3)
+      try { localStorage.setItem('maxPinnedNotes', '3'); } catch (e) {}
+      if (this.maxPinnedSelect) this.maxPinnedSelect.value = '3';
+
+      // Disable folder-accent sync
+      try { localStorage.setItem('syncFolderAccent', '0'); } catch (e) {}
+      if (this.syncFolderAccentToggle) this.syncFolderAccentToggle.checked = false;
+      // Restore folder accents from backup removal (ensure folders list is empty anyway)
+      try { localStorage.removeItem('folderColorsBackup'); } catch (e) {}
+
+      // Persist settings that the UI expects to exist
+      this.saveSettings();
+
+      // Refresh UI
       this.updateNotesList();
       this.updateFoldersList();
+      this.updateFolderNotes();
       this.updateStats();
-      this.showNotification('Tüm içerik silindi', 'success');
+
+  this.showNotification('Uygulama sıfırlandı', 'success');
     } catch (err) {
       console.error('Tüm içerik silinirken hata:', err);
       this.showNotification('İçerik silinirken hata oluştu', 'error');
