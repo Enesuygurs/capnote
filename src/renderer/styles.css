@@ -384,8 +384,8 @@ body {
   font-size: 13px;
   line-height: 1.5;
   margin: 0.8em 0;
-  border: 1px solid color-mix(in srgb, var(--primary-color) 45%, black 55%);
-  box-shadow: 0 6px 12px color-mix(in srgb, var(--primary-color) 15%, black 85%);
+  /* Use a subtle, translucent accent-tinted shadow instead of a black one */
+  box-shadow: 0 6px 12px color-mix(in srgb, var(--primary-color) 18%, transparent 82%);
 }
 .note-content code,
 .formatted-content code {
@@ -409,7 +409,6 @@ body {
   /* Dark theme for editor/viewer code blocks: mix with more black for stronger darkening */
   background: color-mix(in srgb, var(--primary-color) 30%, black 70%);
   color: var(--text-on-primary, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--primary-color) 20%, black 80%);
 }
 [data-theme='dark'] .note-content code,
 [data-theme='dark'] .formatted-content code {
