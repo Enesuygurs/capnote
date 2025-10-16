@@ -2960,6 +2960,15 @@ input[type="color"].color-picker::-moz-color-swatch {
   background: var(--accent-color-rgba-12) !important;
 }
 
+/* Ensure active mood/weather buttons show the accent color in dark mode */
+[data-theme='dark'] .mood-btn.active,
+[data-theme='dark'] .weather-btn.active {
+  border-color: var(--accent-color) !important;
+  background: var(--accent-color) !important;
+  color: var(--text-light) !important;
+  box-shadow: 0 6px 18px var(--accent-color-rgba-20);
+}
+
 [data-theme='dark'] #tagInput {
   background: var(--tag-input-bg);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -3036,7 +3045,6 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .search-container {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   background: var(--search-container-bg);
 }
 
