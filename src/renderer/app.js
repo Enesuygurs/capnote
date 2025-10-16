@@ -128,6 +128,9 @@ class CapnoteApp {
     // Settings elements
     this.settingsBtn = document.getElementById('settingsBtn');
     this.helpSupport = document.getElementById('helpSupport');
+  this.clearAllNotesBtn = document.getElementById('clearAllNotesBtn');
+  this.clearAllFoldersBtn = document.getElementById('clearAllFoldersBtn');
+  this.clearAllContentBtn = document.getElementById('clearAllContentBtn');
   this.maxPinnedSelect = document.getElementById('maxPinnedSelect');
     this.darkModeToggle = document.getElementById('darkModeToggle');
   this.accentYellowBtn = document.getElementById('accentYellow');
@@ -798,6 +801,10 @@ class CapnoteApp {
     this.exportAllNotesBtn.addEventListener('click', () => {
       this.exportAllNotes();
     });
+    // Clear actions
+    this.clearAllNotesBtn?.addEventListener('click', () => this.confirmClearAllNotes());
+    this.clearAllFoldersBtn?.addEventListener('click', () => this.confirmClearAllFolders());
+    this.clearAllContentBtn?.addEventListener('click', () => this.confirmClearAllContent());
     // Settings export/import
     this.exportSettingsBtn = document.getElementById('exportSettingsBtn');
     this.importSettingsBtn = document.getElementById('importSettingsBtn');
@@ -844,6 +851,78 @@ class CapnoteApp {
     });
 
     // Notifications will auto-hide after a few seconds
+  }
+
+  confirmClearAllNotes() {
+    this.showConfirm('Tüm notları kalıcı olarak silmek istiyor musunuz? Bu işlem geri alınamaz.', async () => {
+      await this.clearAllNotes();
+    });
+  }
+
+  confirmClearAllFolders() {
+    this.showConfirm('Tüm klasörleri kalıcı olarak silmek istiyor musunuz? Notların klasör ilişkileri kaldırılacaktır.', async () => {
+      await this.clearAllFolders();
+    });
+  }
+
+  confirmClearAllContent() {
+    this.showConfirm('Tüm içeriği (notlar, klasörler ve ayarlar) silmek istiyor musunuz? Bu işlem geri alınamaz.', async () => {
+      await this.clearAllContent();
+    });
+  }
+
+  async clearAllNotes() {
+    try {
+      this.notes = [];
+      await this.saveNotes();
+      // Clear last viewed note
+      try { localStorage.removeItem('last-viewed-note'); } catch (e) {}
+      this.updateNotesList();
+      this.updateFoldersList();
+      this.updateStats();
+      this.showNotification('Tüm notlar silindi', 'success');
+    } catch (err) {
+      console.error('Tüm notlar silinirken hata:', err);
+      this.showNotification('Notlar silinemedi', 'error');
+    }
+  }
+
+  async clearAllFolders() {
+    try {
+      // Remove folder associations from notes
+      this.notes = this.notes.map((n) => ({ ...n, folderId: null }));
+      this.folders = [];
+      await this.saveFolders();
+      await this.saveNotes();
+      this.updateNotesList();
+      this.updateFoldersList();
+      this.showNotification('Tüm klasörler silindi', 'success');
+    } catch (err) {
+      console.error('Tüm klasörler silinirken hata:', err);
+      this.showNotification('Klasörler silinemedi', 'error');
+    }
+  }
+
+  async clearAllContent() {
+    try {
+      // Reset application data
+      this.notes = [];
+      this.folders = [];
+      try { localStorage.removeItem('capnote-notes'); } catch (e) {}
+      try { localStorage.removeItem('capnote-folders'); } catch (e) {}
+      try { localStorage.removeItem('last-viewed-note'); } catch (e) {}
+      // Optionally clear other app-specific keys like settings
+      try { localStorage.removeItem('capnote-settings'); } catch (e) {}
+      await this.saveNotes();
+      await this.saveFolders();
+      this.updateNotesList();
+      this.updateFoldersList();
+      this.updateStats();
+      this.showNotification('Tüm içerik silindi', 'success');
+    } catch (err) {
+      console.error('Tüm içerik silinirken hata:', err);
+      this.showNotification('İçerik silinirken hata oluştu', 'error');
+    }
   }
 
   showPasswordModal(title, message = '') {
@@ -3730,34 +3809,54 @@ class CapnoteApp {
         const text = await file.text();
         const importedData = JSON.parse(text);
 
-        if (!Array.isArray(importedData.notes)) {
+        // Support import format that includes notes and folders
+        if (!importedData || (!Array.isArray(importedData.notes) && !Array.isArray(importedData.folders))) {
           throw new Error('Geçersiz dosya formatı');
         }
 
         // Ask user if they want to merge or replace
+        const totalNotes = Array.isArray(importedData.notes) ? importedData.notes.length : 0;
+        const totalFolders = Array.isArray(importedData.folders) ? importedData.folders.length : 0;
         const merge = await this.showConfirmDialog(
           'İçe Aktarma Seçeneği',
-          `${importedData.notes.length} not bulundu. Mevcut notlarınızla birleştirmek istiyor musunuz? (Hayır seçerseniz mevcut notlar silinir)`
+          `${totalNotes} not ve ${totalFolders} klasör bulundu. Mevcut verilerle birleştirmek istiyor musunuz? (Hayır seçerseniz mevcut notlar ve/veya klasörler silinir)`
         );
 
         if (!merge) {
           this.notes = [];
+          this.folders = [];
         }
 
-        // Add imported notes
-        let addedCount = 0;
-        importedData.notes.forEach((note) => {
-          // Generate new ID to avoid conflicts
-          const newNote = {
-            ...note,
-            id: Date.now() + Math.random(),
-            createdAt: note.createdAt || new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
+        // If folders are provided, import them with ID remapping to avoid collisions
+        const folderIdMap = {};
+        if (Array.isArray(importedData.folders)) {
+          importedData.folders.forEach((f) => {
+            const newId = Date.now() + Math.floor(Math.random() * 1000000);
+            folderIdMap[f.id] = newId;
+            const newFolder = { ...f, id: newId };
+            // ensure expanded flag exists
+            newFolder.expanded = newFolder.expanded !== undefined ? newFolder.expanded : true;
+            this.folders.push(newFolder);
+          });
+        }
 
-          this.notes.push(newNote);
-          addedCount++;
-        });
+        // Add imported notes and remap folderId if needed
+        let addedCount = 0;
+        if (Array.isArray(importedData.notes)) {
+          importedData.notes.forEach((note) => {
+            const newNoteId = Date.now() + Math.floor(Math.random() * 1000000);
+            const mappedFolderId = note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : note.folderId;
+            const newNote = {
+              ...note,
+              id: newNoteId,
+              folderId: mappedFolderId || null,
+              createdAt: note.createdAt || new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            };
+            this.notes.push(newNote);
+            addedCount++;
+          });
+        }
 
         await this.saveNotes();
         this.updateNotesList();
@@ -3788,7 +3887,15 @@ class CapnoteApp {
       exportDate: new Date().toISOString(),
       version: '1.0.0',
       totalNotes: this.notes.length,
+      totalFolders: this.folders.length,
       notes: this.notes,
+      folders: this.folders,
+      // include some settings for convenience
+      settings: {
+        accentColor: localStorage.getItem('accentColor') || null,
+        darkMode: localStorage.getItem('darkMode') || null,
+        syncFolderAccent: localStorage.getItem('syncFolderAccent') || null,
+      },
     };
 
     const dataStr = JSON.stringify(exportData, null, 2);
