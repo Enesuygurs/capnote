@@ -296,6 +296,11 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
+.nav-count {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 12px;
+}
 
 .nav-section-controls {
   display: flex;
