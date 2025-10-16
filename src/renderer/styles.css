@@ -369,12 +369,12 @@ body {
 .note-content pre,
 .note-content code,
 .note-content pre code,
-.viewerText pre,
-.viewerText code {
+.formatted-content pre,
+.formatted-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
 }
 .note-content pre,
-.viewerText pre {
+.formatted-content pre {
   background: var(--bg-tertiary);
   color: var(--text-primary);
   padding: 12px 14px;
@@ -387,7 +387,7 @@ body {
   box-shadow: 0 6px 12px rgba(16,24,40,0.04);
 }
 .note-content code,
-.viewerText code {
+.formatted-content code {
   background: rgba(0,0,0,0.04);
   padding: 0.15em 0.35em;
   border-radius: 6px;
@@ -402,14 +402,14 @@ body {
   box-shadow: 0 6px 18px rgba(2,6,23,0.5);
 }
 [data-theme='dark'] .note-content pre,
-[data-theme='dark'] .viewerText pre {
+[data-theme='dark'] .formatted-content pre {
   background: #0f1724;
   color: #e6edf3;
   border: 1px solid rgba(255,255,255,0.04);
   box-shadow: 0 6px 12px rgba(2,6,23,0.45);
 }
 [data-theme='dark'] .note-content code,
-[data-theme='dark'] .viewerText code {
+[data-theme='dark'] .formatted-content code {
   background: rgba(255,255,255,0.03);
   color: #e6edf3;
 }
