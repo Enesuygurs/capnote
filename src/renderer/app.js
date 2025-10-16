@@ -408,6 +408,53 @@ class CapnoteApp {
       this.trackContentChanges();
     });
 
+    // Allow Enter inside <code> blocks in rich editor to create newlines instead of splitting nodes
+    this.richEditor.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const sel = window.getSelection();
+        if (!sel || !sel.rangeCount) return;
+        const range = sel.getRangeAt(0);
+        const codeAncestor = range.startContainer.nodeType === Node.ELEMENT_NODE
+          ? range.startContainer.closest && range.startContainer.closest('code')
+          : range.startContainer.parentElement && range.startContainer.parentElement.closest('code');
+        if (codeAncestor) {
+          // we're inside a <code> node; insert a newline character into the text node at caret
+          e.preventDefault();
+          // if there's a text node at the caret, insert into it; otherwise create one
+          let node = range.startContainer;
+          let offset = range.startOffset;
+          if (node.nodeType !== Node.TEXT_NODE) {
+            // try to find/create a text node
+            if (node.childNodes[offset] && node.childNodes[offset].nodeType === Node.TEXT_NODE) {
+              node = node.childNodes[offset];
+              offset = 0;
+            } else {
+              const textNode = document.createTextNode('\n');
+              range.insertNode(textNode);
+              // move caret after inserted newline
+              range.setStartAfter(textNode);
+              range.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(range);
+              this.trackContentChanges();
+              return;
+            }
+          }
+          const text = node.nodeValue || '';
+          const before = text.substring(0, offset);
+          const after = text.substring(offset);
+          node.nodeValue = before + '\n' + after;
+          // set caret after the newline
+          const newRange = document.createRange();
+          newRange.setStart(node, before.length + 1);
+          newRange.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(newRange);
+          this.trackContentChanges();
+        }
+      }
+    });
+
     // Track selection for formatter usage
     this.richEditor.addEventListener('mouseup', () => this.captureEditorSelection());
     this.richEditor.addEventListener('keyup', () => this.captureEditorSelection());
@@ -549,8 +596,20 @@ class CapnoteApp {
     const before = value.substring(0, start);
     const after = value.substring(end);
     textarea.value = before + text + after;
-    const caret = before.length + text.length - (text.endsWith('\n') ? 1 : 0);
-    textarea.selectionStart = textarea.selectionEnd = caret;
+
+    // If inserting a fenced code block, position caret inside the code area
+    if (text.startsWith('```')) {
+      // find position after the first newline following the opening fence
+      const firstNewline = text.indexOf('\n');
+      const caretPos = before.length + (firstNewline >= 0 ? firstNewline + 1 : 0);
+      // place caret at start of code region (after the opening fence line)
+      textarea.selectionStart = textarea.selectionEnd = caretPos;
+    } else {
+      // default: place caret at end of inserted text
+      const caret = before.length + text.length;
+      textarea.selectionStart = textarea.selectionEnd = caret;
+    }
+
     textarea.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
@@ -572,12 +631,18 @@ class CapnoteApp {
       code.textContent = '// your code here';
       pre.appendChild(code);
       range.deleteContents();
+      // insert the pre node
       range.insertNode(pre);
-      // move caret after inserted node
-      range.setStartAfter(pre);
-      range.setEndAfter(pre);
+      // place caret inside the code node at the end of the placeholder text
       sel.removeAllRanges();
-      sel.addRange(range);
+      const newRange = document.createRange();
+      if (code.firstChild && code.firstChild.nodeType === Node.TEXT_NODE) {
+        newRange.setStart(code.firstChild, code.firstChild.length);
+      } else {
+        newRange.setStart(code, 0);
+      }
+      newRange.collapse(true);
+      sel.addRange(newRange);
     } catch (e) {
       // fallback: append
       const pre = document.createElement('pre');
@@ -2467,7 +2532,73 @@ class CapnoteApp {
   handlePaste(e) {
     e.preventDefault();
     const text = e.clipboardData.getData('text/plain');
+
+    // If there's no selection or no richEditor, fallback to default insert
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) {
+      document.execCommand('insertText', false, text);
+      this.trackContentChanges();
+      return;
+    }
+
+    const range = sel.getRangeAt(0);
+    // Check if we're pasting inside an existing <code> element
+    const codeAncestor = range.startContainer.nodeType === Node.ELEMENT_NODE
+      ? range.startContainer.closest && range.startContainer.closest('code')
+      : range.startContainer.parentElement && range.startContainer.parentElement.closest('code');
+
+    if (codeAncestor) {
+      // Insert the plaintext into the current text node inside <code> preserving newlines
+      e.preventDefault();
+      let node = range.startContainer;
+      let offset = range.startOffset;
+      if (node.nodeType !== Node.TEXT_NODE) {
+        // prefer an existing text node child or create one
+        if (node.childNodes[offset] && node.childNodes[offset].nodeType === Node.TEXT_NODE) {
+          node = node.childNodes[offset];
+          offset = 0;
+        } else {
+          node = document.createTextNode('');
+          range.insertNode(node);
+          offset = 0;
+        }
+      }
+      const before = node.nodeValue ? node.nodeValue.substring(0, offset) : '';
+      const after = node.nodeValue ? node.nodeValue.substring(offset) : '';
+      node.nodeValue = before + text + after;
+      // place caret after pasted text
+      const newRange = document.createRange();
+      newRange.setStart(node, (before.length + text.length));
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+      this.trackContentChanges();
+      return;
+    }
+
+    // If pasted text has multiple lines, insert as a single <pre><code> block
+    if (text.includes('\n')) {
+      const pre = document.createElement('pre');
+      const code = document.createElement('code');
+      // Preserve text exactly, including newlines
+      code.textContent = text;
+      pre.appendChild(code);
+      // insert at range
+      range.deleteContents();
+      range.insertNode(pre);
+      // place caret after the inserted block
+      sel.removeAllRanges();
+      const afterRange = document.createRange();
+      afterRange.setStartAfter(pre);
+      afterRange.collapse(true);
+      sel.addRange(afterRange);
+      this.trackContentChanges();
+      return;
+    }
+
+    // Default single-line paste
     document.execCommand('insertText', false, text);
+    this.trackContentChanges();
   }
 
   // Mood and Weather methods
