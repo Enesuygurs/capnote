@@ -387,6 +387,28 @@ body {
   /* Use a subtle, translucent accent-tinted shadow instead of a black one */
   box-shadow: 0 6px 12px color-mix(in srgb, var(--primary-color) 18%, transparent 82%);
 }
+.code-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255,255,255,0.08);
+  border: none;
+  color: var(--text-on-primary, #fff);
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  transition: transform 0.12s ease, background 0.12s ease;
+  z-index: 20;
+}
+.code-copy-btn:hover { transform: translateY(-1px); background: rgba(255,255,255,0.12); }
+.code-copy-btn.copied { background: var(--primary-color); color: var(--text-on-primary, #fff); transform: scale(0.98); }
+
+/* Dark theme variant for copy button background */
+body.dark .code-copy-btn { background: rgba(255,255,255,0.06); }
 .note-content code,
 .formatted-content code {
   background: color-mix(in srgb, var(--primary-color) 20%, transparent);
