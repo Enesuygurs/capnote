@@ -298,6 +298,11 @@
             </div>
 
             <div class="format-group">
+              <button class="format-btn small-toolbar-btn" id="toggleMarkdownBtn" title="Markdown önizleme">
+                <i class="fas fa-file-code"></i>
+              </button>
+            </div>
+            <div class="format-group">
               <button class="format-btn" id="toggleSidebar" title="Yan paneli aç/kapat">
                 <i class="fas fa-columns"></i>
               </button>
@@ -306,12 +311,15 @@
 
           <div class="editor-content">
             <div class="note-content">
+              
+              <textarea id="markdownEditor" class="markdown-editor hidden" placeholder="Markdown girin..."></textarea>
               <div
                 id="noteContentEditable"
                 class="rich-editor"
                 contenteditable="true"
                 placeholder="Düşüncelerinizi yazın..."
               ></div>
+              <div id="markdownPreview" class="markdown-preview hidden" aria-hidden="true"></div>
             </div>
 
             <div class="editor-sidebar">
@@ -736,4 +744,5 @@
 
     <script src="app.js"></script>
   </body>
+      <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </html>
