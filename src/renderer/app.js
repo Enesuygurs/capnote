@@ -1558,14 +1558,11 @@ class CapnoteApp {
       }
 
       // Apply search filter to folder notes
-      const searchTerm = this.searchInput.value.toLowerCase().trim();
+      // Apply search filter to folder notes (use centralized matching including mood/weather)
+      const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
+      const searchTerm = this.normalizeForSearch(rawSearch);
       if (searchTerm) {
-        folderNotes = folderNotes.filter(
-          (note) =>
-            note.title.toLowerCase().includes(searchTerm) ||
-            note.content.toLowerCase().includes(searchTerm) ||
-            (note.tags || []).some((tag) => tag.toLowerCase().includes(searchTerm))
-        );
+        folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTerm));
       }
 
       const sortedFolderNotes = this.getSortedNotes(folderNotes);
@@ -1600,15 +1597,11 @@ class CapnoteApp {
         break;
     }
 
-    // Search filter
-    const searchTerm = this.searchInput.value.toLowerCase().trim();
+    // Search filter (include mood/weather keywords and emoji)
+    const rawSearch = (this.searchInput && this.searchInput.value) ? String(this.searchInput.value) : '';
+    const searchTerm = this.normalizeForSearch(rawSearch);
     if (searchTerm) {
-      filtered = filtered.filter(
-        (note) =>
-          note.title.toLowerCase().includes(searchTerm) ||
-          note.content.toLowerCase().includes(searchTerm) ||
-          (note.tags || []).some((tag) => tag.toLowerCase().includes(searchTerm))
-      );
+      filtered = filtered.filter((note) => this.noteMatchesSearch(note, searchTerm));
     }
 
     return filtered;
@@ -1616,7 +1609,8 @@ class CapnoteApp {
 
   // Compute how many notes match the current filter/search including notes inside folders
   getVisibleNotesCount() {
-    const searchTerm = this.searchInput ? this.searchInput.value.toLowerCase().trim() : '';
+  const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
+  const searchTerm = this.normalizeForSearch(rawSearch);
     let matched = [...this.notes];
 
     switch (this.currentFilter) {
@@ -1634,15 +1628,63 @@ class CapnoteApp {
     }
 
     if (searchTerm) {
-      matched = matched.filter(
-        (note) =>
-          note.title.toLowerCase().includes(searchTerm) ||
-          note.content.toLowerCase().includes(searchTerm) ||
-          (note.tags || []).some((tag) => tag.toLowerCase().includes(searchTerm))
-      );
+      matched = matched.filter((note) => this.noteMatchesSearch(note, searchTerm));
     }
 
     return matched.length;
+  }
+
+  // Normalize strings for search (lowercase, trim)
+  normalizeForSearch(text) {
+    return String(text || '').toLowerCase().trim();
+  }
+
+  // Map emoji to localized keywords to support text search for moods/weather
+  moodWeatherKeywords() {
+    return {
+      // moods
+      '😊': ['mutlu', 'happy'],
+      '😢': ['üzgün', 'uzgun', 'sad'],
+      '😡': ['kızgın', 'kizgin', 'angry'],
+      '😴': ['yorgun', 'tired'],
+      '😍': ['aşık', 'asik', 'love'],
+      '🤔': ['düşünceli', 'dusunceli', 'thinking'],
+      '😎': ['havalı', 'havali', 'cool'],
+      '🙄': ['sıkılmış', 'sikilmış', 'sikilmis', 'bored'],
+      // weather
+      '☀️': ['güneş', 'gunes', 'güneşli', 'gunesli', 'sunny'],
+      '⛅': ['parçalı', 'parçalı bulutlu', 'parcali', 'partly cloudy'],
+      '☁️': ['bulutlu', 'cloudy'],
+      '🌧️': ['yağmurlu', 'yagmurlu', 'rainy'],
+      '⛈️': ['fırtına', 'fırtınalı', 'furtina', 'stormy'],
+      '❄️': ['karlı', 'karli', 'snowy'],
+    };
+  }
+
+  // Decide if a note matches searchTerm, including mood/weather keyword mapping
+  noteMatchesSearch(note, searchTerm) {
+    const title = this.normalizeForSearch(note.title || '');
+    const content = this.normalizeForSearch(note.content || '');
+    const tags = (note.tags || []).map((t) => this.normalizeForSearch(t));
+
+    if (title.includes(searchTerm) || content.includes(searchTerm)) return true;
+    if (tags.some((t) => t.includes(searchTerm))) return true;
+
+    // mood and weather exact emoji match
+    const mood = note.mood ? String(note.mood) : '';
+    const weather = note.weather ? String(note.weather) : '';
+    if (mood && mood.includes(searchTerm)) return true;
+    if (weather && weather.includes(searchTerm)) return true;
+
+    // check mapped keywords for mood/weather
+    const map = this.moodWeatherKeywords();
+    for (const [emoji, keywords] of Object.entries(map)) {
+      if (keywords.some((k) => k.includes(searchTerm))) {
+        if (note.mood === emoji || note.weather === emoji) return true;
+      }
+    }
+
+    return false;
   }
 
   getSortedNotes(notes) {
