@@ -72,6 +72,11 @@ class CapnoteApp {
     this.searchContainer = document.getElementById('searchContainer');
     this.sortDropdown = document.getElementById('sortDropdown');
 
+  // Markdown controls
+  this.toggleMarkdownBtn = document.getElementById('toggleMarkdownBtn');
+  this.markdownEditor = document.getElementById('markdownEditor');
+  this.markdownPreview = document.getElementById('markdownPreview');
+
     // Formatting toolbar
     this.fontFamilyDropdown = document.getElementById('fontFamily');
     this.fontSizeDropdown = document.getElementById('fontSize');
@@ -236,6 +241,16 @@ class CapnoteApp {
 
     // Arama ve filtreler
     this.searchInput.addEventListener('input', (e) => this.searchNotes(e.target.value));
+
+  // Markdown toggle and preview
+  if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.addEventListener('click', () => this.toggleMarkdownMode());
+  if (this.markdownEditor) this.markdownEditor.addEventListener('input', () => {
+    // If preview is visible, live-update it (debounced would be better, but keep simple)
+    if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
+      this.renderMarkdownPreview(this.markdownEditor.value);
+    }
+    this.trackContentChanges();
+  });
 
     // New control buttons
     this.searchBtn?.addEventListener('click', () => this.toggleSearch());
@@ -1101,54 +1116,25 @@ class CapnoteApp {
     this.syncCheckboxStates();
 
     const title = this.noteTitle.value.trim() || 'Başlıksız Not';
-    const content = this.richEditor.innerHTML;
+  // If markdown editor is visible, save raw markdown; otherwise save HTML from rich editor
+  // If the markdown editor is visible (editing markdown), save raw markdown; otherwise save HTML from rich editor
+  const isMarkdownMode = this.markdownEditor && !this.markdownEditor.classList.contains('hidden');
+  const content = isMarkdownMode ? this.markdownEditor.value : this.richEditor.innerHTML;
 
     this.currentNote.title = title;
-    this.currentNote.content = content;
+  this.currentNote.content = content;
+  this.currentNote.isMarkdown = !!isMarkdownMode;
     const nowIso = new Date().toISOString();
     this.currentNote.updatedAt = nowIso;
-    // Minimal DOM update to avoid full re-render and animations:
-    // - remove the note element from its previous container
-    // - append to target folder container only if it's visible (expanded)
-    // - update folder counts in the sidebar
+    // Update UI lists to reflect changes. Keep it simple and robust.
     try {
-      // Remove any existing DOM instances from previous container
-      document.querySelectorAll(`[data-note-id="${noteId}"]`).forEach((el) => {
-        const parentFolderContainer = el.closest('.folder-notes-container');
-        if (parentFolderContainer) {
-          // remove from old folder container
-          parentFolderContainer.removeChild(el);
-        } else {
-          // remove from main notes list if present
-          const mainList = document.getElementById('notesList');
-          if (mainList && mainList.contains(el)) mainList.removeChild(el);
-        }
-      });
-
-      // If destination folder container exists and is expanded, append the existing element
-      if (folderId !== 'default') {
-        const targetContainer = document.querySelector(`.folder-notes-container[data-folder-id="${folderId}"]`);
-        const header = document.querySelector(`.folder-item[data-folder-id="${folderId}"]`);
-        if (targetContainer && header && header.classList.contains('expanded')) {
-          // create a folder note element if it doesn't exist in DOM
-          let existing = document.querySelector(`[data-note-id="${noteId}"]`);
-          if (!existing) {
-            const noteEl = this.createFolderNoteElement(note);
-            targetContainer.appendChild(noteEl);
-          } else {
-            targetContainer.appendChild(existing);
-          }
-        }
+  this.updateNotesList();
+  this.updateFoldersList();
+      if (this.currentNote && this.currentNote.id) {
+        this.updateActionButtonStates(this.currentNote.id);
       }
-
-      // Update folder count badges for old and new folder
-      if (oldFolderId && oldFolderId !== 'default') this.updateFolderCountInDOM(oldFolderId);
-      if (folderId && folderId !== 'default') this.updateFolderCountInDOM(folderId);
-
-      // Update action buttons / states for this note (no full re-render)
-      this.updateActionButtonStates(noteId);
     } catch (e) {
-      // fallback to safe full updates if DOM manipulation fails
+      // If anything goes wrong, ensure full refresh
       this.updateNotesList();
       this.updateFoldersList();
     }
@@ -1207,7 +1193,19 @@ class CapnoteApp {
   loadNoteInEditor(note) {
     this.clearSavedSelection();
     this.noteTitle.value = note.title;
-    this.richEditor.innerHTML = note.content;
+    // Load either raw markdown or HTML depending on note.isMarkdown
+    if (note.isMarkdown) {
+      if (this.markdownEditor) {
+        this.markdownEditor.value = note.content || '';
+      }
+      if (this.richEditor) {
+        // Show rich editor as plain text fallback (hidden)
+        this.richEditor.innerHTML = '';
+      }
+    } else {
+      this.richEditor.innerHTML = note.content;
+      if (this.markdownEditor) this.markdownEditor.value = '';
+    }
     this.setEditorFormatting(note.formatting || this.getDefaultFormatting());
 
     // Restore checkbox states from HTML attributes
@@ -1222,13 +1220,97 @@ class CapnoteApp {
     this.updateWordCount();
     this.updateCurrentDate();
 
-    // Reset save button state - note is loaded as-is, no changes yet
-    this.lastSavedContent = this.getCurrentNoteContent();
+  // Reset save button state - note is loaded as-is, no changes yet
+  this.lastSavedContent = this.getCurrentNoteContent();
     this.isAutoSaved = true;
     this.updateSaveButtonState();
 
     // Update favorite button state
     this.updateFavoriteButtons();
+    // Hide preview by default when loading into editor
+    this.hideMarkdownPreview();
+    // Show appropriate editor (markdownEditor for markdown notes)
+    if (note.isMarkdown) {
+      this.showMarkdownEditor();
+    } else {
+      this.showRichEditor();
+    }
+  }
+
+  showMarkdownPreview() {
+    if (!this.markdownPreview) return;
+    this.markdownPreview.classList.remove('hidden');
+    this.toggleMarkdownBtn.classList.add('active');
+  }
+
+  hideMarkdownPreview() {
+    if (!this.markdownPreview) return;
+    this.markdownPreview.classList.add('hidden');
+    this.toggleMarkdownBtn.classList.remove('active');
+  }
+
+  toggleMarkdownMode() {
+    // Preview-only mode: render markdown from current editor content or currentNote
+    if (!this.markdownPreview) return;
+    const isVisible = !this.markdownPreview.classList.contains('hidden');
+    if (isVisible) {
+      this.hideMarkdownPreview();
+      // Restore previous editor visibility
+      if (this.currentNote && this.currentNote.isMarkdown && this.markdownEditor) {
+        this.showMarkdownEditor();
+      } else {
+        this.showRichEditor();
+      }
+    } else {
+      // Get source text: prefer current rich editor text (so user edits immediately reflect preview)
+      const sourceText = (this.markdownEditor && !this.markdownEditor.classList.contains('hidden'))
+        ? this.markdownEditor.value
+        : (this.richEditor && this.richEditor.innerText)
+        ? this.richEditor.innerText
+        : (this.currentNote && this.currentNote.content)
+        ? this.currentNote.content
+        : '';
+      this.renderMarkdownPreview(sourceText);
+      // Hide editors while showing preview
+      this.hideRichEditor();
+      this.hideMarkdownEditor();
+      this.showMarkdownPreview();
+    }
+  }
+
+  renderMarkdownPreview(source) {
+    if (!this.markdownPreview) return;
+    const md = String(source || '');
+    try {
+      const html = (window.marked && marked.parse) ? marked.parse(md) : md;
+      this.markdownPreview.innerHTML = html;
+    } catch (e) {
+      this.markdownPreview.textContent = md;
+    }
+  }
+
+  // Editor visibility helpers
+  showMarkdownEditor() {
+    if (!this.markdownEditor) return;
+    this.markdownEditor.classList.remove('hidden');
+    if (this.richEditor) this.richEditor.classList.add('hidden');
+    this.toggleMarkdownBtn.classList.toggle('active', true);
+  }
+
+  hideMarkdownEditor() {
+    if (!this.markdownEditor) return;
+    this.markdownEditor.classList.add('hidden');
+    this.toggleMarkdownBtn.classList.toggle('active', false);
+  }
+
+  showRichEditor() {
+    if (this.richEditor) this.richEditor.classList.remove('hidden');
+    if (this.markdownEditor) this.markdownEditor.classList.add('hidden');
+    this.toggleMarkdownBtn.classList.toggle('active', false);
+  }
+
+  hideRichEditor() {
+    if (this.richEditor) this.richEditor.classList.add('hidden');
   }
 
   restoreCheckboxStates() {
@@ -1387,7 +1469,15 @@ class CapnoteApp {
                 </div>
             `;
     } else {
-      this.viewerText.innerHTML = note.content;
+      if (note.isMarkdown) {
+        try {
+          this.viewerText.innerHTML = (window.marked && marked.parse) ? marked.parse(note.content || '') : (note.content || '');
+        } catch (e) {
+          this.viewerText.textContent = note.content || '';
+        }
+      } else {
+        this.viewerText.innerHTML = note.content;
+      }
     }
 
     this.applyViewerFormatting(note.formatting);
