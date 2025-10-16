@@ -34,6 +34,11 @@
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-xl:
     0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); 
+  /* dark theme shadow variants — used only when dark theme is active */
+  /* subtler dark shadows for dialogs */
+  --shadow-dark-sm: 0 4px 10px rgba(0,0,0,0.55);
+  --shadow-dark-lg: 0 6px 18px rgba(0,0,0,0.6);
+  --shadow-dark-xl: 0 12px 30px rgba(0,0,0,0.65);
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
@@ -2983,7 +2988,8 @@ input[type="color"].color-picker::-moz-color-swatch {
   background: var(--modal-content-bg);
   color: var(--text-light);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  /* use the smallest dark shadow so dialogs don't feel oversized on dark backgrounds */
+  box-shadow: var(--shadow-dark-sm);
 }
 
 [data-theme='dark'] .modal-overlay {
@@ -3666,7 +3672,8 @@ input:checked + .toggle-slider:before {
   margin: 0;
   background: var(--bg-primary);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  /* moderate shadow for password modal (light theme) */
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
   border: 1px solid var(--border-color);
   animation: modalSlideIn 0.3s ease-out;
   position: relative;
@@ -3839,7 +3846,8 @@ input:checked + .toggle-slider:before {
 [data-theme='dark'] #passwordModal .modal-content {
   background: var(--bg-primary);
   border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  /* subtler dark shadow to avoid overly large appearance */
+  box-shadow: var(--shadow-dark-xl);
 }
 
 [data-theme='dark'] #passwordModal .form-input {
@@ -3890,7 +3898,8 @@ input:checked + .toggle-slider:before {
   margin: 0;
   background: var(--bg-primary);
   border-radius: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  /* moderate shadow for folder modal (light theme) */
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
   border: 1px solid var(--border-color);
   animation: modalSlideIn 0.3s ease-out;
   position: relative;
@@ -4033,6 +4042,8 @@ input:checked + .toggle-slider:before {
 [data-theme='dark'] #folderModal .modal-content {
   background: var(--bg-primary);
   border-color: var(--border-color);
+  /* use a subtler, darker shadow so it blends with dark backgrounds */
+  box-shadow: var(--shadow-dark-lg);
 }
 
 [data-theme='dark'] #folderModal .form-input {
