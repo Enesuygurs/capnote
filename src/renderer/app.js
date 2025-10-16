@@ -184,6 +184,17 @@ class CapnoteApp {
     this.emojiSearchInput = document.getElementById('emojiSearchInput');
     this.closeEmojiPanel = document.getElementById('closeEmojiPanel');
 
+    // If the emoji panel is placed inside a transformed or positioned ancestor it can
+    // change how `position: fixed` is calculated. Move it to document.body so JS can
+    // place it reliably relative to the viewport using getBoundingClientRect.
+    try {
+      if (this.emojiPanel && this.emojiPanel.parentElement !== document.body) {
+        document.body.appendChild(this.emojiPanel);
+      }
+    } catch (e) {
+      // ignore DOM move errors
+    }
+
     // Password Modal
     this.passwordModal = document.getElementById('passwordModal');
     this.passwordInput = document.getElementById('passwordInput');
@@ -809,8 +820,9 @@ class CapnoteApp {
           const maxLeft = window.innerWidth - panelRect.width - 4;
           left = Math.max(minLeft, Math.min(maxLeft, left));
           this.emojiPanel.style.left = left + 'px';
-          // flush: top edge exactly at button bottom
-          this.emojiPanel.style.top = (Math.round(btnRect.bottom)) + 'px';
+          // flush: top edge slightly below button bottom for breathing room
+          const verticalNudge = 10; // px
+          this.emojiPanel.style.top = (Math.round(btnRect.bottom) + verticalNudge) + 'px';
           this.emojiPanel.style.right = 'auto';
         }
 
