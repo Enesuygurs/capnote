@@ -3912,28 +3912,6 @@ class CapnoteApp {
 
     URL.revokeObjectURL(url);
     this.showNotification(`${this.notes.length} not başarıyla dışa aktarıldı!`, 'success');
-    return new Promise((resolve) => {
-      this.confirmModal.querySelector('h3').textContent = title;
-
-      const handleConfirm = () => {
-        this.confirmBtn.removeEventListener('click', handleConfirm);
-        this.cancelBtn.removeEventListener('click', handleCancel);
-        this.hideModal(this.confirmModal);
-        resolve(true);
-      };
-
-      const handleCancel = () => {
-        this.confirmBtn.removeEventListener('click', handleConfirm);
-        this.cancelBtn.removeEventListener('click', handleCancel);
-        this.hideModal(this.confirmModal);
-        resolve(false);
-      };
-
-      this.confirmBtn.addEventListener('click', handleConfirm);
-      this.cancelBtn.addEventListener('click', handleCancel);
-
-      this.showModal(this.confirmModal);
-    });
   }
 
   exportSettings() {
