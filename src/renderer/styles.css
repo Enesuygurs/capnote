@@ -4298,6 +4298,46 @@ input:checked + .toggle-slider:before {
   animation: pulse 1s infinite;
 }
 
+/* Visual insertion indicator for folder reordering: a thin line showing where the folder will be placed */
+.folder-item.insert-before::before,
+.default-folder.insert-before::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 0;
+  height: 2px;
+  background: var(--primary-color);
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  border-radius: 2px;
+  transform-origin: left center;
+  z-index: 10;
+}
+
+.folder-item.insert-after::after,
+.default-folder.insert-after::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 2px;
+  background: var(--primary-color);
+  box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  border-radius: 2px;
+  transform-origin: left center;
+  z-index: 10;
+}
+
+/* Dark theme adjustments: use a softer glow for the insertion line */
+body.dark .folder-item.insert-before::before,
+body.dark .default-folder.insert-before::before,
+body.dark .folder-item.insert-after::after,
+body.dark .default-folder.insert-after::after {
+  box-shadow: 0 0 10px rgba(255,255,255,0.06);
+  background: color-mix(in srgb, var(--primary-color) 70%, black 30%);
+}
+
 @keyframes pulse {
   0%,
   100% {

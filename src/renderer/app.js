@@ -4101,6 +4101,28 @@ class CapnoteApp {
     }
   }
 
+  reorderFolders(sourceId, targetId, insertBefore = true) {
+    // Normalize ids
+    sourceId = String(sourceId);
+    targetId = String(targetId);
+    const srcIndex = this.folders.findIndex((f) => String(f.id) === sourceId);
+    const tgtIndex = this.folders.findIndex((f) => String(f.id) === targetId);
+    if (srcIndex === -1 || tgtIndex === -1 || srcIndex === tgtIndex) return;
+
+    const [moved] = this.folders.splice(srcIndex, 1);
+    // If removing an earlier item shifts the target index, adjust
+    let insertIndex = tgtIndex;
+    if (srcIndex < tgtIndex) insertIndex = insertIndex - 1;
+    if (!insertBefore) insertIndex = insertIndex + 1;
+    // Clamp
+    insertIndex = Math.max(0, Math.min(this.folders.length, insertIndex));
+    this.folders.splice(insertIndex, 0, moved);
+
+    // Persist and refresh UI
+    this.saveFolders();
+    this.updateFoldersList();
+  }
+
   // Return how many notes in a folder match current filter and search
   getVisibleCountForFolder(folderId) {
     // Use loose equality to tolerate string/number id differences coming from DOM attributes
@@ -4182,21 +4204,69 @@ class CapnoteApp {
     container.appendChild(notesContainer);
 
     // Add drop event listeners to folder header
+    // Make folder header draggable so folders can be reordered
+    folderHeader.draggable = true;
+    folderHeader.addEventListener('dragstart', (ev) => {
+      try {
+        ev.dataTransfer.effectAllowed = 'move';
+        // Use a dedicated mime type for folder drags to avoid colliding with note drags
+        ev.dataTransfer.setData('text/folder-id', String(folder.id));
+        // add a dragging class to aid styling (optional)
+        folderHeader.classList.add('dragging');
+      } catch (err) {
+        // ignore
+      }
+    });
+    folderHeader.addEventListener('dragend', () => {
+      folderHeader.classList.remove('dragging');
+      // remove any drag-over classes left behind
+      document.querySelectorAll('.folder-item.drag-over').forEach((el) => el.classList.remove('drag-over'));
+    });
     folderHeader.addEventListener('dragover', (e) => {
       e.preventDefault();
+      // decide whether insertion would be before or after based on cursor position
+      const rect = folderHeader.getBoundingClientRect();
+      const isBefore = (e.clientY - rect.top) < (rect.height / 2);
       folderHeader.classList.add('drag-over');
+      folderHeader.classList.toggle('insert-before', isBefore);
+      folderHeader.classList.toggle('insert-after', !isBefore);
+      // remove these classes from siblings to avoid multiple cues
+      const siblings = Array.from(folderHeader.parentElement.querySelectorAll('.folder-item'));
+      siblings.forEach((s) => {
+        if (s !== folderHeader) {
+          s.classList.remove('insert-before', 'insert-after', 'drag-over');
+        }
+      });
     });
 
     folderHeader.addEventListener('dragleave', () => {
-      folderHeader.classList.remove('drag-over');
+      folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
     });
 
     folderHeader.addEventListener('drop', (e) => {
       e.preventDefault();
       folderHeader.classList.remove('drag-over');
+      // First check for folder reorder payload
+      const draggedFolderId = e.dataTransfer.getData('text/folder-id');
+      if (draggedFolderId) {
+        const sourceId = String(draggedFolderId);
+        const targetId = String(folder.id);
+        if (sourceId !== targetId) {
+          // Determine whether to insert before or after based on mouse position
+          const rect = folderHeader.getBoundingClientRect();
+          const insertBefore = (e.clientY - rect.top) < (rect.height / 2);
+          // cleanup visual classes
+          folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
+          this.reorderFolders(sourceId, targetId, insertBefore);
+        }
+        return;
+      }
+
+      // Otherwise assume a note was dropped onto this folder
       const noteId = e.dataTransfer.getData('text/plain');
-  // Dropped note onto folder (debug logs removed)
-      this.moveNoteToFolder(parseInt(noteId), folder.id);
+      if (noteId) {
+        this.moveNoteToFolder(parseInt(noteId), folder.id);
+      }
     });
 
     return container;
