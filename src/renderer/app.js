@@ -3858,12 +3858,21 @@ class CapnoteApp {
           });
         }
 
+        // Persist folders (if any) and notes, then refresh UI so imported folders/notes appear immediately
+        try {
+          await this.saveFolders();
+        } catch (e) {
+          console.warn('Folder save failed during import', e);
+        }
         await this.saveNotes();
+        // Refresh UI
+        this.updateFoldersList();
         this.updateNotesList();
+        this.updateFolderNotes();
         this.updateStats();
 
         this.showNotification(`${addedCount} not başarıyla içe aktarıldı!`, 'success');
-        // Settings modal için anında kapatma
+        // Close settings modal immediately
         this.settingsModal.classList.remove('show');
         this.settingsModal.classList.add('hidden');
       } catch (error) {
