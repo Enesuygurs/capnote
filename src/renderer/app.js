@@ -1605,6 +1605,18 @@ class CapnoteApp {
         const noteElement = this.createFolderNoteElement(note);
         container.appendChild(noteElement);
       });
+
+  // Toggle visibility of the folder wrapper based on visible count / current filter/search
+  const treatAsFilter = this.currentFilter !== 'all' || !!searchTerm;
+  const visibleCount = this.getVisibleCountForFolder(folderId);
+      const folderWrapper = container.closest('.folder-container');
+      if (folderWrapper) {
+        if (treatAsFilter && visibleCount === 0) {
+          folderWrapper.style.display = 'none';
+        } else {
+          folderWrapper.style.display = '';
+        }
+      }
     });
   }
 
@@ -1866,6 +1878,8 @@ class CapnoteApp {
 
   searchNotes() {
     this.updateNotesList();
+    // Rebuild folders so search results hide/show folders correctly
+    this.updateFoldersList();
   }
 
   changeFilter(filter) {
@@ -3555,7 +3569,15 @@ class CapnoteApp {
 
     this.foldersList.innerHTML = '';
 
+    // Compute visible counts per folder and skip folders with zero visible notes
+    const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
+    const searchTerm = this.normalizeForSearch(rawSearch);
+    const treatAsFilter = this.currentFilter !== 'all' || !!searchTerm;
+
     this.folders.forEach((folder) => {
+      const visibleCount = this.getVisibleCountForFolder(folder.id);
+      // If current filter/search should restrict visibility, hide folders with zero visible notes
+      if (treatAsFilter && visibleCount === 0) return;
       const folderElement = this.createFolderElement(folder);
       this.foldersList.appendChild(folderElement);
     });
@@ -3578,8 +3600,63 @@ class CapnoteApp {
     if (!folderId || folderId === 'default') return;
     const countEl = document.querySelector(`.folder-item[data-folder-id="${folderId}"] .folder-count`);
     if (!countEl) return;
-    const count = this.notes.filter((n) => n.folderId === folderId).length;
-    countEl.textContent = count;
+    // Show visible count depending on current filter/search
+    const visibleCount = this.getVisibleCountForFolder(folderId);
+    countEl.textContent = visibleCount;
+    // If current filter or an active search hides empty folders, toggle visibility of the folder container
+    const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
+    const searchTerm = this.normalizeForSearch(rawSearch);
+    const treatAsFilter = this.currentFilter !== 'all' || !!searchTerm;
+    if (treatAsFilter) {
+      const folderContainer = document.querySelector(`.folder-container:has(.folder-item[data-folder-id="${folderId}"])`);
+      // Fallback for environments without :has support
+      const fallbackContainer = folderContainer || document.querySelector(`.folder-item[data-folder-id="${folderId}"]`)?.closest('.folder-container');
+      if (fallbackContainer) {
+        if (visibleCount === 0) {
+          // Remove/hide the folder container
+          fallbackContainer.style.display = 'none';
+        } else {
+          fallbackContainer.style.display = '';
+        }
+      }
+    }
+  }
+
+  // Return how many notes in a folder match current filter and search
+  getVisibleCountForFolder(folderId) {
+  // Use loose equality to tolerate string/number id differences coming from DOM attributes
+  let folderNotes = this.notes.filter((n) => n.folderId == folderId);
+
+    // Apply current filter
+    switch (this.currentFilter) {
+      case 'today':
+        const today = new Date().toDateString();
+        folderNotes = folderNotes.filter((note) => new Date(note.createdAt).toDateString() === today);
+        break;
+      case 'favorites':
+        folderNotes = folderNotes.filter((note) => note.isFavorite);
+        break;
+      default:
+        // 'all' or other filters: keep folderNotes as-is
+        break;
+    }
+
+    // Apply search
+    const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
+    const searchTerm = this.normalizeForSearch(rawSearch);
+    if (searchTerm) {
+      folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTerm));
+      // Temporary debug: log which folders have matches during search
+      try {
+        const folderObj = this.folders.find((f) => f.id == folderId) || { name: folderId };
+        const matchedTitles = folderNotes.map((n) => n.title || '(Başlıksız)').slice(0, 10);
+        console.debug('[search-debug] folder:', folderObj.name, 'id:', folderId, 'matches:', folderNotes.length, matchedTitles);
+      } catch (e) {
+        // ignore debug errors
+      }
+    }
+
+    return folderNotes.length;
   }
 
   createFolderElement(folder) {
@@ -3929,14 +4006,15 @@ class CapnoteApp {
       // default durumunda tüm klasör notlarını göster
     }
 
-    // Apply search filter to folder notes
-    const searchTerm = this.searchInput.value.toLowerCase().trim();
-    if (searchTerm) {
+    // Apply search filter to folder notes (use normalized search helper)
+    const rawSearchLocal = this.searchInput ? String(this.searchInput.value) : '';
+    const searchTermLocal = this.normalizeForSearch(rawSearchLocal);
+    if (searchTermLocal) {
       folderNotes = folderNotes.filter(
         (note) =>
-          note.title.toLowerCase().includes(searchTerm) ||
-          note.content.toLowerCase().includes(searchTerm) ||
-          (note.tags || []).some((tag) => tag.toLowerCase().includes(searchTerm))
+          this.normalizeForSearch(note.title || '').includes(searchTermLocal) ||
+          this.normalizeForSearch(note.content || '').includes(searchTermLocal) ||
+          (note.tags || []).some((tag) => this.normalizeForSearch(tag).includes(searchTermLocal))
       );
     }
 
@@ -3945,6 +4023,20 @@ class CapnoteApp {
       const noteElement = this.createFolderNoteElement(note);
       folderContainer.appendChild(noteElement);
     });
+
+    // If no visible notes in the folder under current filter/search, hide the entire folder container
+    const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
+    const searchTerm = this.normalizeForSearch(rawSearch);
+    const treatAsFilter = this.currentFilter !== 'all' || !!searchTerm;
+    const visibleCount = this.getVisibleCountForFolder(folderId);
+    const folderWrapper = folderContainer.closest('.folder-container');
+    if (folderWrapper) {
+      if (treatAsFilter && visibleCount === 0) {
+        folderWrapper.style.display = 'none';
+      } else {
+        folderWrapper.style.display = '';
+      }
+    }
   }
 
   async togglePin(noteId) {
