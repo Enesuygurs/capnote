@@ -2656,27 +2656,9 @@ class CapnoteApp {
       return;
     }
 
-    // If pasted text has multiple lines, insert as a single <pre><code> block
-    if (text.includes('\n')) {
-      const pre = document.createElement('pre');
-      const code = document.createElement('code');
-      // Preserve text exactly, including newlines
-      code.textContent = text;
-      pre.appendChild(code);
-      // insert at range
-      range.deleteContents();
-      range.insertNode(pre);
-      // place caret after the inserted block
-      sel.removeAllRanges();
-      const afterRange = document.createRange();
-      afterRange.setStartAfter(pre);
-      afterRange.collapse(true);
-      sel.addRange(afterRange);
-      this.trackContentChanges();
-      return;
-    }
-
-    // Default single-line paste
+    // Insert pasted text as plain text (preserve newlines). Do NOT auto-create <pre><code> blocks.
+    // Only special-case pasting when inside an existing <code> (handled above).
+    // Use execCommand insertText to preserve simple plaintext insertion behavior in contenteditable.
     document.execCommand('insertText', false, text);
     this.trackContentChanges();
   }
