@@ -1597,7 +1597,12 @@ class CapnoteApp {
       const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
       const searchTerm = this.normalizeForSearch(rawSearch);
       if (searchTerm) {
-        folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTerm));
+        // If folder name matches the search, include all folder notes (still respecting currentFilter applied above)
+        const folderObj = this.folders.find((f) => f.id == folderId);
+        const folderNameMatches = folderObj && this.normalizeForSearch(folderObj.name || '').includes(searchTerm);
+        if (!folderNameMatches) {
+          folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTerm));
+        }
       }
 
       const sortedFolderNotes = this.getSortedNotes(folderNotes);
@@ -3683,8 +3688,8 @@ class CapnoteApp {
 
   // Return how many notes in a folder match current filter and search
   getVisibleCountForFolder(folderId) {
-  // Use loose equality to tolerate string/number id differences coming from DOM attributes
-  let folderNotes = this.notes.filter((n) => n.folderId == folderId);
+    // Use loose equality to tolerate string/number id differences coming from DOM attributes
+    let folderNotes = this.notes.filter((n) => n.folderId == folderId);
 
     // Apply current filter
     switch (this.currentFilter) {
@@ -3704,8 +3709,13 @@ class CapnoteApp {
     const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
     const searchTerm = this.normalizeForSearch(rawSearch);
     if (searchTerm) {
-      folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTerm));
-      // debug removed
+      // If the folder name itself matches the search term, consider the folder visible and
+      // include all its notes (still respecting the current filter like 'today' or 'favorites').
+      const folderObj = this.folders.find((f) => f.id == folderId);
+      const folderNameMatches = folderObj && this.normalizeForSearch(folderObj.name || '').includes(searchTerm);
+      if (!folderNameMatches) {
+        folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTerm));
+      }
     }
 
     return folderNotes.length;
