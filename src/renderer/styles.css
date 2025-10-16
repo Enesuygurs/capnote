@@ -1245,7 +1245,7 @@ input[type="color"].color-picker::-moz-color-swatch {
   font-style: italic;
 }
 .editor-sidebar {
-  width: 280px;
+  width: 250px;
   background: var(--bg-secondary);
   border-left: 1px solid rgba(0, 0, 0, 0.06);
   padding: 20px;
@@ -1266,7 +1266,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 .mood-selector,
 .weather-selector {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
 }
 .mood-btn,
