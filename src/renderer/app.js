@@ -660,16 +660,19 @@ class CapnoteApp {
   insertPreCodeForRichEditor() {
     try {
       const sel = window.getSelection();
-      if (!sel || !sel.rangeCount) {
-        // append at the end
+      const createPreWithZW = () => {
         const pre = document.createElement('pre');
         const code = document.createElement('code');
-        // insert a zero-width space so caret can be placed inside
         const textNode = document.createTextNode('\u200B');
         code.appendChild(textNode);
         pre.appendChild(code);
+        return { pre, code, textNode };
+      };
+
+      if (!sel || !sel.rangeCount) {
+        // append at the end
+        const { pre, textNode } = createPreWithZW();
         this.richEditor.appendChild(pre);
-        // place caret inside the newly appended code node
         try {
           const newSel = window.getSelection();
           const range = document.createRange();
@@ -681,43 +684,69 @@ class CapnoteApp {
         } catch (err) {}
         return;
       }
+
       const range = sel.getRangeAt(0);
-      const pre = document.createElement('pre');
-      const code = document.createElement('code');
-      code.textContent = '';
-      pre.appendChild(code);
+
+      // determine if selection is inside an existing <pre> or <code>
+      const commonNode = range.commonAncestorContainer;
+      const elementNode = commonNode.nodeType === Node.ELEMENT_NODE ? commonNode : commonNode.parentElement;
+      const ancestor = elementNode && elementNode.closest ? elementNode.closest('pre, code') : null;
+
+      if (ancestor) {
+        // If we are inside a <code> or <pre>, insert the new block after the containing <pre>
+        let preAncestor = ancestor.tagName && ancestor.tagName.toLowerCase() === 'pre' ? ancestor : (ancestor.closest ? ancestor.closest('pre') : null);
+        if (!preAncestor) preAncestor = ancestor.parentElement;
+
+        const { pre, textNode } = createPreWithZW();
+        if (preAncestor && preAncestor.parentNode) {
+          if (preAncestor.nextSibling) preAncestor.parentNode.insertBefore(pre, preAncestor.nextSibling);
+          else preAncestor.parentNode.appendChild(pre);
+        } else {
+          // fallback: insert at current range
+          range.deleteContents();
+          range.insertNode(pre);
+        }
+
+        try {
+          const newSel = window.getSelection();
+          const newRange = document.createRange();
+          newRange.setStart(textNode, 1);
+          newRange.collapse(true);
+          newSel.removeAllRanges();
+          newSel.addRange(newRange);
+          this.richEditor.focus();
+        } catch (err) {}
+
+        return;
+      }
+
+      // Default: insert at the current range location
+      const { pre, textNode } = createPreWithZW();
       range.deleteContents();
-      // insert the pre node
       range.insertNode(pre);
-      // place caret inside the code node at the end of the placeholder text
       sel.removeAllRanges();
       const newRange = document.createRange();
-        // create a zero-width text node so the caret can be placed inside the code element
-        const textNode = document.createTextNode('\u200B');
-        code.appendChild(textNode);
-        // place caret after the zero-width space so typing appears inside the code block
-        newRange.setStart(textNode, 1);
+      newRange.setStart(textNode, 1);
       newRange.collapse(true);
       sel.addRange(newRange);
-        try { this.richEditor.focus(); } catch (e) {}
+      try { this.richEditor.focus(); } catch (e) {}
     } catch (e) {
       // fallback: append
       const pre = document.createElement('pre');
       const code = document.createElement('code');
-        // create text node so caret can be placed
-        const textNode = document.createTextNode('\u200B');
-        code.appendChild(textNode);
-        pre.appendChild(code);
-        this.richEditor.appendChild(pre);
-        try {
-          const sel2 = window.getSelection();
-          const range2 = document.createRange();
-          range2.setStart(textNode, 1);
-          range2.collapse(true);
-          sel2.removeAllRanges();
-          sel2.addRange(range2);
-          this.richEditor.focus();
-        } catch (err) {}
+      const textNode = document.createTextNode('\u200B');
+      code.appendChild(textNode);
+      pre.appendChild(code);
+      this.richEditor.appendChild(pre);
+      try {
+        const sel2 = window.getSelection();
+        const range2 = document.createRange();
+        range2.setStart(textNode, 1);
+        range2.collapse(true);
+        sel2.removeAllRanges();
+        sel2.addRange(range2);
+        this.richEditor.focus();
+      } catch (err) {}
     }
   }
 
