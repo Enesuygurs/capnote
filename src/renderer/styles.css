@@ -343,9 +343,9 @@ body {
 }
 
 .markdown-preview pre {
-  /* Boxed code block for preview */
-  background: var(--gh-code-bg, #0b1220);
-  color: #e6edf3;
+  /* Boxed code block for preview - use a slightly darker accent mix as background */
+  background: color-mix(in srgb, var(--primary-color) 60%, black 40%);
+  color: var(--text-on-primary, #ffffff);
   padding: 14px 16px;
   border-radius: 8px;
   overflow: auto;
@@ -353,8 +353,8 @@ body {
   font-size: 13px;
   line-height: 1.5;
   margin: 0.9em 0;
-  border: 1px solid rgba(0,0,0,0.32);
-  box-shadow: 0 6px 18px rgba(2,6,23,0.25);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 50%, black 50%);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary-color) 20%, black 80%);
 }
 .markdown-preview code {
   background: rgba(27,31,35,0.05);
@@ -375,43 +375,47 @@ body {
 }
 .note-content pre,
 .formatted-content pre {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+  /* Editor/viewer code block uses accent color but slightly muted for readability */
+  background: color-mix(in srgb, var(--primary-color) 65%, black 35%);
+  color: var(--text-on-primary, #ffffff);
   padding: 12px 14px;
   border-radius: 8px;
   overflow: auto;
   font-size: 13px;
   line-height: 1.5;
   margin: 0.8em 0;
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 6px 12px rgba(16,24,40,0.04);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 45%, black 55%);
+  box-shadow: 0 6px 12px color-mix(in srgb, var(--primary-color) 15%, black 85%);
 }
 .note-content code,
 .formatted-content code {
-  background: rgba(0,0,0,0.04);
+  background: color-mix(in srgb, var(--primary-color) 20%, transparent);
   padding: 0.15em 0.35em;
   border-radius: 6px;
   font-size: 13px;
+  color: var(--text-on-primary, #ffffff);
 }
 
 /* Dark theme adjustments for code blocks */
 [data-theme='dark'] .markdown-preview pre {
-  background: #0b1220;
-  color: #e6edf3;
-  border: 1px solid rgba(255,255,255,0.04);
-  box-shadow: 0 6px 18px rgba(2,6,23,0.5);
+  /* Dark theme: use a darker mix so bright accent colors (eg. red) don't appear too light */
+  background: color-mix(in srgb, var(--primary-color) 40%, black 60%);
+  color: var(--text-on-primary, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 30%, black 70%);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary-color) 6%, black 94%);
 }
 [data-theme='dark'] .note-content pre,
 [data-theme='dark'] .formatted-content pre {
-  background: #0f1724;
-  color: #e6edf3;
-  border: 1px solid rgba(255,255,255,0.04);
-  box-shadow: 0 6px 12px rgba(2,6,23,0.45);
+  /* Dark theme for editor/viewer code blocks: mix with more black for stronger darkening */
+  background: color-mix(in srgb, var(--primary-color) 30%, black 70%);
+  color: var(--text-on-primary, #ffffff);
+  border: 1px solid color-mix(in srgb, var(--primary-color) 20%, black 80%);
+  box-shadow: 0 6px 12px color-mix(in srgb, var(--primary-color) 4%, black 96%);
 }
 [data-theme='dark'] .note-content code,
 [data-theme='dark'] .formatted-content code {
-  background: rgba(255,255,255,0.03);
-  color: #e6edf3;
+  background: color-mix(in srgb, var(--primary-color) 18%, transparent);
+  color: var(--text-on-primary, #ffffff);
 }
 
 .markdown-preview table {
