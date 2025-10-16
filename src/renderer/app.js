@@ -76,6 +76,8 @@ class CapnoteApp {
   this.toggleMarkdownBtn = document.getElementById('toggleMarkdownBtn');
   this.markdownEditor = document.getElementById('markdownEditor');
   this.markdownPreview = document.getElementById('markdownPreview');
+  this.toggleHtmlBtn = document.getElementById('toggleHtmlBtn');
+  this.htmlPreview = document.getElementById('htmlPreview');
 
     // Formatting toolbar
     this.fontFamilyDropdown = document.getElementById('fontFamily');
@@ -244,6 +246,7 @@ class CapnoteApp {
 
   // Markdown toggle and preview
   if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.addEventListener('click', () => this.toggleMarkdownMode());
+  if (this.toggleHtmlBtn) this.toggleHtmlBtn.addEventListener('click', () => this.toggleHtmlMode());
   if (this.markdownEditor) this.markdownEditor.addEventListener('input', () => {
     // If preview is visible, live-update it (debounced would be better, but keep simple)
     if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
@@ -1287,6 +1290,94 @@ class CapnoteApp {
     } catch (e) {
       this.markdownPreview.textContent = md;
     }
+  }
+
+  // HTML preview functions
+  showHtmlPreview() {
+    if (!this.htmlPreview) return;
+    this.htmlPreview.classList.remove('hidden');
+    if (this.toggleHtmlBtn) this.toggleHtmlBtn.classList.add('active');
+  }
+
+  hideHtmlPreview() {
+    if (!this.htmlPreview) return;
+    this.htmlPreview.classList.add('hidden');
+    if (this.toggleHtmlBtn) this.toggleHtmlBtn.classList.remove('active');
+  }
+
+  toggleHtmlMode() {
+    if (!this.htmlPreview) return;
+    const isVisible = !this.htmlPreview.classList.contains('hidden');
+    if (isVisible) {
+      this.hideHtmlPreview();
+      // restore editor
+      if (this.currentNote && this.currentNote.isMarkdown && this.markdownEditor) this.showMarkdownEditor();
+      else this.showRichEditor();
+      return;
+    }
+
+    // Ensure markdown preview is hidden if open
+    if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
+      this.hideMarkdownPreview();
+    }
+
+    // Render raw HTML from current source: prefer markdownEditor (if editing markdown), else richEditor.innerHTML
+    const sourceHtml = (this.markdownEditor && !this.markdownEditor.classList.contains('hidden'))
+      ? this.markdownEditor.value
+      : (this.richEditor ? this.richEditor.innerHTML : '');
+
+    // If sourceHtml is Markdown (note.isMarkdown), render via marked then show raw HTML
+    try {
+      let htmlToShow = sourceHtml;
+      if (this.currentNote && this.currentNote.isMarkdown) {
+        // Prefer explicit HTML code fences: ```html
+        const fenceMatch = sourceHtml.match(/```(?:html|HTML|htm)\s*\n([\s\S]*?)```/);
+        if (fenceMatch) {
+          htmlToShow = fenceMatch[1];
+        } else {
+          // Otherwise render the markdown to HTML
+          htmlToShow = (window.marked && marked.parse) ? marked.parse(sourceHtml) : sourceHtml;
+        }
+      } else {
+        // If rich editor content contains escaped HTML entities like &lt;div&gt;, unescape them
+        const tmp = document.createElement('div');
+        tmp.innerHTML = sourceHtml;
+        const text = tmp.textContent || tmp.innerText || '';
+        if (text.includes('<') && text.includes('>')) {
+          htmlToShow = text;
+        } else {
+          htmlToShow = sourceHtml;
+        }
+      }
+
+      // Create or reuse a sandboxed iframe to isolate user HTML/CSS from the parent app
+      let iframe = this.htmlPreview.querySelector('iframe.preview-iframe');
+      if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.className = 'preview-iframe';
+        // sandbox without allow-scripts to prevent script execution; keep it strict
+        iframe.setAttribute('sandbox', '');
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = '0';
+        iframe.style.display = 'block';
+        // ensure iframe occupies the container
+        this.htmlPreview.innerHTML = '';
+        this.htmlPreview.appendChild(iframe);
+      }
+
+      // Build srcdoc that ensures minimal reset so content renders correctly inside iframe
+      const doc = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">` +
+        `<style>html,body{margin:0;padding:0;box-sizing:border-box;font-family:inherit;color:inherit;} img{max-width:100%;height:auto;}</style></head><body>${htmlToShow}</body></html>`;
+      iframe.srcdoc = doc;
+    } catch (e) {
+      this.htmlPreview.textContent = sourceHtml;
+    }
+
+    // Hide editors while showing HTML preview
+    this.hideRichEditor();
+    this.hideMarkdownEditor();
+    this.showHtmlPreview();
   }
 
   // Editor visibility helpers
