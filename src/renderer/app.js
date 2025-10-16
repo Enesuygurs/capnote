@@ -4035,6 +4035,20 @@ class CapnoteApp {
     // If sync option enabled, apply accent color to all folder icons
     const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
     if (syncFolders) this.applyFolderAccentSync(true);
+
+    // update active state on swatch buttons so the selected one appears larger
+    try {
+      const allSwatches = Array.from(document.querySelectorAll('.swatch-btn'));
+      allSwatches.forEach((btn) => {
+        try {
+          const btnColor = (btn.dataset.color || '').toLowerCase();
+          if (btnColor && btnColor === color) btn.classList.add('active');
+          else btn.classList.remove('active');
+        } catch (e) { /* noop for individual button */ }
+      });
+    } catch (e) {
+      // non-fatal
+    }
   }
 
   applyFolderAccentSync(enabled) {
