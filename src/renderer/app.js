@@ -1262,6 +1262,7 @@ class CapnoteApp {
     if (!this.markdownPreview) return;
     this.markdownPreview.classList.remove('hidden');
     this.toggleMarkdownBtn.classList.add('active');
+    if (this.toggleHtmlBtn) this.toggleHtmlBtn.classList.remove('active');
   }
 
   hideMarkdownPreview() {
@@ -1273,6 +1274,10 @@ class CapnoteApp {
   toggleMarkdownMode() {
     // Preview-only mode: render markdown from current editor content or currentNote
     if (!this.markdownPreview) return;
+    // If HTML preview is open, close it so only one preview is active
+    if (this.htmlPreview && !this.htmlPreview.classList.contains('hidden')) {
+      this.hideHtmlPreview();
+    }
     const isVisible = !this.markdownPreview.classList.contains('hidden');
     if (isVisible) {
       this.hideMarkdownPreview();
@@ -1303,7 +1308,11 @@ class CapnoteApp {
     if (!this.markdownPreview) return;
     const md = String(source || '');
     try {
-      const html = (window.marked && marked.parse) ? marked.parse(md) : md;
+      // Prevent any raw HTML from being interpreted when rendering markdown preview.
+      // We escape angle brackets so user HTML doesn't get rendered as HTML in the preview;
+      // the preview should show markdown-derived output only.
+      const escaped = md.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      const html = (window.marked && marked.parse) ? marked.parse(escaped) : escaped;
       this.markdownPreview.innerHTML = html;
     } catch (e) {
       this.markdownPreview.textContent = md;
@@ -1315,6 +1324,7 @@ class CapnoteApp {
     if (!this.htmlPreview) return;
     this.htmlPreview.classList.remove('hidden');
     if (this.toggleHtmlBtn) this.toggleHtmlBtn.classList.add('active');
+    if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.classList.remove('active');
   }
 
   hideHtmlPreview() {
@@ -1334,10 +1344,11 @@ class CapnoteApp {
       return;
     }
 
-    // Ensure markdown preview is hidden if open
+    // Ensure markdown preview is hidden if open and deactivate its button
     if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
       this.hideMarkdownPreview();
     }
+    if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.classList.remove('active');
 
     // Render raw HTML from current source: prefer markdownEditor (if editing markdown), else richEditor.innerHTML
     const sourceHtml = (this.markdownEditor && !this.markdownEditor.classList.contains('hidden'))
@@ -1396,6 +1407,8 @@ class CapnoteApp {
     this.hideRichEditor();
     this.hideMarkdownEditor();
     this.showHtmlPreview();
+    // deactivate markdown button to make previews mutually exclusive
+    if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.classList.remove('active');
   }
 
   // Editor visibility helpers
