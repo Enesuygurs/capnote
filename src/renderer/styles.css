@@ -407,14 +407,6 @@ body {
 
 /* Dark theme variant for copy button background */
 body.dark .code-copy-btn { background: rgba(255,255,255,0.06); }
-.note-content code,
-.formatted-content code {
-  background: color-mix(in srgb, var(--primary-color) 20%, transparent);
-  padding: 0.15em 0.35em;
-  border-radius: 6px;
-  font-size: 13px;
-  color: var(--text-on-primary, #ffffff);
-}
 
 /* Dark theme adjustments for code blocks */
 [data-theme='dark'] .markdown-preview pre {
@@ -428,11 +420,6 @@ body.dark .code-copy-btn { background: rgba(255,255,255,0.06); }
 [data-theme='dark'] .formatted-content pre {
   /* Dark theme for editor/viewer code blocks: mix with more black for stronger darkening */
   background: color-mix(in srgb, var(--primary-color) 30%, black 70%);
-  color: var(--text-on-primary, #ffffff);
-}
-[data-theme='dark'] .note-content code,
-[data-theme='dark'] .formatted-content code {
-  background: color-mix(in srgb, var(--primary-color) 18%, transparent);
   color: var(--text-on-primary, #ffffff);
 }
 
