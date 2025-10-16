@@ -1474,9 +1474,64 @@ class CapnoteApp {
       const escaped = md.replace(/</g, '&lt;').replace(/>/g, '&gt;');
       const html = (window.marked && marked.parse) ? marked.parse(escaped) : escaped;
       this.markdownPreview.innerHTML = html;
+      // attach copy buttons to any code blocks in the preview
+      this.attachCopyButtonsToPre(this.markdownPreview);
     } catch (e) {
       this.markdownPreview.textContent = md;
     }
+  }
+
+  // Attach a small copy button to every <pre> inside the given container
+  attachCopyButtonsToPre(container) {
+    if (!container) return;
+    const pres = container.querySelectorAll('pre');
+    pres.forEach((pre) => {
+      // avoid duplicate buttons
+      if (pre.querySelector('.code-copy-btn')) return;
+
+      const btn = document.createElement('button');
+      btn.className = 'code-copy-btn';
+      btn.type = 'button';
+      btn.title = 'Kodu kopyala';
+      btn.innerHTML = '<i class="fas fa-copy"></i>';
+
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const text = pre.innerText || pre.textContent || '';
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.classList.add('copied');
+          btn.title = 'Kopyalandı';
+          // show toast
+          if (this.showNotification) this.showNotification('Kod panoya kopyalandı', 'success');
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            btn.title = 'Kodu kopyala';
+          }, 1200);
+        } catch (err) {
+          // fallback: select and execCommand
+          try {
+            const range = document.createRange();
+            range.selectNodeContents(pre);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            document.execCommand('copy');
+            sel.removeAllRanges();
+            btn.classList.add('copied');
+            if (this.showNotification) this.showNotification('Kod panoya kopyalandı', 'success');
+            setTimeout(() => btn.classList.remove('copied'), 1200);
+          } catch (e) {
+            console.error('copy failed', e);
+            if (this.showNotification) this.showNotification('Kopyalama başarısız', 'error');
+          }
+        }
+      });
+
+      // Wrap pre in a relative container to position the button if necessary
+      pre.style.position = pre.style.position || 'relative';
+      pre.appendChild(btn);
+    });
   }
 
   // HTML preview functions
@@ -1760,6 +1815,8 @@ class CapnoteApp {
       } else {
         this.viewerText.innerHTML = note.content;
       }
+    // Attach copy buttons to code blocks in the viewer
+    this.attachCopyButtonsToPre(this.viewerText);
     }
 
     this.applyViewerFormatting(note.formatting);
