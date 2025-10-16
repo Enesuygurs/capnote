@@ -282,6 +282,13 @@ body {
   line-height: 1.6;
   padding: 18px 20px;
   overflow: auto;
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  bottom: 32px;
+  left: 32px;
+  box-sizing: border-box;
+  background: transparent;
 }
 
 .markdown-preview h1,
@@ -391,6 +398,30 @@ body {
 .markdown-preview .lead {
   color: var(--text-secondary);
   font-size: 1.05rem;
+}
+
+/* HTML preview container styling */
+.html-preview {
+  padding: 18px 20px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  overflow: auto;
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  bottom: 32px;
+  left: 32px;
+  box-sizing: border-box;
+}
+
+.html-preview pre {
+  background: #0b1220;
+  color: #e6edf3;
+  padding: 12px;
+  border-radius: 6px;
+  overflow: auto;
 }
 
 
@@ -1357,6 +1388,7 @@ input[type="color"].color-picker::-moz-color-swatch {
   flex: 1;
   padding: 32px;
   overflow-y: auto;
+  position: relative;
 }
 .rich-editor {
   width: 100%;
