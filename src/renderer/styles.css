@@ -771,10 +771,13 @@ div#newNoteNav {
 }
 
 .emoji-panel {
-  position: absolute;
-  z-index: 60;
-  right: 24px; /* sits near the editor toolbar/right side */
-  top: 84px; /* tuned to appear below toolbar */
+  /* Use fixed positioning so JS can place the panel using viewport coordinates
+     (getBoundingClientRect). This avoids issues when ancestor containers are
+     positioned or scrolled. */
+  position: fixed;
+  z-index: 9999;
+  left: auto;
+  top: auto;
   width: 320px;
   max-width: calc(100% - 48px);
   background: var(--bg-primary);
@@ -783,6 +786,7 @@ div#newNoteNav {
   border-radius: 10px;
   padding: 8px;
   transition: transform 0.12s ease, opacity 0.12s ease;
+  transform-origin: top center;
 }
 
 .emoji-panel.hidden {
@@ -3145,7 +3149,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .editor-sidebar {
   background: var(--editor-sidebar-bg);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 1px solid rgb(113 113 113 / 10%);
 }
 
 [data-theme='dark'] .viewer-header {
@@ -3242,7 +3246,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 /* Additional dark theme fixes */
 [data-theme='dark'] .editor-header {
   background: var(--editor-header-bg);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgb(113 113 113 / 10%);
 }
 
 [data-theme='dark'] .title-section {
@@ -3262,8 +3266,8 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .format-group {
-  background: var(--format-group-bg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--editor-header-bg);
+  border: 1px solid rgb(113 113 113 / 10%);
 }
 
 [data-theme='dark'] .format-btn {
@@ -3602,7 +3606,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .select-selected {
   background: var(--bg-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgb(113 113 113 / 10%);
   color: var(--text-primary);
 }
 
@@ -3644,8 +3648,8 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 /* Fix the last remaining white background - formatting toolbar */
 [data-theme='dark'] .formatting-toolbar {
-  background: #181818;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--editor-header-bg);
+  border-bottom: 1px solid rgb(113 113 113 / 10%);
 }
 
 .settings-section:last-child {
@@ -4611,8 +4615,8 @@ body.dark .default-folder.insert-after::after {
 .emoji-panel {
   position: fixed; /* fixed relative to viewport so positioning is reliable */
   z-index: 100000; /* topmost so it doesn't get covered */
-  right: 24px;
-  top: 84px;
+  left: auto;
+  top: auto;
   width: 220px;
   max-width: calc(100% - 32px);
   background: rgba(255,255,255,0.95);
