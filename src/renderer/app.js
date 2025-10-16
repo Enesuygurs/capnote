@@ -460,12 +460,115 @@ class CapnoteApp {
         const codeAncestor = range.startContainer.nodeType === Node.ELEMENT_NODE
           ? range.startContainer.closest && range.startContainer.closest('code')
           : range.startContainer.parentElement && range.startContainer.parentElement.closest('code');
-        if (codeAncestor) {
-          // we're inside a <code> node; insert a newline character into the text node at caret
-          e.preventDefault();
-          // if there's a text node at the caret, insert into it; otherwise create one
+        // also detect a containing <pre> in case selection sits directly inside <pre>
+        const preAncestor = range.startContainer.nodeType === Node.ELEMENT_NODE
+          ? range.startContainer.closest && range.startContainer.closest('pre')
+          : range.startContainer.parentElement && range.startContainer.parentElement.closest('pre');
+        if (codeAncestor || preAncestor) {
+          // inside a <code> node. Allow exiting the code block via Ctrl/Cmd+Enter or
+          // by pressing Enter on an empty line at the end of the code block.
+          // If exit is requested, create a paragraph after the containing <pre> and move caret there.
+          const isExitShortcut = e.ctrlKey || e.metaKey;
+          // determine the text node and its content length
           let node = range.startContainer;
           let offset = range.startOffset;
+          // If the user pressed Ctrl/Cmd+Enter, immediately exit the nearest <pre> by
+          // inserting a paragraph after it. This avoids edge cases where selection
+          // nodes are in unusual spots and makes the shortcut reliable.
+          if (isExitShortcut) {
+            e.preventDefault();
+            try {
+              // find a <pre> ancestor starting from the startContainer
+              let findNode = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+              while (findNode && findNode !== this.richEditor && findNode.tagName && findNode.tagName.toLowerCase() !== 'pre') {
+                findNode = findNode.parentElement;
+              }
+              const resolvedPre = findNode && findNode.tagName && findNode.tagName.toLowerCase() === 'pre' ? findNode : null;
+              const para = document.createElement('p');
+              para.innerHTML = '<br>';
+              if (resolvedPre && resolvedPre.parentNode) {
+                if (resolvedPre.nextSibling) resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
+                else resolvedPre.parentNode.appendChild(para);
+              } else {
+                // fallback: append to editor
+                this.richEditor.appendChild(para);
+              }
+              const newSel = window.getSelection();
+              const newRange = document.createRange();
+              newRange.setStart(para, 0);
+              newRange.collapse(true);
+              newSel.removeAllRanges();
+              newSel.addRange(newRange);
+              this.richEditor.focus();
+              this.trackContentChanges();
+            } catch (err) {
+              // ignore; allow other logic to try
+            }
+            return;
+          }
+          if (node.nodeType !== Node.TEXT_NODE) {
+            if (node.childNodes[offset] && node.childNodes[offset].nodeType === Node.TEXT_NODE) {
+              node = node.childNodes[offset];
+              offset = 0;
+            }
+          }
+          const nodeText = node && node.nodeType === Node.TEXT_NODE ? (node.nodeValue || '') : '';
+          // Robust check: create a range from caret to the end of the codeAncestor and
+          // if the substring is empty (or whitespace) the caret is effectively at the end.
+          let atEndOfCode = false;
+          try {
+            const tempRange = document.createRange();
+            tempRange.setStart(node, offset);
+            // find deepest last descendant of the codeAncestor
+            let last = codeAncestor;
+            while (last && last.lastChild) last = last.lastChild;
+            if (last) {
+              if (last.nodeType === Node.TEXT_NODE) {
+                tempRange.setEnd(last, last.nodeValue ? last.nodeValue.length : 0);
+              } else {
+                tempRange.setEndAfter(last);
+              }
+            } else {
+              tempRange.setEnd(codeAncestor, codeAncestor.childNodes.length || 0);
+            }
+            const remainder = tempRange.toString();
+            atEndOfCode = remainder.trim() === '';
+          } catch (err) {
+            atEndOfCode = nodeText.length === 0 || offset >= nodeText.length;
+          }
+
+          // Only exit on Ctrl/Cmd+Enter; plain Enter should always insert a newline inside the code block
+          if (isExitShortcut) {
+            e.preventDefault();
+            try {
+              // prefer the actual <pre> ancestor if present
+              const resolvedPre = preAncestor || (codeAncestor && (codeAncestor.closest ? codeAncestor.closest('pre') : codeAncestor.parentElement));
+              const para = document.createElement('p');
+              para.innerHTML = '<br>';
+              if (resolvedPre && resolvedPre.parentNode) {
+                if (resolvedPre.nextSibling) resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
+                else resolvedPre.parentNode.appendChild(para);
+              } else {
+                // fallback: append to editor
+                this.richEditor.appendChild(para);
+              }
+              // move caret into the new paragraph
+              const newSel = window.getSelection();
+              const newRange = document.createRange();
+              newRange.setStart(para, 0);
+              newRange.collapse(true);
+              newSel.removeAllRanges();
+              newSel.addRange(newRange);
+              this.richEditor.focus();
+              this.trackContentChanges();
+            } catch (err) {
+              // fallback to inserting newline inside code block
+            }
+            return;
+          }
+          // otherwise we're inside a <code> node; insert a newline character into the text node at caret
+          e.preventDefault();
+          // if there's a text node at the caret, insert into it; otherwise create one
           if (node.nodeType !== Node.TEXT_NODE) {
             // try to find/create a text node
             if (node.childNodes[offset] && node.childNodes[offset].nodeType === Node.TEXT_NODE) {
