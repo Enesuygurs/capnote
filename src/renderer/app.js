@@ -292,6 +292,19 @@ class CapnoteApp {
     if (notesListContainer) {
       notesListContainer.addEventListener('dragover', (e) => {
         e.preventDefault();
+        // If the active drag is a folder, ignore: folders should not be dropped into the "no-folder" area
+        const types = e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
+        let isFolderDrag = false;
+        try {
+          isFolderDrag = types.includes('text/folder-id') || Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
+        } catch (err) {
+          isFolderDrag = types.includes('text/folder-id');
+        }
+        if (isFolderDrag) {
+          // do not show drop target for folders
+          return;
+        }
+
         notesListContainer.classList.add('drag-over');
       });
 
@@ -305,6 +318,16 @@ class CapnoteApp {
         notesListContainer.addEventListener('drop', (e) => {
         e.preventDefault();
         notesListContainer.classList.remove('drag-over');
+        // If a folder is being dragged, ignore the drop here
+        try {
+          const folderId = e.dataTransfer.getData('text/folder-id');
+          if (folderId) {
+            return;
+          }
+        } catch (err) {
+          // ignore getData errors and continue
+        }
+
         const noteId = e.dataTransfer.getData('text/plain');
         this.moveNoteToFolder(parseInt(noteId), 'default');
       });
