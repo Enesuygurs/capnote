@@ -3042,7 +3042,6 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .search-container input {
   background: var(--search-input-bg);
-  border: 1px solid rgba(255, 255, 255, 0.2);
   color: var(--text-primary);
 }
 
