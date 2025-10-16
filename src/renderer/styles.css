@@ -3702,6 +3702,13 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 .swatch-btn:focus { outline: none; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
 
+/* Make the currently-selected accent swatch slightly larger and more prominent */
+.swatch-btn.active {
+  transform: scale(1.12);
+  box-shadow: 0 0 20px var(--accent-color-rgba-30);
+  border-color: var(--accent-color);
+}
+
 #accentYellow { background: #f59e0b; }
 #accentCherry { background: #e11d48; }
 #accentApple { background: #22c55e; }
