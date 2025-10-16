@@ -177,6 +177,12 @@ class CapnoteApp {
     // Mood ve Weather butonları
     this.moodBtns = document.querySelectorAll('.mood-btn');
     this.weatherBtns = document.querySelectorAll('.weather-btn');
+    // Emoji toolbar/panel elements
+    this.openEmojiBtn = document.getElementById('openEmojiBtn');
+    this.emojiPanel = document.getElementById('emojiPanel');
+    this.emojiGrid = document.getElementById('emojiGrid');
+    this.emojiSearchInput = document.getElementById('emojiSearchInput');
+    this.closeEmojiPanel = document.getElementById('closeEmojiPanel');
 
     // Password Modal
     this.passwordModal = document.getElementById('passwordModal');
@@ -737,6 +743,9 @@ class CapnoteApp {
       .getElementById('insertTime')
       .addEventListener('click', () => this.insertDateTime('time'));
 
+    // Emoji panel toggle
+    if (this.openEmojiBtn) this.openEmojiBtn.addEventListener('click', (e) => this.toggleEmojiPanel());
+
     // Sidebar toggle
     this.toggleSidebarBtn.addEventListener('click', () => this.toggleEditorSidebar());
 
@@ -765,6 +774,99 @@ class CapnoteApp {
         this.selectWeather(e.target.dataset.weather);
         this.trackContentChanges(); // Track changes for save button
       });
+    });
+
+    // Emoji panel handlers: close/search and populate grid
+    if (this.closeEmojiPanel) this.closeEmojiPanel.addEventListener('click', () => this.hideEmojiPanel());
+    if (this.emojiSearchInput) this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
+    // populate grid
+    this.populateEmojiGrid();
+  }
+
+  toggleEmojiPanel() {
+    if (!this.emojiPanel) return;
+    if (this.emojiPanel.classList.contains('hidden')) {
+      // Temporarily make visible (but not yet shown) so we can measure size
+      this.emojiPanel.classList.remove('hidden');
+      // remove show class to keep initial transform/opacity state
+      this.emojiPanel.classList.remove('show');
+
+      // allow layout to update
+      requestAnimationFrame(() => {
+        if (this.openEmojiBtn) {
+          const btnRect = this.openEmojiBtn.getBoundingClientRect();
+          const panelRect = this.emojiPanel.getBoundingClientRect();
+          // compute left so panel centers under button when possible
+          let left = Math.round(btnRect.left + btnRect.width / 2 - panelRect.width / 2);
+          // clamp to viewport
+          const minLeft = 4;
+          const maxLeft = window.innerWidth - panelRect.width - 4;
+          left = Math.max(minLeft, Math.min(maxLeft, left));
+          this.emojiPanel.style.left = left + 'px';
+          // flush: top edge exactly at button bottom
+          this.emojiPanel.style.top = (Math.round(btnRect.bottom)) + 'px';
+          this.emojiPanel.style.right = 'auto';
+        }
+
+        // show with animation
+        requestAnimationFrame(() => {
+          this.emojiPanel.classList.add('show');
+          setTimeout(() => this.emojiSearchInput && this.emojiSearchInput.focus(), 100);
+        });
+      });
+    } else {
+      this.emojiPanel.classList.remove('show');
+      // wait for animation then hide
+      setTimeout(() => this.emojiPanel.classList.add('hidden'), 160);
+    }
+  }
+
+  hideEmojiPanel() {
+    if (!this.emojiPanel) return;
+    this.emojiPanel.classList.remove('show');
+    setTimeout(() => this.emojiPanel.classList.add('hidden'), 160);
+    // clear inline positioning after hide
+    setTimeout(() => {
+      if (this.emojiPanel) {
+        this.emojiPanel.style.left = '';
+        this.emojiPanel.style.top = '';
+      }
+    }, 200);
+  }
+
+  populateEmojiGrid() {
+    if (!this.emojiGrid) return;
+    const emojis = ['😀','😁','😂','🤣','😊','😇','😍','😘','😜','🤪','🤔','😴','😢','😭','😡','🤯','👍','👎','🙏','👏','🙌','🎉','🔥','❤️','💔','✨','🤝'];
+    this.emojiGrid.innerHTML = '';
+    emojis.forEach((emoji) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'emoji-grid-btn';
+      btn.textContent = emoji;
+      btn.addEventListener('click', () => {
+        this.insertTextAtCursor(emoji);
+        this.trackContentChanges();
+        this.hideEmojiPanel();
+      });
+      this.emojiGrid.appendChild(btn);
+    });
+  }
+
+  filterEmojiGrid(query) {
+    if (!this.emojiGrid) return;
+    const q = (query || '').trim().toLowerCase();
+    Array.from(this.emojiGrid.children).forEach((btn) => {
+      const emoji = btn.textContent || '';
+      if (!q) {
+        btn.style.display = '';
+        return;
+      }
+      // very simple heuristic: check if the emoji character contains the query (for people who paste emoji char)
+      const charMatch = emoji.includes(q);
+      // also match some Turkish keywords
+      const keywords = {'gül':'😀','gülme':'😂','aşk':'😍','üzgün':'😢','kızgın':'😡','düşün':'🤔','uyku':'😴','beğen':'👍','kutla':'🎉'};
+      const matched = Object.keys(keywords).some((k) => k.indexOf(q) !== -1 && keywords[k] === emoji);
+      btn.style.display = (charMatch || matched) ? '' : 'none';
     });
   }
 
