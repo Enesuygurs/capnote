@@ -1467,6 +1467,10 @@ class CapnoteApp {
     const filteredNotes = this.getFilteredNotes();
     const sortedNotes = this.getSortedNotes(filteredNotes);
 
+  // Update nav count for visible notes (include folder-contained notes)
+  const navCountEl = document.getElementById('navNotesCount');
+  if (navCountEl) navCountEl.textContent = `(${this.getVisibleNotesCount()})`;
+
     sortedNotes.forEach((note) => {
       const noteElement = this.createNoteElement(note);
       this.notesList.appendChild(noteElement);
@@ -1608,6 +1612,37 @@ class CapnoteApp {
     }
 
     return filtered;
+  }
+
+  // Compute how many notes match the current filter/search including notes inside folders
+  getVisibleNotesCount() {
+    const searchTerm = this.searchInput ? this.searchInput.value.toLowerCase().trim() : '';
+    let matched = [...this.notes];
+
+    switch (this.currentFilter) {
+      case 'today':
+        const today = new Date().toDateString();
+        matched = matched.filter((note) => new Date(note.createdAt).toDateString() === today);
+        break;
+      case 'favorites':
+        matched = matched.filter((note) => note.isFavorite);
+        break;
+      default:
+        // no folder restriction here: include all notes for the default 'all' view
+        matched = matched;
+        break;
+    }
+
+    if (searchTerm) {
+      matched = matched.filter(
+        (note) =>
+          note.title.toLowerCase().includes(searchTerm) ||
+          note.content.toLowerCase().includes(searchTerm) ||
+          (note.tags || []).some((tag) => tag.toLowerCase().includes(searchTerm))
+      );
+    }
+
+    return matched.length;
   }
 
   getSortedNotes(notes) {
