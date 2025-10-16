@@ -590,7 +590,8 @@ class CapnoteApp {
 
   insertCodeBlock() {
     // Insert a fenced code block at the current caret/selection in the appropriate editor.
-    const fenceTemplate = "```language\n// your code here\n```\n";
+    // Empty fenced block - caret will be placed inside the empty code area
+    const fenceTemplate = "```language\n\n```\n";
 
     // If markdown editor is visible, insert into textarea at cursor
     if (this.markdownEditor && !this.markdownEditor.classList.contains('hidden')) {
@@ -624,8 +625,8 @@ class CapnoteApp {
     if (text.startsWith('```')) {
       // find position after the first newline following the opening fence
       const firstNewline = text.indexOf('\n');
+      // place caret at the beginning of the code area (after the opening fence line)
       const caretPos = before.length + (firstNewline >= 0 ? firstNewline + 1 : 0);
-      // place caret at start of code region (after the opening fence line)
       textarea.selectionStart = textarea.selectionEnd = caretPos;
     } else {
       // default: place caret at end of inserted text
@@ -643,15 +644,27 @@ class CapnoteApp {
         // append at the end
         const pre = document.createElement('pre');
         const code = document.createElement('code');
-        code.textContent = '// your code here';
+        // insert a zero-width space so caret can be placed inside
+        const textNode = document.createTextNode('\u200B');
+        code.appendChild(textNode);
         pre.appendChild(code);
         this.richEditor.appendChild(pre);
+        // place caret inside the newly appended code node
+        try {
+          const newSel = window.getSelection();
+          const range = document.createRange();
+          range.setStart(textNode, 1);
+          range.collapse(true);
+          newSel.removeAllRanges();
+          newSel.addRange(range);
+          this.richEditor.focus();
+        } catch (err) {}
         return;
       }
       const range = sel.getRangeAt(0);
       const pre = document.createElement('pre');
       const code = document.createElement('code');
-      code.textContent = '// your code here';
+      code.textContent = '';
       pre.appendChild(code);
       range.deleteContents();
       // insert the pre node
@@ -659,20 +672,32 @@ class CapnoteApp {
       // place caret inside the code node at the end of the placeholder text
       sel.removeAllRanges();
       const newRange = document.createRange();
-      if (code.firstChild && code.firstChild.nodeType === Node.TEXT_NODE) {
-        newRange.setStart(code.firstChild, code.firstChild.length);
-      } else {
-        newRange.setStart(code, 0);
-      }
+        // create a zero-width text node so the caret can be placed inside the code element
+        const textNode = document.createTextNode('\u200B');
+        code.appendChild(textNode);
+        // place caret after the zero-width space so typing appears inside the code block
+        newRange.setStart(textNode, 1);
       newRange.collapse(true);
       sel.addRange(newRange);
+        try { this.richEditor.focus(); } catch (e) {}
     } catch (e) {
       // fallback: append
       const pre = document.createElement('pre');
       const code = document.createElement('code');
-      code.textContent = '// your code here';
-      pre.appendChild(code);
-      this.richEditor.appendChild(pre);
+        // create text node so caret can be placed
+        const textNode = document.createTextNode('\u200B');
+        code.appendChild(textNode);
+        pre.appendChild(code);
+        this.richEditor.appendChild(pre);
+        try {
+          const sel2 = window.getSelection();
+          const range2 = document.createRange();
+          range2.setStart(textNode, 1);
+          range2.collapse(true);
+          sel2.removeAllRanges();
+          sel2.addRange(range2);
+          this.richEditor.focus();
+        } catch (err) {}
     }
   }
 
