@@ -2377,6 +2377,56 @@ class CapnoteApp {
   showModal(modal) {
     modal.classList.remove('hidden');
     setTimeout(() => modal.classList.add('show'), 10);
+
+    // Attach a temporary key handler so Enter triggers the modal's primary action
+    // Only attach one handler per modal instance
+    if (!modal._enterKeyHandler) {
+      const handler = (e) => {
+        if (e.key !== 'Enter') return;
+        // If focus is inside a textarea or contenteditable, let Enter behave normally
+        const active = document.activeElement;
+        if (!active) return;
+        const tag = (active.tagName || '').toLowerCase();
+        if (tag === 'textarea' || active.isContentEditable) return;
+
+        // Special-case: if this is the confirm modal, prefer the explicit confirm button id
+        if (modal.id === 'confirmModal') {
+          const cb = document.getElementById('confirmBtn');
+          if (cb) {
+            e.preventDefault();
+            cb.click();
+            return;
+          }
+        }
+
+        // Try a sequence of selectors to find the modal's primary action (supports btn-primary, btn-danger, generic btn)
+        const selectors = [
+          '.modal-footer .btn-primary',
+          '.modal-footer .btn-danger',
+          '.modal-actions .btn-primary',
+          '.modal-actions .btn-danger',
+          '.modal-footer .btn',
+          '.modal-actions .btn',
+          '.btn-primary',
+          '.btn-danger',
+          '.btn'
+        ];
+
+        let primary = null;
+        for (const s of selectors) {
+          primary = modal.querySelector(s);
+          if (primary) break;
+        }
+
+        if (primary) {
+          e.preventDefault();
+          primary.click();
+        }
+      };
+
+      modal._enterKeyHandler = handler;
+      document.addEventListener('keydown', handler);
+    }
   }
 
   hideModal(modal) {
@@ -2385,6 +2435,15 @@ class CapnoteApp {
     // a delay when users expected the popup to close right away.
     modal.classList.remove('show');
     modal.classList.add('hidden');
+    // Remove temporary enter key handler if present
+    try {
+      if (modal._enterKeyHandler) {
+        document.removeEventListener('keydown', modal._enterKeyHandler);
+        delete modal._enterKeyHandler;
+      }
+    } catch (e) {
+      // ignore
+    }
   }
 
   hideAllModals() {
@@ -3646,14 +3705,7 @@ class CapnoteApp {
     const searchTerm = this.normalizeForSearch(rawSearch);
     if (searchTerm) {
       folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTerm));
-      // Temporary debug: log which folders have matches during search
-      try {
-        const folderObj = this.folders.find((f) => f.id == folderId) || { name: folderId };
-        const matchedTitles = folderNotes.map((n) => n.title || '(Başlıksız)').slice(0, 10);
-        console.debug('[search-debug] folder:', folderObj.name, 'id:', folderId, 'matches:', folderNotes.length, matchedTitles);
-      } catch (e) {
-        // ignore debug errors
-      }
+      // debug removed
     }
 
     return folderNotes.length;
