@@ -786,6 +786,12 @@ class CapnoteApp {
   toggleEmojiPanel() {
     if (!this.emojiPanel) return;
     if (this.emojiPanel.classList.contains('hidden')) {
+      // capture the current editor selection so we can restore it after the panel steals focus
+      try {
+        this.captureEditorSelection();
+      } catch (err) {
+        // ignore capture errors
+      }
       // Temporarily make visible (but not yet shown) so we can measure size
       this.emojiPanel.classList.remove('hidden');
       // remove show class to keep initial transform/opacity state
@@ -831,6 +837,8 @@ class CapnoteApp {
         this.emojiPanel.style.left = '';
         this.emojiPanel.style.top = '';
       }
+      // clear any saved selection when the panel is closed explicitly
+      try { this.clearSavedSelection(); } catch (e) {}
     }, 200);
   }
 
@@ -844,9 +852,24 @@ class CapnoteApp {
       btn.className = 'emoji-grid-btn';
       btn.textContent = emoji;
       btn.addEventListener('click', () => {
+        // restore the saved editor selection (if any) before inserting so the emoji goes into the editor
+        try {
+          if (this.savedSelection) {
+            this.restoreEditorSelection();
+          }
+        } catch (err) {
+          // ignore restore errors
+        }
+        // make sure editor has focus before insertion
+        try { this.richEditor && this.richEditor.focus(); } catch (e) {}
+
         this.insertTextAtCursor(emoji);
         this.trackContentChanges();
-        this.hideEmojiPanel();
+
+        // update savedSelection to the new caret position after insertion so subsequent clicks insert at the updated spot
+        try { this.captureEditorSelection(); } catch (e) {}
+
+        // NOTE: Do NOT hide the panel here. The panel should only close when the user presses the close button.
       });
       this.emojiGrid.appendChild(btn);
     });
