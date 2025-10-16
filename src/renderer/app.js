@@ -4219,24 +4219,49 @@ class CapnoteApp {
     });
     folderHeader.addEventListener('dragend', () => {
       folderHeader.classList.remove('dragging');
-      // remove any drag-over classes left behind
-      document.querySelectorAll('.folder-item.drag-over').forEach((el) => el.classList.remove('drag-over'));
+      // remove any drag-over / insert indicator classes left behind
+      document
+        .querySelectorAll('.folder-item.drag-over, .folder-item.insert-before, .folder-item.insert-after, .default-folder.drag-over, .default-folder.insert-before, .default-folder.insert-after')
+        .forEach((el) => el.classList.remove('drag-over', 'insert-before', 'insert-after'));
     });
     folderHeader.addEventListener('dragover', (e) => {
       e.preventDefault();
+      // detect if the active drag is a folder (we set 'text/folder-id' during dragstart)
+      const types = e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
+      let isFolderDrag = false;
+      try {
+        isFolderDrag = types.includes('text/folder-id') || Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
+      } catch (err) {
+        // accessing getData during dragover can throw in some browsers; fallback to types check only
+        isFolderDrag = types.includes('text/folder-id');
+      }
+
       // decide whether insertion would be before or after based on cursor position
       const rect = folderHeader.getBoundingClientRect();
       const isBefore = (e.clientY - rect.top) < (rect.height / 2);
-      folderHeader.classList.add('drag-over');
-      folderHeader.classList.toggle('insert-before', isBefore);
-      folderHeader.classList.toggle('insert-after', !isBefore);
-      // remove these classes from siblings to avoid multiple cues
-      const siblings = Array.from(folderHeader.parentElement.querySelectorAll('.folder-item'));
-      siblings.forEach((s) => {
-        if (s !== folderHeader) {
-          s.classList.remove('insert-before', 'insert-after', 'drag-over');
-        }
-      });
+
+      const siblings = Array.from(folderHeader.parentElement.querySelectorAll('.folder-item, .default-folder'));
+
+      if (isFolderDrag) {
+        // For folder drag, show only the thin insertion line (insert-before/after). Don't show the dashed border.
+        folderHeader.classList.remove('drag-over');
+        folderHeader.classList.toggle('insert-before', isBefore);
+        folderHeader.classList.toggle('insert-after', !isBefore);
+        siblings.forEach((s) => {
+          if (s !== folderHeader) {
+            s.classList.remove('insert-before', 'insert-after', 'drag-over');
+          }
+        });
+      } else {
+        // For other drags (notes), preserve the previous behavior: show dashed border and no insertion line
+        folderHeader.classList.add('drag-over');
+        folderHeader.classList.remove('insert-before', 'insert-after');
+        siblings.forEach((s) => {
+          if (s !== folderHeader) {
+            s.classList.remove('insert-before', 'insert-after');
+          }
+        });
+      }
     });
 
     folderHeader.addEventListener('dragleave', () => {

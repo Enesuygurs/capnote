@@ -4284,8 +4284,8 @@ input:checked + .toggle-slider:before {
   transform: rotate(5deg);
 }
 
-.folder-item.drag-over,
-.default-folder.drag-over {
+.folder-item.drag-over:not(.insert-before):not(.insert-after),
+.default-folder.drag-over:not(.insert-before):not(.insert-after) {
   background: var(--bg-hover);
   border: 2px dashed var(--primary-color);
   border-radius: 8px;
