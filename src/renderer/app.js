@@ -1052,6 +1052,8 @@ class CapnoteApp {
     try {
   const savedFolders = localStorage.getItem('capnote-folders');
   this.folders = savedFolders ? JSON.parse(savedFolders) : [];
+  // Ensure older saved folders get a default expanded flag (true)
+  this.folders = this.folders.map((f) => ({ expanded: f.expanded !== undefined ? f.expanded : true, ...f }));
     } catch (error) {
       console.error('Klasörler yüklenirken hata:', error);
       this.folders = [];
@@ -4091,6 +4093,7 @@ class CapnoteApp {
       name: name,
       createdAt: new Date().toISOString(),
       color: this.getRandomFolderColor(),
+      expanded: true,
     };
 
     this.folders.push(folder);
@@ -4268,17 +4271,32 @@ class CapnoteApp {
     notesContainer.setAttribute('data-folder-id', folder.id);
 
     // Add expandable functionality - only expand/collapse, no filtering
-    folderHeader.addEventListener('click', (e) => {
+    // Initialize expanded state from folder.expanded
+    const chevron = folderHeader.querySelector('.nav-expand');
+    if (folder.expanded) {
+      folderHeader.classList.add('expanded');
+      notesContainer.style.display = 'block';
+      if (chevron) chevron.style.transform = 'rotate(0deg)';
+    } else {
+      folderHeader.classList.remove('expanded');
+      notesContainer.style.display = 'none';
+      if (chevron) chevron.style.transform = 'rotate(-90deg)';
+    }
+
+    folderHeader.addEventListener('click', async (e) => {
       e.preventDefault();
       folderHeader.classList.toggle('expanded');
-      const chevron = folderHeader.querySelector('.nav-expand');
       if (folderHeader.classList.contains('expanded')) {
         notesContainer.style.display = 'block';
-        chevron.style.transform = 'rotate(0deg)';
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+        folder.expanded = true;
       } else {
         notesContainer.style.display = 'none';
-        chevron.style.transform = 'rotate(-90deg)';
+        if (chevron) chevron.style.transform = 'rotate(-90deg)';
+        folder.expanded = false;
       }
+      // persist the expanded state
+      await this.saveFolders();
     });
 
     // Add right-click context menu
