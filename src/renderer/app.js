@@ -16,7 +16,7 @@ class CapnoteApp {
       fontSize: '14px',
     };
     this.baseFormatting = { ...this.defaultFormatting };
-    this.savedSelection = null;
+  this.savedSelection = null;
 
     this.init();
   }
@@ -531,12 +531,13 @@ class CapnoteApp {
               tempRange.setEnd(codeAncestor, codeAncestor.childNodes.length || 0);
             }
             const remainder = tempRange.toString();
-            atEndOfCode = remainder.trim() === '';
+            atEndOfCode = remainder === '' || remainder.trim() === '';
           } catch (err) {
             atEndOfCode = nodeText.length === 0 || offset >= nodeText.length;
           }
 
-          // Only exit on Ctrl/Cmd+Enter; plain Enter should always insert a newline inside the code block
+          
+          // If user pressed Ctrl/Cmd+Enter, always exit the code block
           if (isExitShortcut) {
             e.preventDefault();
             try {
@@ -565,37 +566,96 @@ class CapnoteApp {
             }
             return;
           }
-          // otherwise we're inside a <code> node; insert a newline character into the text node at caret
+          // otherwise we're inside a <code> node: insert a newline at the caret.
+          // Only Ctrl/Cmd+Enter above exits the code block; plain Enter should reliably add a newline.
           e.preventDefault();
-          // if there's a text node at the caret, insert into it; otherwise create one
-          if (node.nodeType !== Node.TEXT_NODE) {
-            // try to find/create a text node
-            if (node.childNodes[offset] && node.childNodes[offset].nodeType === Node.TEXT_NODE) {
-              node = node.childNodes[offset];
-              offset = 0;
-            } else {
-              const textNode = document.createTextNode('\n');
-              range.insertNode(textNode);
-              // move caret after inserted newline
-              range.setStartAfter(textNode);
-              range.collapse(true);
-              sel.removeAllRanges();
-              sel.addRange(range);
-              this.trackContentChanges();
-              return;
+          try {
+            
+            // Ensure we operate on a text node if possible
+            if (node.nodeType !== Node.TEXT_NODE) {
+              // prefer a text child at the offset
+              if (node.childNodes && node.childNodes[offset] && node.childNodes[offset].nodeType === Node.TEXT_NODE) {
+                node = node.childNodes[offset];
+                offset = 0;
+              } else {
+                // try previous sibling text node
+                let prev = node.childNodes && node.childNodes[offset - 1] ? node.childNodes[offset - 1] : null;
+                while (prev && prev.nodeType !== Node.TEXT_NODE) prev = prev && prev.previousSibling ? prev.previousSibling : null;
+                if (prev && prev.nodeType === Node.TEXT_NODE) {
+                  node = prev;
+                  offset = node.nodeValue ? node.nodeValue.length : 0;
+                }
+              }
             }
+
+            // If we found or coerced to a text node, insert into it
+            if (node && node.nodeType === Node.TEXT_NODE) {
+              
+              const text = node.nodeValue || '';
+              const before = text.substring(0, offset);
+              let after = text.substring(offset);
+              // if the text after caret already begins with a ZWSP, avoid adding another
+              const ZW = '\u200B';
+              let insertMarker = ZW;
+              if (after && after.startsWith(ZW)) insertMarker = '';
+              node.nodeValue = before + '\n' + insertMarker + after;
+              // place caret after the inserted newline (before the marker)
+              const newRange = document.createRange();
+              newRange.setStart(node, before.length + 1);
+              newRange.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(newRange);
+              this.trackContentChanges();
+            } else {
+              
+              // fallback: append a text node with newline to the deepest codeAncestor and place caret after it
+              const textNode = document.createTextNode('\n');
+              // find a sensible insertion point: prefer range.insertNode if possible
+              try {
+                // if inserting a new line node, include a ZWSP so caret has a visible spot
+                const ZW = '\u200B';
+                if (!textNode.nodeValue || !textNode.nodeValue.startsWith('\n')) textNode.nodeValue = '\n' + ZW;
+                range.insertNode(textNode);
+                // move caret after inserted node (position will be after the newline)
+                range.setStartAfter(textNode);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+              } catch (innerErr) {
+                try {
+                  // fallback to appending to codeAncestor
+                  (codeAncestor || this.richEditor).appendChild(textNode);
+                  const newRange2 = document.createRange();
+                  newRange2.setStartAfter(textNode);
+                  newRange2.collapse(true);
+                  sel.removeAllRanges();
+                  sel.addRange(newRange2);
+                } catch (finalErr) {
+                  // as a last resort, insert a paragraph after the pre (exit behavior)
+                  try {
+                    const para = document.createElement('p');
+                    para.innerHTML = '<br>';
+                    const resolvedPre = preAncestor || (codeAncestor && (codeAncestor.closest ? codeAncestor.closest('pre') : codeAncestor.parentElement));
+                    if (resolvedPre && resolvedPre.parentNode) {
+                      if (resolvedPre.nextSibling) resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
+                      else resolvedPre.parentNode.appendChild(para);
+                    } else {
+                      this.richEditor.appendChild(para);
+                    }
+                    const newSel = window.getSelection();
+                    const newRange3 = document.createRange();
+                    newRange3.setStart(para, 0);
+                    newRange3.collapse(true);
+                    newSel.removeAllRanges();
+                    newSel.addRange(newRange3);
+                  } catch (err) {}
+                }
+              }
+              this.trackContentChanges();
+            }
+          } catch (err) {
+            // ignore insertion failures and allow normal behavior as a fallback
           }
-          const text = node.nodeValue || '';
-          const before = text.substring(0, offset);
-          const after = text.substring(offset);
-          node.nodeValue = before + '\n' + after;
-          // set caret after the newline
-          const newRange = document.createRange();
-          newRange.setStart(node, before.length + 1);
-          newRange.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(newRange);
-          this.trackContentChanges();
         }
       }
     });
