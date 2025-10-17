@@ -755,6 +755,39 @@ div#newNoteNav {
   justify-content: center;
 }
 
+/* Embedded images in editor */
+.embedded-image {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+/* Resizable image container */
+.img-wrap {
+  display: inline-block;
+  position: relative;
+  border: 1px dashed transparent;
+}
+.img-wrap.selected {
+  border-color: rgba(0,0,0,0.15);
+}
+.img-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.img-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  right: 2px;
+  bottom: 2px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 2px;
+  cursor: se-resize;
+  z-index: 5;
+}
+
 .emoji-panel {
   /* Use fixed positioning so JS can place the panel using viewport coordinates
      (getBoundingClientRect). This avoids issues when ancestor containers are
