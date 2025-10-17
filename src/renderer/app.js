@@ -990,19 +990,43 @@ class CapnoteApp {
   populateEmojiGrid() {
     if (!this.emojiGrid) return;
     const category = this.activeEmojiCategory || 'all';
-    // categorized emoji dataset (sane subset for UI)
+    // larger categorized emoji dataset (ZWJ-containing sequences will be stripped later)
     const emojiSets = this._emojiSets || {
       all: [],
-      smileys: ['😀','😁','😂','🤣','😊','😇','🙂','😉','😜','🤪','😝','😛','😋','😏','🤗','🤩','🙂','😌'],
-      people: ['👦','👧','👨','👩','👴','👵','👶','🧑‍🦱','🧑‍🦰','🧑‍🦳','🧑‍🦲','👮','🕵️','👷','💂','🤴','👸','🧙'],
-      animals: ['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🦄'],
-      food: ['🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🍒','🍑','🍍','🥭','🍔','🍟','🍕','🍣','🍩'],
-      activities: ['⚽','🏀','🏈','🎾','🏐','🏉','🎱','🏓','🏸','🥊','🏹','🎣','🎯','🎳'],
-      travel: ['🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚚','🚲','🛴','🏍️','✈️','🚀','🛳️'],
-      objects: ['⌚','📱','💻','🖥️','🖨️','🎧','📷','📺','🔑','💡','🔨','🧰','📦'],
-      symbols: ['❤️','💔','✨','🔥','⭐','⚡','🎵','🔔','✔️','❌','➕','➖','ℹ️','❗'],
-      flags: ['🏳️','🏴','🇹🇷','🇺🇸','🇬🇧','🇩🇪','🇫🇷','🇮🇹','🇪🇸','🇯🇵']
+      smileys: [
+        '😀','😃','😄','😁','😆','😅','😂','🤣','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','😋','😛','😜','🤪','😝','😐','😑','😶','😏','😒','🙄','🤨','🤔','🤫','🤭','🤥','😳','😞','😟','😠','😡','🤬','😔','😕','🙁','☹️','😭','😢','😤','😩','😫','😮','😯','😲','😱','🥵','🥶','😳','🤯','🥴','😵','😵‍💫'
+      ],
+      people: [
+        '👶','🧒','👦','👧','🧑','👱‍♂️','👱‍♀️','👨','👩','🧓','👴','👵','👮‍♂️','👮‍♀️','👷‍♂️','👷‍♀️','💂‍♂️','💂‍♀️','🕵️‍♂️','🕵️‍♀️','👩‍⚕️','👨‍⚕️','👩‍🏫','👨‍🏫','👩‍💻','👨‍💻','👩‍🔧','👨‍🔧','🧑‍🎨','🧑‍🚒'
+      ],
+      animals: [
+        '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🦄','🐔','🐧','🐦','🐤','🐣','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄'
+      ],
+      food: [
+        '🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌽','🥕','🧄','🧅','🥔','🍠','🥐','🍞','🥖','🥨','🧀','🍗','🍖','🌭','🍔','🍟','🍕','🍝','🍜','🍣','🍱','🍛','🍤','🍩','🍪'
+      ],
+      activities: [
+        '⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥅','🏒','🏑','🥍','🏏','⛳','🏹','🎣','🤿','🥊','🥋','🎽','🛹','🛼','🏂','🏋️','🏇'
+      ],
+      travel: [
+        '🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🚲','🛴','🛵','🏍️','🚨','🚔','🚖','✈️','🛩️','🚀','🛸','🚁','🚤','🛳️','⛵','🚢'
+      ],
+      objects: [
+        '⌚','📱','📲','💻','🖥️','🖨️','⌨️','🖱️','🖲️','🕹️','📷','📸','📹','🎥','📺','📻','🎙️','🎧','📡','🔋','🔌','💡','🔦','🧯','🛠️','🔧','🔨','🔩','⚙️','🧰','🧲'
+      ],
+      symbols: [
+        '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','✨','⭐','⚡','🔥','💥','🌟','💫','💤','🔔','🔕','✔️','❌','❗','❓','⚠️','🔞','🔅','🔆'
+      ],
+      flags: [
+        '🏳️','🏴','🏳️‍🌈','🇹🇷','🇺🇸','🇬🇧','🇩🇪','🇫🇷','🇮🇹','🇪🇸','🇯🇵','🇰🇷','🇨🇳','🇮🇳','🇧🇷','🇨🇦','🇦🇺'
+      ]
     };
+    // remove any emoji sequences that contain ZERO WIDTH JOINER U+200D (these often render as multiple glyphs in some fonts)
+    Object.keys(emojiSets).forEach((k) => {
+      emojiSets[k] = (emojiSets[k] || []).filter((ch) => typeof ch === 'string' && ch.indexOf('\u200D') === -1 && ch.indexOf('\u200d') === -1);
+      // also dedupe
+      emojiSets[k] = Array.from(new Set(emojiSets[k]));
+    });
     // build 'all' set once
     if (!this._emojiSets) {
       const all = [];
@@ -1050,27 +1074,45 @@ class CapnoteApp {
     if (!this.emojiPanel) return;
     const tabs = Array.from(this.emojiPanel.querySelectorAll('.emoji-tab'));
     const tabsContainer = this.emojiPanel.querySelector('.emoji-tabs');
-    const prevBtn = document.getElementById('emojiTabsPrev');
-    const nextBtn = document.getElementById('emojiTabsNext');
+    // Add drag-to-scroll functionality to the tabs container (mouse & touch)
+    if (tabsContainer) {
+      let isDown = false;
+      let startX;
+      let scrollLeftStart;
 
-    function updateArrows() {
-      if (!tabsContainer) return;
-      const maxScroll = tabsContainer.scrollWidth - tabsContainer.clientWidth;
-      if (prevBtn) prevBtn.disabled = tabsContainer.scrollLeft <= 2;
-      if (nextBtn) nextBtn.disabled = tabsContainer.scrollLeft >= (maxScroll - 2);
+      tabsContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        tabsContainer.classList.add('dragging');
+        startX = e.pageX - tabsContainer.offsetLeft;
+        scrollLeftStart = tabsContainer.scrollLeft;
+        // prevent text selection while dragging
+        e.preventDefault();
+      });
+      document.addEventListener('mouseup', () => {
+        if (!isDown) return;
+        isDown = false;
+        tabsContainer.classList.remove('dragging');
+      });
+      document.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const x = e.pageX - tabsContainer.offsetLeft;
+        const walk = (x - startX) * 1; // scroll-fast multiplier
+        tabsContainer.scrollLeft = scrollLeftStart - walk;
+      });
+
+      // touch support
+      tabsContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        startX = e.touches[0].pageX - tabsContainer.offsetLeft;
+        scrollLeftStart = tabsContainer.scrollLeft;
+      }, { passive: true });
+      tabsContainer.addEventListener('touchmove', (e) => {
+        if (e.touches.length !== 1) return;
+        const x = e.touches[0].pageX - tabsContainer.offsetLeft;
+        const walk = (x - startX) * 1;
+        tabsContainer.scrollLeft = scrollLeftStart - walk;
+      }, { passive: true });
     }
-
-    if (prevBtn && tabsContainer) prevBtn.addEventListener('click', () => {
-      tabsContainer.scrollBy({ left: -120, behavior: 'smooth' });
-      setTimeout(updateArrows, 250);
-    });
-    if (nextBtn && tabsContainer) nextBtn.addEventListener('click', () => {
-      tabsContainer.scrollBy({ left: 120, behavior: 'smooth' });
-      setTimeout(updateArrows, 250);
-    });
-    if (tabsContainer) tabsContainer.addEventListener('scroll', updateArrows);
-    // initial arrow state
-    setTimeout(updateArrows, 50);
     tabs.forEach((t) => {
       t.addEventListener('click', (e) => {
         const cat = t.dataset.category || 'all';
