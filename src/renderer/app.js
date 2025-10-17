@@ -3,6 +3,7 @@ class CapnoteApp {
     this.currentNote = null;
     this.notes = [];
     this.folders = [];
+    this.reminders = []; // Array of {id, noteId, datetime, noteTitle, dismissed}
     this.currentFilter = 'all';
     this.currentSort = 'date-desc';
     this.selectedMood = null;
@@ -105,6 +106,7 @@ class CapnoteApp {
 
   async init() {
     await this.loadNotes();
+    await this.loadReminders();
     this.initializeElements();
     this.setupEventListeners();
     this.loadSettings();
@@ -112,6 +114,7 @@ class CapnoteApp {
     this.initializeHamburgerIcon();
     this.updateUI();
     this.updateStats();
+    this.startReminderChecker();
 
   // Make sure the current filter (default: 'all') is applied so
   // the corresponding nav item appears active on startup
@@ -178,6 +181,15 @@ class CapnoteApp {
     this.viewerTags = document.getElementById('viewerTags');
     this.viewerText = document.getElementById('viewerText');
     this.viewerWordCount = document.getElementById('viewerWordCount');
+
+    // Reminders elements
+    this.remindersScreen = document.getElementById('remindersScreen');
+    this.remindersNav = document.getElementById('remindersNav');
+    this.remindersList = document.getElementById('remindersList');
+    this.activeRemindersCount = document.getElementById('activeRemindersCount');
+    this.reminderDatetime = document.getElementById('reminderDatetime');
+    this.setReminderBtn = document.getElementById('setReminderBtn');
+    this.noteRemindersList = document.getElementById('noteRemindersList');
   this.viewerCharCount = document.getElementById('viewerCharCount');
     this.readingTime = document.getElementById('readingTime');
     this.lastModified = document.getElementById('lastModified');
@@ -1103,6 +1115,14 @@ class CapnoteApp {
       });
     }
 
+    // Reminder event listeners
+    if (this.remindersNav) {
+      this.remindersNav.addEventListener('click', () => this.showRemindersScreen());
+    }
+    if (this.setReminderBtn) {
+      this.setReminderBtn.addEventListener('click', () => this.addReminder());
+    }
+
     // Sidebar toggle
     this.toggleSidebarBtn.addEventListener('click', () => this.toggleEditorSidebar());
 
@@ -1821,6 +1841,28 @@ class CapnoteApp {
     }
   }
 
+  async loadReminders() {
+    try {
+      const savedReminders = localStorage.getItem('capnote-reminders');
+      this.reminders = savedReminders ? JSON.parse(savedReminders) : [];
+      // Filter out dismissed reminders and expired ones
+      this.reminders = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date());
+      await this.saveReminders(); // Clean up storage
+    } catch (error) {
+      console.error('Hatırlatmalar yüklenirken hata:', error);
+      this.reminders = [];
+    }
+  }
+
+  async saveReminders() {
+    try {
+      localStorage.setItem('capnote-reminders', JSON.stringify(this.reminders));
+    } catch (error) {
+      console.error('Hatırlatmalar kaydedilirken hata:', error);
+      this.showNotification('Hatırlatmalar kaydedilemedi!', 'error');
+    }
+  }
+
   saveLastViewedNote(noteId) {
     try {
       localStorage.setItem('last-viewed-note', noteId);
@@ -1925,6 +1967,7 @@ class CapnoteApp {
     this.welcomeScreen.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.noteEditor.classList.remove('hidden');
+    this.remindersScreen?.classList.add('hidden');
 
     // Reset form
     this.resetFormState();
@@ -1943,6 +1986,7 @@ class CapnoteApp {
     this.welcomeScreen.classList.add('hidden');
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.remove('hidden');
+    this.remindersScreen?.classList.add('hidden');
     this.clearSavedSelection();
   }
 
@@ -1950,7 +1994,194 @@ class CapnoteApp {
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.remove('hidden');
+    this.remindersScreen?.classList.add('hidden');
     this.clearSavedSelection();
+  }
+
+  showRemindersScreen() {
+    this.noteEditor.classList.add('hidden');
+    this.noteViewer.classList.add('hidden');
+    this.welcomeScreen.classList.add('hidden');
+    this.remindersScreen?.classList.remove('hidden');
+    this.updateRemindersView();
+  }
+
+  updateRemindersView() {
+    if (!this.remindersList) return;
+    
+    const activeReminders = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date());
+    
+    if (activeReminders.length === 0) {
+      this.remindersList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">Aktif hatırlatma bulunmuyor</div>';
+      return;
+    }
+
+    this.remindersList.innerHTML = activeReminders
+      .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
+      .map(r => `
+        <div class="reminder-card" data-reminder-id="${r.id}">
+          <div class="reminder-note-title">${this.escapeHtml(r.noteTitle)}</div>
+          <div class="reminder-datetime">
+            <i class="fas fa-clock"></i>
+            ${new Date(r.datetime).toLocaleString('tr-TR', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric', 
+              hour: '2-digit', 
+              minute: '2-digit' 
+            })}
+          </div>
+          <div class="reminder-actions">
+            <button class="reminder-action-btn view-note-btn" data-note-id="${r.noteId}">
+              <i class="fas fa-eye"></i> Notu Görüntüle
+            </button>
+            <button class="reminder-action-btn dismiss-btn" data-reminder-id="${r.id}">
+              <i class="fas fa-check"></i> Tamamlandı
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+    // Add event listeners to action buttons
+    this.remindersList.querySelectorAll('.view-note-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const noteId = parseInt(e.currentTarget.dataset.noteId);
+        const note = this.notes.find(n => n.id === noteId);
+        if (note) this.openNote(note);
+      });
+    });
+
+    this.remindersList.querySelectorAll('.dismiss-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const reminderId = parseInt(e.currentTarget.dataset.reminderId);
+        this.dismissReminder(reminderId);
+      });
+    });
+  }
+
+  async addReminder() {
+    if (!this.currentNote || !this.reminderDatetime?.value) {
+      this.showNotification('Lütfen bir tarih ve saat seçin', 'error');
+      return;
+    }
+
+    const datetime = this.reminderDatetime.value;
+    const reminderDate = new Date(datetime);
+    const now = new Date();
+
+    if (reminderDate <= now) {
+      this.showNotification('Hatırlatma zamanı gelecekte olmalıdır', 'error');
+      return;
+    }
+
+    const reminder = {
+      id: Date.now(),
+      noteId: this.currentNote.id,
+      noteTitle: this.currentNote.title || 'Başlıksız Not',
+      datetime: datetime,
+      dismissed: false
+    };
+
+    this.reminders.push(reminder);
+    await this.saveReminders();
+    this.reminderDatetime.value = '';
+    this.updateNoteRemindersDisplay();
+    this.updateActiveRemindersCount();
+    this.showNotification('Hatırlatma eklendi', 'success');
+  }
+
+  async dismissReminder(reminderId) {
+    const reminder = this.reminders.find(r => r.id === reminderId);
+    if (reminder) {
+      reminder.dismissed = true;
+      await this.saveReminders();
+      this.updateRemindersView();
+      this.updateNoteRemindersDisplay();
+      this.updateActiveRemindersCount();
+      this.showNotification('Hatırlatma tamamlandı', 'success');
+    }
+  }
+
+  updateNoteRemindersDisplay() {
+    if (!this.noteRemindersList || !this.currentNote) return;
+
+    const noteReminders = this.reminders.filter(r => 
+      r.noteId === this.currentNote.id && 
+      !r.dismissed && 
+      new Date(r.datetime) > new Date()
+    );
+
+    if (noteReminders.length === 0) {
+      this.noteRemindersList.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem;">Bu not için hatırlatma yok</div>';
+      return;
+    }
+
+    this.noteRemindersList.innerHTML = noteReminders
+      .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
+      .map(r => `
+        <div class="note-reminder-item">
+          <div class="note-reminder-time">
+            <i class="fas fa-bell"></i>
+            ${new Date(r.datetime).toLocaleString('tr-TR', { 
+              month: 'short', 
+              day: 'numeric', 
+              hour: '2-digit', 
+              minute: '2-digit' 
+            })}
+          </div>
+          <button class="note-reminder-remove" data-reminder-id="${r.id}" title="Sil">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `).join('');
+
+    // Add remove event listeners
+    this.noteRemindersList.querySelectorAll('.note-reminder-remove').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const reminderId = parseInt(e.currentTarget.dataset.reminderId);
+        this.removeReminder(reminderId);
+      });
+    });
+  }
+
+  async removeReminder(reminderId) {
+    this.reminders = this.reminders.filter(r => r.id !== reminderId);
+    await this.saveReminders();
+    this.updateNoteRemindersDisplay();
+    this.updateActiveRemindersCount();
+    this.showNotification('Hatırlatma silindi', 'info');
+  }
+
+  updateActiveRemindersCount() {
+    if (!this.activeRemindersCount) return;
+    const count = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date()).length;
+    this.activeRemindersCount.textContent = `(${count})`;
+  }
+
+  startReminderChecker() {
+    // Check every minute for due reminders
+    setInterval(() => {
+      const now = new Date();
+      let hasNotification = false;
+
+      this.reminders.forEach(reminder => {
+        if (!reminder.dismissed && new Date(reminder.datetime) <= now) {
+          this.showNotification(`⏰ Hatırlatma: ${reminder.noteTitle}`, 'info');
+          reminder.dismissed = true;
+          hasNotification = true;
+        }
+      });
+
+      if (hasNotification) {
+        this.saveReminders();
+        this.updateRemindersView();
+        this.updateNoteRemindersDisplay();
+        this.updateActiveRemindersCount();
+      }
+    }, 60000); // Check every 60 seconds
+
+    // Also update count on init
+    this.updateActiveRemindersCount();
   }
 
   clearEditor() {
@@ -2172,6 +2403,7 @@ class CapnoteApp {
     this.updateTagsDisplay();
     this.updateWordCount();
     this.updateCurrentDate();
+    this.updateNoteRemindersDisplay();
 
   // Reset save button state - note is loaded as-is, no changes yet
   this.lastSavedContent = this.getCurrentNoteContent();
