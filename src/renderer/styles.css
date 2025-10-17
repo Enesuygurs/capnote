@@ -4945,7 +4945,6 @@ body.dark .default-folder.insert-after::after {
 }
 
 .notification-action-btn {
-  flex: 1;
   padding: 8px 16px;
   border: none;
   border-radius: var(--radius-md);
