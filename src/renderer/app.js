@@ -961,12 +961,14 @@ class CapnoteApp {
         requestAnimationFrame(() => {
           this.emojiPanel.classList.add('show');
           setTimeout(() => this.emojiSearchInput && this.emojiSearchInput.focus(), 100);
+          if (this.openEmojiBtn) this.openEmojiBtn.classList.add('active');
         });
       });
     } else {
       this.emojiPanel.classList.remove('show');
       // wait for animation then hide
       setTimeout(() => this.emojiPanel.classList.add('hidden'), 160);
+      if (this.openEmojiBtn) this.openEmojiBtn.classList.remove('active');
     }
   }
 
@@ -983,6 +985,7 @@ class CapnoteApp {
       // clear any saved selection when the panel is closed explicitly
       try { this.clearSavedSelection(); } catch (e) {}
     }, 200);
+    if (this.openEmojiBtn) this.openEmojiBtn.classList.remove('active');
   }
 
   populateEmojiGrid() {
