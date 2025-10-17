@@ -2298,7 +2298,7 @@ class CapnoteApp {
             </button>
           ` : ''}
           <button class="notification-action-btn delete-notification-btn" data-notification-id="${n.id}">
-            <i class="fas fa-trash"></i>
+            <i class="fas fa-trash"></i> Sil
           </button>
         </div>
       </div>
