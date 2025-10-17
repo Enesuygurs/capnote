@@ -2112,6 +2112,13 @@ class CapnoteApp {
       return;
     }
 
+    // Check if note is saved (exists in notes array)
+    const notExists = this.notes.some(n => n.id === this.currentNote.id);
+    if (!notExists) {
+      this.showNotification('Hatırlatma eklemek için önce notu kaydedin', 'warning');
+      return;
+    }
+
     const datetime = this.reminderDatetime.value;
     const reminderDate = new Date(datetime);
     const now = new Date();
