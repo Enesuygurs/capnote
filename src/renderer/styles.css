@@ -4912,6 +4912,54 @@ body.dark .default-folder.insert-after::after {
 .reminder-actions {
   display: flex;
   gap: 8px;
+  margin-top: 12px;
+}
+
+.reminder-action-btn {
+  flex: 1;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.reminder-action-btn i {
+  font-size: 12px;
+}
+
+.view-note-btn {
+  background: var(--primary-color);
+  color: white;
+}
+
+.view-note-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.view-note-btn:active {
+  transform: translateY(0);
+}
+
+.dismiss-btn {
+  background: var(--success-color);
+  color: white;
+}
+
+.dismiss-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.dismiss-btn:active {
+  transform: translateY(0);
 }
 
 .reminder-btn {
@@ -5012,3 +5060,18 @@ body.dark .default-folder.insert-after::after {
   background: var(--bg-primary);
 }
 
+[data-theme='dark'] .view-note-btn {
+  background: var(--primary-color);
+}
+
+[data-theme='dark'] .view-note-btn:hover {
+  background: var(--primary-hover);
+}
+
+[data-theme='dark'] .dismiss-btn {
+  background: var(--success-color);
+}
+
+[data-theme='dark'] .dismiss-btn:hover {
+  background: #059669;
+}
