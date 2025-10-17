@@ -1581,7 +1581,7 @@ div#newNoteNav {
   background: transparent;
   width: 28px;
   height: 28px;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: none;
   border-radius: 8px; /* slightly rounded */
   cursor: pointer;
   padding: 2px;
@@ -2629,9 +2629,9 @@ input[type="color"].color-picker::-moz-color-swatch {
   padding: 6px 25px 6px 8px;
   font-size: 11px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: none;
   border-radius: 8px;
-  background: transparent;
+  background: #f3f3f39e;
   box-shadow: none;
 }
 
@@ -3704,7 +3704,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .select-selected {
   background: var(--bg-secondary);
-  border: 1px solid rgb(113 113 113 / 10%);
+  border: none;
   color: var(--text-primary);
 }
 
