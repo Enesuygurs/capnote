@@ -336,6 +336,23 @@
                   <input type="text" id="emojiSearchInput" placeholder="Emoji ara..." />
                   <button id="closeEmojiPanel" class="btn-icon" title="Kapat"><i class="fas fa-times"></i></button>
                 </div>
+                <!-- Emoji category tabs with scroll controls -->
+                <div class="emoji-tabs-wrap">
+                  <button id="emojiTabsPrev" class="emoji-tabs-arrow btn-icon" title="Önceki"><i class="fas fa-chevron-left"></i></button>
+                  <div class="emoji-tabs" role="tablist" aria-label="Emoji kategorileri">
+                    <button class="emoji-tab active" data-category="all" role="tab" aria-selected="true"><i class="fas fa-th-large" aria-hidden="true"></i><span class="sr-only">Tümü</span></button>
+                    <button class="emoji-tab" data-category="smileys" role="tab"><i class="far fa-smile" aria-hidden="true"></i><span class="sr-only">Gülücükler</span></button>
+                    <button class="emoji-tab" data-category="people" role="tab"><i class="fas fa-user" aria-hidden="true"></i><span class="sr-only">İnsanlar</span></button>
+                    <button class="emoji-tab" data-category="animals" role="tab"><i class="fas fa-paw" aria-hidden="true"></i><span class="sr-only">Hayvanlar</span></button>
+                    <button class="emoji-tab" data-category="food" role="tab"><i class="fas fa-hamburger" aria-hidden="true"></i><span class="sr-only">Yemek</span></button>
+                    <button class="emoji-tab" data-category="activities" role="tab"><i class="fas fa-futbol" aria-hidden="true"></i><span class="sr-only">Aktiviteler</span></button>
+                    <button class="emoji-tab" data-category="travel" role="tab"><i class="fas fa-plane" aria-hidden="true"></i><span class="sr-only">Seyahat</span></button>
+                    <button class="emoji-tab" data-category="objects" role="tab"><i class="fas fa-lightbulb" aria-hidden="true"></i><span class="sr-only">Nesneler</span></button>
+                    <button class="emoji-tab" data-category="symbols" role="tab"><i class="fas fa-bookmark" aria-hidden="true"></i><span class="sr-only">Semboller</span></button>
+                    <button class="emoji-tab" data-category="flags" role="tab"><i class="fas fa-flag" aria-hidden="true"></i><span class="sr-only">Bayraklar</span></button>
+                  </div>
+                  <button id="emojiTabsNext" class="emoji-tabs-arrow btn-icon" title="Sonraki"><i class="fas fa-chevron-right"></i></button>
+                </div>
                 <div id="emojiGrid" class="emoji-grid" aria-live="polite">
                   <!-- Emoji buttons populated by JS -->
                 </div>
