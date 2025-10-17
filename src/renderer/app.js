@@ -198,6 +198,7 @@ class CapnoteApp {
     this.notificationsNav = document.getElementById('notificationsNav');
     this.notificationsList = document.getElementById('notificationsList');
     this.activeNotificationsCount = document.getElementById('activeNotificationsCount');
+    this.notificationsUnreadBadge = document.getElementById('notificationsUnreadBadge');
 
   this.viewerCharCount = document.getElementById('viewerCharCount');
     this.readingTime = document.getElementById('readingTime');
@@ -2348,6 +2349,15 @@ class CapnoteApp {
     if (!this.activeNotificationsCount) return;
     const count = this.notifications.filter(n => !n.read).length;
     this.activeNotificationsCount.textContent = `(${count})`;
+    
+    // Show/hide unread badge
+    if (this.notificationsUnreadBadge) {
+      if (count > 0) {
+        this.notificationsUnreadBadge.style.display = 'inline-block';
+      } else {
+        this.notificationsUnreadBadge.style.display = 'none';
+      }
+    }
   }
 
   clearEditor() {
