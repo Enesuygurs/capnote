@@ -787,12 +787,33 @@ div#newNoteNav {
 
 .emoji-panel-header input[type="text"] {
   flex: 1 1 auto;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.08);
-  background: var(--bg-primary);
+  padding: 8px 14px;
+  /* pill styling to match emoji tab shell */
+  border-radius: 50px;
+  border: 1px solid rgba(0,0,0,0.04);
+  background: rgba(0,0,0,0.03);
   outline: none;
   min-width: 120px; /* ensure input has room */
+  box-sizing: border-box;
+  transition: box-shadow 120ms ease, background 120ms ease, border-color 120ms ease;
+}
+
+.emoji-panel-header input[type="text"]:focus {
+  box-shadow: 0 6px 18px rgba(16,24,40,0.08);
+  border-color: var(--accent-color);
+  background: rgba(255,255,255,0.9);
+}
+
+/* Match the pill appearance to the tab shell in dark mode */
+[data-theme='dark'] .emoji-panel-header input[type="text"] {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+[data-theme='dark'] .emoji-panel-header input[type="text"]:focus {
+  background: rgba(255,255,255,0.04);
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  border-color: var(--accent-color);
 }
 
 /* close button removed: behavior handled by clicking outside the panel */
