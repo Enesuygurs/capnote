@@ -963,6 +963,12 @@ div#newNoteNav {
   transform: translateY(0.5px);
 }
 
+/* Dark theme: make tab icons white for contrast */
+[data-theme='dark'] .emoji-tab i {
+  color: #fff;
+  opacity: 0.95;
+}
+
 /* If the icons still look slightly off on some OS/font renderers, tweak the translateY value above. */
 
 .tags-list {
