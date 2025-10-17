@@ -4915,7 +4915,6 @@ body.dark .default-folder.insert-after::after {
 }
 
 .reminder-action-btn {
-  flex: 1;
   padding: 8px 16px;
   border: none;
   border-radius: var(--radius-md);
@@ -4948,12 +4947,12 @@ body.dark .default-folder.insert-after::after {
 }
 
 .dismiss-btn {
-  background: var(--success-color);
+  background: #16a34a;
   color: white;
 }
 
 .dismiss-btn:hover {
-  background: #059669;
+  background: #15803d;
   transform: translateY(-1px);
 }
 
@@ -5068,9 +5067,9 @@ body.dark .default-folder.insert-after::after {
 }
 
 [data-theme='dark'] .dismiss-btn {
-  background: var(--success-color);
+  background: #0d6f22;
 }
 
 [data-theme='dark'] .dismiss-btn:hover {
-  background: #059669;
+  background: #075f1a;
 }
