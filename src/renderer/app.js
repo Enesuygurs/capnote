@@ -1942,6 +1942,12 @@ class CapnoteApp {
   showViewer() {
     this.welcomeScreen.classList.add('hidden');
     this.noteEditor.classList.add('hidden');
+    // remove any selected image wrappers so resize handles don't show in preview
+    try {
+      if (this.richEditor) {
+        Array.from(this.richEditor.querySelectorAll('.img-wrap.selected')).forEach((n) => n.classList.remove('selected'));
+      }
+    } catch (e) {}
     this.noteViewer.classList.remove('hidden');
     this.clearSavedSelection();
   }
