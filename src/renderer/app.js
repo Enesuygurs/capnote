@@ -1942,12 +1942,6 @@ class CapnoteApp {
   showViewer() {
     this.welcomeScreen.classList.add('hidden');
     this.noteEditor.classList.add('hidden');
-    // remove any selected image wrappers so resize handles don't show in preview
-    try {
-      if (this.richEditor) {
-        Array.from(this.richEditor.querySelectorAll('.img-wrap.selected')).forEach((n) => n.classList.remove('selected'));
-      }
-    } catch (e) {}
     this.noteViewer.classList.remove('hidden');
     this.clearSavedSelection();
   }
@@ -2161,6 +2155,8 @@ class CapnoteApp {
       }
     } else {
       this.richEditor.innerHTML = note.content;
+      // ensure any images in loaded content are wrapped and wired for resizing
+      try { this.upgradeImagesInEditor(); } catch (e) {}
       if (this.markdownEditor) this.markdownEditor.value = '';
     }
     this.setEditorFormatting(note.formatting || this.getDefaultFormatting());
@@ -2192,6 +2188,97 @@ class CapnoteApp {
     } else {
       this.showRichEditor();
     }
+  }
+
+  // Ensure a given <img> element is wrapped in .img-wrap and has resize handlers
+  ensureImageWrapper(img) {
+    if (!img || !this.richEditor) return;
+    let wrapper = img.parentElement;
+    if (!wrapper || !wrapper.classList.contains('img-wrap')) {
+      wrapper = document.createElement('span');
+      wrapper.className = 'img-wrap';
+      wrapper.contentEditable = 'false';
+      img.replaceWith(wrapper);
+      wrapper.appendChild(img);
+    }
+    // avoid wiring twice
+    if (wrapper.dataset.resizeWired) return;
+    wrapper.dataset.resizeWired = '1';
+
+    // ensure handle exists
+    let handle = wrapper.querySelector('.img-handle');
+    if (!handle) {
+      handle = document.createElement('span');
+      handle.className = 'img-handle';
+      wrapper.appendChild(handle);
+    }
+
+    // click to select
+    wrapper.addEventListener('click', (e) => {
+      e.stopPropagation();
+      Array.from(this.richEditor.querySelectorAll('.img-wrap.selected')).forEach((n) => n.classList.remove('selected'));
+      wrapper.classList.add('selected');
+    });
+
+    // resize handling
+    let isResizing = false;
+    let startX = 0;
+    let startW = 0;
+    const imgEl = wrapper.querySelector('img');
+    const onMouseMove = (ev) => {
+      if (!isResizing) return;
+      const dx = ev.clientX - startX;
+      const newW = Math.max(24, startW + dx);
+      if (imgEl) imgEl.style.width = newW + 'px';
+    };
+    const onMouseUp = () => {
+      if (!isResizing) return;
+      isResizing = false;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      this.trackContentChanges();
+    };
+    handle.addEventListener('mousedown', (ev) => {
+      ev.preventDefault(); ev.stopPropagation();
+      isResizing = true;
+      startX = ev.clientX;
+      startW = imgEl ? imgEl.getBoundingClientRect().width : 0;
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+
+    // ensure a single document click handler to deselect
+    if (!this._imgDocListenerAdded) {
+      this._imgDocListenerAdded = true;
+      document.addEventListener('click', (e) => {
+        if (!this.richEditor) return;
+        Array.from(this.richEditor.querySelectorAll('.img-wrap.selected')).forEach((n) => {
+          if (!n.contains(e.target)) n.classList.remove('selected');
+        });
+      });
+    }
+  }
+
+  upgradeImagesInEditor() {
+    if (!this.richEditor) return;
+    const imgs = Array.from(this.richEditor.querySelectorAll('img'));
+    imgs.forEach((img) => {
+      try {
+        // If the image is already wrapped (saved HTML may include .img-wrap),
+        // unwrap it so we can create a fresh wrapper and attach listeners.
+        const parent = img.parentElement;
+        if (parent && parent.classList && parent.classList.contains('img-wrap')) {
+          try {
+            // Replace the wrapper with the raw img node so ensureImageWrapper creates a new wrapper
+            parent.replaceWith(img);
+          } catch (unwrapErr) {
+            // fallback: try to move the img out
+            try { parent.parentNode.insertBefore(img, parent); parent.remove(); } catch (e) {}
+          }
+        }
+        this.ensureImageWrapper(img);
+      } catch (e) {}
+    });
   }
 
   showMarkdownPreview() {

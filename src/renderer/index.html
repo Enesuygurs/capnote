@@ -298,6 +298,10 @@
             </div>
 
             <div class="format-group">
+              <button class="format-btn small-toolbar-btn" id="browseImageBtn" title="Görsel ekle (Gözat)">
+                <i class="fas fa-file-import"></i>
+              </button>
+              <input id="browseImageInput" type="file" accept="image/*" style="display:none" />
               <button class="format-btn small-toolbar-btn" id="toggleMarkdownBtn" title="Markdown önizleme">
                 <i class="fas fa-file-code"></i>
               </button>
@@ -305,7 +309,10 @@
                 <i class="fas fa-code"></i>
               </button>
               <button class="format-btn small-toolbar-btn" id="insertCodeBlockBtn" title="Kod bloğu ekle">
-                <i class="fas fa-code-branch"></i>
+                <i class="fas fa-laptop-code"></i>
+              </button>
+              <button class="format-btn small-toolbar-btn" id="openEmojiBtn" title="Emoji Ekle">
+                <i class="fas fa-face-smile"></i>
               </button>
             </div>
             <div class="format-group">
@@ -327,6 +334,32 @@
               ></div>
               <div id="markdownPreview" class="markdown-preview hidden" aria-hidden="true"></div>
               <div id="htmlPreview" class="html-preview hidden" aria-hidden="true"></div>
+              <!-- Emoji panel (hidden by default) -->
+              <div id="emojiPanel" class="emoji-panel hidden">
+                <div class="emoji-panel-header">
+                  <input type="text" id="emojiSearchInput" placeholder="Emoji ara..." />
+                </div>
+                <!-- Emoji category tabs (clean professional layout) -->
+                <div class="emoji-tabs-wrap professional">
+                  <div class="emoji-tabs-shell">
+                    <div class="emoji-tabs" role="tablist" aria-label="Emoji kategorileri">
+                      <button class="emoji-tab active" data-category="all" role="tab" aria-selected="true" aria-label="Tümü"><i class="fas fa-th-large" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="smileys" role="tab" aria-label="Gülücükler"><i class="far fa-smile" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="people" role="tab" aria-label="İnsanlar"><i class="fas fa-user" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="animals" role="tab" aria-label="Hayvanlar"><i class="fas fa-paw" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="food" role="tab" aria-label="Yemek"><i class="fas fa-hamburger" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="activities" role="tab" aria-label="Aktiviteler"><i class="fas fa-futbol" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="travel" role="tab" aria-label="Seyahat"><i class="fas fa-plane" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="objects" role="tab" aria-label="Nesneler"><i class="fas fa-lightbulb" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="symbols" role="tab" aria-label="Semboller"><i class="fas fa-bookmark" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="flags" role="tab" aria-label="Bayraklar"><i class="fas fa-flag" aria-hidden="true"></i></button>
+                    </div>
+                  </div>
+                </div>
+                <div id="emojiGrid" class="emoji-grid" aria-live="polite">
+                  <!-- Emoji buttons populated by JS -->
+                </div>
+              </div>
             </div>
 
             <div class="editor-sidebar">
@@ -363,6 +396,8 @@
                   <div id="tagsList" class="tags-list"></div>
                 </div>
               </div>
+
+              <!-- Emoji picker moved to editor toolbar -->
             </div>
           </div>
         </div>
@@ -605,16 +640,6 @@
           </div>
 
           <div class="settings-section">
-            <h4><i class="fas fa-info-circle"></i> Uygulama Bilgileri</h4>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label>Versiyon</label>
-                <small>Capnote v1.0.0</small>
-              </div>
-            </div>
-          </div>
-
-          <div class="settings-section">
             <h4><i class="fas fa-trash"></i> Verileri Temizle</h4>
             <div class="setting-item">
               <div class="setting-info">
@@ -636,12 +661,22 @@
             </div>
             <div class="setting-item">
               <div class="setting-info">
-                <label>Tüm İçeriği Sil</label>
-                <small>Notlar, klasörler ve uygulama ayarları dahil her şeyi siler</small>
+                <label>Uygulamayı Sıfırla</label>
+                <small>Notlar, klasörler ve ayarlar dahil uygulamayı varsayılan haline döndürür</small>
               </div>
               <button id="clearAllContentBtn" class="btn-outline btn-small btn-danger">
-                <i class="fas fa-eraser"></i> Tüm İçeriği Sil
+                <i class="fas fa-eraser"></i> Uygulamayı Sıfırla
               </button>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4><i class="fas fa-info-circle"></i> Uygulama Bilgileri</h4>
+            <div class="setting-item">
+              <div class="setting-info">
+                <label>Versiyon</label>
+                <small>Capnote v1.0.0</small>
+              </div>
             </div>
           </div>
         </div>
