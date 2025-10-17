@@ -148,3 +148,22 @@ ipcMain.on('close-window', () => {
     mainWindow.close();
   }
 });
+
+// Save file dropped from OS to app data/uploads and return a file:// path for renderer
+ipcMain.handle('save-dropped-file', (event, srcPath) => {
+  try {
+    if (!srcPath || typeof srcPath !== 'string') return null;
+    const uploadsDir = path.join(app.getPath('userData'), 'uploads');
+    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+    const baseName = path.basename(srcPath);
+    // create a timestamped filename to avoid collisions
+    const targetName = `${Date.now()}-${baseName}`;
+    const destPath = path.join(uploadsDir, targetName);
+    fs.copyFileSync(srcPath, destPath);
+    // return a file:// URI so the renderer can load it in <img src=>
+    return `file://${destPath}`;
+  } catch (err) {
+    console.error('Failed to save dropped file:', err);
+    return null;
+  }
+});
