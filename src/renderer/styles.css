@@ -4966,7 +4966,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .notification-action-btn {
-  padding: 8px 16px;
+  padding: 8px 12px;
   border: none;
   border-radius: var(--radius-md);
   font-size: 13px;
@@ -5005,16 +5005,17 @@ body.dark .default-folder.insert-after::after {
 }
 
 .delete-notification-btn {
-  background: transparent;
-  color: var(--error-color);
-  border: 1px solid var(--error-color);
-  padding: 8px 12px;
+  background: var(--error-color);
+  color: white;
 }
 
 .delete-notification-btn:hover {
-  background: var(--error-color);
-  color: white;
+  background: #dc2626;
   transform: translateY(-1px);
+}
+
+.delete-notification-btn:active {
+  transform: translateY(0);
 }
 
 .reminders-header {
@@ -5271,7 +5272,11 @@ body.dark .default-folder.insert-after::after {
 }
 
 [data-theme='dark'] .delete-notification-btn {
-  border-color: var(--error-color);
+  background: var(--error-color);
+}
+
+[data-theme='dark'] .delete-notification-btn:hover {
+  background: #dc2626;
 }
 
 [data-theme='dark'] .reminder-card {
