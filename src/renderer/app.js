@@ -2005,6 +2005,10 @@ class CapnoteApp {
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
 
+    // Remove active from reminders and notifications
+    this.remindersNav?.classList.remove('active');
+    this.notificationsNav?.classList.remove('active');
+
     // Reset form
     this.resetFormState();
     // Ensure any previews are hidden when entering editor
@@ -2024,6 +2028,11 @@ class CapnoteApp {
     this.noteViewer.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
+    
+    // Remove active from reminders and notifications
+    this.remindersNav?.classList.remove('active');
+    this.notificationsNav?.classList.remove('active');
+    
     this.clearSavedSelection();
   }
 
@@ -2033,6 +2042,11 @@ class CapnoteApp {
     this.welcomeScreen.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
+    
+    // Remove active from reminders and notifications
+    this.remindersNav?.classList.remove('active');
+    this.notificationsNav?.classList.remove('active');
+    
     this.clearSavedSelection();
   }
 
@@ -2042,6 +2056,13 @@ class CapnoteApp {
     this.welcomeScreen.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
     this.remindersScreen?.classList.remove('hidden');
+    
+    // Update active states
+    this.remindersNav?.classList.add('active');
+    this.notificationsNav?.classList.remove('active');
+    // Remove active from filter items
+    document.querySelectorAll('.nav-item[data-filter]').forEach(item => item.classList.remove('active'));
+    
     this.updateRemindersView();
   }
 
@@ -2051,6 +2072,13 @@ class CapnoteApp {
     this.welcomeScreen.classList.add('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.remove('hidden');
+    
+    // Update active states
+    this.notificationsNav?.classList.add('active');
+    this.remindersNav?.classList.remove('active');
+    // Remove active from filter items
+    document.querySelectorAll('.nav-item[data-filter]').forEach(item => item.classList.remove('active'));
+    
     this.updateNotificationsView();
   }
 
