@@ -922,8 +922,9 @@ class CapnoteApp {
     // Emoji panel handlers: close/search and populate grid
     if (this.closeEmojiPanel) this.closeEmojiPanel.addEventListener('click', () => this.hideEmojiPanel());
     if (this.emojiSearchInput) this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
-    // populate grid
-    this.populateEmojiGrid();
+  // initialize tabs then populate grid
+  try { this.initEmojiTabs(); } catch (e) {}
+  this.populateEmojiGrid();
   }
 
   toggleEmojiPanel() {
@@ -988,7 +989,32 @@ class CapnoteApp {
 
   populateEmojiGrid() {
     if (!this.emojiGrid) return;
-    const emojis = ['😀','😁','😂','🤣','😊','😇','😍','😘','😜','🤪','🤔','😴','😢','😭','😡','🤯','👍','👎','🙏','👏','🙌','🎉','🔥','❤️','💔','✨','🤝'];
+    const category = this.activeEmojiCategory || 'all';
+    // categorized emoji dataset (sane subset for UI)
+    const emojiSets = this._emojiSets || {
+      all: [],
+      smileys: ['😀','😁','😂','🤣','😊','😇','🙂','😉','😜','🤪','😝','😛','😋','😏','🤗','🤩','🙂','😌'],
+      people: ['👦','👧','👨','👩','👴','👵','👶','🧑‍🦱','🧑‍🦰','🧑‍🦳','🧑‍🦲','👮','🕵️','👷','💂','🤴','👸','🧙'],
+      animals: ['🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🦄'],
+      food: ['🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🍒','🍑','🍍','🥭','🍔','🍟','🍕','🍣','🍩'],
+      activities: ['⚽','🏀','🏈','🎾','🏐','🏉','🎱','🏓','🏸','🥊','🏹','🎣','🎯','🎳'],
+      travel: ['🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚚','🚲','🛴','🏍️','✈️','🚀','🛳️'],
+      objects: ['⌚','📱','💻','🖥️','🖨️','🎧','📷','📺','🔑','💡','🔨','🧰','📦'],
+      symbols: ['❤️','💔','✨','🔥','⭐','⚡','🎵','🔔','✔️','❌','➕','➖','ℹ️','❗'],
+      flags: ['🏳️','🏴','🇹🇷','🇺🇸','🇬🇧','🇩🇪','🇫🇷','🇮🇹','🇪🇸','🇯🇵']
+    };
+    // build 'all' set once
+    if (!this._emojiSets) {
+      const all = [];
+      Object.keys(emojiSets).forEach((k) => {
+        if (k === 'all') return;
+        all.push(...emojiSets[k]);
+      });
+      emojiSets.all = Array.from(new Set(all));
+      this._emojiSets = emojiSets;
+    }
+
+    const emojis = (this._emojiSets[category] || this._emojiSets.all || []);
     this.emojiGrid.innerHTML = '';
     emojis.forEach((emoji) => {
       const btn = document.createElement('button');
@@ -1016,6 +1042,50 @@ class CapnoteApp {
         // NOTE: Do NOT hide the panel here. The panel should only close when the user presses the close button.
       });
       this.emojiGrid.appendChild(btn);
+    });
+  }
+
+  // initialize emoji tabs and category switching
+  initEmojiTabs() {
+    if (!this.emojiPanel) return;
+    const tabs = Array.from(this.emojiPanel.querySelectorAll('.emoji-tab'));
+    const tabsContainer = this.emojiPanel.querySelector('.emoji-tabs');
+    const prevBtn = document.getElementById('emojiTabsPrev');
+    const nextBtn = document.getElementById('emojiTabsNext');
+
+    function updateArrows() {
+      if (!tabsContainer) return;
+      const maxScroll = tabsContainer.scrollWidth - tabsContainer.clientWidth;
+      if (prevBtn) prevBtn.disabled = tabsContainer.scrollLeft <= 2;
+      if (nextBtn) nextBtn.disabled = tabsContainer.scrollLeft >= (maxScroll - 2);
+    }
+
+    if (prevBtn && tabsContainer) prevBtn.addEventListener('click', () => {
+      tabsContainer.scrollBy({ left: -120, behavior: 'smooth' });
+      setTimeout(updateArrows, 250);
+    });
+    if (nextBtn && tabsContainer) nextBtn.addEventListener('click', () => {
+      tabsContainer.scrollBy({ left: 120, behavior: 'smooth' });
+      setTimeout(updateArrows, 250);
+    });
+    if (tabsContainer) tabsContainer.addEventListener('scroll', updateArrows);
+    // initial arrow state
+    setTimeout(updateArrows, 50);
+    tabs.forEach((t) => {
+      t.addEventListener('click', (e) => {
+        const cat = t.dataset.category || 'all';
+        // toggle aria-selected and active
+        tabs.forEach((tb) => {
+          tb.classList.remove('active');
+          tb.setAttribute('aria-selected', 'false');
+        });
+        t.classList.add('active');
+        t.setAttribute('aria-selected', 'true');
+        this.activeEmojiCategory = cat;
+        this.populateEmojiGrid();
+        // refocus search input
+        setTimeout(() => { try { this.emojiSearchInput && this.emojiSearchInput.focus(); } catch (e) {} }, 50);
+      });
     });
   }
 

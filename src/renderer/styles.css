@@ -819,6 +819,58 @@ div#newNoteNav {
   padding: 4px;
 }
 
+/* Emoji tabs */
+.emoji-tabs {
+  display: flex;
+  gap: 6px;
+  /* remove extra top padding so tabs align vertically with the arrow buttons */
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  align-items: center;
+  overflow-x: auto;
+}
+.emoji-tabs-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 4px 6px;
+  /* wrapper height matches tab/arrow size (28px) */
+  height: 28px;
+}
+.emoji-tabs-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.02);
+  border: 1px solid rgba(0,0,0,0.02);
+  cursor: pointer;
+  transition: transform 100ms ease, box-shadow 100ms ease;
+  font-size: 12px;
+}
+.emoji-tabs-arrow { transform: translateY(4px); }
+.emoji-tabs-arrow:hover { transform: translateY(-4px) scale(1.06); background: var(--accent-color-rgba-15); border-color: var(--accent-color); box-shadow: 0 6px 18px rgba(16,24,40,0.12); }
+.emoji-tabs-arrow:active { transform: translateY(-1px) scale(0.98); }
+.emoji-tabs-arrow:disabled { opacity: 0.38; cursor: default; }
+.emoji-tab { min-width: 28px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; background: rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.02); cursor: pointer; transition: transform 100ms ease, box-shadow 100ms ease, background 100ms ease; transform: translateY(4px); }
+.emoji-tab:hover {
+  transform: translateY(-4px) scale(1.06);
+  /* fixed translucent white background irrespective of accent */
+  background: rgb(255 255 255 / 27%);
+  /* remove border color change on hover */
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(16,24,40,0.12);
+}
+.emoji-tab:active { transform: translateY(-1px) scale(0.98); }
+.emoji-tab .sr-only { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.emoji-tab.active {
+  background: var(--accent-color);
+  color: white;
+  box-shadow: 0 6px 18px var(--accent-color-rgba-20);
+}
+
 .emoji-grid-btn {
   width: 34px;
   height: 34px;
@@ -872,6 +924,18 @@ div#newNoteNav {
 #tagInput:focus {
   border-color: var(--primary-color);
 }
+
+/* Normalize icon rendering between FontAwesome and native emoji glyphs */
+.emoji-tab i, .emoji-tabs-arrow i {
+  display: inline-block;
+  line-height: 1;
+  font-size: 18px; /* match emoji grid font-size */
+  vertical-align: middle;
+  /* tiny vertical nudge to visually center FontAwesome icons with emoji glyphs */
+  transform: translateY(1px);
+}
+
+/* If the icons still look slightly off on some OS/font renderers, tweak the translateY value above. */
 
 .tags-list {
   display: flex;
