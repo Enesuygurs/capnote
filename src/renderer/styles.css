@@ -5022,6 +5022,47 @@ body.dark .default-folder.insert-after::after {
   font-size: 12px;
 }
 
+.note-reminder-time {
+  color: var(--text-secondary);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.note-reminder-time i {
+  font-size: 11px;
+}
+
+.note-reminder-remove {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.note-reminder-remove:hover {
+  background: var(--error-color);
+  color: white;
+  transform: scale(1.1);
+}
+
+.note-reminder-remove:active {
+  transform: scale(0.95);
+}
+
+.note-reminder-remove i {
+  font-size: 12px;
+}
+
 .reminder-time {
   color: var(--text-secondary);
   flex: 1;
@@ -5056,6 +5097,15 @@ body.dark .default-folder.insert-after::after {
 
 [data-theme='dark'] .note-reminder-item {
   background: var(--bg-primary);
+}
+
+[data-theme='dark'] .note-reminder-remove {
+  color: var(--text-secondary);
+}
+
+[data-theme='dark'] .note-reminder-remove:hover {
+  background: var(--error-color);
+  color: white;
 }
 
 [data-theme='dark'] .view-note-btn {
