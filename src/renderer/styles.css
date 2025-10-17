@@ -384,6 +384,8 @@ body {
   font-size: 13px;
   line-height: 1.5;
   margin: 0.8em 0;
+  /* Use a subtle, translucent accent-tinted shadow instead of a black one */
+  box-shadow: 0 6px 12px color-mix(in srgb, var(--primary-color) 18%, transparent 82%);
 }
 .code-copy-btn {
   position: absolute;
@@ -407,6 +409,14 @@ body {
 
 /* Dark theme variant for copy button background */
 body.dark .code-copy-btn { background: rgba(255,255,255,0.06); }
+.note-content code,
+.formatted-content code {
+  background: color-mix(in srgb, var(--primary-color) 20%, transparent);
+  padding: 0.15em 0.35em;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-on-primary, #ffffff);
+}
 
 /* Dark theme adjustments for code blocks */
 [data-theme='dark'] .markdown-preview pre {
@@ -420,6 +430,11 @@ body.dark .code-copy-btn { background: rgba(255,255,255,0.06); }
 [data-theme='dark'] .formatted-content pre {
   /* Dark theme for editor/viewer code blocks: mix with more black for stronger darkening */
   background: color-mix(in srgb, var(--primary-color) 30%, black 70%);
+  color: var(--text-on-primary, #ffffff);
+}
+[data-theme='dark'] .note-content code,
+[data-theme='dark'] .formatted-content code {
+  background: color-mix(in srgb, var(--primary-color) 18%, transparent);
   color: var(--text-on-primary, #ffffff);
 }
 
@@ -747,235 +762,6 @@ div#newNoteNav {
   color: white;
 }
 
-/* Emoji panel & toolbar button */
-.format-btn#openEmojiBtn,
-.format-btn.small-toolbar-btn#openEmojiBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Embedded images in editor */
-.embedded-image {
-  max-width: 100%;
-  height: auto;
-  display: inline-block;
-}
-
-/* Resizable image container */
-.img-wrap {
-  display: inline-block;
-  position: relative;
-  border: 1px dashed transparent;
-}
-.img-wrap.selected {
-  border-color: rgba(0,0,0,0.15);
-}
-.img-wrap img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.img-handle {
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  right: 2px;
-  bottom: 2px;
-  background: rgba(0,0,0,0.6);
-  border-radius: 2px;
-  cursor: se-resize;
-  z-index: 5;
-}
-
-.emoji-panel {
-  /* Use fixed positioning so JS can place the panel using viewport coordinates
-     (getBoundingClientRect). This avoids issues when ancestor containers are
-     positioned or scrolled. */
-  position: fixed;
-  z-index: 9999;
-  left: auto;
-  top: auto;
-  width: 320px;
-  max-width: calc(100% - 48px);
-  background: var(--bg-primary);
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 8px 30px rgba(16,24,40,0.12);
-  border-radius: 10px;
-  padding: 8px;
-  transition: transform 0.12s ease, opacity 0.12s ease;
-  transform-origin: top center;
-}
-
-.emoji-panel.hidden {
-  display: none;
-}
-
-.emoji-panel-header {
-  display: flex;
-  gap: 12px; /* a bit more breathing room between search and close */
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.emoji-panel-header input[type="text"] {
-  flex: 1 1 auto;
-  padding: 8px 14px;
-  /* pill styling to match emoji tab shell */
-  border-radius: 50px;
-  border: 1px solid rgba(0,0,0,0.04);
-  background: rgba(0,0,0,0.03);
-  outline: none;
-  min-width: 120px; /* ensure input has room */
-  box-sizing: border-box;
-  transition: box-shadow 120ms ease, background 120ms ease, border-color 120ms ease;
-}
-
-.emoji-panel-header input[type="text"]:focus {
-  box-shadow: 0 6px 18px rgba(16,24,40,0.08);
-  border-color: var(--accent-color);
-  background: rgba(255,255,255,0.9);
-}
-
-/* Match the pill appearance to the tab shell in dark mode */
-[data-theme='dark'] .emoji-panel-header input[type="text"] {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.04);
-}
-
-[data-theme='dark'] .emoji-panel-header input[type="text"]:focus {
-  background: rgba(255,255,255,0.04);
-  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
-  border-color: var(--accent-color);
-}
-
-/* close button removed: behavior handled by clicking outside the panel */
-
-.emoji-grid {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  gap: 6px;
-  max-height: 210px;
-  overflow: auto;
-  padding: 4px;
-}
-
-/* Emoji tabs */
-.emoji-tabs {
-  display: flex;
-  gap: 6px;
-  padding: 6px 0;
-  align-items: center;
-  overflow-x: auto;
-}
-/* hide scrollbars visually but keep scrolling functional */
-.emoji-tabs::-webkit-scrollbar,
-.emoji-grid::-webkit-scrollbar { display: none; width: 0; height: 0; }
-.emoji-tabs { -ms-overflow-style: none; scrollbar-width: none; }
-.emoji-grid { -ms-overflow-style: none; scrollbar-width: none; }
-.emoji-tabs-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  /* tightened lateral padding for a more compact group */
-  padding: 2px 8px 2px 8px;
-  height: 28px;
-  margin-bottom: 8px;
-  position: relative; /* allow absolute positioning of nav arrows */
-  width: 100%;
-  justify-content: center; /* center the shell; arrows will be absolute */
-}
-
-/* Professional style: pill shell around tabs */
-.emoji-tabs-wrap.professional { padding: 4px 8px; }
-.emoji-tabs-shell {
-  background: rgba(0,0,0,0.03);
-  border-radius: 999px;
-  /* reduce shell padding so the pill feels tighter */
-  padding: 2px 6px;
-  display: flex;
-  align-items: center;
-  /* ensure shell doesn't push outside the panel — allow room for arrows */
-  max-width: 190px;
-  margin: 0 auto; /* center inside wrapper */
-  overflow: hidden; /* clip overflowing tabs */
-  flex: none;
-}
-.emoji-tabs-shell .emoji-tabs {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  overflow-x: auto;
-  padding: 0;
-}
-.emoji-tabs-shell .emoji-tabs::-webkit-scrollbar { display: none; }
-.emoji-tabs-shell .emoji-tabs { -ms-overflow-style: none; scrollbar-width: none; }
-.emoji-tabs-arrow { display: none; }
-.emoji-tab {
-  min-width: 24px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.02);
-  border: 1px solid rgba(0,0,0,0.02);
-  cursor: pointer;
-  transition: transform 100ms ease, box-shadow 100ms ease, background 100ms ease;
-  padding: 0 4px; /* compact horizontal hit area */
-  box-sizing: content-box;
-}
-.emoji-tab:hover {
-  /* fixed translucent white background irrespective of accent */
-  background: rgb(255 255 255 / 27%);
-  /* remove border color change on hover */
-  border-color: transparent;
-  box-shadow: 0 6px 18px rgba(16,24,40,0.12);
-}
-.emoji-tab:active { transform: translateY(-1px) scale(0.98); }
-.emoji-tab .sr-only { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-.emoji-tab.active {
-  background: var(--accent-color);
-  color: white;
-  box-shadow: 0 6px 18px var(--accent-color-rgba-20);
-}
-
-.emoji-grid-btn {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid transparent;
-  cursor: pointer;
-  font-size: 18px;
-  transition: all 0.12s ease;
-}
-
-.emoji-grid-btn:hover {
-  transform: scale(1.08);
-  background: var(--accent-color-rgba-15);
-  border-color: var(--accent-color);
-}
-
-[data-theme='dark'] .emoji-panel {
-  background: #0f1724;
-  border-color: rgba(255,255,255,0.04);
-  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
-}
-
-[data-theme='dark'] .emoji-panel-header input[type="text"] {
-  background: #0b1220;
-  border-color: rgba(255,255,255,0.02);
-  color: var(--text-primary);
-}
-
-[data-theme='dark'] .emoji-grid-btn:hover {
-  background: rgba(255,255,255,0.04);
-}
-
 .tags-container {
   margin-top: 12px;
 }
@@ -993,24 +779,6 @@ div#newNoteNav {
 #tagInput:focus {
   border-color: var(--primary-color);
 }
-
-/* Normalize icon rendering between FontAwesome and native emoji glyphs */
-.emoji-tab i {
-  display: inline-block;
-  line-height: 1;
-  font-size: 13px; /* compact icon size for tabs */
-  vertical-align: middle;
-  /* tiny vertical nudge to visually center FontAwesome icons with emoji glyphs */
-  transform: translateY(0.5px);
-}
-
-/* Dark theme: make tab icons white for contrast */
-[data-theme='dark'] .emoji-tab i {
-  color: #fff;
-  opacity: 0.95;
-}
-
-/* If the icons still look slightly off on some OS/font renderers, tweak the translateY value above. */
 
 .tags-list {
   display: flex;
@@ -1247,7 +1015,7 @@ div#newNoteNav {
 
 /* Yeni Not Butonu - Karanlık Tema */
 [data-theme='dark'] div#newNoteNav {
-  background: #5d5d5d14;
+  background: #e1e1e114;
 }
 
 [data-theme='dark'] .notes-list-header {
@@ -1347,22 +1115,21 @@ div#newNoteNav {
   overflow: hidden;
 }
 
-.emoji-tab {
-  min-width: 28px;
-  height: 28px; /* compact and aligned with emoji tiles */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
-  padding: 0 6px;
+.note-tag {
+  padding: 1px 4px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: var(--radius-sm);
+  font-size: 8px;
+  font-weight: 500;
+  max-width: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.emoji-tab i { font-size: 13px; display: block; margin: 0; }
-.emoji-tab:hover { background: rgba(255,255,255,0.14); box-shadow: 0 6px 14px rgba(2,6,23,0.06); }
-.emoji-tab.active { background: var(--accent-color); color: #fff; box-shadow: 0 8px 18px var(--accent-color-rgba-18); }
+
+.note-item.active .note-tag {
+  background: rgba(107, 114, 128, 0.2);
+}
 
 .note-item-stats {
   display: flex;
@@ -1472,7 +1239,7 @@ div#newNoteNav {
 }
 .quick-stats {
   display: flex;
-  gap: 10px; /* more space between individual tabs */
+  gap: 24px;
   justify-content: center;
   margin-bottom: 32px;
 }
@@ -1587,7 +1354,7 @@ div#newNoteNav {
   justify-content: center;
   color: var(--text-secondary);
   transition: background-color var(--transition-fast), transform var(--transition-fast), color var(--transition-fast);
-  padding: 0 8px; /* increase horizontal hit area while making tabs look less cramped */
+  margin: 0;
   padding: 0;
   flex: 0 0 auto; /* prevent shrinking so buttons wrap instead of disappearing */
 }
@@ -1614,7 +1381,7 @@ div#newNoteNav {
   background: transparent;
   width: 28px;
   height: 28px;
-  border: none;
+  border: 1px solid rgba(0,0,0,0.06);
   border-radius: 8px; /* slightly rounded */
   cursor: pointer;
   padding: 2px;
@@ -1623,12 +1390,9 @@ div#newNoteNav {
 }
 .color-picker:hover,
 .color-picker:focus {
-  /* match neutral hover used by other formatting buttons */
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
   transform: translateY(-1px);
-  box-shadow: none;
-  border-color: rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px var(--accent-color-rgba-12);
+  border-color: var(--accent-color);
 }
 
 /* Small select for settings (max pinned) */
@@ -2662,9 +2426,9 @@ input[type="color"].color-picker::-moz-color-swatch {
   padding: 6px 25px 6px 8px;
   font-size: 11px;
   border-radius: var(--radius-sm);
-  border: none;
+  border: 1px solid rgba(0, 0, 0, 0.06);
   border-radius: 8px;
-  background: #f3f3f39e;
+  background: transparent;
   box-shadow: none;
 }
 
@@ -3271,16 +3035,13 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .color-picker:hover,
 [data-theme='dark'] .color-picker:focus {
-  /* neutral dark-mode hover to match other buttons */
-  background: rgba(255,255,255,0.03);
-  color: var(--text-light);
-  box-shadow: none;
-  border-color: rgba(255,255,255,0.02);
+  box-shadow: 0 6px 18px var(--accent-color-rgba-20);
+  border-color: var(--accent-color);
 }
 
 [data-theme='dark'] .editor-sidebar {
   background: var(--editor-sidebar-bg);
-  border-left: 1px solid rgb(113 113 113 / 10%);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] .viewer-header {
@@ -3377,7 +3138,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 /* Additional dark theme fixes */
 [data-theme='dark'] .editor-header {
   background: var(--editor-header-bg);
-  border-bottom: 1px solid rgb(113 113 113 / 10%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] .title-section {
@@ -3397,8 +3158,8 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .format-group {
-  background: var(--editor-header-bg);
-  border: 1px solid rgb(113 113 113 / 10%);
+  background: var(--format-group-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] .format-btn {
@@ -3737,7 +3498,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .select-selected {
   background: var(--bg-secondary);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: var(--text-primary);
 }
 
@@ -3779,8 +3540,8 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 /* Fix the last remaining white background - formatting toolbar */
 [data-theme='dark'] .formatting-toolbar {
-  background: var(--editor-header-bg);
-  border-bottom: 1px solid rgb(113 113 113 / 10%);
+  background: #181818;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .settings-section:last-child {
@@ -3841,13 +3602,6 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 .swatch-btn:focus { outline: none; transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
-
-/* Make the currently-selected accent swatch slightly larger and more prominent */
-.swatch-btn.active {
-  transform: scale(1.12);
-  box-shadow: 0 0 20px var(--accent-color-rgba-30);
-  border-color: var(--accent-color);
-}
 
 #accentYellow { background: #f59e0b; }
 #accentCherry { background: #e11d48; }
@@ -4742,90 +4496,3 @@ body.dark .default-folder.insert-after::after {
   font-size: 12px;
   color: var(--text-secondary);
 }
-
-/* ============================== */
-/* Emoji picker styles (appended) */
-/* ============================== */
-.format-btn#openEmojiBtn {
-  padding: 6px;
-}
-
-.emoji-panel {
-  position: fixed; /* fixed relative to viewport so positioning is reliable */
-  z-index: 100000; /* topmost so it doesn't get covered */
-  left: auto;
-  top: auto;
-  width: 220px;
-  max-width: calc(100% - 32px);
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(6px) saturate(120%);
-  border: 1px solid rgba(16,24,40,0.06);
-  box-shadow: 0 18px 60px rgba(16,24,40,0.14);
-  border-radius: 10px;
-  padding: 8px;
-  transform-origin: top center;
-  opacity: 0;
-  transform: scale(0.992) translateY(-4px);
-  transition: transform 140ms cubic-bezier(.2,.9,.2,1), opacity 140ms ease;
-}
-
-.emoji-panel.show {
-  opacity: 1;
-  transform: scale(1) translateY(0);
-}
-
-.emoji-panel.hidden { display: none; }
-
-.emoji-panel-header {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.emoji-panel-header input[type="text"] {
-  flex: 1 1 auto;
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(16,24,40,0.06);
-  background: rgba(255,255,255,0.7);
-  outline: none;
-  font-size: 13px;
-}
-
-.emoji-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    gap: 4px;
-    max-height: 260px;
-    overflow: auto;
-    max-width: 210px;
-}
-
-.emoji-grid-btn {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.02);
-  border: 1px solid rgba(0,0,0,0.02);
-  cursor: pointer;
-  font-size: 15px;
-  transition: transform 100ms ease, box-shadow 100ms ease;
-}
-
-.emoji-grid-btn:hover { transform: translateY(-4px) scale(1.06); background: var(--accent-color-rgba-15); border-color: var(--accent-color); box-shadow: 0 6px 18px rgba(16,24,40,0.12); }
-.emoji-grid-btn:active { transform: translateY(-1px) scale(0.98); }
-
-/* Dark theme tweaks */
-[data-theme='dark'] .emoji-panel { background: rgba(7,10,16,0.72); border-color: rgba(255,255,255,0.04); box-shadow: 0 14px 40px rgba(2,6,23,0.6); }
-[data-theme='dark'] .emoji-panel-header input[type="text"] { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.04); color: var(--text-primary); }
-[data-theme='dark'] .emoji-grid-btn { background: rgba(255,255,255,0.02); border-color: rgba(255,255,255,0.02); }
-[data-theme='dark'] .emoji-grid-btn:hover { background: rgba(255,255,255,0.04); }
-
-/* scrollbar for grid */
-.emoji-grid::-webkit-scrollbar { height: 8px; width: 8px; }
-.emoji-grid::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 8px; }
-[data-theme='dark'] .emoji-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); }
