@@ -68,6 +68,11 @@
                 <i class="fas fa-edit nav-icon"></i>
                 <span class="nav-text">Yeni Not</span>
               </div>
+              <div class="nav-item" id="notificationsNav">
+                <i class="fas fa-inbox nav-icon"></i>
+                <span class="nav-text">Bildirimler</span>
+                <span class="nav-count" id="activeNotificationsCount">(0)</span>
+              </div>
               <div class="nav-item" id="remindersNav">
                 <i class="fas fa-bell nav-icon"></i>
                 <span class="nav-text">Hatırlatmalar</span>
@@ -181,6 +186,17 @@
             <button id="startFirstNote" class="btn-primary btn-large">
               <i class="fas fa-pen"></i> İlk Notunuzu Yazın
             </button>
+          </div>
+        </div>
+
+        <!-- Bildirimler Ekranı -->
+        <div id="notificationsScreen" class="notifications-screen hidden">
+          <div class="notifications-header">
+            <h2><i class="fas fa-inbox"></i> Bildirimler</h2>
+            <p class="notifications-subtitle">Geçmiş hatırlatma bildirimleri</p>
+          </div>
+          <div id="notificationsList" class="notifications-list">
+            <!-- Notifications will be populated here -->
           </div>
         </div>
 

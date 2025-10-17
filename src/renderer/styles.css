@@ -4853,6 +4853,154 @@ body.dark .default-folder.insert-after::after {
   margin-bottom: 32px;
 }
 
+/* ============================================
+   NOTIFICATIONS STYLES
+   ============================================ */
+.notifications-screen {
+  padding: 40px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.notifications-header {
+  margin-bottom: 32px;
+}
+
+.notifications-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.notifications-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.notifications-list {
+  display: grid;
+  gap: 16px;
+}
+
+.notification-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.notification-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.notification-card.unread {
+  border-left: 4px solid var(--accent-color);
+  background: var(--accent-color-rgba-10);
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.notification-note-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.notification-time {
+  color: var(--text-secondary);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notification-time i {
+  font-size: 11px;
+}
+
+.notification-message {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.notification-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.notification-action-btn {
+  flex: 1;
+  padding: 8px 16px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.notification-action-btn i {
+  font-size: 12px;
+}
+
+.view-notification-note-btn {
+  background: var(--accent-color);
+  color: white;
+}
+
+.view-notification-note-btn:hover {
+  filter: brightness(0.9);
+  transform: translateY(-1px);
+}
+
+.mark-read-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.mark-read-btn:hover {
+  background: var(--bg-secondary);
+  transform: translateY(-1px);
+}
+
+.delete-notification-btn {
+  background: transparent;
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+  padding: 8px 12px;
+}
+
+.delete-notification-btn:hover {
+  background: var(--error-color);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.reminders-header {
+  margin-bottom: 32px;
+}
+
 .reminders-header h2 {
   font-size: 28px;
   font-weight: 600;
@@ -5084,6 +5232,28 @@ body.dark .default-folder.insert-after::after {
 }
 
 /* Dark theme support */
+[data-theme='dark'] .notification-card {
+  background: var(--bg-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .notification-card.unread {
+  background: var(--accent-color-rgba-15);
+}
+
+[data-theme='dark'] .mark-read-btn {
+  background: var(--bg-primary);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .mark-read-btn:hover {
+  background: var(--bg-secondary);
+}
+
+[data-theme='dark'] .delete-notification-btn {
+  border-color: var(--error-color);
+}
+
 [data-theme='dark'] .reminder-card {
   background: var(--bg-secondary);
   border-color: rgba(255, 255, 255, 0.1);
