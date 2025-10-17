@@ -181,8 +181,7 @@ class CapnoteApp {
     this.openEmojiBtn = document.getElementById('openEmojiBtn');
     this.emojiPanel = document.getElementById('emojiPanel');
     this.emojiGrid = document.getElementById('emojiGrid');
-    this.emojiSearchInput = document.getElementById('emojiSearchInput');
-    this.closeEmojiPanel = document.getElementById('closeEmojiPanel');
+  this.emojiSearchInput = document.getElementById('emojiSearchInput');
 
     // If the emoji panel is placed inside a transformed or positioned ancestor it can
     // change how `position: fixed` is calculated. Move it to document.body so JS can
@@ -919,9 +918,8 @@ class CapnoteApp {
       });
     });
 
-    // Emoji panel handlers: close/search and populate grid
-    if (this.closeEmojiPanel) this.closeEmojiPanel.addEventListener('click', () => this.hideEmojiPanel());
-    if (this.emojiSearchInput) this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
+  // Emoji panel handlers: search and populate grid
+  if (this.emojiSearchInput) this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
   // initialize tabs then populate grid
   try { this.initEmojiTabs(); } catch (e) {}
   this.populateEmojiGrid();

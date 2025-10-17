@@ -795,20 +795,7 @@ div#newNoteNav {
   min-width: 120px; /* ensure input has room */
 }
 
-/* Close button specific tweaks to avoid large hover scale in compact header */
-#closeEmojiPanel {
-  width: 34px;
-  height: 34px;
-  padding: 6px;
-  border-radius: 8px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#closeEmojiPanel i { font-size: 14px; }
-
-#closeEmojiPanel:hover { transform: none; background: rgba(0,0,0,0.06); }
+/* close button removed: behavior handled by clicking outside the panel */
 
 .emoji-grid {
   display: grid;
