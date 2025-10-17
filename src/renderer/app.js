@@ -79,6 +79,8 @@ class CapnoteApp {
   this.toggleHtmlBtn = document.getElementById('toggleHtmlBtn');
   this.htmlPreview = document.getElementById('htmlPreview');
   this.insertCodeBlockBtn = document.getElementById('insertCodeBlockBtn');
+  this.browseImageBtn = document.getElementById('browseImageBtn');
+  this.browseImageInput = document.getElementById('browseImageInput');
 
     // Formatting toolbar
     this.fontFamilyDropdown = document.getElementById('fontFamily');
@@ -678,6 +680,77 @@ class CapnoteApp {
       }
     });
     this.richEditor.addEventListener('paste', (e) => this.handlePaste(e));
+    // Drag & drop support: accept files/images dropped into the rich editor
+    this.richEditor.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      this.richEditor.classList.add('drag-over');
+    });
+    this.richEditor.addEventListener('dragleave', (e) => {
+      this.richEditor.classList.remove('drag-over');
+    });
+    this.richEditor.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      this.richEditor.classList.remove('drag-over');
+      const dt = e.dataTransfer;
+      if (!dt || !dt.files || dt.files.length === 0) return;
+      for (let i = 0; i < dt.files.length; i++) {
+        const f = dt.files[i];
+        try {
+          // ask main process to copy file into app uploads and return a file:// URL
+          const saved = await window.electronAPI.saveDroppedFile(f.path);
+          if (!saved) continue;
+          // decide how to insert: if image mime type, insert <img>, otherwise insert link
+          const lower = (f.type || '').toLowerCase();
+          if (lower.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(f.name)) {
+            const img = document.createElement('img');
+            img.src = saved;
+            img.alt = f.name;
+            img.className = 'embedded-image';
+            // insert at current selection
+            try {
+              const sel = window.getSelection();
+              if (sel && sel.rangeCount) {
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(img);
+                // move caret after image
+                range.setStartAfter(img);
+                range.collapse(true);
+                sel.removeAllRanges(); sel.addRange(range);
+              } else {
+                this.richEditor.appendChild(img);
+              }
+            } catch (err) {
+              this.richEditor.appendChild(img);
+            }
+          } else {
+            const a = document.createElement('a');
+            a.href = saved;
+            a.textContent = f.name;
+            a.target = '_blank';
+            try {
+              const sel = window.getSelection();
+              if (sel && sel.rangeCount) {
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(a);
+                range.setStartAfter(a);
+                range.collapse(true);
+                sel.removeAllRanges(); sel.addRange(range);
+              } else {
+                this.richEditor.appendChild(a);
+              }
+            } catch (err) {
+              this.richEditor.appendChild(a);
+            }
+          }
+          this.trackContentChanges();
+        } catch (err) {
+          console.error('Drop handling failed for', f, err);
+        }
+      }
+    });
     this.richEditor.addEventListener('mouseup', () => this.updateFormatPanelFromSelection());
     this.richEditor.addEventListener('keyup', () => this.updateFormatPanelFromSelection());
 
@@ -947,6 +1020,45 @@ class CapnoteApp {
 
     // Emoji panel toggle
     if (this.openEmojiBtn) this.openEmojiBtn.addEventListener('click', (e) => this.toggleEmojiPanel());
+    // Browse image button opens hidden file input
+    if (this.browseImageBtn && this.browseImageInput) {
+      this.browseImageBtn.addEventListener('click', () => this.browseImageInput.click());
+      this.browseImageInput.addEventListener('change', async (e) => {
+        const files = e.target.files || [];
+        for (let i = 0; i < files.length; i++) {
+          const f = files[i];
+          try {
+            const saved = await window.electronAPI.saveDroppedFile(f.path || f.name);
+            if (!saved) continue;
+            const img = document.createElement('img');
+            img.src = saved;
+            img.alt = f.name;
+            img.className = 'embedded-image';
+            // insert at selection
+            try {
+              const sel = window.getSelection();
+              if (sel && sel.rangeCount) {
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(img);
+                range.setStartAfter(img);
+                range.collapse(true);
+                sel.removeAllRanges(); sel.addRange(range);
+              } else {
+                this.richEditor.appendChild(img);
+              }
+            } catch (err) {
+              this.richEditor.appendChild(img);
+            }
+            this.trackContentChanges();
+          } catch (err) {
+            console.error('Failed to save browsed image', err);
+          }
+        }
+        // reset input so same file can be selected again
+        e.target.value = '';
+      });
+    }
 
     // Sidebar toggle
     this.toggleSidebarBtn.addEventListener('click', () => this.toggleEditorSidebar());
