@@ -995,31 +995,35 @@ class CapnoteApp {
     const emojiSets = this._emojiSets || {
       all: [],
       smileys: [
-        '😀','😃','😄','😁','😆','😅','😂','🤣','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','😋','😛','😜','🤪','😝','😐','😑','😶','😏','😒','🙄','🤨','🤔','🤫','🤭','🤥','😳','😞','😟','😠','😡','🤬','😔','😕','🙁','☹️','😭','😢','😤','😩','😫','😮','😯','😲','😱','🥵','🥶','😳','🤯','🥴','😵','😵‍💫'
+        '😀','😃','😄','😁','😆','😅','😂','🤣','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','😋','😛','😜','🤪','😝','😐','😑','😶','😏','😒','🙄','🤨','🤔','🤫','🤭','🤥','😳','😞','😟','😠','😡','🤬','😔','😕','🙁','☹️','😭','😢','😤','😩','😫','😮','😯','😲','😱','😨','😰','🥵','🥶','😳','🤯','🥴','😵','🤐','🥺','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','🤡','💩','😺','😸','😹','😻','😼','😽','🙀','😿','😾',
+        /* commonly expected basics */
+        '😎','🤓','🤖','🙌','🤲'
       ],
       people: [
-        '👶','🧒','👦','👧','🧑','👱‍♂️','👱‍♀️','👨','👩','🧓','👴','👵','👮‍♂️','👮‍♀️','👷‍♂️','👷‍♀️','💂‍♂️','💂‍♀️','🕵️‍♂️','🕵️‍♀️','👩‍⚕️','👨‍⚕️','👩‍🏫','👨‍🏫','👩‍💻','👨‍💻','👩‍🔧','👨‍🔧','🧑‍🎨','🧑‍🚒'
+        '👶','🧒','👦','👧','🧑','👨','👩','👱','👱‍♀️','👱‍♂️','🧔','👨‍🦰','👩‍🦰','👨‍🦱','👩‍🦱','👨‍🦳','👩‍🦳','🧑‍⚕️','👩‍⚕️','👨‍⚕️','👩‍🏫','👨‍🏫','👩‍⚖️','👨‍⚖️','👩‍💼','👨‍💼','👩‍🔧','👨‍🔧','👩‍🔬','👨‍🔬','👩‍🎨','👨‍🎨','👩‍🚒','👨‍🚒','👮','👷','💂','🕵️','🧕','👳','🤵','👰','🤰','🤱','👩‍🍼','👨‍🍼'
       ],
       animals: [
-        '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🦄','🐔','🐧','🐦','🐤','🐣','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄'
+        '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🐒','🐔','🐤','🐥','🐣','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛','🦋','🐌','🐞','🐜','🪲','🪳','🐢','🐍','🦎','🐙','🦑','🦐','🦀'
       ],
       food: [
-        '🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌽','🥕','🧄','🧅','🥔','🍠','🥐','🍞','🥖','🥨','🧀','🍗','🍖','🌭','🍔','🍟','🍕','🍝','🍜','🍣','🍱','🍛','🍤','🍩','🍪'
+        '🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🌽','🥕','🧄','🧅','🥔','🍠','🥐','🍞','🥖','🥨','🧀','🥚','🍳','🥓','🍗','🍖','🌭','🍔','🍟','🍕','🥪','🌮','🌯','🥗','🍝','🍜','🍲','🍛','🍣','🍱','🍤','🍙','🍚','🍘','🍥','🥟','🧁','🍰','🎂','🍮','🍩','🍪','🍫','🍬','🍭'
       ],
       activities: [
-        '⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥅','🏒','🏑','🥍','🏏','⛳','🏹','🎣','🤿','🥊','🥋','🎽','🛹','🛼','🏂','🏋️','🏇'
+        '⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥅','🏒','🏑','🥍','🏏','⛳','🏹','🎣','🤿','🥊','🥋','🎽','🛹','🛼','🏂','🏋️','🏋️‍♀️','🏇','🏄','🚣','🏊','🤺','🤸','🤼','🤾'
       ],
       travel: [
-        '🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🚲','🛴','🛵','🏍️','🚨','🚔','🚖','✈️','🛩️','🚀','🛸','🚁','🚤','🛳️','⛵','🚢'
+        '🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🚲','🛴','🛵','🏍️','🚨','🚔','🚖','🚘','🚍','✈️','🛩️','🚀','🛸','🚁','🚤','🛳️','⛵','🚢','🚂','🚆','🚈','🚅','🚊'
       ],
       objects: [
-        '⌚','📱','📲','💻','🖥️','🖨️','⌨️','🖱️','🖲️','🕹️','📷','📸','📹','🎥','📺','📻','🎙️','🎧','📡','🔋','🔌','💡','🔦','🧯','🛠️','🔧','🔨','🔩','⚙️','🧰','🧲'
+        '⌚','📱','📲','💻','🖥️','🖨️','⌨️','🖱️','🖲️','🕹️','🧭','📷','📸','📹','🎥','📺','📻','🎙️','🎧','📡','🔋','🔌','💡','🔦','🧯','🛠️','🔧','🔨','🔩','⚙️','🧰','🧲','🪛','🔍','🧪','🧫','🧬'
       ],
       symbols: [
-        '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','✨','⭐','⚡','🔥','💥','🌟','💫','💤','🔔','🔕','✔️','❌','❗','❓','⚠️','🔞','🔅','🔆'
+        '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','✨','⭐','⚡','🔥','💥','🌟','💫','💤','🔔','🔕','✔️','❌','❗','❓','⚠️','🔞','🔅','🔆','➕','➖','➗','✖️','♻️','⚕️','♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓',
+        /* reaction/gesture basics */
+        '👍','👎','👏','🙏','💪','🤝'
       ],
       flags: [
-        '🏳️','🏴','🏳️‍🌈','🇹🇷','🇺🇸','🇬🇧','🇩🇪','🇫🇷','🇮🇹','🇪🇸','🇯🇵','🇰🇷','🇨🇳','🇮🇳','🇧🇷','🇨🇦','🇦🇺'
+        '🏳️','🏴','🏳️‍🌈','🇦🇺','🇧🇷','🇨🇦','🇨🇳','🇫🇷','🇩🇪','🇮🇳','🇮🇹','🇯🇵','🇰🇷','🇲🇽','🇳🇱','🇳🇿','🇳🇴','🇵🇱','🇵🇹','🇷🇺','🇸🇪','🇿🇦','🇹🇷','🇬🇧','🇺🇸'
       ]
     };
     // remove any emoji sequences that contain ZERO WIDTH JOINER U+200D (these often render as multiple glyphs in some fonts)
@@ -1039,7 +1043,25 @@ class CapnoteApp {
       this._emojiSets = emojiSets;
     }
 
-    const emojis = (this._emojiSets[category] || this._emojiSets.all || []);
+    // Build a simple English keyword map for each emoji.
+    // Start with a few explicit keywords for commonly searched items, then
+    // fall back to the category name so every emoji has at least one English keyword.
+    try {
+      // Build a consistent emoji -> array-of-english-keywords map once
+      this._emojiKeywordMap = this._buildEnglishEmojiKeywordMap();
+    } catch (e) {
+      console.warn('Failed to initialize emoji keyword map:', e);
+      this._emojiKeywordMap = this._emojiKeywordMap || {};
+    }
+
+    const emojis = Array.from((this._emojiSets[category] || this._emojiSets.all || []));
+    // dedupe to ensure a stable order and no duplicates
+    try {
+      const uniq = Array.from(new Set(emojis));
+      emojis.length = 0; emojis.push(...uniq);
+    } catch (e) {
+      // ignore any unexpected errors while normalizing the list
+    }
     this.emojiGrid.innerHTML = '';
     emojis.forEach((emoji) => {
       const btn = document.createElement('button');
@@ -1134,19 +1156,27 @@ class CapnoteApp {
 
   filterEmojiGrid(query) {
     if (!this.emojiGrid) return;
-    const q = (query || '').trim().toLowerCase();
+  const q = this.normalizeForSearch(query || '');
+  // Ensure english-only emoji keyword map exists
+  if (!this._emojiKeywordMap) this._emojiKeywordMap = this._buildEnglishEmojiKeywordMap();
+  const emojiKeywordMap = this._emojiKeywordMap || {};
     Array.from(this.emojiGrid.children).forEach((btn) => {
-      const emoji = btn.textContent || '';
+      const emoji = (btn.textContent || '').trim();
       if (!q) {
         btn.style.display = '';
         return;
       }
-      // very simple heuristic: check if the emoji character contains the query (for people who paste emoji char)
+      // If the user pasted the emoji character itself, allow that match
       const charMatch = emoji.includes(q);
-      // also match some Turkish keywords
-      const keywords = {'gül':'😀','gülme':'😂','aşk':'😍','üzgün':'😢','kızgın':'😡','düşün':'🤔','uyku':'😴','beğen':'👍','kutla':'🎉'};
-      const matched = Object.keys(keywords).some((k) => k.indexOf(q) !== -1 && keywords[k] === emoji);
-      btn.style.display = (charMatch || matched) ? '' : 'none';
+      // Match against our english keyword map
+      let engMatch = false;
+      const engKeywords = (emojiKeywordMap[emoji] || []);
+      for (let i = 0; i < engKeywords.length; i++) {
+        const kw = this.normalizeForSearch(String(engKeywords[i] || ''));
+        if (!kw) continue;
+        if (kw.indexOf(q) !== -1 || q.indexOf(kw) !== -1) { engMatch = true; break; }
+      }
+      btn.style.display = (charMatch || engMatch) ? '' : 'none';
     });
   }
 
@@ -2646,25 +2676,77 @@ class CapnoteApp {
   }
 
   // Map emoji to localized keywords to support text search for moods/weather
-  moodWeatherKeywords() {
-    return {
-      // moods
-      '😊': ['mutlu', 'happy'],
-      '😢': ['üzgün', 'uzgun', 'sad'],
-      '😡': ['kızgın', 'kizgin', 'angry'],
-      '😴': ['yorgun', 'tired'],
-      '😍': ['aşık', 'asik', 'love'],
-      '🤔': ['düşünceli', 'dusunceli', 'thinking'],
-      '😎': ['havalı', 'havali', 'cool'],
-      '🙄': ['sıkılmış', 'sikilmış', 'sikilmis', 'bored'],
-      // weather
-      '☀️': ['güneş', 'gunes', 'güneşli', 'gunesli', 'sunny'],
-      '⛅': ['parçalı', 'parçalı bulutlu', 'parcali', 'partly cloudy'],
-      '☁️': ['bulutlu', 'cloudy'],
-      '🌧️': ['yağmurlu', 'yagmurlu', 'rainy'],
-      '⛈️': ['fırtına', 'fırtınalı', 'furtina', 'stormy'],
-      '❄️': ['karlı', 'karli', 'snowy'],
+  // Build a single English-only emoji keyword map.
+  // Each emoji maps to an array of English keywords (at least one). This is the
+  // authoritative source used by emoji search and mood/weather note searching.
+  _buildEnglishEmojiKeywordMap() {
+    // Explicit mappings for common emojis. Keep keys as the emoji character.
+    const explicit = {
+      '😊': ['happy', 'smile'],
+      '😢': ['sad', 'cry'],
+      '😡': ['angry'],
+      '😴': ['sleepy', 'tired'],
+      '😍': ['love', 'heart'],
+      '🤔': ['thinking', 'think'],
+      '😎': ['cool', 'sunglasses'],
+      '🙄': ['bored'],
+      '👋': ['wave', 'hello', 'hi'],
+      '🤚': ['hand', 'stop'],
+      '✋': ['stop', 'hand'],
+      '👌': ['ok', 'okay', 'perfect'],
+      '👍': ['thumbs up', 'like', 'approve'],
+      '👎': ['thumbs down', 'dislike'],
+      '👏': ['clap', 'applause'],
+      '🙏': ['pray', 'thanks', 'thank you'],
+      '💪': ['strong', 'muscle'],
+      '🤝': ['handshake', 'agree'],
+      '🙌': ['celebrate', 'hooray'],
+      '🤲': ['palms', 'open hands'],
+      '🤓': ['nerd', 'geek'],
+      '🤖': ['robot'],
+      '😅': ['relieved', 'sweat'],
+      '😂': ['laugh', 'lol'],
+      '😭': ['crying', 'sob'],
+      '😇': ['innocent', 'angel'],
+      '😉': ['wink'],
+      '😜': ['silly', 'tongue'],
+      // weather and misc
+      '☀️': ['sun', 'sunny'],
+      '⛅': ['partly cloudy', 'partly'],
+      '☁️': ['cloud', 'cloudy'],
+      '🌧️': ['rain', 'rainy'],
+      '⛈️': ['storm', 'thunderstorm'],
+      '❄️': ['snow', 'snowy'],
+      // flags (keep short and common keywords)
+      '🇹🇷': ['turkey', 'tr'],
+      '🇺🇸': ['usa', 'united states', 'us'],
+      '🇬🇧': ['uk', 'united kingdom', 'britain'],
     };
+
+    // For any emoji not explicitly listed, we'll fallback to the category name
+    // during map construction so every emoji has at least one English keyword.
+    const map = Object.assign({}, explicit);
+    try {
+      if (this._emojiSets) {
+        Object.keys(this._emojiSets).forEach((cat) => {
+          (this._emojiSets[cat] || []).forEach((emoji) => {
+            if (!map[emoji]) {
+              // Use the category name as a single-word fallback keyword
+              map[emoji] = [String(cat).toLowerCase()];
+            } else {
+              // normalize explicit keywords: lowercase and dedupe
+              const kws = Array.from(new Set((map[emoji] || []).map((k) => String(k || '').toLowerCase()).filter(Boolean)));
+              map[emoji] = kws.length ? kws : [String(cat).toLowerCase()];
+            }
+          });
+        });
+      }
+    } catch (e) {
+      // If anything goes wrong, return explicit map only
+      console.warn('Failed building full emoji keyword map:', e);
+    }
+
+    return map;
   }
 
   // Decide if a note matches searchTerm, including mood/weather keyword mapping
@@ -2682,11 +2764,17 @@ class CapnoteApp {
     if (mood && mood.includes(searchTerm)) return true;
     if (weather && weather.includes(searchTerm)) return true;
 
-    // check mapped keywords for mood/weather
-    const map = this.moodWeatherKeywords();
-    for (const [emoji, keywords] of Object.entries(map)) {
-      if (keywords.some((k) => k.includes(searchTerm))) {
-        if (note.mood === emoji || note.weather === emoji) return true;
+    // check emoji keyword map (english-only) for mood/weather matches
+    if (!this._emojiKeywordMap) this._emojiKeywordMap = this._buildEnglishEmojiKeywordMap();
+    const ekm = this._emojiKeywordMap || {};
+    for (const [emoji, keywords] of Object.entries(ekm)) {
+      if (!Array.isArray(keywords)) continue;
+      for (let i = 0; i < keywords.length; i++) {
+        const kw = this.normalizeForSearch(String(keywords[i] || ''));
+        if (!kw) continue;
+        if (kw.indexOf(searchTerm) !== -1 || searchTerm.indexOf(kw) !== -1) {
+          if (note.mood === emoji || note.weather === emoji) return true;
+        }
       }
     }
 
