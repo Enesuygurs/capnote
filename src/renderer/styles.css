@@ -4911,7 +4911,7 @@ body.dark .default-folder.insert-after::after {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 16px 20px;
   transition: var(--transition-fast);
   position: relative;
 }
@@ -4934,7 +4934,6 @@ body.dark .default-folder.insert-after::after {
   font-weight: 600;
   font-size: 16px;
   color: var(--text-primary);
-  margin-bottom: 4px;
 }
 
 .notification-time {
@@ -5045,7 +5044,7 @@ body.dark .default-folder.insert-after::after {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 16px 20px;
   transition: var(--transition-fast);
   cursor: pointer;
 }
@@ -5083,21 +5082,22 @@ body.dark .default-folder.insert-after::after {
 }
 
 .reminder-action-btn {
-  padding: 8px 16px;
+  padding: 7px 14px;
   border: none;
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
+  white-space: nowrap;
 }
 
 .reminder-action-btn i {
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .view-note-btn {
