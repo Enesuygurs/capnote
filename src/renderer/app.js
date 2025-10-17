@@ -2273,24 +2273,22 @@ class CapnoteApp {
     this.notificationsList.innerHTML = this.notifications.map(n => `
       <div class="notification-card ${n.read ? '' : 'unread'}" data-notification-id="${n.id}">
         <div class="notification-header">
-          <div>
-            <div class="notification-note-title">${this.escapeHtml(n.noteTitle)}</div>
-            <div class="notification-time">
-              <i class="fas fa-clock"></i>
-              ${new Date(n.time).toLocaleString('tr-TR', { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric', 
-                hour: '2-digit', 
-                minute: '2-digit' 
-              })}
-            </div>
+          <div class="notification-note-title">${this.escapeHtml(n.noteTitle)}</div>
+          <div class="notification-time">
+            <i class="fas fa-clock"></i>
+            ${new Date(n.time).toLocaleString('tr-TR', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric', 
+              hour: '2-digit', 
+              minute: '2-digit' 
+            })}
           </div>
         </div>
         <div class="notification-message">${this.escapeHtml(n.message)}</div>
         <div class="notification-actions">
           <button class="notification-action-btn view-notification-note-btn" data-note-id="${n.noteId}">
-            <i class="fas fa-eye"></i> Notu Görüntüle
+            <i class="fas fa-eye"></i> Görüntüle
           </button>
           ${!n.read ? `
             <button class="notification-action-btn mark-read-btn" data-notification-id="${n.id}">

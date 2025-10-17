@@ -4927,10 +4927,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .notification-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
 
 .notification-note-title {
@@ -4954,33 +4951,35 @@ body.dark .default-folder.insert-after::after {
 
 .notification-message {
   color: var(--text-secondary);
-  font-size: 14px;
-  margin-bottom: 16px;
+  font-size: 13px;
   line-height: 1.5;
+  margin-top: 8px;
 }
 
 .notification-actions {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
   margin-top: 12px;
 }
 
 .notification-action-btn {
-  padding: 8px 12px;
+  padding: 7px 14px;
   border: none;
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
+  white-space: nowrap;
 }
 
 .notification-action-btn i {
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .view-notification-note-btn {
