@@ -4,6 +4,7 @@ class CapnoteApp {
     this.notes = [];
     this.folders = [];
     this.reminders = []; // Array of {id, noteId, datetime, noteTitle, dismissed}
+    this.notifications = []; // Array of {id, noteId, noteTitle, message, time, read}
     this.currentFilter = 'all';
     this.currentSort = 'date-desc';
     this.selectedMood = null;
@@ -107,6 +108,7 @@ class CapnoteApp {
   async init() {
     await this.loadNotes();
     await this.loadReminders();
+    await this.loadNotifications();
     this.initializeElements();
     this.setupEventListeners();
     this.loadSettings();
@@ -190,6 +192,13 @@ class CapnoteApp {
     this.reminderDatetime = document.getElementById('reminderDatetime');
     this.setReminderBtn = document.getElementById('setReminderBtn');
     this.noteRemindersList = document.getElementById('noteRemindersList');
+
+    // Notifications elements
+    this.notificationsScreen = document.getElementById('notificationsScreen');
+    this.notificationsNav = document.getElementById('notificationsNav');
+    this.notificationsList = document.getElementById('notificationsList');
+    this.activeNotificationsCount = document.getElementById('activeNotificationsCount');
+
   this.viewerCharCount = document.getElementById('viewerCharCount');
     this.readingTime = document.getElementById('readingTime');
     this.lastModified = document.getElementById('lastModified');
@@ -1123,6 +1132,11 @@ class CapnoteApp {
       this.setReminderBtn.addEventListener('click', () => this.addReminder());
     }
 
+    // Notifications event listeners
+    if (this.notificationsNav) {
+      this.notificationsNav.addEventListener('click', () => this.showNotificationsScreen());
+    }
+
     // Sidebar toggle
     this.toggleSidebarBtn.addEventListener('click', () => this.toggleEditorSidebar());
 
@@ -1863,6 +1877,26 @@ class CapnoteApp {
     }
   }
 
+  async loadNotifications() {
+    try {
+      const savedNotifications = localStorage.getItem('capnote-notifications');
+      this.notifications = savedNotifications ? JSON.parse(savedNotifications) : [];
+      // Sort by time, newest first
+      this.notifications.sort((a, b) => new Date(b.time) - new Date(a.time));
+    } catch (error) {
+      console.error('Bildirimler yüklenirken hata:', error);
+      this.notifications = [];
+    }
+  }
+
+  async saveNotifications() {
+    try {
+      localStorage.setItem('capnote-notifications', JSON.stringify(this.notifications));
+    } catch (error) {
+      console.error('Bildirimler kaydedilirken hata:', error);
+    }
+  }
+
   saveLastViewedNote(noteId) {
     try {
       localStorage.setItem('last-viewed-note', noteId);
@@ -1968,6 +2002,7 @@ class CapnoteApp {
     this.noteViewer.classList.add('hidden');
     this.noteEditor.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
+    this.notificationsScreen?.classList.add('hidden');
 
     // Reset form
     this.resetFormState();
@@ -1987,6 +2022,7 @@ class CapnoteApp {
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
+    this.notificationsScreen?.classList.add('hidden');
     this.clearSavedSelection();
   }
 
@@ -1995,6 +2031,7 @@ class CapnoteApp {
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
+    this.notificationsScreen?.classList.add('hidden');
     this.clearSavedSelection();
   }
 
@@ -2002,8 +2039,18 @@ class CapnoteApp {
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.add('hidden');
+    this.notificationsScreen?.classList.add('hidden');
     this.remindersScreen?.classList.remove('hidden');
     this.updateRemindersView();
+  }
+
+  showNotificationsScreen() {
+    this.noteEditor.classList.add('hidden');
+    this.noteViewer.classList.add('hidden');
+    this.welcomeScreen.classList.add('hidden');
+    this.remindersScreen?.classList.add('hidden');
+    this.notificationsScreen?.classList.remove('hidden');
+    this.updateNotificationsView();
   }
 
   updateRemindersView() {
@@ -2167,6 +2214,12 @@ class CapnoteApp {
       this.reminders.forEach(reminder => {
         if (!reminder.dismissed && new Date(reminder.datetime) <= now) {
           this.showNotification(`⏰ Hatırlatma: ${reminder.noteTitle}`, 'info');
+          // Add to notifications list
+          this.addNotification(
+            reminder.noteId,
+            reminder.noteTitle,
+            `Hatırlatma zamanı geldi: ${new Date(reminder.datetime).toLocaleString('tr-TR')}`
+          );
           reminder.dismissed = true;
           hasNotification = true;
         }
@@ -2177,11 +2230,117 @@ class CapnoteApp {
         this.updateRemindersView();
         this.updateNoteRemindersDisplay();
         this.updateActiveRemindersCount();
+        this.updateActiveNotificationsCount();
       }
     }, 60000); // Check every 60 seconds
 
-    // Also update count on init
+    // Also update counts on init
     this.updateActiveRemindersCount();
+    this.updateActiveNotificationsCount();
+  }
+
+  addNotification(noteId, noteTitle, message) {
+    const notification = {
+      id: Date.now(),
+      noteId: noteId,
+      noteTitle: noteTitle,
+      message: message,
+      time: new Date().toISOString(),
+      read: false
+    };
+    this.notifications.unshift(notification); // Add to beginning
+    this.saveNotifications();
+    this.updateNotificationsView();
+    this.updateActiveNotificationsCount();
+  }
+
+  updateNotificationsView() {
+    if (!this.notificationsList) return;
+    
+    if (this.notifications.length === 0) {
+      this.notificationsList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">Henüz bildirim yok</div>';
+      return;
+    }
+
+    this.notificationsList.innerHTML = this.notifications.map(n => `
+      <div class="notification-card ${n.read ? '' : 'unread'}" data-notification-id="${n.id}">
+        <div class="notification-header">
+          <div>
+            <div class="notification-note-title">${this.escapeHtml(n.noteTitle)}</div>
+            <div class="notification-time">
+              <i class="fas fa-clock"></i>
+              ${new Date(n.time).toLocaleString('tr-TR', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+              })}
+            </div>
+          </div>
+        </div>
+        <div class="notification-message">${this.escapeHtml(n.message)}</div>
+        <div class="notification-actions">
+          <button class="notification-action-btn view-notification-note-btn" data-note-id="${n.noteId}">
+            <i class="fas fa-eye"></i> Notu Görüntüle
+          </button>
+          ${!n.read ? `
+            <button class="notification-action-btn mark-read-btn" data-notification-id="${n.id}">
+              <i class="fas fa-check"></i> Okundu
+            </button>
+          ` : ''}
+          <button class="notification-action-btn delete-notification-btn" data-notification-id="${n.id}">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    // Add event listeners
+    this.notificationsList.querySelectorAll('.view-notification-note-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const noteId = parseInt(e.currentTarget.dataset.noteId);
+        const note = this.notes.find(n => n.id === noteId);
+        if (note) this.openNote(note);
+      });
+    });
+
+    this.notificationsList.querySelectorAll('.mark-read-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const notificationId = parseInt(e.currentTarget.dataset.notificationId);
+        this.markNotificationAsRead(notificationId);
+      });
+    });
+
+    this.notificationsList.querySelectorAll('.delete-notification-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const notificationId = parseInt(e.currentTarget.dataset.notificationId);
+        this.deleteNotification(notificationId);
+      });
+    });
+  }
+
+  markNotificationAsRead(notificationId) {
+    const notification = this.notifications.find(n => n.id === notificationId);
+    if (notification) {
+      notification.read = true;
+      this.saveNotifications();
+      this.updateNotificationsView();
+      this.updateActiveNotificationsCount();
+    }
+  }
+
+  deleteNotification(notificationId) {
+    this.notifications = this.notifications.filter(n => n.id !== notificationId);
+    this.saveNotifications();
+    this.updateNotificationsView();
+    this.updateActiveNotificationsCount();
+  }
+
+  updateActiveNotificationsCount() {
+    if (!this.activeNotificationsCount) return;
+    const count = this.notifications.filter(n => !n.read).length;
+    this.activeNotificationsCount.textContent = `(${count})`;
   }
 
   clearEditor() {
