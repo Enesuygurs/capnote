@@ -4839,3 +4839,176 @@ body.dark .default-folder.insert-after::after {
 .emoji-grid::-webkit-scrollbar { height: 8px; width: 8px; }
 .emoji-grid::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 8px; }
 [data-theme='dark'] .emoji-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); }
+
+/* ============================================
+   REMINDERS STYLES
+   ============================================ */
+.reminders-screen {
+  padding: 40px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.reminders-header {
+  margin-bottom: 32px;
+}
+
+.reminders-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reminders-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.reminders-list {
+  display: grid;
+  gap: 16px;
+}
+
+.reminder-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: var(--transition-fast);
+  cursor: pointer;
+}
+
+.reminder-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.reminder-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.reminder-note-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.reminder-datetime {
+  font-size: 14px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reminder-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.reminder-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.reminder-dismiss-btn {
+  background: var(--error-color);
+  color: white;
+}
+
+.reminder-dismiss-btn:hover {
+  opacity: 0.9;
+}
+
+.reminder-open-btn {
+  background: var(--primary-color);
+  color: white;
+}
+
+.reminder-open-btn:hover {
+  opacity: 0.9;
+}
+
+/* Reminder form in editor sidebar */
+.reminder-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reminder-datetime-input {
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  width: 100%;
+}
+
+.note-reminders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.note-reminder-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+}
+
+.reminder-time {
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.reminder-remove-btn {
+  background: transparent;
+  border: none;
+  color: var(--error-color);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+}
+
+.reminder-remove-btn:hover {
+  background: var(--error-color);
+  color: white;
+}
+
+/* Dark theme support */
+[data-theme='dark'] .reminder-card {
+  background: var(--bg-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .reminder-datetime-input {
+  background: var(--bg-secondary);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] .note-reminder-item {
+  background: var(--bg-primary);
+}
+
