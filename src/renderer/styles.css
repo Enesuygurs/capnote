@@ -5179,6 +5179,20 @@ body.dark .default-folder.insert-after::after {
   width: 100%;
 }
 
+.reminder-datetime-input:focus,
+.reminder-datetime-input:active {
+  outline: none;
+  box-shadow: none;
+  border: 1px solid var(--accent-color); /* 1px accent colored border on focus */
+}
+
+[data-theme='dark'] .reminder-datetime-input:focus,
+[data-theme='dark'] .reminder-datetime-input:active {
+  outline: none;
+  box-shadow: none;
+  border: 1px solid var(--accent-color);
+}
+
 .note-reminders-list {
   display: flex;
   flex-direction: column;
