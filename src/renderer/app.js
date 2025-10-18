@@ -1734,7 +1734,17 @@ class CapnoteApp {
     try { this.updateActiveNotificationsCount(); } catch (e) {}
     this.updateStats();
 
-  this.showNotification('Uygulama sıfırlandı', 'success');
+      // Ensure no note remains open after reset
+      try {
+        this.currentNote = null;
+        this.currentNoteContent = '';
+        this.lastSavedContent = '';
+      } catch (e) {}
+
+      // Show welcome/home screen instead of any note
+      try { this.showWelcome(); } catch (e) {}
+
+      this.showNotification('Uygulama sıfırlandı', 'success');
     } catch (err) {
       console.error('Tüm içerik silinirken hata:', err);
       this.showNotification('İçerik silinirken hata oluştu', 'error');
