@@ -4558,6 +4558,15 @@ input:checked + .toggle-slider:before {
   padding: 16px 20px;
 }
 
+/* Align import modal footer buttons to the right */
+.import-modal .modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-color);
+}
+
 #noteHistoryModal .modal-title h3 {
   margin: 0;
   font-size: 18px;
@@ -5415,4 +5424,36 @@ body.dark .default-folder.insert-after::after {
 
 [data-theme='dark'] .dismiss-btn:hover {
   background: #075f1a;
+}
+
+/* Import modal specific spacing to match other modals */
+.import-modal .modal-body {
+  padding: 18px 20px;
+  min-width: 320px;
+}
+
+.import-modal .form-block {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.import-modal .form-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.import-modal .form-group label {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.import-modal .form-checkbox {
+  width: 18px;
+  height: 18px;
+}
+
+.import-modal .modal-footer {
+  padding: 12px 18px;
 }
