@@ -2313,6 +2313,12 @@ input[type="color"].color-picker::-moz-color-swatch {
   display: none;
 }
 
+/* Disable the generic pseudo-icon for the table modal (we have an inline table icon) */
+#tableModal .modal-header h3::before {
+  content: none;
+  display: none;
+}
+
 /* Make the folder color modal header match the folder rename modal's spacing and layout */
 #folderColorModal .modal-header {
   padding: 24px 24px 0;
@@ -5749,6 +5755,8 @@ body.dark .default-folder.insert-after::after {
 .import-modal .form-checkbox {
   width: 18px;
   height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
 }
 
 .import-modal .modal-footer {
