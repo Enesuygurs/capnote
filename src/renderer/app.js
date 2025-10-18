@@ -485,25 +485,25 @@ class CapnoteApp {
           const clickedFilter = e.currentTarget.dataset.filter;
 
           // Toggle functionality: if clicking the same filter, deactivate it
-          if (this.currentFilter === clickedFilter) {
-            // Remove active from all nav items
-            document
-              .querySelectorAll('.nav-item, .nav-subitem')
-              .forEach((nav) => nav.classList.remove('active'));
-            // Reset to "all" filter
-            this.changeFilter('all');
-            // Make "all" filter active
-            document.querySelector('[data-filter="all"]').classList.add('active');
-          } else {
-            // Remove active from all nav items and subitems
-            document
-              .querySelectorAll('.nav-item, .nav-subitem')
-              .forEach((nav) => nav.classList.remove('active'));
-            // Add active to clicked item
-            e.currentTarget.classList.add('active');
-            // Apply filter
-            this.changeFilter(clickedFilter);
-          }
+            if (this.currentFilter === clickedFilter) {
+              // Remove active from filter-group items only (keep reminders/notifications state)
+              document
+                .querySelectorAll('.nav-item[data-filter], .nav-subitem[data-filter]')
+                .forEach((nav) => nav.classList.remove('active'));
+              // Reset to "all" filter
+              this.changeFilter('all');
+              // Make "all" filter active
+              document.querySelector('[data-filter="all"]').classList.add('active');
+            } else {
+              // Remove active from other filter-group items only
+              document
+                .querySelectorAll('.nav-item[data-filter], .nav-subitem[data-filter]')
+                .forEach((nav) => nav.classList.remove('active'));
+              // Add active to clicked filter item
+              e.currentTarget.classList.add('active');
+              // Apply filter
+              this.changeFilter(clickedFilter);
+            }
         });
       });
 
@@ -2063,11 +2063,9 @@ class CapnoteApp {
     this.notificationsScreen?.classList.add('hidden');
     this.remindersScreen?.classList.remove('hidden');
     
-    // Update active states
-    this.remindersNav?.classList.add('active');
-    this.notificationsNav?.classList.remove('active');
-    // Remove active from filter items
-    document.querySelectorAll('.nav-item[data-filter]').forEach(item => item.classList.remove('active'));
+  // Update active states for reminders/notifications group only
+  this.remindersNav?.classList.add('active');
+  this.notificationsNav?.classList.remove('active');
     
     this.updateRemindersView();
   }
@@ -2079,11 +2077,9 @@ class CapnoteApp {
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.remove('hidden');
     
-    // Update active states
-    this.notificationsNav?.classList.add('active');
-    this.remindersNav?.classList.remove('active');
-    // Remove active from filter items
-    document.querySelectorAll('.nav-item[data-filter]').forEach(item => item.classList.remove('active'));
+  // Update active states for reminders/notifications group only
+  this.notificationsNav?.classList.add('active');
+  this.remindersNav?.classList.remove('active');
     
     this.updateNotificationsView();
   }
