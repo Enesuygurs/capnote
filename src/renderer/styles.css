@@ -5223,6 +5223,41 @@ body.dark .default-folder.insert-after::after {
   border: 1px solid var(--accent-color);
 }
 
+/* Weekday selector for weekly recurrence */
+.reminder-weekdays {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.reminder-weekdays .weekday-list {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.reminder-weekdays label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.03);
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.reminder-weekdays input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+}
+
+.reminder-recurrence-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--accent-color-rgba-15);
+  color: var(--accent-color);
+  font-size: 12px;
+}
+
 .note-reminders-list {
   display: flex;
   flex-direction: column;

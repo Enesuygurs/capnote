@@ -415,6 +415,24 @@ class CapnoteApp {
       this.applySelectedFolderColor(color);
       this.hideModal(this.folderColorModal);
     });
+    // Show/hide weekday selector when recurrence changes
+    if (this.reminderRecurrence) {
+      this.reminderRecurrence.addEventListener('change', (e) => {
+        try {
+          const val = e.currentTarget.value;
+          const wk = document.getElementById('reminderWeekdays');
+          if (wk) {
+            if (val === 'weekly') {
+              wk.classList.remove('hidden');
+              wk.setAttribute('aria-hidden', 'false');
+            } else {
+              wk.classList.add('hidden');
+              wk.setAttribute('aria-hidden', 'true');
+            }
+          }
+        } catch (err) {}
+      });
+    }
     this.cancelFolderColorBtn?.addEventListener('click', () => {
       this.hideModal(this.folderColorModal);
     });
@@ -1922,6 +1940,7 @@ class CapnoteApp {
       this.reminders = this.reminders.map(r => ({
         ...r,
         recurrence: r.recurrence || 'none',
+        recurrenceDays: Array.isArray(r.recurrenceDays) ? r.recurrenceDays : (r.recurrenceDays ? r.recurrenceDays : []),
         dismissed: r.dismissed || false
       }));
       // Filter out dismissed reminders and expired ones
@@ -1943,6 +1962,7 @@ class CapnoteApp {
           next.setDate(next.getDate() + 1);
           break;
         case 'weekly':
+          // Basic weekly increment will be handled by caller when recurrenceDays are provided.
           next.setDate(next.getDate() + 7);
           break;
         case 'monthly':
@@ -1958,6 +1978,38 @@ class CapnoteApp {
     }
   }
 
+  _computeNextWeeklyFromDays(datetimeIso, daysArray) {
+    try {
+      const base = new Date(datetimeIso);
+      if (isNaN(base)) return null;
+      // Normalize daysArray to sorted unique numbers 0..6
+      const days = Array.from(new Set((daysArray || []).map(d => parseInt(d)).filter(d => !isNaN(d) && d >= 0 && d <= 6))).sort((a,b) => a-b);
+      if (days.length === 0) return null;
+
+      // Start searching from the next minute to avoid returning the same moment
+      const start = new Date(base.getTime() + 60000);
+      for (let offset = 0; offset < 14; offset++) {
+        const candidate = new Date(start.getTime());
+        candidate.setDate(start.getDate() + offset);
+        const wd = candidate.getDay();
+        if (days.includes(wd)) {
+          // Preserve the original time of day from base
+          candidate.setHours(base.getHours(), base.getMinutes(), base.getSeconds(), base.getMilliseconds());
+          // If candidate is still <= base (unlikely due to start shift), continue
+          if (candidate.getTime() <= base.getTime()) continue;
+          return candidate;
+        }
+      }
+      // Fallback: compute by adding 7 days to base
+      const fallback = new Date(base.getTime());
+      fallback.setDate(fallback.getDate() + 7);
+      return fallback;
+    } catch (err) {
+      console.warn('Failed to compute weekly next from days', err);
+      return null;
+    }
+  }
+
   _recurrenceLabel(code) {
     switch (code) {
       case 'daily': return 'Günlük';
@@ -1965,6 +2017,13 @@ class CapnoteApp {
       case 'monthly': return 'Aylık';
       default: return '';
     }
+  }
+
+  _weekdayShort(n) {
+    const map = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
+    const idx = parseInt(n);
+    if (isNaN(idx) || idx < 0 || idx > 6) return '';
+    return map[idx];
   }
 
   async saveReminders() {
@@ -2200,7 +2259,7 @@ class CapnoteApp {
               hour: '2-digit', 
               minute: '2-digit' 
             })}
-            ${r.recurrence && r.recurrence !== 'none' ? `<span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}</span>` : ''}
+            ${r.recurrence && r.recurrence !== 'none' ? `<span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? (': ' + r.recurrenceDays.map(d => this._weekdayShort(d)).join(', ')) : ''}</span>` : ''}
           </div>
           <div class="reminder-actions">
             <button class="reminder-action-btn view-note-btn" data-note-id="${r.noteId}">
@@ -2258,8 +2317,31 @@ class CapnoteApp {
       noteTitle: this.currentNote.title || 'Başlıksız Not',
       datetime: datetime,
       recurrence: (this.reminderRecurrence && this.reminderRecurrence.value) ? this.reminderRecurrence.value : 'none',
-      dismissed: false
+      dismissed: false,
+      recurrenceDays: []
     };
+
+    // If weekly recurrence selected, collect checked weekdays (0=Sun..6=Sat)
+    if (reminder.recurrence === 'weekly') {
+      try {
+        const checkboxes = document.querySelectorAll('#reminderWeekdays .weekday-checkbox');
+        const days = [];
+        checkboxes.forEach(cb => {
+          if (cb.checked) {
+            const v = parseInt(cb.value);
+            if (!isNaN(v)) days.push(v);
+          }
+        });
+        // If user didn't pick any days, default to the weekday of the chosen date
+        if (days.length === 0) {
+          const d = new Date(datetime).getDay();
+          days.push(d);
+        }
+        reminder.recurrenceDays = days.sort((a,b) => a - b);
+      } catch (err) {
+        // ignore
+      }
+    }
 
     this.reminders.push(reminder);
     await this.saveReminders();
@@ -2307,7 +2389,7 @@ class CapnoteApp {
               hour: '2-digit', 
               minute: '2-digit' 
             })}
-              ${r.recurrence && r.recurrence !== 'none' ? ` <span class="reminder-recurrence">(${r.recurrence})</span>` : ''}
+              ${r.recurrence && r.recurrence !== 'none' ? ` <span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? (': ' + r.recurrenceDays.map(d => this._weekdayShort(d)).join(', ')) : ''}</span>` : ''}
           </div>
           <button class="note-reminder-remove" data-reminder-id="${r.id}" title="Sil">
             <i class="fas fa-times"></i>
@@ -2371,12 +2453,21 @@ class CapnoteApp {
 
           // If reminder has recurrence, compute next occurrence instead of dismissing
           if (reminder.recurrence && reminder.recurrence !== 'none') {
-            const next = this._computeNextRecurrence(reminder.datetime, reminder.recurrence);
-            if (next) {
-              reminder.datetime = next.toISOString();
-              // Keep it active (not dismissed)
+            // Handle weekly recurrences with specific weekdays
+            if (reminder.recurrence === 'weekly' && Array.isArray(reminder.recurrenceDays) && reminder.recurrenceDays.length > 0) {
+              const next = this._computeNextWeeklyFromDays(reminder.datetime, reminder.recurrenceDays);
+              if (next) {
+                reminder.datetime = next.toISOString();
+              } else {
+                reminder.dismissed = true;
+              }
             } else {
-              reminder.dismissed = true;
+              const next = this._computeNextRecurrence(reminder.datetime, reminder.recurrence);
+              if (next) {
+                reminder.datetime = next.toISOString();
+              } else {
+                reminder.dismissed = true;
+              }
             }
           } else {
             reminder.dismissed = true;
