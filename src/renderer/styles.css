@@ -3614,7 +3614,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .stat-item {
   background: var(--stat-item-bg);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgb(35 35 35 / 67%);
 }
 
 [data-theme='dark'] .welcome-screen {
