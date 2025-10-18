@@ -4984,7 +4984,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .notification-action-btn i {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .view-notification-note-btn {
@@ -5006,6 +5006,27 @@ body.dark .default-folder.insert-after::after {
 .mark-read-btn:hover {
   background: #f3f3f3;
   transform: translateY(-1px);
+}
+
+/* Specific styling for the 'Tümünü okundu işaretle' button */
+#markAllReadBtn {
+  background: #f5f6f7; /* light gray */
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+#markAllReadBtn:hover {
+  background: #e9ecef; /* slightly darker gray on hover */
+  transform: translateY(-1px);
+}
+
+[data-theme='dark'] #markAllReadBtn {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+[data-theme='dark'] #markAllReadBtn:hover {
+  background: rgba(255,255,255,0.06);
 }
 
 .delete-notification-btn {
@@ -5103,7 +5124,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .reminder-action-btn i {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .view-note-btn {
