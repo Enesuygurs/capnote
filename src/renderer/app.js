@@ -236,6 +236,7 @@ class CapnoteApp {
     this.settingsBtn = document.getElementById('settingsBtn');
     this.helpSupport = document.getElementById('helpSupport');
   this.toggleNativeNotifications = document.getElementById('toggleNativeNotifications');
+  this.testNativeNotifBtn = document.getElementById('testNativeNotifBtn');
   this.clearAllNotesBtn = document.getElementById('clearAllNotesBtn');
   this.clearAllFoldersBtn = document.getElementById('clearAllFoldersBtn');
   this.clearAllContentBtn = document.getElementById('clearAllContentBtn');
@@ -367,6 +368,8 @@ class CapnoteApp {
     localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
     this.showNotification(enabled ? 'Sistem bildirimleri açıldı' : 'Sistem bildirimleri kapatıldı', 'success');
   });
+  // Test notification button
+  this.testNativeNotifBtn?.addEventListener('click', () => this.testNativeNotification());
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
     this.saveNoteBtn.addEventListener('click', () => this.saveNote());
     this.cancelNoteBtn.addEventListener('click', () => this.cancelEdit());
@@ -934,6 +937,28 @@ class CapnoteApp {
 
     // Checkbox listeners
     this.setupCheckboxListeners();
+  }
+
+  testNativeNotification() {
+    // Simple in-app notification + store
+    const title = '🔔 Test Bildirimi';
+    const body = 'Bu bir test bildirimidir.';
+    this.showNotification(title, 'info');
+    this.addNotification(null, title, body);
+
+    // Fire native notification if preference enabled
+    try {
+      const nativePref = this.toggleNativeNotifications ? this.toggleNativeNotifications.checked : (localStorage.getItem('settings.nativeNotifications') === null ? true : (localStorage.getItem('settings.nativeNotifications') === '1' || localStorage.getItem('settings.nativeNotifications') === 'true'));
+      if (nativePref && window && window.electronAPI && typeof window.electronAPI.showNativeNotification === 'function') {
+        window.electronAPI.showNativeNotification({
+          title,
+          body,
+          silent: false
+        }).catch(err => console.warn('showNativeNotification rejected:', err));
+      }
+    } catch (err) {
+      console.warn('Native notification test error:', err);
+    }
   }
 
   insertCodeBlock() {
