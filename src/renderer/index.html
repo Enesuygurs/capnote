@@ -437,6 +437,12 @@
                 <h4><i class="fas fa-bell"></i> Hatırlatma</h4>
                 <div class="reminder-container">
                   <input type="datetime-local" id="reminderDatetime" class="reminder-datetime-input" />
+                  <select id="reminderRecurrence" class="select-small" aria-label="Tekrarlama">
+                    <option value="none">Tekrarlama yok</option>
+                    <option value="daily">Günlük</option>
+                    <option value="weekly">Haftalık</option>
+                    <option value="monthly">Aylık</option>
+                  </select>
                   <button id="setReminderBtn" class="btn-small btn-primary">
                     <i class="fas fa-plus"></i> Ekle
                   </button>
