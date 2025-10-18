@@ -4692,7 +4692,7 @@ input:checked + .toggle-slider:before {
 
 /* Note history modal styles */
 #noteHistoryModal .modal-content.history-modal {
-  max-width: 520px;
+  max-width: 500px;
   width: 95%;
   padding: 0;
 }
@@ -4844,10 +4844,6 @@ input:checked + .toggle-slider:before {
   background: var(--bg-tertiary);
   color: var(--text-primary);
   border-color: rgba(0,0,0,0.06);
-}
-
-#noteHistoryModal .modal-header {
-  padding: 16px 20px;
 }
 
 /* Align import modal footer buttons to the right */
