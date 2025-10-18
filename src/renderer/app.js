@@ -259,6 +259,8 @@ class CapnoteApp {
     this.foldersList = document.getElementById('foldersList');
     this.importNotesBtn = document.getElementById('importNotesBtn');
     this.exportAllNotesBtn = document.getElementById('exportAllNotesBtn');
+  this.importAllDataBtn = document.getElementById('importAllDataBtn');
+  this.exportAllDataBtn = document.getElementById('exportAllDataBtn');
     this.toggleSidebarBtn = document.getElementById('toggleSidebar');
     this.editorSidebar = document.querySelector('.editor-sidebar');
 
@@ -1532,22 +1534,17 @@ class CapnoteApp {
       this.toggleDarkMode(e.target.checked);
     });
 
-    this.importNotesBtn.addEventListener('click', () => {
-      this.importNotes();
-    });
+    if (this.importNotesBtn) this.importNotesBtn.addEventListener('click', () => { this.importNotes(); });
+    if (this.exportAllNotesBtn) this.exportAllNotesBtn.addEventListener('click', () => { this.exportAllNotes(); });
 
-    this.exportAllNotesBtn.addEventListener('click', () => {
-      this.exportAllNotes();
-    });
+    // New combined import/export handlers
+    if (this.exportAllDataBtn) this.exportAllDataBtn.addEventListener('click', () => this.exportAllData());
+    if (this.importAllDataBtn) this.importAllDataBtn.addEventListener('click', () => this.importAllData());
     // Clear actions
     this.clearAllNotesBtn?.addEventListener('click', () => this.confirmClearAllNotes());
     this.clearAllFoldersBtn?.addEventListener('click', () => this.confirmClearAllFolders());
     this.clearAllContentBtn?.addEventListener('click', () => this.confirmClearAllContent());
-    // Settings export/import
-    this.exportSettingsBtn = document.getElementById('exportSettingsBtn');
-    this.importSettingsBtn = document.getElementById('importSettingsBtn');
-    if (this.exportSettingsBtn) this.exportSettingsBtn.addEventListener('click', () => this.exportSettings());
-    if (this.importSettingsBtn) this.importSettingsBtn.addEventListener('click', () => this.importSettings());
+  // legacy settings export/import handlers removed (merged into Verileri İçe/Dışa Aktar)
 
     // Modal close buttons
     document.querySelectorAll('.modal-close').forEach((btn) => {
@@ -5450,6 +5447,300 @@ class CapnoteApp {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     this.showNotification('Ayarlar dışa aktarıldı', 'success');
+  }
+
+  // New: export ALL data (notes, folders, reminders, notifications, settings)
+  exportAllData() {
+    const exportData = {
+      exportDate: new Date().toISOString(),
+      version: '1.0.0',
+      notes: this.notes || [],
+      folders: this.folders || [],
+      reminders: this.reminders || [],
+      notifications: this.notifications || [],
+      settings: {},
+    };
+
+    // Collect a set of known localStorage settings
+    const keys = ['accentColor', 'darkMode', 'maxPinnedNotes', 'syncFolderAccent'];
+    keys.forEach((k) => {
+      try {
+        const v = localStorage.getItem(k);
+        if (v !== null) exportData.settings[k] = v;
+      } catch (e) {
+        console.warn('Failed to read setting', k, e);
+      }
+    });
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `capnote-all-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    this.showNotification('Tüm veriler dışa aktarıldı', 'success');
+  }
+
+  // New: import ALL data and offer merge/replace behaviour
+  importAllData() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.style.display = 'none';
+
+    input.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text || '{}');
+
+        // Validate structure
+        if (!data || (typeof data !== 'object')) throw new Error('Geçersiz dosya formatı');
+
+        // Count items
+        const notesCount = Array.isArray(data.notes) ? data.notes.length : 0;
+        const foldersCount = Array.isArray(data.folders) ? data.folders.length : 0;
+        const remindersCount = Array.isArray(data.reminders) ? data.reminders.length : 0;
+        const notifsCount = Array.isArray(data.notifications) ? data.notifications.length : 0;
+
+        // Ask user which types to import and whether to merge or replace
+        const importOptions = await this.showImportOptionsDialog({
+          notes: notesCount > 0,
+          folders: foldersCount > 0,
+          reminders: remindersCount > 0,
+          notifications: notifsCount > 0,
+          settings: !!data.settings,
+        });
+
+        if (!importOptions) {
+          this.showNotification('İçe aktarma iptal edildi', 'warning');
+          return;
+        }
+
+        const merge = importOptions.merge;
+
+        if (!merge) {
+          // clear only the types the user chose to import (replace behaviour per-type)
+          if (importOptions.notes) this.notes = [];
+          if (importOptions.folders) this.folders = [];
+          if (importOptions.reminders) this.reminders = [];
+          if (importOptions.notifications) this.notifications = [];
+        }
+
+        // Remap folder IDs to avoid collisions when merging
+        const folderIdMap = {};
+        if (Array.isArray(data.folders)) {
+          data.folders.forEach((f) => {
+            const newId = Date.now() + Math.floor(Math.random() * 1000000);
+            folderIdMap[f.id] = newId;
+            const newFolder = { ...f, id: newId };
+            newFolder.expanded = newFolder.expanded !== undefined ? newFolder.expanded : true;
+            this.folders.push(newFolder);
+          });
+        }
+
+        // Import notes and remap folderId + build noteId map
+        const noteIdMap = {};
+        if (Array.isArray(data.notes) && importOptions.notes) {
+          data.notes.forEach((note) => {
+            const oldId = note.id;
+            const newNoteId = Date.now() + Math.floor(Math.random() * 1000000);
+            const mappedFolderId = note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : note.folderId;
+            const newNote = {
+              ...note,
+              id: newNoteId,
+              folderId: mappedFolderId || null,
+              createdAt: note.createdAt || new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            };
+            this.notes.push(newNote);
+            if (oldId !== undefined && oldId !== null) noteIdMap[oldId] = newNoteId;
+          });
+        }
+
+        // Import reminders and notifications with noteId remapping
+        let unresolvedRefs = 0;
+        if (Array.isArray(data.reminders) && importOptions.reminders) {
+          data.reminders.forEach((r) => {
+            const newR = { ...r };
+            newR.id = Date.now() + Math.floor(Math.random() * 1000000);
+            if (newR.noteId) {
+              // remap if possible
+              if (noteIdMap[newR.noteId]) {
+                newR.noteId = noteIdMap[newR.noteId];
+              } else {
+                // unknown note reference -> null it and count unresolved
+                newR.noteId = null;
+                unresolvedRefs++;
+              }
+            }
+            this.reminders.push(newR);
+          });
+        }
+
+        if (Array.isArray(data.notifications) && importOptions.notifications) {
+          data.notifications.forEach((n) => {
+            const newN = { ...n };
+            newN.id = Date.now() + Math.floor(Math.random() * 1000000);
+            if (newN.noteId) {
+              if (noteIdMap[newN.noteId]) {
+                newN.noteId = noteIdMap[newN.noteId];
+              } else {
+                newN.noteId = null;
+                unresolvedRefs++;
+              }
+            }
+            this.notifications.push(newN);
+          });
+        }
+
+        // Import settings (merge by default)
+        if (data.settings && typeof data.settings === 'object') {
+          Object.entries(data.settings).forEach(([k, v]) => {
+            try {
+              // Do not import folderColorsBackup from foreign sources
+              if (k === 'folderColorsBackup') return;
+              localStorage.setItem(k, String(v));
+            } catch (e) {
+              console.warn('Could not persist imported setting', k, e);
+            }
+          });
+        }
+
+        // Persist everything
+        try { await this.saveFolders(); } catch (e) { console.warn(e); }
+        try { await this.saveNotes(); } catch (e) { console.warn(e); }
+        try { await this.saveReminders(); } catch (e) { console.warn(e); }
+        try { await this.saveNotifications(); } catch (e) { console.warn(e); }
+
+        // Reload UI/state
+        this.loadSettings();
+        this.updateFoldersList();
+        this.updateNotesList();
+        this.updateFolderNotes();
+        this.updateStats();
+
+        this.showNotification('Veriler başarıyla içe aktarıldı', 'success');
+        this.settingsModal.classList.remove('show');
+        this.settingsModal.classList.add('hidden');
+      } catch (err) {
+        console.error('Import all data error', err);
+        this.showNotification('Veriler içe aktarılırken hata oluştu: ' + (err.message || err), 'error');
+      }
+    });
+
+    document.body.appendChild(input);
+    input.click();
+    document.body.removeChild(input);
+  }
+
+  // Show a small modal dialog letting user pick which types to import and merge vs replace
+  showImportOptionsDialog(available) {
+    return new Promise((resolve) => {
+      // Build modal container
+      const modal = document.createElement('div');
+      modal.className = 'temp-import-modal modal show';
+      modal.style.position = 'fixed';
+      modal.style.left = '0';
+      modal.style.top = '0';
+      modal.style.width = '100%';
+      modal.style.height = '100%';
+      modal.style.display = 'flex';
+      modal.style.alignItems = 'center';
+      modal.style.justifyContent = 'center';
+      modal.style.zIndex = '9999';
+
+      const card = document.createElement('div');
+      card.className = 'import-options-card';
+      card.style.background = 'var(--card-bg, #fff)';
+      card.style.color = 'var(--text-color, #111)';
+      card.style.padding = '18px';
+      card.style.borderRadius = '8px';
+      card.style.boxShadow = '0 8px 24px rgba(0,0,0,0.2)';
+      card.style.minWidth = '320px';
+
+      const title = document.createElement('h3');
+      title.textContent = 'İçe Aktarma Seçenekleri';
+      card.appendChild(title);
+
+      const form = document.createElement('div');
+      form.style.margin = '8px 0 12px 0';
+
+      const types = ['notes','folders','reminders','notifications','settings'];
+      const inputs = {};
+      types.forEach((t) => {
+        if (!available[t]) return;
+        const row = document.createElement('div');
+        row.style.margin = '6px 0';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = true;
+        cb.id = 'imp_opt_' + t;
+        inputs[t] = cb;
+        const lbl = document.createElement('label');
+        lbl.setAttribute('for', cb.id);
+        lbl.style.marginLeft = '8px';
+        lbl.textContent = ({notes:'Notlar', folders:'Klasörler', reminders:'Hatırlatmalar', notifications:'Bildirimler', settings:'Ayarlar'})[t] || t;
+        row.appendChild(cb);
+        row.appendChild(lbl);
+        form.appendChild(row);
+      });
+
+      const mergeRow = document.createElement('div');
+      mergeRow.style.margin = '8px 0';
+      const mergeLabel = document.createElement('label');
+      mergeLabel.textContent = 'Mevcut verilerle birleştir (işaretli kutuları birleştir), değilse seçilen türler için değiştir (replace)';
+      mergeRow.appendChild(mergeLabel);
+      const mergeToggle = document.createElement('input');
+      mergeToggle.type = 'checkbox';
+      mergeToggle.checked = true;
+      mergeToggle.style.marginLeft = '8px';
+      mergeRow.appendChild(mergeToggle);
+
+      card.appendChild(form);
+      card.appendChild(mergeRow);
+
+      const actions = document.createElement('div');
+      actions.style.display = 'flex';
+      actions.style.justifyContent = 'flex-end';
+      actions.style.marginTop = '12px';
+
+      const cancelBtn = document.createElement('button');
+      cancelBtn.className = 'btn btn-outline';
+      cancelBtn.textContent = 'İptal';
+      cancelBtn.style.marginRight = '8px';
+      const okBtn = document.createElement('button');
+      okBtn.className = 'btn btn-primary';
+      okBtn.textContent = 'İçe Aktar';
+
+      actions.appendChild(cancelBtn);
+      actions.appendChild(okBtn);
+      card.appendChild(actions);
+
+      modal.appendChild(card);
+      document.body.appendChild(modal);
+
+      const cleanup = () => { try { document.body.removeChild(modal); } catch (e) {} };
+
+      cancelBtn.addEventListener('click', () => { cleanup(); resolve(null); });
+      okBtn.addEventListener('click', () => {
+        const result = {
+          merge: mergeToggle.checked,
+          notes: !!(inputs.notes && inputs.notes.checked),
+          folders: !!(inputs.folders && inputs.folders.checked),
+          reminders: !!(inputs.reminders && inputs.reminders.checked),
+          notifications: !!(inputs.notifications && inputs.notifications.checked),
+          settings: !!(inputs.settings && inputs.settings.checked),
+        };
+        cleanup();
+        resolve(result);
+      });
+    });
   }
 
   importSettings() {
