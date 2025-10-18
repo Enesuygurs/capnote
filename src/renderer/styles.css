@@ -51,6 +51,14 @@
   --font-mono: 'Roboto Mono', 'Courier New', monospace;
   --bg-hover: #eef2f6; 
 }
+/* Modal title icon (Font Awesome) — use app accent color and proper spacing */
+.modal-title-icon {
+  color: var(--accent-color);
+  margin-right: 10px;
+  font-size: 1.05em;
+  vertical-align: middle;
+}
+
 body {
   font-family: var(--font-sans);
   /* replaced gradient with a solid neutral background to avoid gradients */
@@ -4163,19 +4171,10 @@ input:checked + .toggle-slider:before {
   gap: 8px;
 }
 
-#passwordModal .modal-header h3::before {
-  content: '🔒';
-  font-size: 20px;
-}
-
-/* Per-modal emoji overrides */
-#exportModal .modal-header h3::before {
-  content: '';
-}
-
-#confirmModal .modal-header h3::before {
-  content: '❗';
-}
+/* Remove emoji pseudo-elements — use Font Awesome icons injected into the DOM instead */
+#passwordModal .modal-header h3::before { content: none; }
+#exportModal .modal-header h3::before { content: none; }
+#confirmModal .modal-header h3::before { content: none; }
 
 #settingsModal .modal-header h3::before {
   /* Settings modal uses an explicit <i> icon in the HTML; disable the pseudo-element to avoid duplicate icons */
@@ -4593,6 +4592,7 @@ input:checked + .toggle-slider:before {
   gap: 14px;
   justify-content: flex-end;
   border-top: 1px solid var(--border-color);
+  margin-top: 8px;
 }
 
 #tableModal .btn {
