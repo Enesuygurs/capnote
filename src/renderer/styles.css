@@ -231,6 +231,48 @@ body {
   border-bottom: 1px solid var(--border-color);
 }
 
+/* Inserted table styles for editor */
+.rich-editor .inserted-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+}
+.rich-editor .inserted-table th,
+.rich-editor .inserted-table td {
+  border: 1px solid rgb(59 59 59);
+  padding: 8px;
+  vertical-align: top;
+}
+
+/* Table modal form spacing */
+.modal-content .form-group {
+  margin-bottom: 12px;
+}
+.modal-content .form-group input[type="number"] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+/* Table modal tweaks */
+#tableModal .modal-body {
+  padding: 16px 18px;
+}
+#tableModal .form-row {
+  display: flex;
+  gap: 12px;
+}
+#tableModal .form-row .form-group {
+  flex: 1 1 0;
+}
+#tableModal .modal-content .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
 .user-profile {
   display: flex;
   align-items: center;
@@ -4379,6 +4421,175 @@ input:checked + .toggle-slider:before {
   color: var(--text-primary);
 }
 
+/* ============================== */
+/* TABLE MODAL STYLES (match folder modal) */
+/* ============================== */
+
+#tableModal {
+  z-index: 1000;
+}
+
+#tableModal .modal-content {
+  max-width: 450px;
+  width: 90%;
+  margin: 0;
+  background: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--border-color);
+  animation: modalSlideIn 0.3s ease-out;
+  position: relative;
+}
+
+#tableModal .modal-header {
+  padding: 24px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
+}
+
+#tableModal .modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#tableModal .modal-title h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+#tableModal .modal-title i {
+  color: var(--primary-color);
+  font-size: 22px;
+}
+
+#tableModal .modal-body {
+  padding: 24px 24px 16px;
+}
+
+#tableModal .form-group {
+  margin-bottom: 0;
+}
+
+#tableModal .form-group label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 15px;
+}
+
+#tableModal .form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  font-size: 15px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+#tableModal .form-input:focus {
+  border-color: var(--primary-color);
+}
+
+#tableModal .form-input::placeholder {
+  color: var(--text-secondary);
+}
+
+#tableModal .modal-footer {
+  padding: 20px 24px 24px;
+  display: flex;
+  gap: 14px;
+  justify-content: flex-end;
+  border-top: 1px solid var(--border-color);
+  margin-top: 8px;
+}
+
+#tableModal .btn {
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+
+#tableModal .btn-secondary {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+#tableModal .btn-secondary:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: rgba(0,0,0,0.06);
+}
+
+#tableModal .btn-primary {
+  background: var(--primary-color);
+  color: white;
+}
+
+#tableModal .btn-primary:hover {
+  background: var(--accent-color);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px var(--accent-color-rgba-18);
+}
+
+#tableModal .modal-close {
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, color 150ms ease;
+  color: var(--text-secondary);
+  border: none;
+  background: transparent;
+}
+
+#tableModal .modal-close:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+/* Dark Theme for table modal */
+[data-theme='dark'] #tableModal .modal-content {
+  background: var(--bg-primary);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-dark-lg);
+}
+
+[data-theme='dark'] #tableModal .form-input {
+  background: var(--bg-tertiary);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] #tableModal .form-input:focus {
+  border-color: var(--primary-color);
+  background: var(--bg-secondary);
+}
+
 /* Dark Theme */
 [data-theme='dark'] #folderModal .modal-content {
   background: var(--bg-primary);
@@ -4560,6 +4771,15 @@ input:checked + .toggle-slider:before {
 
 /* Align import modal footer buttons to the right */
 .import-modal .modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Table modal footer: right-align buttons and add padding to match other modals */
+#tableModal .modal-footer {
   display: flex;
   gap: 10px;
   justify-content: flex-end;
