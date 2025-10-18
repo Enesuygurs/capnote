@@ -1701,9 +1701,11 @@ class CapnoteApp {
 
       this.updateNotesList();
       this.updateFoldersList();
-      try { this.updateActiveRemindersCount(); } catch (e) {}
-      try { this.updateActiveNotificationsCount(); } catch (e) {}
-      this.showNotification('Tüm klasörler ve içindeki notlar silindi', 'success');
+  try { this.updateActiveRemindersCount(); } catch (e) {}
+  try { this.updateActiveNotificationsCount(); } catch (e) {}
+  // Ensure stats are refreshed (total notes / words / active days)
+  try { this.updateStats(); } catch (e) {}
+  this.showNotification('Tüm klasörler ve içindeki notlar silindi', 'success');
     } catch (err) {
       console.error('Tüm klasörler silinirken hata:', err);
       this.showNotification('Klasörler silinemedi', 'error');
@@ -2006,6 +2008,8 @@ class CapnoteApp {
   async saveNotes() {
     try {
   localStorage.setItem('capnote-notes', JSON.stringify(this.notes));
+      // Ensure overview stats reflect the latest notes immediately
+      try { this.updateStats(); } catch (e) {}
     } catch (error) {
       console.error('Notlar kaydedilirken hata:', error);
       this.showNotification('Notlar kaydedilemedi!', 'error');
@@ -5655,6 +5659,16 @@ class CapnoteApp {
               createdAt: note.createdAt || new Date().toISOString(),
               updatedAt: new Date().toISOString(),
             };
+            // Compute word/char counts for imported note so stats reflect correctly
+            try {
+              const counts = this.countWordsAndCharsFromHtml(newNote.content || '');
+              newNote.wordCount = counts.words;
+              newNote.charCount = counts.chars;
+            } catch (e) {
+              newNote.wordCount = note.wordCount || 0;
+              newNote.charCount = note.charCount || 0;
+            }
+
             this.notes.push(newNote);
             if (oldId !== undefined && oldId !== null) noteIdMap[oldId] = newNoteId;
           });
@@ -6896,6 +6910,8 @@ class CapnoteApp {
       // Save and update
       this.saveNotes();
       this.saveFolders();
+  // Ensure stats updated after deleting single folder
+  try { this.updateStats(); } catch (e) {}
       this.updateFoldersList();
       this.updateStats();
       if (this.currentFilter === 'favorites') this.updateNotesList();
