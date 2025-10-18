@@ -1608,13 +1608,40 @@ class CapnoteApp {
 
   async clearAllNotes() {
     try {
+      // Collect existing note IDs to remove associated reminders/notifications
+      const removedNoteIds = (this.notes || []).map(n => n.id);
+
       this.notes = [];
       await this.saveNotes();
+
+      // Remove reminders and notifications that reference removed notes
+      try {
+        if (Array.isArray(this.reminders) && this.reminders.length > 0) {
+          this.reminders = this.reminders.filter(r => !r.noteId || !removedNoteIds.includes(r.noteId));
+          await this.saveReminders();
+          this.updateRemindersView();
+        }
+      } catch (e) {
+        console.warn('Failed to cleanup reminders after clearing notes', e);
+      }
+
+      try {
+        if (Array.isArray(this.notifications) && this.notifications.length > 0) {
+          this.notifications = this.notifications.filter(n => !n.noteId || !removedNoteIds.includes(n.noteId));
+          await this.saveNotifications();
+          this.updateNotificationsView();
+        }
+      } catch (e) {
+        console.warn('Failed to cleanup notifications after clearing notes', e);
+      }
       // Clear last viewed note
       try { localStorage.removeItem('last-viewed-note'); } catch (e) {}
       this.updateNotesList();
       this.updateFoldersList();
-      this.updateStats();
+  // Update counters for reminders/notifications
+  try { this.updateActiveRemindersCount(); } catch (e) {}
+  try { this.updateActiveNotificationsCount(); } catch (e) {}
+  this.updateStats();
       this.showNotification('Tüm notlar silindi', 'success');
     } catch (err) {
       console.error('Tüm notlar silinirken hata:', err);
@@ -1643,6 +1670,9 @@ class CapnoteApp {
       // Reset application data
       this.notes = [];
       this.folders = [];
+      // Clear reminders and notifications as part of full reset
+      this.reminders = [];
+      this.notifications = [];
 
       // Remove stored data keys
       try { localStorage.removeItem('capnote-notes'); } catch (e) {}
@@ -1660,6 +1690,9 @@ class CapnoteApp {
       // Persist empty notes/folders
       await this.saveNotes();
       await this.saveFolders();
+  // Persist clearing reminders/notifications
+  try { await this.saveReminders(); } catch (e) { console.warn(e); }
+  try { await this.saveNotifications(); } catch (e) { console.warn(e); }
 
       // Reset in-memory settings/state to defaults
       // Default accent used elsewhere in the app
@@ -1688,7 +1721,11 @@ class CapnoteApp {
       this.updateNotesList();
       this.updateFoldersList();
       this.updateFolderNotes();
-      this.updateStats();
+    this.updateRemindersView();
+    this.updateNotificationsView();
+    try { this.updateActiveRemindersCount(); } catch (e) {}
+    try { this.updateActiveNotificationsCount(); } catch (e) {}
+    this.updateStats();
 
   this.showNotification('Uygulama sıfırlandı', 'success');
     } catch (err) {
@@ -5483,6 +5520,11 @@ class CapnoteApp {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     this.showNotification('Tüm veriler dışa aktarıldı', 'success');
+    // Refresh reminder/notification UI and counters in case data changed
+    try { this.updateRemindersView(); } catch (e) {}
+    try { this.updateNotificationsView(); } catch (e) {}
+    try { this.updateActiveRemindersCount(); } catch (e) {}
+    try { this.updateActiveNotificationsCount(); } catch (e) {}
   }
 
   // New: import ALL data and offer merge/replace behaviour
@@ -5623,11 +5665,17 @@ class CapnoteApp {
         this.updateFoldersList();
         this.updateNotesList();
         this.updateFolderNotes();
-        this.updateStats();
+  // Refresh reminders/notifications UI and counters
+  try { this.updateRemindersView(); } catch (e) {}
+  try { this.updateNotificationsView(); } catch (e) {}
+  try { this.updateActiveRemindersCount(); } catch (e) {}
+  try { this.updateActiveNotificationsCount(); } catch (e) {}
 
-        this.showNotification('Veriler başarıyla içe aktarıldı', 'success');
-        this.settingsModal.classList.remove('show');
-        this.settingsModal.classList.add('hidden');
+  this.updateStats();
+
+  this.showNotification('Veriler başarıyla içe aktarıldı', 'success');
+  this.settingsModal.classList.remove('show');
+  this.settingsModal.classList.add('hidden');
       } catch (err) {
         console.error('Import all data error', err);
         this.showNotification('Veriler içe aktarılırken hata oluştu: ' + (err.message || err), 'error');
