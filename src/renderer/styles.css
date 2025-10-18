@@ -4186,7 +4186,8 @@ input:checked + .toggle-slider:before {
 }
 
 #noteHistoryModal .modal-header h3::before {
-  content: '🕘';
+  /* removed clock emoji — use the injected Font Awesome icon in the DOM */
+  content: none;
 }
 
 /* Folder modal already uses an <i> icon in the title; disable duplicate pseudo-element */
