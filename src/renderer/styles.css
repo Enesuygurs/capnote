@@ -5268,12 +5268,12 @@ body.dark .default-folder.insert-after::after {
 }
 
 [data-theme='dark'] .mark-read-btn {
-  background: var(--bg-primary);
+  background: #353535;
   border-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] .mark-read-btn:hover {
-  background: var(--bg-secondary);
+  background: #292929;
 }
 
 [data-theme='dark'] .delete-notification-btn {
