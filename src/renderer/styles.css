@@ -4887,6 +4887,12 @@ body.dark .default-folder.insert-after::after {
   margin-bottom: 32px;
 }
 
+.notifications-actions {
+  margin: 12px 0 12px 0;
+  display: flex;
+  justify-content: flex-start; /* keep button left under header */
+}
+
 .notifications-header h2 {
   font-size: 28px;
   font-weight: 600;

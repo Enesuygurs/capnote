@@ -199,6 +199,7 @@ class CapnoteApp {
     this.notificationsList = document.getElementById('notificationsList');
     this.activeNotificationsCount = document.getElementById('activeNotificationsCount');
     this.notificationsUnreadBadge = document.getElementById('notificationsUnreadBadge');
+  this.markAllReadBtn = document.getElementById('markAllReadBtn');
 
   this.viewerCharCount = document.getElementById('viewerCharCount');
     this.readingTime = document.getElementById('readingTime');
@@ -1136,6 +1137,11 @@ class CapnoteApp {
     // Notifications event listeners
     if (this.notificationsNav) {
       this.notificationsNav.addEventListener('click', () => this.showNotificationsScreen());
+    }
+
+    // Mark all as read button
+    if (this.markAllReadBtn) {
+      this.markAllReadBtn.addEventListener('click', () => this.markAllNotificationsRead());
     }
 
     // Sidebar toggle
@@ -2383,6 +2389,22 @@ class CapnoteApp {
       } else {
         this.notificationsUnreadBadge.style.display = 'none';
       }
+    }
+  }
+
+  markAllNotificationsRead() {
+    if (!this.notifications || this.notifications.length === 0) return;
+    let changed = false;
+    this.notifications.forEach(n => {
+      if (!n.read) {
+        n.read = true;
+        changed = true;
+      }
+    });
+    if (changed) {
+      this.saveNotifications();
+      this.updateNotificationsView();
+      this.updateActiveNotificationsCount();
     }
   }
 
