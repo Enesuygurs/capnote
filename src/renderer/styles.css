@@ -4998,13 +4998,13 @@ body.dark .default-folder.insert-after::after {
 }
 
 .mark-read-btn {
-  background: var(--bg-tertiary);
+  background: #ffffff;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
 }
 
 .mark-read-btn:hover {
-  background: var(--bg-secondary);
+  background: #f3f3f3;
   transform: translateY(-1px);
 }
 
