@@ -1658,14 +1658,52 @@ class CapnoteApp {
 
   async clearAllFolders() {
     try {
-      // Remove folder associations from notes
-      this.notes = this.notes.map((n) => ({ ...n, folderId: null }));
+  // Delete all notes that belong to any real folder (treat 'default' as folderless)
+  // Some notes use folderId === 'default' to mean no folder; only consider notes
+  // that have a truthy folderId and are not 'default' as belonging to a folder.
+  const notesInFolders = (this.notes || []).filter(n => n.folderId && n.folderId !== 'default');
+  const removedNoteIdSet = new Set(notesInFolders.map(n => String(n.id)));
+
+  // Keep only notes that are folderless (either falsy folderId or 'default')
+  this.notes = (this.notes || []).filter(n => !n.folderId || n.folderId === 'default');
       this.folders = [];
-      await this.saveFolders();
+
+      // Persist notes/folders
       await this.saveNotes();
+      await this.saveFolders();
+
+      // Remove reminders and notifications that reference removed notes
+      try {
+        if (Array.isArray(this.reminders) && this.reminders.length > 0) {
+          this.reminders = this.reminders.filter(r => {
+            if (!r.noteId && r.noteId !== 0) return true;
+            return !removedNoteIdSet.has(String(r.noteId));
+          });
+          await this.saveReminders();
+          this.updateRemindersView();
+        }
+      } catch (e) {
+        console.warn('Failed to cleanup reminders after clearing folders', e);
+      }
+
+      try {
+        if (Array.isArray(this.notifications) && this.notifications.length > 0) {
+          this.notifications = this.notifications.filter(n => {
+            if (!n.noteId && n.noteId !== 0) return true;
+            return !removedNoteIdSet.has(String(n.noteId));
+          });
+          await this.saveNotifications();
+          this.updateNotificationsView();
+        }
+      } catch (e) {
+        console.warn('Failed to cleanup notifications after clearing folders', e);
+      }
+
       this.updateNotesList();
       this.updateFoldersList();
-      this.showNotification('Tüm klasörler silindi', 'success');
+      try { this.updateActiveRemindersCount(); } catch (e) {}
+      try { this.updateActiveNotificationsCount(); } catch (e) {}
+      this.showNotification('Tüm klasörler ve içindeki notlar silindi', 'success');
     } catch (err) {
       console.error('Tüm klasörler silinirken hata:', err);
       this.showNotification('Klasörler silinemedi', 'error');
@@ -6807,8 +6845,8 @@ class CapnoteApp {
     const folder = this.folders.find((f) => f.id == this.selectedFolderId);
     if (!folder) return;
 
-    // Count notes in folder
-    const notesInFolder = this.notes.filter((note) => note.folderId === this.selectedFolderId);
+  // Count notes that truly belong to this folder. Treat falsy or 'default' folderIds as folderless.
+  const notesInFolder = this.notes.filter((note) => note.folderId && String(note.folderId) === String(this.selectedFolderId));
     const noteCount = notesInFolder.length;
 
     const message =
@@ -6822,25 +6860,54 @@ class CapnoteApp {
     const folderIdToDelete = this.selectedFolderId;
 
     this.confirmCallback = () => {
-      // Delete all notes in the folder
-      // Keep notes that are NOT in the selected folder
-      this.notes = this.notes.filter((note) => note.folderId != folderIdToDelete);
+  // Delete all notes that truly belong to the folder (ignore folderless notes)
+  const notesToRemove = this.notes.filter((note) => note.folderId && String(note.folderId) === String(folderIdToDelete)).map(n => String(n.id));
+  const removedSet = new Set(notesToRemove);
+
+  // Keep notes that are NOT in the selected folder (preserve folderless notes and other folders)
+  this.notes = this.notes.filter((note) => !(note.folderId && String(note.folderId) === String(folderIdToDelete)));
 
       // Delete the folder
       this.folders = this.folders.filter((f) => f.id != folderIdToDelete);
 
+      // Remove reminders and notifications associated with deleted notes
+      try {
+        if (Array.isArray(this.reminders) && this.reminders.length > 0) {
+          this.reminders = this.reminders.filter(r => {
+            if (!r.noteId && r.noteId !== 0) return true;
+            return !removedSet.has(String(r.noteId));
+          });
+          this.saveReminders();
+          this.updateRemindersView();
+        }
+      } catch (e) { console.warn('Failed to cleanup reminders after deleting folder', e); }
+
+      try {
+        if (Array.isArray(this.notifications) && this.notifications.length > 0) {
+          this.notifications = this.notifications.filter(n => {
+            if (!n.noteId && n.noteId !== 0) return true;
+            return !removedSet.has(String(n.noteId));
+          });
+          this.saveNotifications();
+          this.updateNotificationsView();
+        }
+      } catch (e) { console.warn('Failed to cleanup notifications after deleting folder', e); }
+
       // Save and update
       this.saveNotes();
       this.saveFolders();
-    this.updateFoldersList();
-    this.updateStats();
-    if (this.currentFilter === 'favorites') this.updateNotesList();
+      this.updateFoldersList();
+      this.updateStats();
+      if (this.currentFilter === 'favorites') this.updateNotesList();
 
       // Clear selection if current note was in deleted folder
       if (this.currentNote && this.currentNote.folderId == folderIdToDelete) {
         this.currentNote = null;
         this.showWelcome();
       }
+
+      try { this.updateActiveRemindersCount(); } catch (e) {}
+      try { this.updateActiveNotificationsCount(); } catch (e) {}
 
       this.showNotification(`"${folder.name}" klasörü ve içindeki notlar silindi`, 'success');
     };
