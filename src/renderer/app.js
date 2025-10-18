@@ -1610,6 +1610,7 @@ class CapnoteApp {
     try {
       // Collect existing note IDs to remove associated reminders/notifications
       const removedNoteIds = (this.notes || []).map(n => n.id);
+      const removedNoteIdSet = new Set(removedNoteIds.map(id => String(id)));
 
       this.notes = [];
       await this.saveNotes();
@@ -1617,7 +1618,10 @@ class CapnoteApp {
       // Remove reminders and notifications that reference removed notes
       try {
         if (Array.isArray(this.reminders) && this.reminders.length > 0) {
-          this.reminders = this.reminders.filter(r => !r.noteId || !removedNoteIds.includes(r.noteId));
+          this.reminders = this.reminders.filter(r => {
+            if (!r.noteId && r.noteId !== 0) return true;
+            return !removedNoteIdSet.has(String(r.noteId));
+          });
           await this.saveReminders();
           this.updateRemindersView();
         }
@@ -1627,7 +1631,10 @@ class CapnoteApp {
 
       try {
         if (Array.isArray(this.notifications) && this.notifications.length > 0) {
-          this.notifications = this.notifications.filter(n => !n.noteId || !removedNoteIds.includes(n.noteId));
+          this.notifications = this.notifications.filter(n => {
+            if (!n.noteId && n.noteId !== 0) return true;
+            return !removedNoteIdSet.has(String(n.noteId));
+          });
           await this.saveNotifications();
           this.updateNotificationsView();
         }
