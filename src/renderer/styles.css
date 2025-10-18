@@ -3931,7 +3931,7 @@ input:checked + .toggle-slider:before {
 }
 
 .btn-small {
-  padding: 6px 12px;
+  padding: 10px 12px;
   font-size: 12px;
   font-weight: 500;
 }
@@ -5183,7 +5183,6 @@ body.dark .default-folder.insert-after::after {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-top: 8px;
 }
 
 .note-reminder-item {
@@ -5206,6 +5205,13 @@ body.dark .default-folder.insert-after::after {
 
 .note-reminder-time i {
   font-size: 11px;
+}
+
+.note-no-reminder {
+  color: var(--text-secondary);
+  font-size: calc(0.9rem - 2px); /* 2px smaller than original 0.9rem */
+  text-align: center;
+  padding: 6px 0;
 }
 
 .note-reminder-remove {
