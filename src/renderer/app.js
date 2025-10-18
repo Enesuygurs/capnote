@@ -1806,7 +1806,15 @@ class CapnoteApp {
   }
 
   showPasswordModal(title, message = '') {
-    this.passwordModalTitle.textContent = title;
+    // Clear existing content
+    this.passwordModalTitle.innerHTML = '';
+    // Create icon element (Font Awesome) — not an emoji
+    const icon = document.createElement('i');
+    icon.className = 'fas fa-lock modal-title-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    // Append icon then the plain text title (avoid injecting HTML from title)
+    this.passwordModalTitle.appendChild(icon);
+    this.passwordModalTitle.appendChild(document.createTextNode(' ' + title));
     if (message) {
       this.passwordMessage.textContent = message;
       this.passwordMessage.style.display = 'block';
