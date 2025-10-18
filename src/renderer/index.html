@@ -438,11 +438,23 @@
                 <div class="reminder-container">
                   <input type="datetime-local" id="reminderDatetime" class="reminder-datetime-input" />
                   <select id="reminderRecurrence" class="select-small" aria-label="Tekrarlama">
-                    <option value="none">Tekrarlama yok</option>
+                    <option value="none">Yok</option>
                     <option value="daily">Günlük</option>
                     <option value="weekly">Haftalık</option>
                     <option value="monthly">Aylık</option>
                   </select>
+                  <div id="reminderWeekdays" class="reminder-weekdays hidden" aria-hidden="true">
+                    <label for="reminderWeekdays">Günler</label>
+                    <div class="weekday-list">
+                      <label><input type="checkbox" value="1" class="weekday-checkbox"> Pzt</label>
+                      <label><input type="checkbox" value="2" class="weekday-checkbox"> Sal</label>
+                      <label><input type="checkbox" value="3" class="weekday-checkbox"> Çar</label>
+                      <label><input type="checkbox" value="4" class="weekday-checkbox"> Per</label>
+                      <label><input type="checkbox" value="5" class="weekday-checkbox"> Cum</label>
+                      <label><input type="checkbox" value="6" class="weekday-checkbox"> Cmt</label>
+                      <label><input type="checkbox" value="0" class="weekday-checkbox"> Paz</label>
+                    </div>
+                  </div>
                   <button id="setReminderBtn" class="btn-small btn-primary">
                     <i class="fas fa-plus"></i> Ekle
                   </button>
