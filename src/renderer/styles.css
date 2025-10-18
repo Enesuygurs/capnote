@@ -231,17 +231,75 @@ body {
   border-bottom: 1px solid var(--border-color);
 }
 
-/* Inserted table styles for editor */
-.rich-editor .inserted-table {
+/* Inserted table styles for editor and viewer */
+.rich-editor table,
+.rich-editor .inserted-table,
+.formatted-content table,
+.viewer-content table {
   width: 100%;
   border-collapse: collapse;
-  margin: 8px 0;
+  margin: 16px 0;
+  background: var(--bg-primary);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
+
+.rich-editor table th,
 .rich-editor .inserted-table th,
-.rich-editor .inserted-table td {
-  border: 1px solid rgb(59 59 59);
-  padding: 8px;
+.formatted-content table th,
+.viewer-content table th {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.rich-editor table td,
+.rich-editor .inserted-table td,
+.formatted-content table td,
+.viewer-content table td {
+  border: 1px solid whitesmoke;
+  padding: 10px 16px;
   vertical-align: top;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.rich-editor table tr:hover td,
+.rich-editor .inserted-table tr:hover td,
+.formatted-content table tr:hover td,
+.viewer-content table tr:hover td {
+  background: var(--bg-hover);
+}
+
+/* Dark theme table styles */
+[data-theme='dark'] .rich-editor table,
+[data-theme='dark'] .rich-editor .inserted-table,
+[data-theme='dark'] .formatted-content table,
+[data-theme='dark'] .viewer-content table {
+  background: var(--bg-secondary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .rich-editor table th,
+[data-theme='dark'] .rich-editor .inserted-table th,
+[data-theme='dark'] .formatted-content table th,
+[data-theme='dark'] .viewer-content table th {
+  background: var(--bg-dark);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] .rich-editor table td,
+[data-theme='dark'] .rich-editor .inserted-table td,
+[data-theme='dark'] .formatted-content table td,
+[data-theme='dark'] .viewer-content table td {
+  border-color: #232323;
+  color: var(--text-primary);
 }
 
 /* Table modal form spacing */
