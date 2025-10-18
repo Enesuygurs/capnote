@@ -368,8 +368,8 @@ class CapnoteApp {
     localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
     this.showNotification(enabled ? 'Sistem bildirimleri açıldı' : 'Sistem bildirimleri kapatıldı', 'success');
   });
-  // Test notification button
-  this.testNativeNotifBtn?.addEventListener('click', () => this.testNativeNotification());
+  // Test notification button (with cooldown)
+  this.testNativeNotifBtn?.addEventListener('click', () => this.handleTestNotificationClick());
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
     this.saveNoteBtn.addEventListener('click', () => this.saveNote());
     this.cancelNoteBtn.addEventListener('click', () => this.cancelEdit());
@@ -959,6 +959,24 @@ class CapnoteApp {
     } catch (err) {
       console.warn('Native notification test error:', err);
     }
+  }
+
+  handleTestNotificationClick() {
+    if (!this.testNativeNotifBtn) return;
+    // Prevent rapid repeated clicks: disable for 3 seconds
+    if (this._testNotifCooldown) return;
+    this._testNotifCooldown = true;
+    this.testNativeNotifBtn.disabled = true;
+    // visually indicate disabled state (button styles handle disabled)
+    try {
+      this.testNativeNotification();
+    } catch (err) {
+      console.warn('Error firing test notification', err);
+    }
+    setTimeout(() => {
+      this.testNativeNotifBtn.disabled = false;
+      this._testNotifCooldown = false;
+    }, 3000);
   }
 
   insertCodeBlock() {
