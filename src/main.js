@@ -3,7 +3,7 @@
  * Uygulamanın ana penceresini ve IPC iletişimini yönetir
  */
 
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const Store = require('electron-store');
@@ -165,5 +165,28 @@ ipcMain.handle('save-dropped-file', (event, srcPath) => {
   } catch (err) {
     console.error('Failed to save dropped file:', err);
     return null;
+  }
+});
+
+// Native notification helper (works on Windows / macOS / Linux where supported)
+ipcMain.handle('show-native-notification', (event, opts) => {
+  try {
+    // opts: { title, body, silent, icon }
+    const { title = '', body = '', silent = false, icon } = opts || {};
+    // Some platforms require Notification.isSupported check
+    if (Notification.isSupported && !Notification.isSupported()) {
+      return false;
+    }
+    const notif = new Notification({
+      title,
+      body,
+      silent,
+      icon: icon || undefined,
+    });
+    notif.show();
+    return true;
+  } catch (err) {
+    console.error('Failed to show native notification', err);
+    return false;
   }
 });

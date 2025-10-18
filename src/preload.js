@@ -25,4 +25,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   removeAllListeners: () => ipcRenderer.removeAllListeners(),
   // Save a file dropped from the OS into the app uploads folder. Pass the source path (from DataTransfer.files)
   saveDroppedFile: (srcPath) => ipcRenderer.invoke('save-dropped-file', srcPath),
+  // Native OS notifications via main process
+  showNativeNotification: (opts) => ipcRenderer.invoke('show-native-notification', opts),
 });
