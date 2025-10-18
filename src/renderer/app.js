@@ -235,6 +235,7 @@ class CapnoteApp {
     // Settings elements
     this.settingsBtn = document.getElementById('settingsBtn');
     this.helpSupport = document.getElementById('helpSupport');
+  this.toggleNativeNotifications = document.getElementById('toggleNativeNotifications');
   this.clearAllNotesBtn = document.getElementById('clearAllNotesBtn');
   this.clearAllFoldersBtn = document.getElementById('clearAllFoldersBtn');
   this.clearAllContentBtn = document.getElementById('clearAllContentBtn');
@@ -358,6 +359,13 @@ class CapnoteApp {
     localStorage.setItem('syncFolderAccent', enabled ? '1' : '0');
     this.applyFolderAccentSync(enabled);
     this.updateFoldersList();
+  });
+
+  // Native/system notifications toggle
+  this.toggleNativeNotifications?.addEventListener('change', (e) => {
+    const enabled = e.currentTarget.checked;
+    localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
+    this.showNotification(enabled ? 'Sistem bildirimleri açıldı' : 'Sistem bildirimleri kapatıldı', 'success');
   });
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
     this.saveNoteBtn.addEventListener('click', () => this.saveNote());
@@ -2258,6 +2266,22 @@ class CapnoteApp {
             reminder.noteTitle,
             `Hatırlatma zamanı geldi: ${new Date(reminder.datetime).toLocaleString('tr-TR')}`
           );
+
+          // Also trigger a native OS notification via the preload bridge if the user enabled it
+          try {
+            const nativePref = this.toggleNativeNotifications ? this.toggleNativeNotifications.checked : (localStorage.getItem('settings.nativeNotifications') === null ? true : (localStorage.getItem('settings.nativeNotifications') === '1' || localStorage.getItem('settings.nativeNotifications') === 'true'));
+            if (nativePref && window && window.electronAPI && typeof window.electronAPI.showNativeNotification === 'function') {
+              window.electronAPI.showNativeNotification({
+                title: `⏰ Hatırlatma: ${reminder.noteTitle}`,
+                body: `Hatırlatma zamanı geldi: ${new Date(reminder.datetime).toLocaleString('tr-TR')}`,
+                silent: false
+              }).catch(err => console.warn('showNativeNotification rejected:', err));
+            }
+          } catch (err) {
+            // Keep app functional if native notification call fails
+            console.warn('Native notification error:', err);
+          }
+
           reminder.dismissed = true;
           hasNotification = true;
         }
@@ -4944,6 +4968,11 @@ class CapnoteApp {
   // Calling with false will attempt to restore from the stored backup if available.
   this.applyFolderAccentSync(syncFolders);
 
+    // Load native/system notifications preference (default true)
+    const nativeNotif = localStorage.getItem('settings.nativeNotifications');
+    const nativeEnabled = nativeNotif === null ? true : (nativeNotif === '1' || nativeNotif === 'true');
+    if (this.toggleNativeNotifications) this.toggleNativeNotifications.checked = nativeEnabled;
+
     // Load max pinned notes preference (default 3)
     const maxPinned = parseInt(localStorage.getItem('maxPinnedNotes'), 10) || 3;
     if (this.maxPinnedSelect) this.maxPinnedSelect.value = String(maxPinned);
@@ -4963,6 +4992,8 @@ class CapnoteApp {
     localStorage.setItem('darkMode', this.darkModeToggle.checked);
     // Save sync-folder-accent preference
     if (this.syncFolderAccentToggle) localStorage.setItem('syncFolderAccent', this.syncFolderAccentToggle.checked ? '1' : '0');
+      // Save native/system notifications preference
+      if (this.toggleNativeNotifications) localStorage.setItem('settings.nativeNotifications', this.toggleNativeNotifications.checked ? '1' : '0');
   }
 
   setAccentColor(hex, options = { persist: true }) {
