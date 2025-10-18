@@ -4593,7 +4593,6 @@ input:checked + .toggle-slider:before {
   gap: 14px;
   justify-content: flex-end;
   border-top: 1px solid var(--border-color);
-  margin-top: 8px;
 }
 
 #tableModal .btn {
