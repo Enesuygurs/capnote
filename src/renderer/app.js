@@ -261,6 +261,15 @@ class CapnoteApp {
     this.exportAllNotesBtn = document.getElementById('exportAllNotesBtn');
   this.importAllDataBtn = document.getElementById('importAllDataBtn');
   this.exportAllDataBtn = document.getElementById('exportAllDataBtn');
+  // Table modal elements (editor table insertion)
+  this.insertTableBtn = document.getElementById('insertTableBtn');
+  this.tableModal = document.getElementById('tableModal');
+  this.closeTableModal = document.getElementById('closeTableModal');
+  this.tableRowsInput = document.getElementById('tableRows');
+  this.tableColsInput = document.getElementById('tableCols');
+  this.tableHeaderCheckbox = document.getElementById('tableHeader');
+  this.insertTableConfirmBtn = document.getElementById('insertTableConfirmBtn');
+  this.cancelTableBtn = document.getElementById('cancelTableBtn');
     this.toggleSidebarBtn = document.getElementById('toggleSidebar');
     this.editorSidebar = document.querySelector('.editor-sidebar');
 
@@ -1540,6 +1549,11 @@ class CapnoteApp {
     // New combined import/export handlers
     if (this.exportAllDataBtn) this.exportAllDataBtn.addEventListener('click', () => this.exportAllData());
     if (this.importAllDataBtn) this.importAllDataBtn.addEventListener('click', () => this.importAllData());
+  // Table modal events
+  if (this.insertTableBtn) this.insertTableBtn.addEventListener('click', () => this.showModal(this.tableModal));
+  if (this.closeTableModal) this.closeTableModal.addEventListener('click', () => this.hideModal(this.tableModal));
+  if (this.cancelTableBtn) this.cancelTableBtn.addEventListener('click', () => this.hideModal(this.tableModal));
+  if (this.insertTableConfirmBtn) this.insertTableConfirmBtn.addEventListener('click', () => this.handleInsertTable());
     // Clear actions
     this.clearAllNotesBtn?.addEventListener('click', () => this.confirmClearAllNotes());
     this.clearAllFoldersBtn?.addEventListener('click', () => this.confirmClearAllFolders());
@@ -4736,6 +4750,63 @@ class CapnoteApp {
     selection.removeAllRanges();
     const range = this.savedSelection.cloneRange ? this.savedSelection.cloneRange() : this.savedSelection;
     selection.addRange(range);
+  }
+
+  // Insert HTML at the stored editor selection (or at current caret)
+  insertHtmlAtSavedSelection(html) {
+    try {
+      // Attempt to restore stored selection
+      this.restoreEditorSelection();
+      // Use execCommand as a fallback for inserting HTML
+      if (document.queryCommandSupported && document.queryCommandSupported('insertHTML')) {
+        document.execCommand('insertHTML', false, html);
+      } else {
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0) {
+          // Append at end
+          this.richEditor.insertAdjacentHTML('beforeend', html);
+          return;
+        }
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        const frag = document.createRange().createContextualFragment(html);
+        range.insertNode(frag);
+      }
+    } catch (e) {
+      // As a last resort, append to editor
+      try { this.richEditor.insertAdjacentHTML('beforeend', html); } catch (e2) {}
+    }
+  }
+
+  handleInsertTable() {
+    // Read values from modal
+    const rows = Math.max(1, parseInt(this.tableRowsInput?.value || '2', 10));
+    const cols = Math.max(1, parseInt(this.tableColsInput?.value || '2', 10));
+    const hasHeader = !!(this.tableHeaderCheckbox && this.tableHeaderCheckbox.checked);
+
+    // Build simple table HTML
+    let html = '<table class="inserted-table" border="1" style="border-collapse: collapse; width: 100%;">';
+    if (hasHeader) {
+      html += '<thead><tr>';
+      for (let c = 0; c < cols; c++) html += `<th style="padding:6px;text-align:left">Başlık ${c + 1}</th>`;
+      html += '</tr></thead>';
+    }
+    html += '<tbody>';
+    for (let r = 0; r < rows; r++) {
+      html += '<tr>';
+      for (let c = 0; c < cols; c++) html += `<td style="padding:6px">&nbsp;</td>`;
+      html += '</tr>';
+    }
+    html += '</tbody></table><p></p>';
+
+    // Insert into editor at caret/selection
+    this.insertHtmlAtSavedSelection(html);
+
+    // Update word/char counts and mark note dirty
+    try { this.captureEditorSelection(); } catch (e) {}
+    try { this.updateWordCount(); } catch (e) {}
+    // Close modal
+    this.hideModal(this.tableModal);
   }
 
   clearSavedSelection() {
