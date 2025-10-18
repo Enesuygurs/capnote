@@ -5642,49 +5642,49 @@ class CapnoteApp {
   // Show a small modal dialog letting user pick which types to import and merge vs replace
   showImportOptionsDialog(available) {
     return new Promise((resolve) => {
-      // Build modal container
+      // create modal element using app modal classes so styling matches
       const modal = document.createElement('div');
-      modal.className = 'temp-import-modal modal show';
-      modal.style.position = 'fixed';
-      modal.style.left = '0';
-      modal.style.top = '0';
-      modal.style.width = '100%';
-      modal.style.height = '100%';
+      modal.className = 'modal';
       modal.style.display = 'flex';
-      modal.style.alignItems = 'center';
-      modal.style.justifyContent = 'center';
-      modal.style.zIndex = '9999';
+      const content = document.createElement('div');
+      content.className = 'modal-content import-modal';
 
-      const card = document.createElement('div');
-      card.className = 'import-options-card';
-      card.style.background = 'var(--card-bg, #fff)';
-      card.style.color = 'var(--text-color, #111)';
-      card.style.padding = '18px';
-      card.style.borderRadius = '8px';
-      card.style.boxShadow = '0 8px 24px rgba(0,0,0,0.2)';
-      card.style.minWidth = '320px';
+      // header
+      const header = document.createElement('div');
+      header.className = 'modal-header';
+  const titleWrap = document.createElement('div');
+  titleWrap.className = 'modal-title';
+  const h3 = document.createElement('h3');
+  h3.textContent = 'İçe Aktarma Seçenekleri';
+  titleWrap.appendChild(h3);
+      header.appendChild(titleWrap);
 
-      const title = document.createElement('h3');
-      title.textContent = 'İçe Aktarma Seçenekleri';
-      card.appendChild(title);
+      const closeBtn = document.createElement('button');
+      closeBtn.className = 'modal-close';
+      closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+      header.appendChild(closeBtn);
+      content.appendChild(header);
+
+      // body
+      const body = document.createElement('div');
+      body.className = 'modal-body';
 
       const form = document.createElement('div');
-      form.style.margin = '8px 0 12px 0';
-
+      form.className = 'form-block';
       const types = ['notes','folders','reminders','notifications','settings'];
       const inputs = {};
       types.forEach((t) => {
         if (!available[t]) return;
         const row = document.createElement('div');
-        row.style.margin = '6px 0';
+        row.className = 'form-group';
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.checked = true;
         cb.id = 'imp_opt_' + t;
+        cb.className = 'form-checkbox';
         inputs[t] = cb;
         const lbl = document.createElement('label');
         lbl.setAttribute('for', cb.id);
-        lbl.style.marginLeft = '8px';
         lbl.textContent = ({notes:'Notlar', folders:'Klasörler', reminders:'Hatırlatmalar', notifications:'Bildirimler', settings:'Ayarlar'})[t] || t;
         row.appendChild(cb);
         row.appendChild(lbl);
@@ -5692,41 +5692,41 @@ class CapnoteApp {
       });
 
       const mergeRow = document.createElement('div');
-      mergeRow.style.margin = '8px 0';
-      const mergeLabel = document.createElement('label');
-      mergeLabel.textContent = 'Mevcut verilerle birleştir (işaretli kutuları birleştir), değilse seçilen türler için değiştir (replace)';
-      mergeRow.appendChild(mergeLabel);
+      mergeRow.className = 'form-group';
       const mergeToggle = document.createElement('input');
       mergeToggle.type = 'checkbox';
       mergeToggle.checked = true;
-      mergeToggle.style.marginLeft = '8px';
+      mergeToggle.id = 'imp_opt_merge';
+      mergeToggle.className = 'form-checkbox';
+      const mergeLabel = document.createElement('label');
+      mergeLabel.setAttribute('for', mergeToggle.id);
+      mergeLabel.textContent = 'Mevcut verilerle birleştir';
       mergeRow.appendChild(mergeToggle);
+      mergeRow.appendChild(mergeLabel);
 
-      card.appendChild(form);
-      card.appendChild(mergeRow);
+      body.appendChild(form);
+      body.appendChild(mergeRow);
+      content.appendChild(body);
 
-      const actions = document.createElement('div');
-      actions.style.display = 'flex';
-      actions.style.justifyContent = 'flex-end';
-      actions.style.marginTop = '12px';
-
+      // footer
+      const footer = document.createElement('div');
+      footer.className = 'modal-footer';
       const cancelBtn = document.createElement('button');
-      cancelBtn.className = 'btn btn-outline';
+      cancelBtn.className = 'btn btn-secondary';
       cancelBtn.textContent = 'İptal';
-      cancelBtn.style.marginRight = '8px';
       const okBtn = document.createElement('button');
       okBtn.className = 'btn btn-primary';
       okBtn.textContent = 'İçe Aktar';
+      footer.appendChild(cancelBtn);
+      footer.appendChild(okBtn);
+      content.appendChild(footer);
 
-      actions.appendChild(cancelBtn);
-      actions.appendChild(okBtn);
-      card.appendChild(actions);
-
-      modal.appendChild(card);
+      modal.appendChild(content);
       document.body.appendChild(modal);
 
       const cleanup = () => { try { document.body.removeChild(modal); } catch (e) {} };
 
+      closeBtn.addEventListener('click', () => { cleanup(); resolve(null); });
       cancelBtn.addEventListener('click', () => { cleanup(); resolve(null); });
       okBtn.addEventListener('click', () => {
         const result = {
