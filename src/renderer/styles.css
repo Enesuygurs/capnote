@@ -1446,7 +1446,7 @@ div#newNoteNav {
 }
 
 .note-action-btn.pinned {
-  color: var(--warning-color);
+  color: var(--accent-color);
 }
 
 .note-action-btn.locked {
@@ -2947,7 +2947,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 .note-action-btn.pinned {
-  color: var(--warning-color);
+  color: var(--accent-color);
   background: var(--accent-color-rgba-10);
 }
 
