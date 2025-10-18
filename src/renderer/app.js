@@ -2197,7 +2197,7 @@ class CapnoteApp {
     );
 
     if (noteReminders.length === 0) {
-      this.noteRemindersList.innerHTML = '<div style="color: var(--text-secondary); font-size: 0.9rem;">Bu not için hatırlatma yok</div>';
+      this.noteRemindersList.innerHTML = '<div class="note-no-reminder">Bu not için hatırlatma yok</div>';
       return;
     }
 
