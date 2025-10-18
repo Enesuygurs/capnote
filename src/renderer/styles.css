@@ -262,6 +262,7 @@ body {
 #tableModal .form-row {
   display: flex;
   gap: 12px;
+  margin-bottom: 16px;
 }
 #tableModal .form-row .form-group {
   flex: 1 1 0;
@@ -271,6 +272,24 @@ body {
   margin-bottom: 6px;
   font-size: 13px;
   color: var(--text-secondary);
+}
+
+#tableModal .form-group label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+#tableModal input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+  border-radius: 4px;
 }
 
 .user-profile {
