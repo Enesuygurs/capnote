@@ -190,6 +190,7 @@ class CapnoteApp {
     this.remindersList = document.getElementById('remindersList');
     this.activeRemindersCount = document.getElementById('activeRemindersCount');
     this.reminderDatetime = document.getElementById('reminderDatetime');
+  this.reminderRecurrence = document.getElementById('reminderRecurrence');
     this.setReminderBtn = document.getElementById('setReminderBtn');
     this.noteRemindersList = document.getElementById('noteRemindersList');
 
@@ -1917,12 +1918,52 @@ class CapnoteApp {
     try {
       const savedReminders = localStorage.getItem('capnote-reminders');
       this.reminders = savedReminders ? JSON.parse(savedReminders) : [];
+      // Normalize reminders: ensure recurrence field exists
+      this.reminders = this.reminders.map(r => ({
+        ...r,
+        recurrence: r.recurrence || 'none',
+        dismissed: r.dismissed || false
+      }));
       // Filter out dismissed reminders and expired ones
       this.reminders = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date());
       await this.saveReminders(); // Clean up storage
     } catch (error) {
       console.error('Hatırlatmalar yüklenirken hata:', error);
       this.reminders = [];
+    }
+  }
+
+  _computeNextRecurrence(datetimeIso, recurrence) {
+    try {
+      const dt = new Date(datetimeIso);
+      if (isNaN(dt)) return null;
+      let next = new Date(dt.getTime());
+      switch (recurrence) {
+        case 'daily':
+          next.setDate(next.getDate() + 1);
+          break;
+        case 'weekly':
+          next.setDate(next.getDate() + 7);
+          break;
+        case 'monthly':
+          next.setMonth(next.getMonth() + 1);
+          break;
+        default:
+          return null;
+      }
+      return next;
+    } catch (err) {
+      console.warn('Failed to compute next recurrence', err);
+      return null;
+    }
+  }
+
+  _recurrenceLabel(code) {
+    switch (code) {
+      case 'daily': return 'Günlük';
+      case 'weekly': return 'Haftalık';
+      case 'monthly': return 'Aylık';
+      default: return '';
     }
   }
 
@@ -2159,6 +2200,7 @@ class CapnoteApp {
               hour: '2-digit', 
               minute: '2-digit' 
             })}
+            ${r.recurrence && r.recurrence !== 'none' ? `<span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}</span>` : ''}
           </div>
           <div class="reminder-actions">
             <button class="reminder-action-btn view-note-btn" data-note-id="${r.noteId}">
@@ -2215,6 +2257,7 @@ class CapnoteApp {
       noteId: this.currentNote.id,
       noteTitle: this.currentNote.title || 'Başlıksız Not',
       datetime: datetime,
+      recurrence: (this.reminderRecurrence && this.reminderRecurrence.value) ? this.reminderRecurrence.value : 'none',
       dismissed: false
     };
 
@@ -2257,13 +2300,14 @@ class CapnoteApp {
       .map(r => `
         <div class="note-reminder-item">
           <div class="note-reminder-time">
-            <i class="fas fa-bell"></i>
-            ${new Date(r.datetime).toLocaleString('tr-TR', { 
+              <i class="fas fa-bell"></i>
+              ${new Date(r.datetime).toLocaleString('tr-TR', { 
               month: 'short', 
               day: 'numeric', 
               hour: '2-digit', 
               minute: '2-digit' 
             })}
+              ${r.recurrence && r.recurrence !== 'none' ? ` <span class="reminder-recurrence">(${r.recurrence})</span>` : ''}
           </div>
           <button class="note-reminder-remove" data-reminder-id="${r.id}" title="Sil">
             <i class="fas fa-times"></i>
@@ -2325,7 +2369,19 @@ class CapnoteApp {
             console.warn('Native notification error:', err);
           }
 
-          reminder.dismissed = true;
+          // If reminder has recurrence, compute next occurrence instead of dismissing
+          if (reminder.recurrence && reminder.recurrence !== 'none') {
+            const next = this._computeNextRecurrence(reminder.datetime, reminder.recurrence);
+            if (next) {
+              reminder.datetime = next.toISOString();
+              // Keep it active (not dismissed)
+            } else {
+              reminder.dismissed = true;
+            }
+          } else {
+            reminder.dismissed = true;
+          }
+
           hasNotification = true;
         }
       });
