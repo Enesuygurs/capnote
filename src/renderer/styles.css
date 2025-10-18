@@ -5105,10 +5105,18 @@ body.dark .default-folder.insert-after::after {
 .reminder-recurrence {
   margin-left: 8px;
   font-size: 12px;
-  color: var(--text-secondary);
-  background: var(--accent-color-rgba-20);
+  color: var(--text-primary);
+  background: var(--bg-hover);
   padding: 0 8px;
-  border-radius: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  color: var(--text-primary);
+}
+
+[data-theme='dark'] .reminder-recurrence {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text-light);
 }
 
 .reminder-actions {
