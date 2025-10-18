@@ -2165,7 +2165,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 .modal-header {
-  padding: 24px 24px 16px;
+  padding: 24px 24px 0;
   /* border-bottom removed to match design request */
   border-bottom: none;
   display: flex;
@@ -4022,7 +4022,7 @@ input:checked + .toggle-slider:before {
 }
 
 #passwordModal .modal-header {
-  padding: 24px 24px 16px;
+  padding: 24px 24px 0;
   border-bottom: none;
   display: flex;
   align-items: center;
