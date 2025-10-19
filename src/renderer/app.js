@@ -5677,10 +5677,19 @@ class CapnoteApp {
       if (!file) return;
       try {
         const text = await file.text();
-        const data = JSON.parse(text || '{}');
+        let data = JSON.parse(text || '{}');
 
         // Validate structure
         if (!data || (typeof data !== 'object')) throw new Error('Geçersiz dosya formatı');
+
+        // Normalize common single-note or array exports into { notes: [...] }
+        // Support: a single note object (exported via exportNote json) or an array of notes
+        if (Array.isArray(data)) {
+          data = { notes: data };
+        } else if (!data.notes && (data.content !== undefined || data.title !== undefined || data.id !== undefined)) {
+          // Looks like a single note object
+          data = { notes: [data] };
+        }
 
         // Count items
         const notesCount = Array.isArray(data.notes) ? data.notes.length : 0;
