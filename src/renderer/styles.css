@@ -51,14 +51,6 @@
   --font-mono: 'Roboto Mono', 'Courier New', monospace;
   --bg-hover: #eef2f6; 
 }
-/* Modal title icon (Font Awesome) — use app accent color and proper spacing */
-.modal-title-icon {
-  color: var(--accent-color);
-  margin-right: 10px;
-  font-size: 1.05em;
-  vertical-align: middle;
-}
-
 body {
   font-family: var(--font-sans);
   /* replaced gradient with a solid neutral background to avoid gradients */
@@ -2403,7 +2395,7 @@ input[type="color"].color-picker::-moz-color-swatch {
   margin: 0 auto 24px;
   font-size: 24px;
   color: white;
-  box-shadow: 0px 0px 18px 2px #f59e0b;
+  box-shadow: 0 8px 25px var(--accent-color-rgba-30);
 }
 
 .confirm-text h3 {
@@ -3614,7 +3606,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .stat-item {
   background: var(--stat-item-bg);
-  border: 1px solid rgb(35 35 35 / 67%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 [data-theme='dark'] .welcome-screen {
@@ -3738,6 +3730,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .export-options {
   background: var(--export-options-bg);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 [data-theme='dark'] .export-btn {
@@ -4171,10 +4164,19 @@ input:checked + .toggle-slider:before {
   gap: 8px;
 }
 
-/* Remove emoji pseudo-elements — use Font Awesome icons injected into the DOM instead */
-#passwordModal .modal-header h3::before { content: none; }
-#exportModal .modal-header h3::before { content: none; }
-#confirmModal .modal-header h3::before { content: none; }
+#passwordModal .modal-header h3::before {
+  content: '🔒';
+  font-size: 20px;
+}
+
+/* Per-modal emoji overrides */
+#exportModal .modal-header h3::before {
+  content: '📤';
+}
+
+#confirmModal .modal-header h3::before {
+  content: '❗';
+}
 
 #settingsModal .modal-header h3::before {
   /* Settings modal uses an explicit <i> icon in the HTML; disable the pseudo-element to avoid duplicate icons */
@@ -4186,8 +4188,7 @@ input:checked + .toggle-slider:before {
 }
 
 #noteHistoryModal .modal-header h3::before {
-  /* removed clock emoji — use the injected Font Awesome icon in the DOM */
-  content: none;
+  content: '🕘';
 }
 
 /* Folder modal already uses an <i> icon in the title; disable duplicate pseudo-element */
@@ -4693,7 +4694,7 @@ input:checked + .toggle-slider:before {
 
 /* Note history modal styles */
 #noteHistoryModal .modal-content.history-modal {
-  max-width: 500px;
+  max-width: 520px;
   width: 95%;
   padding: 0;
 }
@@ -4845,6 +4846,10 @@ input:checked + .toggle-slider:before {
   background: var(--bg-tertiary);
   color: var(--text-primary);
   border-color: rgba(0,0,0,0.06);
+}
+
+#noteHistoryModal .modal-header {
+  padding: 16px 20px;
 }
 
 /* Align import modal footer buttons to the right */
