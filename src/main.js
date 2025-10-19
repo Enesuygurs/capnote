@@ -184,6 +184,23 @@ ipcMain.handle('show-native-notification', (event, opts) => {
       icon: icon || undefined,
     });
     notif.show();
+    // Forward click events to renderer so the app can react (mark as read / open notifications)
+    try {
+      notif.on('click', () => {
+        if (mainWindow && mainWindow.webContents) {
+          try {
+            // Send the notificationId back if provided in opts
+            mainWindow.show();
+            mainWindow.focus();
+            mainWindow.webContents.send('native-notif-click', opts && opts.notificationId ? opts.notificationId : null);
+          } catch (e) {
+            console.warn('Failed to send native-notif-click to renderer', e);
+          }
+        }
+      });
+    } catch (e) {
+      // Some platforms may not support click events; ignore
+    }
     return true;
   } catch (err) {
     console.error('Failed to show native notification', err);

@@ -27,4 +27,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveDroppedFile: (srcPath) => ipcRenderer.invoke('save-dropped-file', srcPath),
   // Native OS notifications via main process
   showNativeNotification: (opts) => ipcRenderer.invoke('show-native-notification', opts),
+  // Listen for native notification clicks forwarded from main
+  onNativeNotificationClick: (callback) => ipcRenderer.on('native-notif-click', (event, notificationId) => callback(notificationId)),
 });

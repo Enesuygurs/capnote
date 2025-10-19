@@ -965,6 +965,26 @@ class CapnoteApp {
     // Auto-save
     this.setupAutoSave();
 
+    // Listen for native notification clicks forwarded from the main process
+    try {
+      if (window.electronAPI && typeof window.electronAPI.onNativeNotificationClick === 'function') {
+        window.electronAPI.onNativeNotificationClick((notificationId) => {
+          try {
+            const nid = parseInt(notificationId);
+            if (!Number.isNaN(nid)) {
+              this.markNotificationAsRead(nid);
+            }
+            this.showNotificationsScreen();
+          } catch (e) {
+            console.warn('Native notification click handler error', e);
+            this.showNotificationsScreen();
+          }
+        });
+      }
+    } catch (e) {
+      // ignore if bridge not available
+    }
+
     // Checkbox listeners
     this.setupCheckboxListeners();
   }
