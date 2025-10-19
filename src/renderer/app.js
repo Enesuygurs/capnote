@@ -973,8 +973,8 @@ class CapnoteApp {
     // Simple in-app notification + store
     const title = '🔔 Test Bildirimi';
     const body = 'Bu bir test bildirimidir.';
-    this.showNotification(title, 'info');
-    this.addNotification(null, title, body);
+  const nid = this.addNotification(null, title, body);
+  this.showNotification(title, 'info', { notificationId: nid });
 
     // Fire native notification if preference enabled
     try {
@@ -2543,13 +2543,13 @@ class CapnoteApp {
 
       this.reminders.forEach(reminder => {
         if (!reminder.dismissed && new Date(reminder.datetime) <= now) {
-          this.showNotification(`⏰ Hatırlatma: ${reminder.noteTitle}`, 'info');
-          // Add to notifications list
-          this.addNotification(
+          // Add to notifications list and show a toast that references the notification id
+          const nid = this.addNotification(
             reminder.noteId,
             reminder.noteTitle,
             `Hatırlatma zamanı geldi: ${new Date(reminder.datetime).toLocaleString('tr-TR')}`
           );
+          this.showNotification(`⏰ Hatırlatma: ${reminder.noteTitle}`, 'info', { notificationId: nid });
 
           // Also trigger a native OS notification via the preload bridge if the user enabled it
           try {
@@ -2619,6 +2619,7 @@ class CapnoteApp {
     this.saveNotifications();
     this.updateNotificationsView();
     this.updateActiveNotificationsCount();
+    return notification.id;
   }
 
   updateNotificationsView() {
@@ -4746,7 +4747,7 @@ class CapnoteApp {
   }
 
   // Notification methods
-  showNotification(message, type = 'info') {
+  showNotification(message, type = 'info', meta = {}) {
     this.notificationText.textContent = message;
     this.notification.className = `notification ${type}`;
 
@@ -4768,6 +4769,29 @@ class CapnoteApp {
     this.notificationIcon.className = iconClass;
 
     this.notification.classList.remove('hidden');
+
+    // If meta.notificationId is provided, attach click handler to mark as read and open notifications
+    if (meta && meta.notificationId) {
+      this.notification.dataset.notificationId = String(meta.notificationId);
+      this.notification.style.cursor = 'pointer';
+      // Remove previous handler if any
+      if (this._toastClickHandler) this.notification.removeEventListener('click', this._toastClickHandler);
+      this._toastClickHandler = (e) => {
+        const nid = parseInt(this.notification.dataset.notificationId);
+        if (!Number.isNaN(nid)) {
+          this.markNotificationAsRead(nid);
+        }
+        this.showNotificationsScreen();
+        this.hideNotification();
+      };
+      this.notification.addEventListener('click', this._toastClickHandler);
+    } else {
+      this.notification.style.cursor = '';
+      if (this._toastClickHandler) {
+        this.notification.removeEventListener('click', this._toastClickHandler);
+        this._toastClickHandler = null;
+      }
+    }
 
     // Auto hide after 3 seconds
     setTimeout(() => {
