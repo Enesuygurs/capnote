@@ -4552,9 +4552,80 @@ class CapnoteApp {
     URL.revokeObjectURL(url);
   }
 
-  exportToPDF() {
-    // PDF export would require a library like jsPDF
-    this.showNotification('PDF dışa aktarma özelliği henüz hazır değil', 'warning');
+  async exportToPDF() {
+    // Use html2pdf (included via CDN) to export the viewer content as a PDF.
+    try {
+      const note = this.currentNote;
+      if (!note) return this.showNotification('Dışa aktarılacak not seçili değil', 'warning');
+
+      // Create container and basic structure
+      const container = document.createElement('div');
+      container.className = 'pdf-export-container';
+      container.style.background = 'white';
+      container.style.padding = '20px';
+      container.style.boxSizing = 'border-box';
+      container.style.maxWidth = '800px';
+      container.style.margin = '0 auto';
+
+      // Try to inline the app stylesheet (so colors, variables and layout match the app)
+      try {
+        const resp = await fetch('styles.css');
+        if (resp.ok) {
+          const cssText = await resp.text();
+          const style = document.createElement('style');
+          // Add a small print tweak to hide sidebars and controls
+          style.textContent = cssText + '\n/* PDF export tweaks */\n.editor-sidebar, .titlebar, .sidebar, .notes-list-container, .formatting-toolbar { display: none !important; }\n.pdf-export-container { max-width: 800px; margin: 0 auto; }\n.formatted-content img { max-width: 100% !important; height: auto !important; }\n/* Darker tones for headings and body in PDF */\n.pdf-export-container, .pdf-export-container * { color: #111 !important; }\n.pdf-export-container h1, .pdf-export-container h2, .pdf-export-container h3 { color: #0b1220 !important; font-weight: 700 !important; }\n.pdf-export-container p, .pdf-export-container li, .pdf-export-container span { color: #111 !important; font-weight: 400 !important; }\n';
+          container.appendChild(style);
+        }
+      } catch (e) {
+        // ignore fetch errors; we'll still export with fallback styles
+        console.warn('Could not inline styles.css for PDF export', e);
+      }
+
+      // Title / meta
+      const titleEl = document.createElement('h1');
+      titleEl.textContent = note.title || 'Untitled';
+      titleEl.style.margin = '0 0 8px 0';
+      container.appendChild(titleEl);
+
+      const meta = document.createElement('div');
+      meta.style.color = '#666';
+      meta.style.marginBottom = '12px';
+      meta.innerHTML = `Oluşturulma: ${new Date(note.createdAt).toLocaleString('tr-TR')} &nbsp; Güncelleme: ${new Date(note.updatedAt).toLocaleString('tr-TR')}`;
+      container.appendChild(meta);
+
+      // Content: if markdown, render with marked; otherwise clone formatted HTML
+      const contentWrap = document.createElement('div');
+      contentWrap.className = 'pdf-note-content';
+      if (note.isMarkdown && window.marked && marked.parse) {
+        contentWrap.innerHTML = marked.parse(note.content || '');
+      } else {
+        // Prefer the rendered viewer content so any formatting is preserved
+        const viewerHtml = (this.viewerText && this.viewerText.innerHTML) ? this.viewerText.innerHTML : (note.content || '');
+        contentWrap.innerHTML = viewerHtml;
+      }
+      container.appendChild(contentWrap);
+
+      const opt = {
+        margin:       12,
+        filename:     `${(note.title || 'note').replace(/[^a-z0-9\-\_ ]/gi, '_')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, logging: false },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      this.showNotification('PDF oluşturuluyor...', 'info');
+      // Generate PDF from the container
+      html2pdf().from(container).set(opt).save().then(() => {
+        this.showNotification('PDF oluşturuldu', 'success');
+      }).catch((err) => {
+        console.error('PDF export error', err);
+        this.showNotification('PDF oluşturulamadı', 'error');
+      });
+    } catch (err) {
+      console.error('exportToPDF error', err);
+      this.showNotification('PDF dışa aktarılırken hata oluştu', 'error');
+    }
   }
 
   // Modal methods
