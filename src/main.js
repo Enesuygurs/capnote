@@ -3,7 +3,7 @@
  * Uygulamanın ana penceresini ve IPC iletişimini yönetir
  */
 
-const { app, BrowserWindow, ipcMain, Notification, Tray, Menu, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const Store = require('electron-store');
@@ -27,7 +27,6 @@ try {
 const store = new Store();
 
 let mainWindow;
-let tray = null;
 
 /**
  * Ana pencereyi oluşturur ve yapılandırır
@@ -79,12 +78,6 @@ function createWindow() {
 // Uygulama hazır olduğunda pencereyi oluştur
 app.whenReady().then(() => {
   createWindow();
-  // Create system tray (if supported)
-  try {
-    createTray();
-  } catch (e) {
-    console.warn('Tray creation failed or not supported on this platform', e);
-  }
   // Menü kaldırıldı
 
   app.on('activate', () => {
@@ -214,125 +207,3 @@ ipcMain.handle('show-native-notification', (event, opts) => {
     return false;
   }
 });
-
-// Tray creation and helpers
-function createTray() {
-  try {
-    // icon selection similar to createWindow
-    const iconsDir = path.join(__dirname, '..', 'assets', 'icons');
-    let iconPath = path.join(iconsDir, 'capnote-512.png');
-    if (process.platform === 'win32') {
-      const icoPath = path.join(iconsDir, 'capnote.ico');
-      if (fs.existsSync(icoPath)) {
-        iconPath = icoPath;
-      }
-    }
-
-    let trayIcon = null;
-    try {
-      trayIcon = nativeImage.createFromPath(iconPath);
-      // scale down for tray if needed
-      if (!trayIcon.isEmpty && process.platform === 'darwin') {
-        trayIcon = trayIcon.resize({ width: 18, height: 18 });
-      }
-    } catch (e) {
-      console.warn('Failed to create nativeImage for tray', e);
-    }
-
-    tray = new Tray(trayIcon || iconPath);
-    const contextMenu = Menu.buildFromTemplate([
-      { label: 'Göster', click: () => { if (mainWindow) { mainWindow.show(); mainWindow.focus(); } } },
-      { type: 'separator' },
-      { label: 'Başlangıçta aç', type: 'checkbox', checked: isAutostartEnabledSync(), click: (menuItem) => { setAutostart(menuItem.checked); } },
-      { label: 'Çıkış', click: () => { app.quit(); } },
-    ]);
-    tray.setToolTip('Capnote');
-    tray.setContextMenu(contextMenu);
-
-    tray.on('click', () => {
-      if (mainWindow) {
-        mainWindow.show();
-        mainWindow.focus();
-      }
-    });
-  } catch (e) {
-    console.warn('createTray error', e);
-  }
-}
-
-// Cross-platform autostart helpers
-function isAutostartEnabledSync() {
-  try {
-    // Windows/macOS: use app.getLoginItemSettings
-    const settings = app.getLoginItemSettings ? app.getLoginItemSettings() : null;
-    if (settings && typeof settings.openAtLogin !== 'undefined') {
-      return !!settings.openAtLogin;
-    }
-    // Linux fallback: check for .desktop file
-    const desktopPath = path.join(app.getPath('home'), '.config', 'autostart', 'capnote.desktop');
-    return fs.existsSync(desktopPath);
-  } catch (e) {
-    return false;
-  }
-}
-
-async function setAutostart(enabled) {
-  try {
-    if (process.platform === 'linux') {
-      const autostartDir = path.join(app.getPath('home'), '.config', 'autostart');
-      if (!fs.existsSync(autostartDir)) fs.mkdirSync(autostartDir, { recursive: true });
-      const desktopFile = path.join(autostartDir, 'capnote.desktop');
-      if (enabled) {
-        const execPath = app.getPath('exe');
-        const content = `[Desktop Entry]\nType=Application\nVersion=1.0\nName=Capnote\nExec=${execPath} %U\nStartupNotify=false\nTerminal=false\nHidden=false\n`; 
-        fs.writeFileSync(desktopFile, content, { encoding: 'utf8' });
-      } else {
-        if (fs.existsSync(desktopFile)) fs.unlinkSync(desktopFile);
-      }
-    } else {
-      // Windows and macOS
-      app.setLoginItemSettings({ openAtLogin: !!enabled });
-    }
-
-    // update tray menu checkbox if present
-    try {
-      if (tray) {
-        const menu = tray.getContextMenu();
-        if (menu) {
-          const items = menu.items;
-          for (const it of items) {
-            if (it && it.label === 'Başlangıçta aç') {
-              it.checked = !!enabled;
-            }
-          }
-        }
-      }
-    } catch (e) {}
-
-    return true;
-  } catch (e) {
-    console.error('Failed to set autostart', e);
-    return false;
-  }
-}
-
-async function getAutostart() {
-  return isAutostartEnabledSync();
-}
-
-// IPC handlers for autostart and tray actions
-ipcMain.handle('get-start-at-login', async () => {
-  return getAutostart();
-});
-
-ipcMain.handle('set-start-at-login', async (event, enabled) => {
-  return setAutostart(!!enabled);
-});
-
-ipcMain.on('show-from-tray', () => {
-  if (mainWindow) {
-    mainWindow.show();
-    mainWindow.focus();
-  }
-});
-

@@ -29,8 +29,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
   showNativeNotification: (opts) => ipcRenderer.invoke('show-native-notification', opts),
   // Listen for native notification clicks forwarded from main
   onNativeNotificationClick: (callback) => ipcRenderer.on('native-notif-click', (event, notificationId) => callback(notificationId)),
-  // Autostart / tray helpers
-  getStartAtLogin: () => ipcRenderer.invoke('get-start-at-login'),
-  setStartAtLogin: (enabled) => ipcRenderer.invoke('set-start-at-login', enabled),
-  showFromTray: () => ipcRenderer.send('show-from-tray'),
 });
