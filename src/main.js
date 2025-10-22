@@ -146,8 +146,25 @@ function createTray() {
     } catch {}
     tray.setToolTip('Capnote');
     const contextMenu = Menu.buildFromTemplate([
-      { label: 'Göster', click: () => { if (mainWindow) { mainWindow.show(); mainWindow.focus(); } } },
-      { label: 'Gizle', click: () => { if (mainWindow) mainWindow.hide(); } },
+      { label: 'Göster', click: () => {
+        if (mainWindow) {
+          if (mainWindow.isMinimized()) {
+            mainWindow.restore();
+          }
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      } },
+      { label: 'Gizle', click: () => {
+        if (mainWindow) {
+          try {
+            if (mainWindow.isFullScreen && mainWindow.isFullScreen()) {
+              mainWindow.setFullScreen(false);
+            }
+          } catch {}
+          mainWindow.minimize();
+        }
+      } },
       { type: 'separator' },
       { label: 'Yeni Not', click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('new-note'); } } },
       { label: 'Bildirimler', click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('open-notifications'); } } },
@@ -157,7 +174,13 @@ function createTray() {
     ]);
     tray.setContextMenu(contextMenu);
     tray.on('click', () => {
+      if (process.platform === 'darwin') {
+        // macOS: Don't auto-show the window on click; show the tray menu instead
+        try { tray.popUpContextMenu(); } catch {}
+        return;
+      }
       if (!mainWindow) return;
+      // Other platforms: toggle visibility on left-click for convenience
       if (mainWindow.isVisible()) mainWindow.hide();
       else { mainWindow.show(); mainWindow.focus(); }
     });
