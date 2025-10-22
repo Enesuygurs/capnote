@@ -105,12 +105,28 @@ function createWindow() {
 function resolveTrayIcon() {
   try {
     const iconsDir = path.join(__dirname, '..', 'assets', 'icons');
+    const png16 = path.join(iconsDir, 'capnote-16.png');
+    const png32 = path.join(iconsDir, 'capnote-32.png');
+
     if (process.platform === 'win32') {
       const ico = path.join(iconsDir, 'capnote.ico');
       if (fs.existsSync(ico)) return nativeImage.createFromPath(ico);
+      if (fs.existsSync(png32)) return nativeImage.createFromPath(png32);
+      if (fs.existsSync(png16)) return nativeImage.createFromPath(png16);
+    } else if (process.platform === 'darwin') {
+      // Prefer template-sized PNG and mark as template for auto light/dark adapt
+      let img = null;
+      if (fs.existsSync(png16)) img = nativeImage.createFromPath(png16);
+      else if (fs.existsSync(png32)) img = nativeImage.createFromPath(png32);
+      if (img) {
+        try { img.setTemplateImage(true); } catch {}
+        return img;
+      }
+    } else {
+      // Linux: prefer 22-24px; resize from 32 if available
+      if (fs.existsSync(png32)) return nativeImage.createFromPath(png32).resize({ width: 22, height: 22 });
+      if (fs.existsSync(png16)) return nativeImage.createFromPath(png16);
     }
-    const png = path.join(iconsDir, 'capnote-512.png');
-    if (fs.existsSync(png)) return nativeImage.createFromPath(png).resize({ width: 16, height: 16 });
   } catch {}
   return null;
 }
@@ -315,17 +331,27 @@ ipcMain.handle('set-start-at-login', (event, enabled) => {
     if (openAtLogin) {
       try { if (!fs.existsSync(autostartDir)) fs.mkdirSync(autostartDir, { recursive: true }); } catch {}
       const execPath = app.getPath('exe');
+      // Try to set an icon path for the desktop entry (best-effort)
+      let iconPath = '';
+      try {
+        const iconsDir = path.join(__dirname, '..', 'assets', 'icons');
+        const icon32 = path.join(iconsDir, 'capnote-32.png');
+        const icon16 = path.join(iconsDir, 'capnote-16.png');
+        if (fs.existsSync(icon32)) iconPath = icon32;
+        else if (fs.existsSync(icon16)) iconPath = icon16;
+      } catch {}
       const desktop = [
         '[Desktop Entry]',
         'Type=Application',
         'Name=Capnote',
         `Exec=${execPath} %U`,
+        (iconPath ? `Icon=${iconPath}` : ''),
         'X-GNOME-Autostart-enabled=true',
         'NoDisplay=false',
         'Hidden=false',
         'Comment=Capnote',
       ].join('\n');
-      fs.writeFileSync(entry, desktop, { encoding: 'utf8' });
+      fs.writeFileSync(entry, desktop.replace(/\n\n+/g, '\n'), { encoding: 'utf8' });
       return { ok: true };
     }
     if (fs.existsSync(entry)) { try { fs.unlinkSync(entry); } catch {} }
