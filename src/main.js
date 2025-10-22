@@ -130,6 +130,7 @@ function createTray() {
       { type: 'separator' },
       { label: 'Yeni Not', click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('new-note'); } } },
       { label: 'Bildirimler', click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('open-notifications'); } } },
+      { label: 'Ayarlar', click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('open-settings'); } } },
       { type: 'separator' },
       { label: 'Çıkış', click: () => { isQuitting = true; app.quit(); } },
     ]);
