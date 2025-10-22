@@ -249,6 +249,9 @@ class CapnoteApp {
   this.accentPurpleBtn = document.getElementById('accentPurple');
   this.accentBlueBtn = document.getElementById('accentBlue');
   this.syncFolderAccentToggle = document.getElementById('syncFolderAccentToggle');
+  // System settings toggles
+  this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
+  this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
@@ -380,6 +383,51 @@ class CapnoteApp {
     localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
     this.showNotification(enabled ? 'Sistem bildirimleri açıldı' : 'Sistem bildirimleri kapatıldı', 'success');
   });
+  // Start at login toggle
+  this.startAtLoginToggle?.addEventListener('change', async (e) => {
+    try {
+      const enabled = !!e.currentTarget.checked;
+      if (window.electronAPI && typeof window.electronAPI.setStartAtLogin === 'function') {
+        const res = await window.electronAPI.setStartAtLogin(enabled);
+        if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
+        this.showNotification(enabled ? 'Başlangıçta Çalıştır: Açık' : 'Başlangıçta Çalıştır: Kapalı', 'success');
+      }
+    } catch (err) {
+      console.warn('setStartAtLogin failed:', err);
+      // revert checkbox
+      if (this.startAtLoginToggle) this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
+  this.showNotification('Başlangıçta çalıştır ayarı yapılamadı', 'error');
+    }
+  });
+  // Close to tray toggle
+  this.closeToTrayToggle?.addEventListener('change', async (e) => {
+    try {
+      const enabled = !!e.currentTarget.checked;
+      if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
+        const res = await window.electronAPI.setCloseToTray(enabled);
+        if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
+        this.showNotification(enabled ? 'Kapatınca tepsiye küçült: açık' : 'Kapatınca tepsiye küçült: kapalı', 'success');
+      }
+    } catch (err) {
+      console.warn('setCloseToTray failed:', err);
+      if (this.closeToTrayToggle) this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
+      this.showNotification('Tepsi ayarı yapılamadı', 'error');
+    }
+  });
+
+  // Tray context menu -> open notifications
+  try {
+    if (window.electronAPI && typeof window.electronAPI.onOpenNotifications === 'function') {
+      window.electronAPI.onOpenNotifications(() => this.showNotificationsScreen());
+    }
+  } catch {}
+
+  // Tray context menu -> new note
+  try {
+    if (window.electronAPI && typeof window.electronAPI.onNewNote === 'function') {
+      window.electronAPI.onNewNote(() => this.createNewNote());
+    }
+  } catch {}
   // Test notification button (with cooldown)
   this.testNativeNotifBtn?.addEventListener('click', () => this.handleTestNotificationClick());
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
@@ -5462,6 +5510,24 @@ class CapnoteApp {
         }
       });
     }
+
+    // Query start-at-login from main (async, best-effort)
+    try {
+      if (this.startAtLoginToggle && window.electronAPI && typeof window.electronAPI.getStartAtLogin === 'function') {
+        window.electronAPI.getStartAtLogin().then((res) => {
+          if (res && typeof res.enabled === 'boolean') this.startAtLoginToggle.checked = !!res.enabled;
+        }).catch(() => {});
+      }
+    } catch {}
+
+    // Query close-to-tray preference from main/store
+    try {
+      if (this.closeToTrayToggle && window.electronAPI && typeof window.electronAPI.getCloseToTray === 'function') {
+        window.electronAPI.getCloseToTray().then((res) => {
+          if (res && typeof res.enabled === 'boolean') this.closeToTrayToggle.checked = !!res.enabled;
+        }).catch(() => {});
+      }
+    } catch {}
   }
 
   saveSettings() {

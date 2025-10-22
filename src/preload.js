@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   // Menü olayları
   onNewNote: (callback) => ipcRenderer.on('new-note', callback),
+  onOpenNotifications: (callback) => ipcRenderer.on('open-notifications', callback),
 
   // Pencere kontrolleri
   minimize: () => ipcRenderer.send('minimize-window'),
@@ -29,4 +30,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   showNativeNotification: (opts) => ipcRenderer.invoke('show-native-notification', opts),
   // Listen for native notification clicks forwarded from main
   onNativeNotificationClick: (callback) => ipcRenderer.on('native-notif-click', (event, notificationId) => callback(notificationId)),
+  // Autostart (start at login)
+  getStartAtLogin: () => ipcRenderer.invoke('get-start-at-login'),
+  setStartAtLogin: (enabled) => ipcRenderer.invoke('set-start-at-login', enabled),
+  // Close-to-tray preference
+  getCloseToTray: () => ipcRenderer.invoke('get-close-to-tray'),
+  setCloseToTray: (enabled) => ipcRenderer.invoke('set-close-to-tray', enabled),
 });
