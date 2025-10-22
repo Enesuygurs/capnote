@@ -28,6 +28,18 @@ const store = new Store();
 
 let mainWindow;
 
+// Ensure the app name is set so native notifications and system UI show 'Capnote'
+try {
+  // On Windows, AppUserModelID affects which app name/icon appears in notifications
+  if (app && typeof app.setAppUserModelId === 'function') {
+    app.setAppUserModelId('Capnote');
+  }
+  // Also set a friendly name for macOS/other platforms
+  if (app) app.name = 'Capnote';
+} catch (e) {
+  // ignore if setting fails
+}
+
 /**
  * Ana pencereyi oluşturur ve yapılandırır
  */
@@ -172,13 +184,15 @@ ipcMain.handle('save-dropped-file', (event, srcPath) => {
 ipcMain.handle('show-native-notification', (event, opts) => {
   try {
     // opts: { title, body, silent, icon }
-    const { title = '', body = '', silent = false, icon } = opts || {};
+  const { title = '', body = '', silent = false, icon } = opts || {};
+  // Use app name as default title when not provided to avoid showing internal identifiers
+  const notifTitle = title && title.length ? title : 'Capnote';
     // Some platforms require Notification.isSupported check
     if (Notification.isSupported && !Notification.isSupported()) {
       return false;
     }
     const notif = new Notification({
-      title,
+      title: notifTitle,
       body,
       silent,
       icon: icon || undefined,
