@@ -399,21 +399,38 @@ class CapnoteApp {
   this.showNotification('Başlangıçta çalıştır ayarı yapılamadı', 'error');
     }
   });
-  // Close to tray toggle
-  this.closeToTrayToggle?.addEventListener('change', async (e) => {
-    try {
-      const enabled = !!e.currentTarget.checked;
-      if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
-        const res = await window.electronAPI.setCloseToTray(enabled);
-        if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
-        this.showNotification(enabled ? 'Kapatınca tepsiye küçült: açık' : 'Kapatınca tepsiye küçült: kapalı', 'success');
-      }
-    } catch (err) {
-      console.warn('setCloseToTray failed:', err);
-      if (this.closeToTrayToggle) this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
-      this.showNotification('Tepsi ayarı yapılamadı', 'error');
+  // Close to tray toggle: only wire on Windows (hide on macOS/Linux)
+  try {
+    const plat = (window.electronAPI && window.electronAPI.platform) ? window.electronAPI.platform : (navigator.platform || '').toLowerCase();
+    if (plat === 'win32' && this.closeToTrayToggle) {
+      this.closeToTrayToggle.addEventListener('change', async (e) => {
+        try {
+          const enabled = !!e.currentTarget.checked;
+          if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
+            const res = await window.electronAPI.setCloseToTray(enabled);
+            if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
+            this.showNotification(enabled ? 'Kapatınca tepsiye küçült: açık' : 'Kapatınca tepsiye küçült: kapalı', 'success');
+          }
+        } catch (err) {
+          console.warn('setCloseToTray failed:', err);
+          if (this.closeToTrayToggle) this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
+          this.showNotification('Tepsi ayarı yapılamadı', 'error');
+        }
+      });
+    } else {
+      // hide the close-to-tray UI on non-Windows: find nearest .setting-item container
+      try {
+        if (this.closeToTrayToggle) {
+          let el = this.closeToTrayToggle;
+          while (el && !el.classList.contains('setting-item')) el = el.parentElement;
+          if (el) el.style.display = 'none';
+        }
+      } catch (hideErr) {}
     }
-  });
+  } catch (err) {
+    // ignore
+  }
+  
 
   // Tray context menu -> open notifications
   try {
