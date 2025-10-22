@@ -428,6 +428,13 @@ class CapnoteApp {
       window.electronAPI.onNewNote(() => this.createNewNote());
     }
   } catch {}
+
+  // Tray context menu -> settings
+  try {
+    if (window.electronAPI && typeof window.electronAPI.onOpenSettings === 'function') {
+      window.electronAPI.onOpenSettings(() => this.showSettingsModal());
+    }
+  } catch {}
   // Test notification button (with cooldown)
   this.testNativeNotifBtn?.addEventListener('click', () => this.handleTestNotificationClick());
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());

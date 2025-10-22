@@ -16,6 +16,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Menü olayları
   onNewNote: (callback) => ipcRenderer.on('new-note', callback),
   onOpenNotifications: (callback) => ipcRenderer.on('open-notifications', callback),
+  onOpenSettings: (callback) => ipcRenderer.on('open-settings', callback),
 
   // Pencere kontrolleri
   minimize: () => ipcRenderer.send('minimize-window'),
