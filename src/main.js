@@ -114,11 +114,12 @@ function resolveTrayIcon() {
       if (fs.existsSync(png32)) return nativeImage.createFromPath(png32);
       if (fs.existsSync(png16)) return nativeImage.createFromPath(png16);
     } else if (process.platform === 'darwin') {
-      // Prefer template-sized PNG and mark as template for auto light/dark adapt
-      let img = null;
-      if (fs.existsSync(png16)) img = nativeImage.createFromPath(png16);
-      else if (fs.existsSync(png32)) img = nativeImage.createFromPath(png32);
-      if (img) {
+      // macOS: status bar icon looks best around 18x18pt. Use template for auto light/dark.
+      let base = null;
+      if (fs.existsSync(png16)) base = nativeImage.createFromPath(png16);
+      else if (fs.existsSync(png32)) base = nativeImage.createFromPath(png32);
+      if (base) {
+        const img = base.resize({ width: 18, height: 18, quality: 'best' });
         try { img.setTemplateImage(true); } catch {}
         return img;
       }
@@ -139,6 +140,10 @@ function createTray() {
       return;
     }
     tray = new Tray(icon || undefined);
+    try {
+      const sizeDesc = icon ? `${icon.getSize().width}x${icon.getSize().height}` : 'undefined';
+      console.log(`[tray] created for platform=${process.platform}, icon size=${sizeDesc}`);
+    } catch {}
     tray.setToolTip('Capnote');
     const contextMenu = Menu.buildFromTemplate([
       { label: 'Göster', click: () => { if (mainWindow) { mainWindow.show(); mainWindow.focus(); } } },
