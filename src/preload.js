@@ -17,6 +17,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onNewNote: (callback) => ipcRenderer.on('new-note', callback),
   onOpenNotifications: (callback) => ipcRenderer.on('open-notifications', callback),
   onOpenSettings: (callback) => ipcRenderer.on('open-settings', callback),
+  // Expose platform string for renderer UI decisions (darwin, win32, linux)
+  platform: process.platform,
 
   // Pencere kontrolleri
   minimize: () => ipcRenderer.send('minimize-window'),
