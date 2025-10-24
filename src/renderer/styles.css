@@ -4,6 +4,57 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+/* Performance optimization: Disable transitions during window resize */
+body.resizing,
+body.resizing *,
+body.resizing *::before,
+body.resizing *::after {
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  /* Prevent any interaction during resize */
+  pointer-events: none !important;
+}
+
+/* Strict layout containment during resize to prevent reflow animations */
+body.resizing .sidebar,
+body.resizing .notes-list,
+body.resizing .note-item,
+body.resizing .folders-list,
+body.resizing .folder-notes-container,
+body.resizing .folder-note-item,
+body.resizing .note-editor,
+body.resizing .note-viewer {
+  contain: layout style paint !important;
+  will-change: auto !important;
+}
+
+/* Disable expensive effects during resize */
+body.resizing .titlebar,
+body.resizing .sidebar,
+body.resizing .modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* GPU acceleration for better resize performance */
+.sidebar,
+.note-editor,
+.note-viewer,
+.welcome-screen {
+  transform: translateZ(0);
+  will-change: auto;
+}
+
+body.resizing .sidebar,
+body.resizing .note-editor,
+body.resizing .note-viewer,
+body.resizing .welcome-screen {
+  will-change: transform;
+}
+
 :root {
   /* Ana Renkler */
   --primary-color: #f59e0b;
