@@ -255,6 +255,7 @@
     "reminderDeleted": "Hatırlatma silindi",
     "reminderPrefix": "⏰ Hatırlatma:",
     "noteCopied": "Not kopyalandı!",
+    "noteCopySuffix": " (Kopya)",
     "codeCopied": "Kod panoya kopyalandı",
     "copyFailed": "Kopyalama başarısız",
     "useSidePanel": "Ruh hali seçimi için yan paneli kullanın",
