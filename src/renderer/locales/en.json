@@ -101,8 +101,7 @@
     "characters": "characters",
     "readingTime": "min read",
     "readingTimeSeconds": "sec read",
-    "noReminder": "No reminder for this note",
-    "noHistory": "No updates yet"
+    "noReminder": "No reminder for this note"
   },
   "sort": {
     "dateDesc": "📅 Date (Newest → Oldest)",
@@ -217,7 +216,6 @@
     "lastModified": "Last updated",
     "created": "Created:",
     "updated": "Updated",
-    "reminderAdded": "Reminder added",
     "createdLabel": "Created:",
     "updatedLabel": "Updated:"
   },

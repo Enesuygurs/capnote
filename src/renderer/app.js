@@ -12,6 +12,7 @@ class CapnoteApp {
     this.tags = [];
     this.hasChanges = false;
     this.originalNoteState = null;
+    this.isResizing = false; // Flag to prevent re-renders during resize
 
     this.defaultFormatting = {
       fontFamily: 'Inter',
@@ -125,6 +126,7 @@ class CapnoteApp {
     await this.loadNotifications();
     this.initializeElements();
     this.setupEventListeners();
+    this.setupResizeOptimization();
     this.loadSettings();
     this.loadSidebarPreference();
     this.initializeHamburgerIcon();
@@ -1389,6 +1391,37 @@ class CapnoteApp {
   this.populateEmojiGrid();
   }
 
+  setupResizeOptimization() {
+    let resizeTimer;
+    
+    const startResize = () => {
+      if (!this.isResizing) {
+        // Set flag immediately (synchronously) to prevent renders
+        this.isResizing = true;
+        document.body.classList.add('resizing');
+        
+        // Disable smooth scrolling during resize
+        document.documentElement.style.scrollBehavior = 'auto';
+      }
+    };
+    
+    const endResize = () => {
+      this.isResizing = false;
+      document.body.classList.remove('resizing');
+      
+      // Re-enable smooth scrolling after resize
+      document.documentElement.style.scrollBehavior = '';
+    };
+    
+    // Use passive event listener for better performance
+    window.addEventListener('resize', () => {
+      startResize();
+      clearTimeout(resizeTimer);
+      // Increased timeout to 100ms to ensure resize is complete
+      resizeTimer = setTimeout(endResize, 100);
+    }, { passive: true });
+  }
+
   toggleEmojiPanel() {
     if (!this.emojiPanel) return;
     if (this.emojiPanel.classList.contains('hidden')) {
@@ -2379,9 +2412,6 @@ class CapnoteApp {
     // Save last viewed note (new note)
     this.saveLastViewedNote(this.currentNote.id);
 
-    // Clear active note in list when creating new note
-    this.clearActiveNoteInList();
-
     this.showEditor();
     this.clearEditor();
     this.updateCurrentDate();
@@ -2449,9 +2479,6 @@ class CapnoteApp {
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
     
-    // Clear active note in list when showing welcome screen
-    this.clearActiveNoteInList();
-    
     this.clearSavedSelection();
   }
 
@@ -2466,9 +2493,6 @@ class CapnoteApp {
   this.remindersNav?.classList.add('active');
   this.notificationsNav?.classList.remove('active');
     
-    // Clear active note in list when showing reminders screen
-    this.clearActiveNoteInList();
-    
     this.updateRemindersView();
   }
 
@@ -2482,9 +2506,6 @@ class CapnoteApp {
   // Update active states for reminders/notifications group only
   this.notificationsNav?.classList.add('active');
   this.remindersNav?.classList.remove('active');
-    
-    // Clear active note in list when showing notifications screen
-    this.clearActiveNoteInList();
     
     this.updateNotificationsView();
   }
@@ -2600,19 +2621,6 @@ class CapnoteApp {
     this.reminders.push(reminder);
     await this.saveReminders();
     this.reminderDatetime.value = '';
-    
-    // Add reminder to note history
-    if (this.currentNote) {
-      if (!this.currentNote.history) {
-        this.currentNote.history = [];
-      }
-      this.currentNote.history.push({
-        type: 'reminderAdded',
-        ts: new Date().toISOString()
-      });
-      await this.saveNotes();
-    }
-    
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
     this.showNotification(window.i18n.t('messages.reminderAdded'), 'success');
@@ -2640,8 +2648,7 @@ class CapnoteApp {
     );
 
     if (noteReminders.length === 0) {
-      // Don't show anything if there are no reminders
-      this.noteRemindersList.innerHTML = '';
+      this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
       return;
     }
 
@@ -3714,21 +3721,14 @@ class CapnoteApp {
         const d = new Date(h.ts);
         const item = document.createElement('div');
         item.className = 'history-item';
-        
-        // Different display based on history type
-        let typeLabel = window.i18n.t('viewer.updated');
-        if (h.type === 'reminderAdded') {
-          typeLabel = window.i18n.t('viewer.reminderAdded');
-        }
-        
-        item.innerHTML = `<span class="history-type">${typeLabel}</span> <span class="history-ts">${d.toLocaleString(locale)}</span>`;
+        item.innerHTML = `<span class="history-type">${window.i18n.t('viewer.updated')}</span> <span class="history-ts">${d.toLocaleString(locale)}</span>`;
         list.appendChild(item);
       });
       this.historyBody.appendChild(list);
     } else {
       const empty = document.createElement('div');
       empty.className = 'history-empty';
-      empty.textContent = window.i18n.t('stats.noHistory');
+      empty.textContent = window.i18n.t('stats.noReminder');
       this.historyBody.appendChild(empty);
     }
 
@@ -3736,6 +3736,11 @@ class CapnoteApp {
   }
 
   updateNotesList() {
+    // Skip rendering during window resize for better performance
+    if (this.isResizing) {
+      return;
+    }
+    
     this.notesList.innerHTML = '';
 
     const filteredNotes = this.getFilteredNotes();
@@ -3809,23 +3814,12 @@ class CapnoteApp {
     }
   }
 
-  clearActiveNoteInList() {
-    // Clear active from main notes list
-    const activeNote = this.notesList.querySelector('.note-item.active');
-    if (activeNote) {
-      activeNote.classList.remove('active');
-    }
-
-    // Clear active from folder note lists
-    document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
-      const activeInFolder = container.querySelector('.folder-note-item.active');
-      if (activeInFolder) {
-        activeInFolder.classList.remove('active');
-      }
-    });
-  }
-
   updateFolderNotes() {
+    // Skip rendering during window resize for better performance
+    if (this.isResizing) {
+      return;
+    }
+    
     // Update custom folder notes
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
       const folderIdLog = container.getAttribute('data-folder-id');
@@ -6532,6 +6526,11 @@ class CapnoteApp {
   updateFoldersList() {
     if (!this.foldersList) return;
 
+    // Skip rendering during window resize for better performance
+    if (this.isResizing) {
+      return;
+    }
+
     this.foldersList.innerHTML = '';
 
     // Compute visible counts per folder and skip folders with zero visible notes
@@ -7401,8 +7400,7 @@ class CapnoteApp {
         );
         
         if (noteReminders.length === 0) {
-          // Don't show anything if there are no reminders
-          this.noteRemindersList.innerHTML = '';
+          this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
         }
       }
       

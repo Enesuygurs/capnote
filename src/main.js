@@ -67,6 +67,9 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: path.join(__dirname, 'preload.js'),
+      enableBlinkFeatures: 'OverlayScrollbars',
+      offscreen: false,
+      hardwareAcceleration: true,
     },
     titleBarStyle: 'hiddenInset',
     frame: false,
@@ -74,6 +77,9 @@ function createWindow() {
     vibrancy: 'under-window',
     transparent: false,
     icon: iconPath,
+    backgroundColor: '#ffffff',
+    // Improve resize performance
+    useContentSize: false,
   });
 
   // HTML dosyasını yükle
