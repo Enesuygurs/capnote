@@ -213,7 +213,11 @@
     "flags": "Flags"
   },
   "viewer": {
-    "lastModified": "Last modified"
+    "lastModified": "Last updated",
+    "created": "Created:",
+    "updated": "Updated",
+    "createdLabel": "Created:",
+    "updatedLabel": "Updated:"
   },
   "messages": {
     "noteSaved": "Note saved",

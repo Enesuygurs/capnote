@@ -2893,7 +2893,8 @@ class CapnoteApp {
   updateCurrentDate() {
     if (this.noteDate) {
       const now = new Date();
-      this.noteDate.textContent = now.toLocaleDateString('tr-TR', {
+      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+      this.noteDate.textContent = now.toLocaleDateString(locale, {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -3602,7 +3603,8 @@ class CapnoteApp {
     // Tarih bilgisi
     const createdDate = new Date(note.createdAt);
     const updatedDate = new Date(note.updatedAt);
-    this.viewerDate.textContent = createdDate.toLocaleDateString('tr-TR', {
+    const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+    this.viewerDate.textContent = createdDate.toLocaleDateString(locale, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -3639,7 +3641,8 @@ class CapnoteApp {
     }
   }
     // Show date + time for last modified (e.g. 12.10.2025 14:35)
-    this.lastModified.textContent = updatedDate.toLocaleString('tr-TR', {
+    const locale2 = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+    this.lastModified.textContent = updatedDate.toLocaleString(locale2, {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -3667,10 +3670,11 @@ class CapnoteApp {
 
     // Show createdAt at the top
     const created = this.currentNote.createdAt ? new Date(this.currentNote.createdAt) : null;
+    const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
     if (created) {
       const el = document.createElement('div');
       el.className = 'history-entry created';
-      el.innerHTML = `<strong>Oluşturuldu:</strong> ${created.toLocaleString('tr-TR')}`;
+      el.innerHTML = `<strong>${window.i18n.t('viewer.created')}</strong> ${created.toLocaleString(locale)}`;
       this.historyBody.appendChild(el);
     }
 
@@ -3683,14 +3687,14 @@ class CapnoteApp {
         const d = new Date(h.ts);
         const item = document.createElement('div');
         item.className = 'history-item';
-        item.innerHTML = `<span class="history-type">Güncellendi</span> <span class="history-ts">${d.toLocaleString('tr-TR')}</span>`;
+        item.innerHTML = `<span class="history-type">${window.i18n.t('viewer.updated')}</span> <span class="history-ts">${d.toLocaleString(locale)}</span>`;
         list.appendChild(item);
       });
       this.historyBody.appendChild(list);
     } else {
       const empty = document.createElement('div');
       empty.className = 'history-empty';
-      empty.textContent = 'Bu not için geçmiş kaydı yok.';
+      empty.textContent = window.i18n.t('stats.noReminder');
       this.historyBody.appendChild(empty);
     }
 
@@ -4645,8 +4649,8 @@ class CapnoteApp {
     <div class="header">
         <h1>${note.title}</h1>
         <div class="meta">
-            <p>Oluşturulma: ${new Date(note.createdAt).toLocaleString('tr-TR')}</p>
-            <p>Güncelleme: ${new Date(note.updatedAt).toLocaleString('tr-TR')}</p>
+            <p>${window.i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR')}</p>
+            <p>${window.i18n.t('viewer.updatedLabel')} ${new Date(note.updatedAt).toLocaleString(window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR')}</p>
             ${note.mood ? `<p>Ruh Hali: ${note.mood}</p>` : ''}
             ${note.weather ? `<p>Hava Durumu: ${note.weather}</p>` : ''}
         </div>
@@ -4719,7 +4723,8 @@ class CapnoteApp {
       const meta = document.createElement('div');
       meta.style.color = '#666';
       meta.style.marginBottom = '12px';
-      meta.innerHTML = `Oluşturulma: ${new Date(note.createdAt).toLocaleString('tr-TR')} &nbsp; Güncelleme: ${new Date(note.updatedAt).toLocaleString('tr-TR')}`;
+      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+      meta.innerHTML = `${window.i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(locale)} &nbsp; ${window.i18n.t('viewer.updatedLabel')} ${new Date(note.updatedAt).toLocaleString(locale)}`;
       container.appendChild(meta);
 
       // Content: if markdown, render with marked; otherwise clone formatted HTML
@@ -7334,6 +7339,9 @@ class CapnoteApp {
       // Update editor counts
       this.updateCount();
       
+      // Update current date display
+      this.updateCurrentDate();
+      
       // Update note reminders text if visible
       if (this.noteRemindersList) {
         const noteReminders = this.reminders.filter(r => 
@@ -7345,6 +7353,11 @@ class CapnoteApp {
         if (noteReminders.length === 0) {
           this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
         }
+      }
+      
+      // Update history modal if open
+      if (this.historyModal && !this.historyModal.classList.contains('hidden')) {
+        this.showHistory();
       }
     }
     
@@ -7366,6 +7379,32 @@ class CapnoteApp {
           const minutes = Math.round(seconds / 60);
           this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
         }
+      }
+      
+      // Update viewer dates
+      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+      const createdDate = new Date(this.viewingNote.createdAt);
+      const updatedDate = new Date(this.viewingNote.updatedAt);
+      
+      if (this.viewerDate) {
+        this.viewerDate.textContent = createdDate.toLocaleDateString(locale, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      }
+      
+      if (this.lastModified) {
+        this.lastModified.textContent = updatedDate.toLocaleString(locale, {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
       }
     }
   }
