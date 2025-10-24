@@ -299,6 +299,9 @@
     "deleteNotification": "Sil",
     "completed": "Tamamlandı",
     "reminderDue": "Hatırlatma zamanı geldi:",
-    "reminderNotification": "⏰ Hatırlatma:"
+    "reminderNotification": "⏰ Hatırlatma:",
+    "renameFolder": "Klasörü Yeniden Adlandır",
+    "confirmDeleteFolder": "klasörü silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?",
+    "confirmDeleteFolderWithNotes": "klasörü ve içindeki {count} not kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?"
   }
 }
