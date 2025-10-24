@@ -2505,10 +2505,10 @@ class CapnoteApp {
           </div>
           <div class="reminder-actions">
             <button class="reminder-action-btn view-note-btn" data-note-id="${r.noteId}">
-              <i class="fas fa-eye"></i> Notu Görüntüle
+              <i class="fas fa-eye"></i> ${window.i18n.t('messages.viewNote')}
             </button>
             <button class="reminder-action-btn dismiss-btn" data-reminder-id="${r.id}">
-              <i class="fas fa-check"></i> Tamamlandı
+              <i class="fas fa-check"></i> ${window.i18n.t('messages.completed')}
             </button>
           </div>
         </div>
@@ -2775,15 +2775,15 @@ class CapnoteApp {
         <div class="notification-message">${this.escapeHtml(n.message)}</div>
         <div class="notification-actions">
           <button class="notification-action-btn view-notification-note-btn" data-note-id="${n.noteId}">
-            <i class="fas fa-eye"></i> Görüntüle
+            <i class="fas fa-eye"></i> ${window.i18n.t('messages.view')}
           </button>
           ${!n.read ? `
             <button class="notification-action-btn mark-read-btn" data-notification-id="${n.id}">
-              <i class="fas fa-check"></i> Okundu
+              <i class="fas fa-check"></i> ${window.i18n.t('messages.markAsRead')}
             </button>
           ` : ''}
           <button class="notification-action-btn delete-notification-btn" data-notification-id="${n.id}">
-            <i class="fas fa-trash"></i> Sil
+            <i class="fas fa-trash"></i> ${window.i18n.t('messages.deleteNotification')}
           </button>
         </div>
       </div>

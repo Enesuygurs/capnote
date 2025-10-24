@@ -292,6 +292,11 @@
     "noteUnpinned": "Sabitleme kaldırıldı",
     "lockNote": "Kilitle",
     "unlockNote": "Kilidi aç",
-    "deleteNote": "Notu sil"
+    "deleteNote": "Notu sil",
+    "viewNote": "Notu Görüntüle",
+    "view": "Görüntüle",
+    "markAsRead": "Okundu",
+    "deleteNotification": "Sil",
+    "completed": "Tamamlandı"
   }
 }
