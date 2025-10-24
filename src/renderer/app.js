@@ -4050,22 +4050,22 @@ class CapnoteApp {
             <div class="note-item-actions">
                 <button class="note-action-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isFavorite ? 'Favorilerden çıkar' : 'Favorilere ekle'}">
+                        title="${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}">
                     <i class="fas fa-heart"></i>
                 </button>
                 <button class="note-action-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isPinned ? 'Sabitlemeyi kaldır' : 'Sabitle'}">
+                        title="${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}">
                     <i class="fas fa-thumbtack"></i>
                 </button>
                 <button class="note-action-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isLocked ? 'Kilidi aç' : 'Kilitle'}">
+                        title="${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}">
                     <i class="fas fa-lock"></i>
                 </button>
                 <button class="note-action-btn delete-btn" 
                         data-note-id="${note.id}"
-                        title="Notu sil">
+                        title="${window.i18n.t('messages.deleteNote')}">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -5416,7 +5416,7 @@ class CapnoteApp {
     this.saveNotes();
     this.updateNotesList();
     this.showNotification(
-      note.isFavorite ? 'Favorilere eklendi!' : 'Favorilerden çıkarıldı!',
+      note.isFavorite ? window.i18n.t('messages.addedToFavorites') : window.i18n.t('messages.removedFromFavorites'),
       'success'
     );
   }
@@ -6818,22 +6818,22 @@ class CapnoteApp {
             <div class="note-item-actions">
                 <button class="note-action-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isFavorite ? 'Favorilerden çıkar' : 'Favorilere ekle'}">
+                        title="${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}">
                     <i class="fas fa-heart"></i>
                 </button>
                 <button class="note-action-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isPinned ? 'Sabitlemeyi kaldır' : 'Sabitle'}">
+                        title="${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}">
                     <i class="fas fa-thumbtack"></i>
                 </button>
                 <button class="note-action-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isLocked ? 'Kilidi aç' : 'Kilitle'}">
+                        title="${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}">
                     <i class="fas fa-lock"></i>
                 </button>
                 <button class="note-action-btn delete-btn" 
                         data-note-id="${note.id}"
-                        title="Notu sil">
+                        title="${window.i18n.t('messages.deleteNote')}">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -7006,7 +7006,7 @@ class CapnoteApp {
     }
   // Keep the current filter selected after toggling metadata
 
-    const message = note.isFavorite ? 'Favorilere eklendi' : 'Favorilerden çıkarıldı';
+    const message = note.isFavorite ? window.i18n.t('messages.addedToFavorites') : window.i18n.t('messages.removedFromFavorites');
     this.showNotification(message, 'success');
   }
 
@@ -7139,7 +7139,7 @@ class CapnoteApp {
     // If viewing favorites, refresh it to reflect pin changes where applicable
     if (this.currentFilter === 'favorites') this.updateNotesList();
 
-    const message = note.isPinned ? 'Not sabitlendi' : 'Sabitleme kaldırıldı';
+    const message = note.isPinned ? window.i18n.t('messages.notePinned') : window.i18n.t('messages.noteUnpinned');
     this.showNotification(message, 'success');
   }
 

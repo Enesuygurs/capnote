@@ -281,6 +281,17 @@
     "noteIsLocked": "Bu not kilitli",
     "newFolder": "Yeni Klasör",
     "maxPinnedNotes": "En fazla {count} not sabitlenebilir",
-    "unlockFromList": "İçeriği görüntülemek için not listesinden kilidi açın."
+    "unlockFromList": "İçeriği görüntülemek için not listesinden kilidi açın.",
+    "addToFavorites": "Favorilere ekle",
+    "removeFromFavorites": "Favorilerden çıkar",
+    "addedToFavorites": "Favorilere eklendi!",
+    "removedFromFavorites": "Favorilerden çıkarıldı!",
+    "pinNote": "Sabitle",
+    "unpinNote": "Sabitlemeyi kaldır",
+    "notePinned": "Not sabitlendi",
+    "noteUnpinned": "Sabitleme kaldırıldı",
+    "lockNote": "Kilitle",
+    "unlockNote": "Kilidi aç",
+    "deleteNote": "Notu sil"
   }
 }
