@@ -281,6 +281,17 @@
     "noteIsLocked": "This note is locked",
     "newFolder": "New Folder",
     "maxPinnedNotes": "Maximum {count} notes can be pinned",
-    "unlockFromList": "Unlock from the note list to view content."
+    "unlockFromList": "Unlock from the note list to view content.",
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites",
+    "addedToFavorites": "Added to favorites!",
+    "removedFromFavorites": "Removed from favorites!",
+    "pinNote": "Pin",
+    "unpinNote": "Unpin",
+    "notePinned": "Note pinned",
+    "noteUnpinned": "Note unpinned",
+    "lockNote": "Lock",
+    "unlockNote": "Unlock",
+    "deleteNote": "Delete note"
   }
 }
