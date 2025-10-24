@@ -106,6 +106,20 @@ class CapnoteApp {
   }
 
   async init() {
+    // Wait for i18n to be ready
+    if (window.i18n && !window.i18n.translations.tr) {
+      console.log('Waiting for i18n to initialize...');
+      await new Promise(resolve => {
+        const checkI18n = setInterval(() => {
+          if (window.i18n.translations.tr && Object.keys(window.i18n.translations.tr).length > 0) {
+            clearInterval(checkI18n);
+            console.log('i18n is ready');
+            resolve();
+          }
+        }, 100);
+      });
+    }
+    
     await this.loadNotes();
     await this.loadReminders();
     await this.loadNotifications();
@@ -243,6 +257,7 @@ class CapnoteApp {
   this.clearAllContentBtn = document.getElementById('clearAllContentBtn');
   this.maxPinnedSelect = document.getElementById('maxPinnedSelect');
     this.darkModeToggle = document.getElementById('darkModeToggle');
+  this.languageSelect = document.getElementById('languageSelect');
   this.accentYellowBtn = document.getElementById('accentYellow');
   this.accentCherryBtn = document.getElementById('accentCherry');
   this.accentAppleBtn = document.getElementById('accentApple');
@@ -364,6 +379,26 @@ class CapnoteApp {
     this.newNoteBtn.addEventListener('click', () => this.createNewNote());
     this.settingsBtn.addEventListener('click', () => this.showSettingsModal());
     this.helpSupport.addEventListener('click', () => this.showSettingsModal());
+  
+  // Language selector
+  if (this.languageSelect) {
+    this.languageSelect.addEventListener('change', (e) => {
+      const lang = e.target.value;
+      console.log('Language selector changed to:', lang);
+      if (window.i18n) {
+        window.i18n.setLanguage(lang);
+        this.showNotification(lang === 'tr' ? 'Dil değiştirildi' : 'Language changed', 'success');
+        // Update dynamic content that may not have data-i18n attributes
+        this.updateDynamicTranslations();
+      } else {
+        console.error('window.i18n is not available');
+      }
+    });
+    console.log('Language selector event listener attached');
+  } else {
+    console.error('Language selector element not found!');
+  }
+
   // Accent swatches
   this.accentYellowBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#f59e0b'));
   this.accentCherryBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#e11d48'));
@@ -5502,6 +5537,15 @@ class CapnoteApp {
   }
 
   loadSettings() {
+    // Load language preference
+    if (this.languageSelect) {
+      const savedLang = localStorage.getItem('app-language') || 'tr';
+      this.languageSelect.value = savedLang;
+      console.log('Language loaded from settings:', savedLang);
+    } else {
+      console.warn('Language select element not found in loadSettings');
+    }
+
     // Load dark mode preference
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
     this.darkModeToggle.checked = isDarkMode;
@@ -7281,6 +7325,55 @@ class CapnoteApp {
       // fallback: if DOM update fails, do full refresh
       this.updateFoldersList();
       this.updateFolderNotes();
+    }
+  }
+
+  updateDynamicTranslations() {
+    // Update word count displays
+    if (window.i18n) {
+      const wordText = window.i18n.t('stats.words');
+      const charText = window.i18n.t('stats.characters');
+      const readingText = window.i18n.t('stats.readingTime');
+      
+      // Update editor meta if note is being edited
+      const wordCountEl = document.getElementById('wordCount');
+      const charCountEl = document.getElementById('charCount');
+      const readingTimeEl = document.getElementById('editorReadingTime');
+      
+      if (wordCountEl) {
+        const count = wordCountEl.textContent.match(/\d+/);
+        if (count) wordCountEl.innerHTML = `${count[0]} <span data-i18n="stats.words">${wordText}</span>`;
+      }
+      
+      if (charCountEl) {
+        const count = charCountEl.textContent.match(/\d+/);
+        if (count) charCountEl.innerHTML = `${count[0]} <span data-i18n="stats.characters">${charText}</span>`;
+      }
+      
+      if (readingTimeEl) {
+        const count = readingTimeEl.textContent.match(/\d+/);
+        if (count) readingTimeEl.innerHTML = `~${count[0]} <span data-i18n="stats.readingTime">${readingText}</span>`;
+      }
+
+      // Update viewer stats
+      const viewerWordCount = document.getElementById('viewerWordCount');
+      const viewerCharCount = document.getElementById('viewerCharCount');
+      const viewerReadingTime = document.getElementById('readingTime');
+      
+      if (viewerWordCount) {
+        const count = viewerWordCount.textContent.match(/\d+/);
+        if (count) viewerWordCount.innerHTML = `${count[0]} <span data-i18n="stats.words">${wordText}</span>`;
+      }
+      
+      if (viewerCharCount) {
+        const count = viewerCharCount.textContent.match(/\d+/);
+        if (count) viewerCharCount.innerHTML = `${count[0]} <span data-i18n="stats.characters">${charText}</span>`;
+      }
+      
+      if (viewerReadingTime) {
+        const count = viewerReadingTime.textContent.match(/\d+/);
+        if (count) viewerReadingTime.innerHTML = `~${count[0]} <span data-i18n="stats.readingTime">${readingText}</span>`;
+      }
     }
   }
 }
