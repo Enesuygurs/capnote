@@ -3574,8 +3574,8 @@ class CapnoteApp {
       this.viewerText.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: var(--text-muted);">
                     <i class="fas fa-lock" style="font-size: 48px; margin-bottom: 20px;"></i>
-                    <h3>Bu not kilitli</h3>
-                    <p>İçeriği görüntülemek için not listesinden kilidi açın.</p>
+                    <h3>${window.i18n.t('messages.noteIsLocked')}</h3>
+                    <p>${window.i18n.t('messages.unlockFromList')}</p>
                 </div>
             `;
     } else {
@@ -5248,7 +5248,7 @@ class CapnoteApp {
    * @param {Object} note - Kilitlenecek not
    */
   async lockNote(note) {
-    const password = await this.showPasswordModal('Not için şifre belirleyin');
+    const password = await this.showPasswordModal(window.i18n.t('messages.setPasswordForNote'));
     if (password && password.trim()) {
   // Locking note (debug logs removed)
       note.isLocked = true;
@@ -5265,7 +5265,7 @@ class CapnoteApp {
   }
 
   async unlockNote(note) {
-    const password = await this.showPasswordModal('Not kilidini açmak için şifre girin');
+    const password = await this.showPasswordModal(window.i18n.t('messages.enterPasswordToUnlock'));
     if (password === note.password) {
       // Permanently unlock
       note.isLocked = false;
@@ -5284,7 +5284,7 @@ class CapnoteApp {
   }
 
   async unlockNoteForViewing(note) {
-    const password = await this.showPasswordModal('Bu not kilitli');
+    const password = await this.showPasswordModal(window.i18n.t('messages.noteIsLocked'));
     if (password === note.password) {
       // Temporarily unlock the note for viewing
       note.isUnlocked = true;
@@ -6371,9 +6371,9 @@ class CapnoteApp {
     const titleEl = this.folderModal.querySelector('.modal-title h3');
     const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
-    if (titleEl) titleEl.textContent = 'Yeni Klasör';
+    if (titleEl) titleEl.textContent = window.i18n.t('messages.newFolder');
     if (iconEl) { iconEl.className = 'fas fa-folder-plus'; }
-    if (createBtn) createBtn.textContent = 'Oluştur';
+    if (createBtn) createBtn.textContent = window.i18n.t('buttons.create');
     this.folderNameInput.value = '';
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
@@ -7116,7 +7116,7 @@ class CapnoteApp {
       const pinnedCount = this.notes.filter((n) => n.isPinned).length;
       const maxPinned = parseInt(localStorage.getItem('maxPinnedNotes'), 10) || 3;
       if (pinnedCount >= maxPinned) {
-        this.showNotification(`En fazla ${maxPinned} not sabitlenebilir`, 'error');
+        this.showNotification(window.i18n.t('messages.maxPinnedNotes').replace('{count}', maxPinned), 'error');
         return;
       }
     }
@@ -7149,7 +7149,7 @@ class CapnoteApp {
 
     if (note.isLocked) {
       // Unlock note - ask for password
-      const password = await this.showPasswordModal('Notu açmak için şifre girin');
+      const password = await this.showPasswordModal(window.i18n.t('messages.enterPasswordToOpen'));
       if (!password) return;
 
       // For now, any password unlocks (you can add proper password validation)
@@ -7157,7 +7157,7 @@ class CapnoteApp {
       this.showNotification(window.i18n.t('messages.noteUnlocked'), 'success');
     } else {
       // Lock note - ask for password
-      const password = await this.showPasswordModal('Not için şifre belirleyin');
+      const password = await this.showPasswordModal(window.i18n.t('messages.setPasswordForNote'));
       if (!password) return;
 
       note.isLocked = true;

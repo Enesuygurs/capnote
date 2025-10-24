@@ -274,6 +274,13 @@
     "noActiveReminders": "No active reminders",
     "confirmDelete": "are you sure you want to delete the note?",
     "confirmAction": "Confirm Action",
-    "folderColorUpdated": "Folder color updated"
+    "folderColorUpdated": "Folder color updated",
+    "setPasswordForNote": "Set password for note",
+    "enterPasswordToUnlock": "Enter password to unlock note",
+    "enterPasswordToOpen": "Enter password to open note",
+    "noteIsLocked": "This note is locked",
+    "newFolder": "New Folder",
+    "maxPinnedNotes": "Maximum {count} notes can be pinned",
+    "unlockFromList": "Unlock from the note list to view content."
   }
 }

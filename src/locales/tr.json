@@ -274,6 +274,13 @@
     "noActiveReminders": "Aktif hatırlatma bulunmuyor",
     "confirmDelete": "notunu silmek istediğinizden emin misiniz?",
     "confirmAction": "İşlemi Onayla",
-    "folderColorUpdated": "Klasör rengi güncellendi"
+    "folderColorUpdated": "Klasör rengi güncellendi",
+    "setPasswordForNote": "Not için şifre belirleyin",
+    "enterPasswordToUnlock": "Not kilidini açmak için şifre girin",
+    "enterPasswordToOpen": "Notu açmak için şifre girin",
+    "noteIsLocked": "Bu not kilitli",
+    "newFolder": "Yeni Klasör",
+    "maxPinnedNotes": "En fazla {count} not sabitlenebilir",
+    "unlockFromList": "İçeriği görüntülemek için not listesinden kilidi açın."
   }
 }
