@@ -297,6 +297,8 @@
     "view": "View",
     "markAsRead": "Mark as Read",
     "deleteNotification": "Delete",
-    "completed": "Completed"
+    "completed": "Completed",
+    "reminderDue": "Reminder time:",
+    "reminderNotification": "⏰ Reminder:"
   }
 }
