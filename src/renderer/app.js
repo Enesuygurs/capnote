@@ -2671,10 +2671,11 @@ class CapnoteApp {
       this.reminders.forEach(reminder => {
         if (!reminder.dismissed && new Date(reminder.datetime) <= now) {
           // Add to notifications list and show a toast that references the notification id
+          const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
           const nid = this.addNotification(
             reminder.noteId,
             reminder.noteTitle,
-            `Hatırlatma zamanı geldi: ${new Date(reminder.datetime).toLocaleString('tr-TR')}`
+            `${window.i18n.t('messages.reminderDue')} ${new Date(reminder.datetime).toLocaleString(locale)}`
           );
           this.showNotification(`${window.i18n.t('messages.reminderPrefix')} ${reminder.noteTitle}`, 'info', { notificationId: nid });
 
@@ -2683,8 +2684,8 @@ class CapnoteApp {
             const nativePref = this.toggleNativeNotifications ? this.toggleNativeNotifications.checked : (localStorage.getItem('settings.nativeNotifications') === null ? true : (localStorage.getItem('settings.nativeNotifications') === '1' || localStorage.getItem('settings.nativeNotifications') === 'true'));
             if (nativePref && window && window.electronAPI && typeof window.electronAPI.showNativeNotification === 'function') {
               window.electronAPI.showNativeNotification({
-                title: `⏰ Hatırlatma: ${reminder.noteTitle}`,
-                body: `Hatırlatma zamanı geldi: ${new Date(reminder.datetime).toLocaleString('tr-TR')}`,
+                title: `${window.i18n.t('messages.reminderNotification')} ${reminder.noteTitle}`,
+                body: `${window.i18n.t('messages.reminderDue')} ${new Date(reminder.datetime).toLocaleString(locale)}`,
                 silent: false
               }).catch(err => console.warn('showNativeNotification rejected:', err));
             }

@@ -297,6 +297,8 @@
     "view": "Görüntüle",
     "markAsRead": "Okundu",
     "deleteNotification": "Sil",
-    "completed": "Tamamlandı"
+    "completed": "Tamamlandı",
+    "reminderDue": "Hatırlatma zamanı geldi:",
+    "reminderNotification": "⏰ Hatırlatma:"
   }
 }
