@@ -213,7 +213,11 @@
     "flags": "Bayraklar"
   },
   "viewer": {
-    "lastModified": "Son güncelleme"
+    "lastModified": "Son güncelleme",
+    "created": "Oluşturuldu:",
+    "updated": "Güncellendi",
+    "createdLabel": "Oluşturulma:",
+    "updatedLabel": "Güncelleme:"
   },
   "messages": {
     "noteSaved": "Not kaydedildi",
