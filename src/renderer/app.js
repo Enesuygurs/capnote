@@ -2379,6 +2379,9 @@ class CapnoteApp {
     // Save last viewed note (new note)
     this.saveLastViewedNote(this.currentNote.id);
 
+    // Clear active note in list when creating new note
+    this.clearActiveNoteInList();
+
     this.showEditor();
     this.clearEditor();
     this.updateCurrentDate();
@@ -2446,6 +2449,9 @@ class CapnoteApp {
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
     
+    // Clear active note in list when showing welcome screen
+    this.clearActiveNoteInList();
+    
     this.clearSavedSelection();
   }
 
@@ -2460,6 +2466,9 @@ class CapnoteApp {
   this.remindersNav?.classList.add('active');
   this.notificationsNav?.classList.remove('active');
     
+    // Clear active note in list when showing reminders screen
+    this.clearActiveNoteInList();
+    
     this.updateRemindersView();
   }
 
@@ -2473,6 +2482,9 @@ class CapnoteApp {
   // Update active states for reminders/notifications group only
   this.notificationsNav?.classList.add('active');
   this.remindersNav?.classList.remove('active');
+    
+    // Clear active note in list when showing notifications screen
+    this.clearActiveNoteInList();
     
     this.updateNotificationsView();
   }
@@ -3774,6 +3786,22 @@ class CapnoteApp {
         });
       }, 50);
     }
+  }
+
+  clearActiveNoteInList() {
+    // Clear active from main notes list
+    const activeNote = this.notesList.querySelector('.note-item.active');
+    if (activeNote) {
+      activeNote.classList.remove('active');
+    }
+
+    // Clear active from folder note lists
+    document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
+      const activeInFolder = container.querySelector('.folder-note-item.active');
+      if (activeInFolder) {
+        activeInFolder.classList.remove('active');
+      }
+    });
   }
 
   updateFolderNotes() {
