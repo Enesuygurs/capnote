@@ -101,7 +101,8 @@
     "characters": "karakter",
     "readingTime": "dk okuma",
     "readingTimeSeconds": "sn okuma",
-    "noReminder": "Bu not için hatırlatma yok"
+    "noReminder": "Bu not için hatırlatma yok",
+    "noHistory": "Henüz güncelleme yok"
   },
   "sort": {
     "dateDesc": "📅 Tarih (Yeni → Eski)",
@@ -216,6 +217,7 @@
     "lastModified": "Son güncelleme",
     "created": "Oluşturuldu:",
     "updated": "Güncellendi",
+    "reminderAdded": "Hatırlatıcı eklendi",
     "createdLabel": "Oluşturulma:",
     "updatedLabel": "Güncelleme:"
   },
