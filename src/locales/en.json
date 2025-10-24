@@ -292,6 +292,11 @@
     "noteUnpinned": "Note unpinned",
     "lockNote": "Lock",
     "unlockNote": "Unlock",
-    "deleteNote": "Delete note"
+    "deleteNote": "Delete note",
+    "viewNote": "View Note",
+    "view": "View",
+    "markAsRead": "Mark as Read",
+    "deleteNotification": "Delete",
+    "completed": "Completed"
   }
 }
