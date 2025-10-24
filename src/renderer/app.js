@@ -387,7 +387,7 @@ class CapnoteApp {
       console.log('Language selector changed to:', lang);
       if (window.i18n) {
         window.i18n.setLanguage(lang);
-        this.showNotification(lang === 'tr' ? 'Dil değiştirildi' : 'Language changed', 'success');
+        this.showNotification(window.i18n.t('messages.languageChanged'), 'success');
         // Update dynamic content that may not have data-i18n attributes
         this.updateDynamicTranslations();
       } else {
@@ -416,7 +416,7 @@ class CapnoteApp {
   this.toggleNativeNotifications?.addEventListener('change', (e) => {
     const enabled = e.currentTarget.checked;
     localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
-    this.showNotification(enabled ? 'Sistem bildirimleri açıldı' : 'Sistem bildirimleri kapatıldı', 'success');
+    this.showNotification(enabled ? window.i18n.t('messages.systemNotificationsEnabled') : window.i18n.t('messages.systemNotificationsDisabled'), 'success');
   });
   // Start at login toggle
   this.startAtLoginToggle?.addEventListener('change', async (e) => {
@@ -425,13 +425,13 @@ class CapnoteApp {
       if (window.electronAPI && typeof window.electronAPI.setStartAtLogin === 'function') {
         const res = await window.electronAPI.setStartAtLogin(enabled);
         if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
-        this.showNotification(enabled ? 'Başlangıçta Çalıştır: Açık' : 'Başlangıçta Çalıştır: Kapalı', 'success');
+        this.showNotification(enabled ? window.i18n.t('messages.launchOnStartupEnabled') : window.i18n.t('messages.launchOnStartupDisabled'), 'success');
       }
     } catch (err) {
       console.warn('setStartAtLogin failed:', err);
       // revert checkbox
       if (this.startAtLoginToggle) this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
-  this.showNotification('Başlangıçta çalıştır ayarı yapılamadı', 'error');
+  this.showNotification(window.i18n.t('messages.launchOnStartupError'), 'error');
     }
   });
   // Close to tray toggle: only wire on Windows (hide on macOS/Linux)
@@ -444,12 +444,12 @@ class CapnoteApp {
           if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
             const res = await window.electronAPI.setCloseToTray(enabled);
             if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
-            this.showNotification(enabled ? 'Kapatınca tepsiye küçült: açık' : 'Kapatınca tepsiye küçült: kapalı', 'success');
+            this.showNotification(enabled ? window.i18n.t('messages.minimizeToTrayEnabled') : window.i18n.t('messages.minimizeToTrayDisabled'), 'success');
           }
         } catch (err) {
           console.warn('setCloseToTray failed:', err);
           if (this.closeToTrayToggle) this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
-          this.showNotification('Tepsi ayarı yapılamadı', 'error');
+          this.showNotification(window.i18n.t('messages.minimizeToTrayError'), 'error');
         }
       });
     } else {
@@ -1790,10 +1790,10 @@ class CapnoteApp {
   try { this.updateActiveRemindersCount(); } catch (e) {}
   try { this.updateActiveNotificationsCount(); } catch (e) {}
   this.updateStats();
-      this.showNotification('Tüm notlar silindi', 'success');
+      this.showNotification(window.i18n.t('messages.allNotesDeleted'), 'success');
     } catch (err) {
       console.error('Tüm notlar silinirken hata:', err);
-      this.showNotification('Notlar silinemedi', 'error');
+      this.showNotification(window.i18n.t('messages.notesDeleteError'), 'error');
     }
   }
 
@@ -1846,10 +1846,10 @@ class CapnoteApp {
   try { this.updateActiveNotificationsCount(); } catch (e) {}
   // Ensure stats are refreshed (total notes / words / active days)
   try { this.updateStats(); } catch (e) {}
-  this.showNotification('Tüm klasörler ve içindeki notlar silindi', 'success');
+  this.showNotification(window.i18n.t('messages.allFoldersDeleted'), 'success');
     } catch (err) {
       console.error('Tüm klasörler silinirken hata:', err);
-      this.showNotification('Klasörler silinemedi', 'error');
+      this.showNotification(window.i18n.t('messages.foldersDeleteError'), 'error');
     }
   }
 
@@ -1925,10 +1925,10 @@ class CapnoteApp {
       // Show welcome/home screen instead of any note
       try { this.showWelcome(); } catch (e) {}
 
-      this.showNotification('Uygulama sıfırlandı', 'success');
+      this.showNotification(window.i18n.t('messages.appReset'), 'success');
     } catch (err) {
       console.error('Tüm içerik silinirken hata:', err);
-      this.showNotification('İçerik silinirken hata oluştu', 'error');
+      this.showNotification(window.i18n.t('messages.resetError'), 'error');
     }
   }
 
@@ -1972,7 +1972,7 @@ class CapnoteApp {
   handlePasswordConfirm() {
     const password = this.passwordInput.value;
     if (password === '') {
-      this.showNotification('Lütfen bir şifre girin', 'warning');
+      this.showNotification(window.i18n.t('messages.enterPassword'), 'warning');
       return;
     }
 
@@ -2161,7 +2161,7 @@ class CapnoteApp {
       try { this.updateStats(); } catch (e) {}
     } catch (error) {
       console.error('Notlar kaydedilirken hata:', error);
-      this.showNotification('Notlar kaydedilemedi!', 'error');
+      this.showNotification(window.i18n.t('messages.notesSaveError'), 'error');
     }
   }
 
@@ -2170,7 +2170,7 @@ class CapnoteApp {
   localStorage.setItem('capnote-folders', JSON.stringify(this.folders));
     } catch (error) {
       console.error('Klasörler kaydedilirken hata:', error);
-      this.showNotification('Klasörler kaydedilemedi!', 'error');
+      this.showNotification(window.i18n.t('messages.foldersSaveError'), 'error');
     }
   }
 
@@ -2273,7 +2273,7 @@ class CapnoteApp {
       localStorage.setItem('capnote-reminders', JSON.stringify(this.reminders));
     } catch (error) {
       console.error('Hatırlatmalar kaydedilirken hata:', error);
-      this.showNotification('Hatırlatmalar kaydedilemedi!', 'error');
+      this.showNotification(window.i18n.t('messages.remindersSaveError'), 'error');
     }
   }
 
@@ -2483,7 +2483,7 @@ class CapnoteApp {
     const activeReminders = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date());
     
     if (activeReminders.length === 0) {
-      this.remindersList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">Aktif hatırlatma bulunmuyor</div>';
+      this.remindersList.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">${window.i18n.t('messages.noActiveReminders')}</div>`;
       return;
     }
 
@@ -2533,14 +2533,14 @@ class CapnoteApp {
 
   async addReminder() {
     if (!this.currentNote || !this.reminderDatetime?.value) {
-      this.showNotification('Lütfen bir tarih ve saat seçin', 'error');
+      this.showNotification(window.i18n.t('messages.selectDateTime'), 'error');
       return;
     }
 
     // Check if note is saved (exists in notes array)
     const notExists = this.notes.some(n => n.id === this.currentNote.id);
     if (!notExists) {
-      this.showNotification('Hatırlatma eklemek için önce notu kaydedin', 'warning');
+      this.showNotification(window.i18n.t('messages.saveNoteFirst'), 'warning');
       return;
     }
 
@@ -2549,7 +2549,7 @@ class CapnoteApp {
     const now = new Date();
 
     if (reminderDate <= now) {
-      this.showNotification('Hatırlatma zamanı gelecekte olmalıdır', 'error');
+      this.showNotification(window.i18n.t('messages.futureDateRequired'), 'error');
       return;
     }
 
@@ -2590,7 +2590,7 @@ class CapnoteApp {
     this.reminderDatetime.value = '';
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
-    this.showNotification('Hatırlatma eklendi', 'success');
+    this.showNotification(window.i18n.t('messages.reminderAdded'), 'success');
   }
 
   async dismissReminder(reminderId) {
@@ -2601,7 +2601,7 @@ class CapnoteApp {
       this.updateRemindersView();
       this.updateNoteRemindersDisplay();
       this.updateActiveRemindersCount();
-      this.showNotification('Hatırlatma tamamlandı', 'success');
+      this.showNotification(window.i18n.t('messages.reminderCompleted'), 'success');
     }
   }
 
@@ -2653,7 +2653,7 @@ class CapnoteApp {
     await this.saveReminders();
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
-    this.showNotification('Hatırlatma silindi', 'info');
+    this.showNotification(window.i18n.t('messages.reminderDeleted'), 'info');
   }
 
   updateActiveRemindersCount() {
@@ -2676,7 +2676,7 @@ class CapnoteApp {
             reminder.noteTitle,
             `Hatırlatma zamanı geldi: ${new Date(reminder.datetime).toLocaleString('tr-TR')}`
           );
-          this.showNotification(`⏰ Hatırlatma: ${reminder.noteTitle}`, 'info', { notificationId: nid });
+          this.showNotification(`${window.i18n.t('messages.reminderPrefix')} ${reminder.noteTitle}`, 'info', { notificationId: nid });
 
           // Also trigger a native OS notification via the preload bridge if the user enabled it
           try {
@@ -3022,7 +3022,7 @@ class CapnoteApp {
     this.updateFavoriteButtons();
 
     if (!silent) {
-      this.showNotification('Not kaydedildi!', 'success');
+      this.showNotification(window.i18n.t('messages.noteSaved'), 'success');
       this.showViewer();
       this.displayNote(this.currentNote);
     }
@@ -3292,11 +3292,11 @@ class CapnoteApp {
             document.execCommand('copy');
             sel.removeAllRanges();
             btn.classList.add('copied');
-            if (this.showNotification) this.showNotification('Kod panoya kopyalandı', 'success');
+            if (this.showNotification) this.showNotification(window.i18n.t('messages.codeCopied'), 'success');
             setTimeout(() => btn.classList.remove('copied'), 1200);
           } catch (e) {
             console.error('copy failed', e);
-            if (this.showNotification) this.showNotification('Kopyalama başarısız', 'error');
+            if (this.showNotification) this.showNotification(window.i18n.t('messages.copyFailed'), 'error');
           }
         }
       });
@@ -3480,13 +3480,13 @@ class CapnoteApp {
     if (!this.currentNote) return;
 
     this.showConfirm(
-      `"${this.currentNote.title}" notunu silmek istediğinizden emin misiniz?`,
+      `"${this.currentNote.title}" ${window.i18n.t('messages.confirmDelete')}`,
       () => {
         this.notes = this.notes.filter((note) => note.id !== this.currentNote.id);
         this.saveNotes();
         this.updateNotesList();
         this.updateStats();
-        this.showNotification('Not silindi!', 'success');
+        this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
 
         if (this.notes.length > 0) {
           this.selectNote(this.notes[0]);
@@ -3516,7 +3516,7 @@ class CapnoteApp {
     this.saveNotes();
     this.updateNotesList();
     this.updateStats();
-    this.showNotification('Not kopyalandı!', 'success');
+    this.showNotification(window.i18n.t('messages.noteCopied'), 'success');
 
     this.selectNote(duplicate);
   }
@@ -4538,12 +4538,12 @@ class CapnoteApp {
 
   showMoodPicker() {
     // Implementation for mood picker modal
-    this.showNotification('Ruh hali seçimi için yan paneli kullanın', 'info');
+    this.showNotification(window.i18n.t('messages.useSidePanel'), 'info');
   }
 
   showWeatherPicker() {
     // Implementation for weather picker modal
-    this.showNotification('Hava durumu seçimi için yan paneli kullanın', 'info');
+    this.showNotification(window.i18n.t('messages.useWeatherPanel'), 'info');
   }
 
   // Tags methods
@@ -4552,7 +4552,7 @@ class CapnoteApp {
 
     // Maksimum 5 etiket kontrolü
     if (this.tags.length >= 5) {
-      this.showNotification('Maksimum 5 etiket ekleyebilirsiniz!', 'warning');
+      this.showNotification(window.i18n.t('messages.maxTags'), 'warning');
       return;
     }
 
@@ -4619,7 +4619,7 @@ class CapnoteApp {
     }
 
     this.downloadFile(content, filename, mimeType);
-    this.showNotification('Not dışa aktarıldı!', 'success');
+    this.showNotification(window.i18n.t('messages.noteExported'), 'success');
   }
 
   getPlainText(html) {
@@ -4688,7 +4688,7 @@ class CapnoteApp {
     // Use html2pdf (included via CDN) to export the viewer content as a PDF.
     try {
       const note = this.currentNote;
-      if (!note) return this.showNotification('Dışa aktarılacak not seçili değil', 'warning');
+      if (!note) return this.showNotification(window.i18n.t('messages.noNoteSelected'), 'warning');
 
       // Create container and basic structure
       const container = document.createElement('div');
@@ -4747,17 +4747,17 @@ class CapnoteApp {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      this.showNotification('PDF oluşturuluyor...', 'info');
+      this.showNotification(window.i18n.t('messages.pdfCreating'), 'info');
       // Generate PDF from the container
       html2pdf().from(container).set(opt).save().then(() => {
-        this.showNotification('PDF oluşturuldu', 'success');
+        this.showNotification(window.i18n.t('messages.pdfCreated'), 'success');
       }).catch((err) => {
         console.error('PDF export error', err);
-        this.showNotification('PDF oluşturulamadı', 'error');
+        this.showNotification(window.i18n.t('messages.pdfError'), 'error');
       });
     } catch (err) {
       console.error('exportToPDF error', err);
-      this.showNotification('PDF dışa aktarılırken hata oluştu', 'error');
+      this.showNotification(window.i18n.t('messages.pdfExportError'), 'error');
     }
   }
 
@@ -5259,7 +5259,7 @@ class CapnoteApp {
 
       this.saveNotes();
       this.updateNotesList();
-      this.showNotification('Not kilitlendi', 'success');
+      this.showNotification(window.i18n.t('messages.noteLocked'), 'success');
   // Note lock result (debug logs removed)
     }
   }
@@ -5276,10 +5276,10 @@ class CapnoteApp {
       if (this.currentNote && this.currentNote.id === note.id) {
         this.displayNote(note);
       }
-      this.showNotification('Not kilidi açıldı', 'success');
+      this.showNotification(window.i18n.t('messages.noteUnlocked'), 'success');
     } else if (password !== null) {
       // null means cancelled
-      this.showNotification('Yanlış şifre!', 'error');
+      this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
     }
   }
 
@@ -5305,10 +5305,10 @@ class CapnoteApp {
       this.displayNote(note);
   this.setActiveNoteInList(this.currentNote.id);
 
-      this.showNotification('Not geçici olarak açıldı', 'info');
+      this.showNotification(window.i18n.t('messages.noteTemporarilyUnlocked'), 'info');
     } else if (password !== null) {
       // null means cancelled
-      this.showNotification('Yanlış şifre!', 'error');
+      this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
     }
   }
 
@@ -5316,7 +5316,7 @@ class CapnoteApp {
     const note = this.notes.find((n) => n.id == noteId);
     if (!note) return;
 
-    this.confirmMessage.textContent = `"${note.title}" notunu silmek istediğinizden emin misiniz?`;
+    this.confirmMessage.textContent = `"${note.title}" ${window.i18n.t('messages.confirmDelete')}`;
     this.confirmCallback = () => {
       const index = this.notes.findIndex((n) => n.id == noteId);
       if (index >= 0) {
@@ -5345,7 +5345,7 @@ class CapnoteApp {
           }
         }
 
-        this.showNotification('Not silindi!', 'success');
+        this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
       }
     };
     this.showModal(this.confirmModal);
@@ -5579,7 +5579,7 @@ class CapnoteApp {
         const v = parseInt(e.target.value, 10);
         if (!isNaN(v) && v >= 3 && v <= 10) {
           localStorage.setItem('maxPinnedNotes', String(v));
-          this.showNotification('Sabit not limiti güncellendi', 'success');
+          this.showNotification(window.i18n.t('messages.pinnedLimitUpdated'), 'success');
         }
       });
     }
@@ -7154,7 +7154,7 @@ class CapnoteApp {
 
       // For now, any password unlocks (you can add proper password validation)
       note.isLocked = false;
-      this.showNotification('Not kilidi açıldı', 'success');
+      this.showNotification(window.i18n.t('messages.noteUnlocked'), 'success');
     } else {
       // Lock note - ask for password
       const password = await this.showPasswordModal('Not için şifre belirleyin');
@@ -7162,7 +7162,7 @@ class CapnoteApp {
 
       note.isLocked = true;
       note.password = password; // In real app, this should be hashed
-      this.showNotification('Not kilitlendi', 'success');
+      this.showNotification(window.i18n.t('messages.noteLocked'), 'success');
     }
 
     note.updatedAt = new Date().toISOString();
@@ -7300,7 +7300,7 @@ class CapnoteApp {
     this.saveFolders();
     // Update only the folder header icon in the DOM to avoid re-rendering the entire notes list
     this.updateFolderColorInDOM(folderId, color);
-    this.showNotification('Klasör rengi güncellendi', 'success');
+    this.showNotification(window.i18n.t('messages.folderColorUpdated'), 'success');
     // Clean up the dataset to avoid stale ids
     try {
       if (this.folderColorPicker) delete this.folderColorPicker.dataset.folderId;
