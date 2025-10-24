@@ -299,6 +299,9 @@
     "deleteNotification": "Delete",
     "completed": "Completed",
     "reminderDue": "Reminder time:",
-    "reminderNotification": "⏰ Reminder:"
+    "reminderNotification": "⏰ Reminder:",
+    "renameFolder": "Rename Folder",
+    "confirmDeleteFolder": "folder will be deleted. This action cannot be undone. Do you want to continue?",
+    "confirmDeleteFolderWithNotes": "folder and its {count} notes will be permanently deleted. This action cannot be undone. Do you want to continue?"
   }
 }

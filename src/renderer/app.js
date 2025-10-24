@@ -6395,9 +6395,9 @@ class CapnoteApp {
     const titleEl = this.folderModal.querySelector('.modal-title h3');
     const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
-    if (titleEl) titleEl.textContent = 'Klasörü Yeniden Adlandır';
+    if (titleEl) titleEl.textContent = window.i18n.t('messages.renameFolder');
     if (iconEl) { iconEl.className = 'fas fa-edit'; }
-    if (createBtn) createBtn.textContent = 'Kaydet';
+    if (createBtn) createBtn.textContent = window.i18n.t('buttons.save');
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
   }
@@ -7208,8 +7208,8 @@ class CapnoteApp {
 
     const message =
       noteCount > 0
-        ? `"${folder.name}" klasörü ve içindeki ${noteCount} not kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?`
-        : `"${folder.name}" klasörü silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?`;
+        ? `"${folder.name}" ${window.i18n.t('messages.confirmDeleteFolderWithNotes').replace('{count}', noteCount)}`
+        : `"${folder.name}" ${window.i18n.t('messages.confirmDeleteFolder')}`;
 
     this.confirmMessage.textContent = message;
 
