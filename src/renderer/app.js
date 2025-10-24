@@ -2600,6 +2600,19 @@ class CapnoteApp {
     this.reminders.push(reminder);
     await this.saveReminders();
     this.reminderDatetime.value = '';
+    
+    // Add reminder to note history
+    if (this.currentNote) {
+      if (!this.currentNote.history) {
+        this.currentNote.history = [];
+      }
+      this.currentNote.history.push({
+        type: 'reminderAdded',
+        ts: new Date().toISOString()
+      });
+      await this.saveNotes();
+    }
+    
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
     this.showNotification(window.i18n.t('messages.reminderAdded'), 'success');
@@ -2627,7 +2640,8 @@ class CapnoteApp {
     );
 
     if (noteReminders.length === 0) {
-      this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
+      // Don't show anything if there are no reminders
+      this.noteRemindersList.innerHTML = '';
       return;
     }
 
@@ -3700,14 +3714,21 @@ class CapnoteApp {
         const d = new Date(h.ts);
         const item = document.createElement('div');
         item.className = 'history-item';
-        item.innerHTML = `<span class="history-type">${window.i18n.t('viewer.updated')}</span> <span class="history-ts">${d.toLocaleString(locale)}</span>`;
+        
+        // Different display based on history type
+        let typeLabel = window.i18n.t('viewer.updated');
+        if (h.type === 'reminderAdded') {
+          typeLabel = window.i18n.t('viewer.reminderAdded');
+        }
+        
+        item.innerHTML = `<span class="history-type">${typeLabel}</span> <span class="history-ts">${d.toLocaleString(locale)}</span>`;
         list.appendChild(item);
       });
       this.historyBody.appendChild(list);
     } else {
       const empty = document.createElement('div');
       empty.className = 'history-empty';
-      empty.textContent = window.i18n.t('stats.noReminder');
+      empty.textContent = window.i18n.t('stats.noHistory');
       this.historyBody.appendChild(empty);
     }
 
@@ -7380,7 +7401,8 @@ class CapnoteApp {
         );
         
         if (noteReminders.length === 0) {
-          this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
+          // Don't show anything if there are no reminders
+          this.noteRemindersList.innerHTML = '';
         }
       }
       
