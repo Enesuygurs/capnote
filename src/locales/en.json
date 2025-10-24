@@ -99,7 +99,9 @@
     "totalWords": "Total Words",
     "words": "words",
     "characters": "characters",
-    "readingTime": "min read"
+    "readingTime": "min read",
+    "readingTimeSeconds": "sec read",
+    "noReminder": "No reminder for this note"
   },
   "sort": {
     "dateDesc": "📅 Date (Newest → Oldest)",

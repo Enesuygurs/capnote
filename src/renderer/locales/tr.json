@@ -99,7 +99,9 @@
     "totalWords": "Toplam Kelime",
     "words": "kelime",
     "characters": "karakter",
-    "readingTime": "dk okuma"
+    "readingTime": "dk okuma",
+    "readingTimeSeconds": "sn okuma",
+    "noReminder": "Bu not için hatırlatma yok"
   },
   "sort": {
     "dateDesc": "📅 Tarih (Yeni → Eski)",

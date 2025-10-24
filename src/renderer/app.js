@@ -2615,7 +2615,7 @@ class CapnoteApp {
     );
 
     if (noteReminders.length === 0) {
-      this.noteRemindersList.innerHTML = '<div class="note-no-reminder">Bu not için hatırlatma yok</div>';
+      this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
       return;
     }
 
@@ -2924,19 +2924,19 @@ class CapnoteApp {
     const chars = text.length;
 
     if (this.wordCount) {
-      this.wordCount.textContent = `${words} kelime`;
+      this.wordCount.textContent = `${words} ${window.i18n.t('stats.words')}`;
     }
     if (this.charCount) {
-      this.charCount.textContent = `${chars} karakter`;
+      this.charCount.textContent = `${chars} ${window.i18n.t('stats.characters')}`;
     }
 
     // Editor-side reading time estimate (baseline 200 WPM)
     const WPM = 200;
     const seconds = words ? Math.ceil((words / WPM) * 60) : 0;
     if (this.editorReadingTime) {
-      if (!seconds) this.editorReadingTime.textContent = `0 dk okuma`;
-      else if (seconds < 60) this.editorReadingTime.textContent = `~${seconds} sn okuma`;
-      else this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} dk okuma`;
+      if (!seconds) this.editorReadingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
+      else if (seconds < 60) this.editorReadingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
+      else this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} ${window.i18n.t('stats.readingTime')}`;
     }
 
     if (this.currentNote) {
@@ -3623,19 +3623,19 @@ class CapnoteApp {
   // Update in-memory note counts so subsequent actions use the up-to-date value
   note.wordCount = counts.words;
   note.charCount = counts.chars;
-  if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} kelime`;
-  if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} karakter`;
+  if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
+  if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
   // Reading time calculation (baseline 200 words per minute)
   const WPM = 200;
   if (!counts.words) {
-    this.readingTime.textContent = `0 dk okuma`;
+    this.readingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
   } else {
     const seconds = Math.ceil((counts.words / WPM) * 60);
     if (seconds < 60) {
-      this.readingTime.textContent = `~${seconds} sn okuma`;
+      this.readingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
     } else {
       const minutes = Math.round(seconds / 60);
-      this.readingTime.textContent = `~${minutes} dk okuma`;
+      this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
     }
   }
     // Show date + time for last modified (e.g. 12.10.2025 14:35)
@@ -7329,50 +7329,43 @@ class CapnoteApp {
   }
 
   updateDynamicTranslations() {
-    // Update word count displays
-    if (window.i18n) {
-      const wordText = window.i18n.t('stats.words');
-      const charText = window.i18n.t('stats.characters');
-      const readingText = window.i18n.t('stats.readingTime');
+    // Re-trigger count updates to use new translations
+    if (this.currentNote) {
+      // Update editor counts
+      this.updateCount();
       
-      // Update editor meta if note is being edited
-      const wordCountEl = document.getElementById('wordCount');
-      const charCountEl = document.getElementById('charCount');
-      const readingTimeEl = document.getElementById('editorReadingTime');
-      
-      if (wordCountEl) {
-        const count = wordCountEl.textContent.match(/\d+/);
-        if (count) wordCountEl.innerHTML = `${count[0]} <span data-i18n="stats.words">${wordText}</span>`;
+      // Update note reminders text if visible
+      if (this.noteRemindersList) {
+        const noteReminders = this.reminders.filter(r => 
+          r.noteId === this.currentNote.id && 
+          !r.dismissed && 
+          new Date(r.datetime) > new Date()
+        );
+        
+        if (noteReminders.length === 0) {
+          this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
+        }
       }
+    }
+    
+    // Update viewer stats if a note is being viewed
+    const viewerActive = document.querySelector('.viewer.active');
+    if (viewerActive && this.viewingNote) {
+      const counts = this.countWordsAndCharsFromHtml(this.viewingNote.content || '');
+      if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
+      if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
       
-      if (charCountEl) {
-        const count = charCountEl.textContent.match(/\d+/);
-        if (count) charCountEl.innerHTML = `${count[0]} <span data-i18n="stats.characters">${charText}</span>`;
-      }
-      
-      if (readingTimeEl) {
-        const count = readingTimeEl.textContent.match(/\d+/);
-        if (count) readingTimeEl.innerHTML = `~${count[0]} <span data-i18n="stats.readingTime">${readingText}</span>`;
-      }
-
-      // Update viewer stats
-      const viewerWordCount = document.getElementById('viewerWordCount');
-      const viewerCharCount = document.getElementById('viewerCharCount');
-      const viewerReadingTime = document.getElementById('readingTime');
-      
-      if (viewerWordCount) {
-        const count = viewerWordCount.textContent.match(/\d+/);
-        if (count) viewerWordCount.innerHTML = `${count[0]} <span data-i18n="stats.words">${wordText}</span>`;
-      }
-      
-      if (viewerCharCount) {
-        const count = viewerCharCount.textContent.match(/\d+/);
-        if (count) viewerCharCount.innerHTML = `${count[0]} <span data-i18n="stats.characters">${charText}</span>`;
-      }
-      
-      if (viewerReadingTime) {
-        const count = viewerReadingTime.textContent.match(/\d+/);
-        if (count) viewerReadingTime.innerHTML = `~${count[0]} <span data-i18n="stats.readingTime">${readingText}</span>`;
+      const WPM = 200;
+      if (!counts.words) {
+        this.readingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
+      } else {
+        const seconds = Math.ceil((counts.words / WPM) * 60);
+        if (seconds < 60) {
+          this.readingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
+        } else {
+          const minutes = Math.round(seconds / 60);
+          this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
+        }
       }
     }
   }
