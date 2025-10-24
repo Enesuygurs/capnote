@@ -1860,7 +1860,7 @@ input[type="color"].color-picker::-moz-color-swatch {
   white-space: pre-wrap;
 }
 .rich-editor:empty:before {
-  content: attr(placeholder);
+  content: attr(data-placeholder);
   color: var(--text-muted);
   font-style: italic;
 }
