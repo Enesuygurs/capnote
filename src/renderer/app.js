@@ -106,6 +106,20 @@ class CapnoteApp {
   }
 
   async init() {
+    // Wait for i18n to be ready
+    if (window.i18n && !window.i18n.translations.tr) {
+      console.log('Waiting for i18n to initialize...');
+      await new Promise(resolve => {
+        const checkI18n = setInterval(() => {
+          if (window.i18n.translations.tr && Object.keys(window.i18n.translations.tr).length > 0) {
+            clearInterval(checkI18n);
+            console.log('i18n is ready');
+            resolve();
+          }
+        }, 100);
+      });
+    }
+    
     await this.loadNotes();
     await this.loadReminders();
     await this.loadNotifications();
@@ -243,6 +257,7 @@ class CapnoteApp {
   this.clearAllContentBtn = document.getElementById('clearAllContentBtn');
   this.maxPinnedSelect = document.getElementById('maxPinnedSelect');
     this.darkModeToggle = document.getElementById('darkModeToggle');
+  this.languageSelect = document.getElementById('languageSelect');
   this.accentYellowBtn = document.getElementById('accentYellow');
   this.accentCherryBtn = document.getElementById('accentCherry');
   this.accentAppleBtn = document.getElementById('accentApple');
@@ -364,6 +379,26 @@ class CapnoteApp {
     this.newNoteBtn.addEventListener('click', () => this.createNewNote());
     this.settingsBtn.addEventListener('click', () => this.showSettingsModal());
     this.helpSupport.addEventListener('click', () => this.showSettingsModal());
+  
+  // Language selector
+  if (this.languageSelect) {
+    this.languageSelect.addEventListener('change', (e) => {
+      const lang = e.target.value;
+      console.log('Language selector changed to:', lang);
+      if (window.i18n) {
+        window.i18n.setLanguage(lang);
+        this.showNotification(window.i18n.t('messages.languageChanged'), 'success');
+        // Update dynamic content that may not have data-i18n attributes
+        this.updateDynamicTranslations();
+      } else {
+        console.error('window.i18n is not available');
+      }
+    });
+    console.log('Language selector event listener attached');
+  } else {
+    console.error('Language selector element not found!');
+  }
+
   // Accent swatches
   this.accentYellowBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#f59e0b'));
   this.accentCherryBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#e11d48'));
@@ -381,7 +416,7 @@ class CapnoteApp {
   this.toggleNativeNotifications?.addEventListener('change', (e) => {
     const enabled = e.currentTarget.checked;
     localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
-    this.showNotification(enabled ? 'Sistem bildirimleri açıldı' : 'Sistem bildirimleri kapatıldı', 'success');
+    this.showNotification(enabled ? window.i18n.t('messages.systemNotificationsEnabled') : window.i18n.t('messages.systemNotificationsDisabled'), 'success');
   });
   // Start at login toggle
   this.startAtLoginToggle?.addEventListener('change', async (e) => {
@@ -390,13 +425,13 @@ class CapnoteApp {
       if (window.electronAPI && typeof window.electronAPI.setStartAtLogin === 'function') {
         const res = await window.electronAPI.setStartAtLogin(enabled);
         if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
-        this.showNotification(enabled ? 'Başlangıçta Çalıştır: Açık' : 'Başlangıçta Çalıştır: Kapalı', 'success');
+        this.showNotification(enabled ? window.i18n.t('messages.launchOnStartupEnabled') : window.i18n.t('messages.launchOnStartupDisabled'), 'success');
       }
     } catch (err) {
       console.warn('setStartAtLogin failed:', err);
       // revert checkbox
       if (this.startAtLoginToggle) this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
-  this.showNotification('Başlangıçta çalıştır ayarı yapılamadı', 'error');
+  this.showNotification(window.i18n.t('messages.launchOnStartupError'), 'error');
     }
   });
   // Close to tray toggle: only wire on Windows (hide on macOS/Linux)
@@ -409,12 +444,12 @@ class CapnoteApp {
           if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
             const res = await window.electronAPI.setCloseToTray(enabled);
             if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
-            this.showNotification(enabled ? 'Kapatınca tepsiye küçült: açık' : 'Kapatınca tepsiye küçült: kapalı', 'success');
+            this.showNotification(enabled ? window.i18n.t('messages.minimizeToTrayEnabled') : window.i18n.t('messages.minimizeToTrayDisabled'), 'success');
           }
         } catch (err) {
           console.warn('setCloseToTray failed:', err);
           if (this.closeToTrayToggle) this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
-          this.showNotification('Tepsi ayarı yapılamadı', 'error');
+          this.showNotification(window.i18n.t('messages.minimizeToTrayError'), 'error');
         }
       });
     } else {
@@ -1755,10 +1790,10 @@ class CapnoteApp {
   try { this.updateActiveRemindersCount(); } catch (e) {}
   try { this.updateActiveNotificationsCount(); } catch (e) {}
   this.updateStats();
-      this.showNotification('Tüm notlar silindi', 'success');
+      this.showNotification(window.i18n.t('messages.allNotesDeleted'), 'success');
     } catch (err) {
       console.error('Tüm notlar silinirken hata:', err);
-      this.showNotification('Notlar silinemedi', 'error');
+      this.showNotification(window.i18n.t('messages.notesDeleteError'), 'error');
     }
   }
 
@@ -1811,10 +1846,10 @@ class CapnoteApp {
   try { this.updateActiveNotificationsCount(); } catch (e) {}
   // Ensure stats are refreshed (total notes / words / active days)
   try { this.updateStats(); } catch (e) {}
-  this.showNotification('Tüm klasörler ve içindeki notlar silindi', 'success');
+  this.showNotification(window.i18n.t('messages.allFoldersDeleted'), 'success');
     } catch (err) {
       console.error('Tüm klasörler silinirken hata:', err);
-      this.showNotification('Klasörler silinemedi', 'error');
+      this.showNotification(window.i18n.t('messages.foldersDeleteError'), 'error');
     }
   }
 
@@ -1890,10 +1925,10 @@ class CapnoteApp {
       // Show welcome/home screen instead of any note
       try { this.showWelcome(); } catch (e) {}
 
-      this.showNotification('Uygulama sıfırlandı', 'success');
+      this.showNotification(window.i18n.t('messages.appReset'), 'success');
     } catch (err) {
       console.error('Tüm içerik silinirken hata:', err);
-      this.showNotification('İçerik silinirken hata oluştu', 'error');
+      this.showNotification(window.i18n.t('messages.resetError'), 'error');
     }
   }
 
@@ -1937,7 +1972,7 @@ class CapnoteApp {
   handlePasswordConfirm() {
     const password = this.passwordInput.value;
     if (password === '') {
-      this.showNotification('Lütfen bir şifre girin', 'warning');
+      this.showNotification(window.i18n.t('messages.enterPassword'), 'warning');
       return;
     }
 
@@ -2126,7 +2161,7 @@ class CapnoteApp {
       try { this.updateStats(); } catch (e) {}
     } catch (error) {
       console.error('Notlar kaydedilirken hata:', error);
-      this.showNotification('Notlar kaydedilemedi!', 'error');
+      this.showNotification(window.i18n.t('messages.notesSaveError'), 'error');
     }
   }
 
@@ -2135,7 +2170,7 @@ class CapnoteApp {
   localStorage.setItem('capnote-folders', JSON.stringify(this.folders));
     } catch (error) {
       console.error('Klasörler kaydedilirken hata:', error);
-      this.showNotification('Klasörler kaydedilemedi!', 'error');
+      this.showNotification(window.i18n.t('messages.foldersSaveError'), 'error');
     }
   }
 
@@ -2238,7 +2273,7 @@ class CapnoteApp {
       localStorage.setItem('capnote-reminders', JSON.stringify(this.reminders));
     } catch (error) {
       console.error('Hatırlatmalar kaydedilirken hata:', error);
-      this.showNotification('Hatırlatmalar kaydedilemedi!', 'error');
+      this.showNotification(window.i18n.t('messages.remindersSaveError'), 'error');
     }
   }
 
@@ -2448,7 +2483,7 @@ class CapnoteApp {
     const activeReminders = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date());
     
     if (activeReminders.length === 0) {
-      this.remindersList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">Aktif hatırlatma bulunmuyor</div>';
+      this.remindersList.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">${window.i18n.t('messages.noActiveReminders')}</div>`;
       return;
     }
 
@@ -2470,10 +2505,10 @@ class CapnoteApp {
           </div>
           <div class="reminder-actions">
             <button class="reminder-action-btn view-note-btn" data-note-id="${r.noteId}">
-              <i class="fas fa-eye"></i> Notu Görüntüle
+              <i class="fas fa-eye"></i> ${window.i18n.t('messages.viewNote')}
             </button>
             <button class="reminder-action-btn dismiss-btn" data-reminder-id="${r.id}">
-              <i class="fas fa-check"></i> Tamamlandı
+              <i class="fas fa-check"></i> ${window.i18n.t('messages.completed')}
             </button>
           </div>
         </div>
@@ -2498,14 +2533,14 @@ class CapnoteApp {
 
   async addReminder() {
     if (!this.currentNote || !this.reminderDatetime?.value) {
-      this.showNotification('Lütfen bir tarih ve saat seçin', 'error');
+      this.showNotification(window.i18n.t('messages.selectDateTime'), 'error');
       return;
     }
 
     // Check if note is saved (exists in notes array)
     const notExists = this.notes.some(n => n.id === this.currentNote.id);
     if (!notExists) {
-      this.showNotification('Hatırlatma eklemek için önce notu kaydedin', 'warning');
+      this.showNotification(window.i18n.t('messages.saveNoteFirst'), 'warning');
       return;
     }
 
@@ -2514,7 +2549,7 @@ class CapnoteApp {
     const now = new Date();
 
     if (reminderDate <= now) {
-      this.showNotification('Hatırlatma zamanı gelecekte olmalıdır', 'error');
+      this.showNotification(window.i18n.t('messages.futureDateRequired'), 'error');
       return;
     }
 
@@ -2555,7 +2590,7 @@ class CapnoteApp {
     this.reminderDatetime.value = '';
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
-    this.showNotification('Hatırlatma eklendi', 'success');
+    this.showNotification(window.i18n.t('messages.reminderAdded'), 'success');
   }
 
   async dismissReminder(reminderId) {
@@ -2566,7 +2601,7 @@ class CapnoteApp {
       this.updateRemindersView();
       this.updateNoteRemindersDisplay();
       this.updateActiveRemindersCount();
-      this.showNotification('Hatırlatma tamamlandı', 'success');
+      this.showNotification(window.i18n.t('messages.reminderCompleted'), 'success');
     }
   }
 
@@ -2580,7 +2615,7 @@ class CapnoteApp {
     );
 
     if (noteReminders.length === 0) {
-      this.noteRemindersList.innerHTML = '<div class="note-no-reminder">Bu not için hatırlatma yok</div>';
+      this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
       return;
     }
 
@@ -2618,7 +2653,7 @@ class CapnoteApp {
     await this.saveReminders();
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
-    this.showNotification('Hatırlatma silindi', 'info');
+    this.showNotification(window.i18n.t('messages.reminderDeleted'), 'info');
   }
 
   updateActiveRemindersCount() {
@@ -2636,20 +2671,21 @@ class CapnoteApp {
       this.reminders.forEach(reminder => {
         if (!reminder.dismissed && new Date(reminder.datetime) <= now) {
           // Add to notifications list and show a toast that references the notification id
+          const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
           const nid = this.addNotification(
             reminder.noteId,
             reminder.noteTitle,
-            `Hatırlatma zamanı geldi: ${new Date(reminder.datetime).toLocaleString('tr-TR')}`
+            `${window.i18n.t('messages.reminderDue')} ${new Date(reminder.datetime).toLocaleString(locale)}`
           );
-          this.showNotification(`⏰ Hatırlatma: ${reminder.noteTitle}`, 'info', { notificationId: nid });
+          this.showNotification(`${window.i18n.t('messages.reminderPrefix')} ${reminder.noteTitle}`, 'info', { notificationId: nid });
 
           // Also trigger a native OS notification via the preload bridge if the user enabled it
           try {
             const nativePref = this.toggleNativeNotifications ? this.toggleNativeNotifications.checked : (localStorage.getItem('settings.nativeNotifications') === null ? true : (localStorage.getItem('settings.nativeNotifications') === '1' || localStorage.getItem('settings.nativeNotifications') === 'true'));
             if (nativePref && window && window.electronAPI && typeof window.electronAPI.showNativeNotification === 'function') {
               window.electronAPI.showNativeNotification({
-                title: `⏰ Hatırlatma: ${reminder.noteTitle}`,
-                body: `Hatırlatma zamanı geldi: ${new Date(reminder.datetime).toLocaleString('tr-TR')}`,
+                title: `${window.i18n.t('messages.reminderNotification')} ${reminder.noteTitle}`,
+                body: `${window.i18n.t('messages.reminderDue')} ${new Date(reminder.datetime).toLocaleString(locale)}`,
                 silent: false
               }).catch(err => console.warn('showNativeNotification rejected:', err));
             }
@@ -2740,15 +2776,15 @@ class CapnoteApp {
         <div class="notification-message">${this.escapeHtml(n.message)}</div>
         <div class="notification-actions">
           <button class="notification-action-btn view-notification-note-btn" data-note-id="${n.noteId}">
-            <i class="fas fa-eye"></i> Görüntüle
+            <i class="fas fa-eye"></i> ${window.i18n.t('messages.view')}
           </button>
           ${!n.read ? `
             <button class="notification-action-btn mark-read-btn" data-notification-id="${n.id}">
-              <i class="fas fa-check"></i> Okundu
+              <i class="fas fa-check"></i> ${window.i18n.t('messages.markAsRead')}
             </button>
           ` : ''}
           <button class="notification-action-btn delete-notification-btn" data-notification-id="${n.id}">
-            <i class="fas fa-trash"></i> Sil
+            <i class="fas fa-trash"></i> ${window.i18n.t('messages.deleteNotification')}
           </button>
         </div>
       </div>
@@ -2858,7 +2894,8 @@ class CapnoteApp {
   updateCurrentDate() {
     if (this.noteDate) {
       const now = new Date();
-      this.noteDate.textContent = now.toLocaleDateString('tr-TR', {
+      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+      this.noteDate.textContent = now.toLocaleDateString(locale, {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -2889,19 +2926,19 @@ class CapnoteApp {
     const chars = text.length;
 
     if (this.wordCount) {
-      this.wordCount.textContent = `${words} kelime`;
+      this.wordCount.textContent = `${words} ${window.i18n.t('stats.words')}`;
     }
     if (this.charCount) {
-      this.charCount.textContent = `${chars} karakter`;
+      this.charCount.textContent = `${chars} ${window.i18n.t('stats.characters')}`;
     }
 
     // Editor-side reading time estimate (baseline 200 WPM)
     const WPM = 200;
     const seconds = words ? Math.ceil((words / WPM) * 60) : 0;
     if (this.editorReadingTime) {
-      if (!seconds) this.editorReadingTime.textContent = `0 dk okuma`;
-      else if (seconds < 60) this.editorReadingTime.textContent = `~${seconds} sn okuma`;
-      else this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} dk okuma`;
+      if (!seconds) this.editorReadingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
+      else if (seconds < 60) this.editorReadingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
+      else this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} ${window.i18n.t('stats.readingTime')}`;
     }
 
     if (this.currentNote) {
@@ -2986,7 +3023,7 @@ class CapnoteApp {
     this.updateFavoriteButtons();
 
     if (!silent) {
-      this.showNotification('Not kaydedildi!', 'success');
+      this.showNotification(window.i18n.t('messages.noteSaved'), 'success');
       this.showViewer();
       this.displayNote(this.currentNote);
     }
@@ -3256,11 +3293,11 @@ class CapnoteApp {
             document.execCommand('copy');
             sel.removeAllRanges();
             btn.classList.add('copied');
-            if (this.showNotification) this.showNotification('Kod panoya kopyalandı', 'success');
+            if (this.showNotification) this.showNotification(window.i18n.t('messages.codeCopied'), 'success');
             setTimeout(() => btn.classList.remove('copied'), 1200);
           } catch (e) {
             console.error('copy failed', e);
-            if (this.showNotification) this.showNotification('Kopyalama başarısız', 'error');
+            if (this.showNotification) this.showNotification(window.i18n.t('messages.copyFailed'), 'error');
           }
         }
       });
@@ -3444,13 +3481,13 @@ class CapnoteApp {
     if (!this.currentNote) return;
 
     this.showConfirm(
-      `"${this.currentNote.title}" notunu silmek istediğinizden emin misiniz?`,
+      `"${this.currentNote.title}" ${window.i18n.t('messages.confirmDelete')}`,
       () => {
         this.notes = this.notes.filter((note) => note.id !== this.currentNote.id);
         this.saveNotes();
         this.updateNotesList();
         this.updateStats();
-        this.showNotification('Not silindi!', 'success');
+        this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
 
         if (this.notes.length > 0) {
           this.selectNote(this.notes[0]);
@@ -3468,7 +3505,7 @@ class CapnoteApp {
     const duplicate = {
       ...this.currentNote,
       id: Date.now(),
-      title: this.currentNote.title + ' (Kopya)',
+      title: this.currentNote.title + window.i18n.t('messages.noteCopySuffix'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       isPinned: false, // Kopyalanan not sabitlenmiş olmasın
@@ -3480,7 +3517,7 @@ class CapnoteApp {
     this.saveNotes();
     this.updateNotesList();
     this.updateStats();
-    this.showNotification('Not kopyalandı!', 'success');
+    this.showNotification(window.i18n.t('messages.noteCopied'), 'success');
 
     this.selectNote(duplicate);
   }
@@ -3538,8 +3575,8 @@ class CapnoteApp {
       this.viewerText.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: var(--text-muted);">
                     <i class="fas fa-lock" style="font-size: 48px; margin-bottom: 20px;"></i>
-                    <h3>Bu not kilitli</h3>
-                    <p>İçeriği görüntülemek için not listesinden kilidi açın.</p>
+                    <h3>${window.i18n.t('messages.noteIsLocked')}</h3>
+                    <p>${window.i18n.t('messages.unlockFromList')}</p>
                 </div>
             `;
     } else {
@@ -3567,7 +3604,8 @@ class CapnoteApp {
     // Tarih bilgisi
     const createdDate = new Date(note.createdAt);
     const updatedDate = new Date(note.updatedAt);
-    this.viewerDate.textContent = createdDate.toLocaleDateString('tr-TR', {
+    const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+    this.viewerDate.textContent = createdDate.toLocaleDateString(locale, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -3588,23 +3626,24 @@ class CapnoteApp {
   // Update in-memory note counts so subsequent actions use the up-to-date value
   note.wordCount = counts.words;
   note.charCount = counts.chars;
-  if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} kelime`;
-  if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} karakter`;
+  if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
+  if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
   // Reading time calculation (baseline 200 words per minute)
   const WPM = 200;
   if (!counts.words) {
-    this.readingTime.textContent = `0 dk okuma`;
+    this.readingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
   } else {
     const seconds = Math.ceil((counts.words / WPM) * 60);
     if (seconds < 60) {
-      this.readingTime.textContent = `~${seconds} sn okuma`;
+      this.readingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
     } else {
       const minutes = Math.round(seconds / 60);
-      this.readingTime.textContent = `~${minutes} dk okuma`;
+      this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
     }
   }
     // Show date + time for last modified (e.g. 12.10.2025 14:35)
-    this.lastModified.textContent = updatedDate.toLocaleString('tr-TR', {
+    const locale2 = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+    this.lastModified.textContent = updatedDate.toLocaleString(locale2, {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
@@ -3632,10 +3671,11 @@ class CapnoteApp {
 
     // Show createdAt at the top
     const created = this.currentNote.createdAt ? new Date(this.currentNote.createdAt) : null;
+    const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
     if (created) {
       const el = document.createElement('div');
       el.className = 'history-entry created';
-      el.innerHTML = `<strong>Oluşturuldu:</strong> ${created.toLocaleString('tr-TR')}`;
+      el.innerHTML = `<strong>${window.i18n.t('viewer.created')}</strong> ${created.toLocaleString(locale)}`;
       this.historyBody.appendChild(el);
     }
 
@@ -3648,14 +3688,14 @@ class CapnoteApp {
         const d = new Date(h.ts);
         const item = document.createElement('div');
         item.className = 'history-item';
-        item.innerHTML = `<span class="history-type">Güncellendi</span> <span class="history-ts">${d.toLocaleString('tr-TR')}</span>`;
+        item.innerHTML = `<span class="history-type">${window.i18n.t('viewer.updated')}</span> <span class="history-ts">${d.toLocaleString(locale)}</span>`;
         list.appendChild(item);
       });
       this.historyBody.appendChild(list);
     } else {
       const empty = document.createElement('div');
       empty.className = 'history-empty';
-      empty.textContent = 'Bu not için geçmiş kaydı yok.';
+      empty.textContent = window.i18n.t('stats.noReminder');
       this.historyBody.appendChild(empty);
     }
 
@@ -4011,22 +4051,22 @@ class CapnoteApp {
             <div class="note-item-actions">
                 <button class="note-action-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isFavorite ? 'Favorilerden çıkar' : 'Favorilere ekle'}">
+                        title="${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}">
                     <i class="fas fa-heart"></i>
                 </button>
                 <button class="note-action-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isPinned ? 'Sabitlemeyi kaldır' : 'Sabitle'}">
+                        title="${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}">
                     <i class="fas fa-thumbtack"></i>
                 </button>
                 <button class="note-action-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isLocked ? 'Kilidi aç' : 'Kilitle'}">
+                        title="${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}">
                     <i class="fas fa-lock"></i>
                 </button>
                 <button class="note-action-btn delete-btn" 
                         data-note-id="${note.id}"
-                        title="Notu sil">
+                        title="${window.i18n.t('messages.deleteNote')}">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -4499,12 +4539,12 @@ class CapnoteApp {
 
   showMoodPicker() {
     // Implementation for mood picker modal
-    this.showNotification('Ruh hali seçimi için yan paneli kullanın', 'info');
+    this.showNotification(window.i18n.t('messages.useSidePanel'), 'info');
   }
 
   showWeatherPicker() {
     // Implementation for weather picker modal
-    this.showNotification('Hava durumu seçimi için yan paneli kullanın', 'info');
+    this.showNotification(window.i18n.t('messages.useWeatherPanel'), 'info');
   }
 
   // Tags methods
@@ -4513,7 +4553,7 @@ class CapnoteApp {
 
     // Maksimum 5 etiket kontrolü
     if (this.tags.length >= 5) {
-      this.showNotification('Maksimum 5 etiket ekleyebilirsiniz!', 'warning');
+      this.showNotification(window.i18n.t('messages.maxTags'), 'warning');
       return;
     }
 
@@ -4580,7 +4620,7 @@ class CapnoteApp {
     }
 
     this.downloadFile(content, filename, mimeType);
-    this.showNotification('Not dışa aktarıldı!', 'success');
+    this.showNotification(window.i18n.t('messages.noteExported'), 'success');
   }
 
   getPlainText(html) {
@@ -4610,8 +4650,8 @@ class CapnoteApp {
     <div class="header">
         <h1>${note.title}</h1>
         <div class="meta">
-            <p>Oluşturulma: ${new Date(note.createdAt).toLocaleString('tr-TR')}</p>
-            <p>Güncelleme: ${new Date(note.updatedAt).toLocaleString('tr-TR')}</p>
+            <p>${window.i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR')}</p>
+            <p>${window.i18n.t('viewer.updatedLabel')} ${new Date(note.updatedAt).toLocaleString(window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR')}</p>
             ${note.mood ? `<p>Ruh Hali: ${note.mood}</p>` : ''}
             ${note.weather ? `<p>Hava Durumu: ${note.weather}</p>` : ''}
         </div>
@@ -4649,7 +4689,7 @@ class CapnoteApp {
     // Use html2pdf (included via CDN) to export the viewer content as a PDF.
     try {
       const note = this.currentNote;
-      if (!note) return this.showNotification('Dışa aktarılacak not seçili değil', 'warning');
+      if (!note) return this.showNotification(window.i18n.t('messages.noNoteSelected'), 'warning');
 
       // Create container and basic structure
       const container = document.createElement('div');
@@ -4684,7 +4724,8 @@ class CapnoteApp {
       const meta = document.createElement('div');
       meta.style.color = '#666';
       meta.style.marginBottom = '12px';
-      meta.innerHTML = `Oluşturulma: ${new Date(note.createdAt).toLocaleString('tr-TR')} &nbsp; Güncelleme: ${new Date(note.updatedAt).toLocaleString('tr-TR')}`;
+      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+      meta.innerHTML = `${window.i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(locale)} &nbsp; ${window.i18n.t('viewer.updatedLabel')} ${new Date(note.updatedAt).toLocaleString(locale)}`;
       container.appendChild(meta);
 
       // Content: if markdown, render with marked; otherwise clone formatted HTML
@@ -4707,17 +4748,17 @@ class CapnoteApp {
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
-      this.showNotification('PDF oluşturuluyor...', 'info');
+      this.showNotification(window.i18n.t('messages.pdfCreating'), 'info');
       // Generate PDF from the container
       html2pdf().from(container).set(opt).save().then(() => {
-        this.showNotification('PDF oluşturuldu', 'success');
+        this.showNotification(window.i18n.t('messages.pdfCreated'), 'success');
       }).catch((err) => {
         console.error('PDF export error', err);
-        this.showNotification('PDF oluşturulamadı', 'error');
+        this.showNotification(window.i18n.t('messages.pdfError'), 'error');
       });
     } catch (err) {
       console.error('exportToPDF error', err);
-      this.showNotification('PDF dışa aktarılırken hata oluştu', 'error');
+      this.showNotification(window.i18n.t('messages.pdfExportError'), 'error');
     }
   }
 
@@ -5208,7 +5249,7 @@ class CapnoteApp {
    * @param {Object} note - Kilitlenecek not
    */
   async lockNote(note) {
-    const password = await this.showPasswordModal('Not için şifre belirleyin');
+    const password = await this.showPasswordModal(window.i18n.t('messages.setPasswordForNote'));
     if (password && password.trim()) {
   // Locking note (debug logs removed)
       note.isLocked = true;
@@ -5219,13 +5260,13 @@ class CapnoteApp {
 
       this.saveNotes();
       this.updateNotesList();
-      this.showNotification('Not kilitlendi', 'success');
+      this.showNotification(window.i18n.t('messages.noteLocked'), 'success');
   // Note lock result (debug logs removed)
     }
   }
 
   async unlockNote(note) {
-    const password = await this.showPasswordModal('Not kilidini açmak için şifre girin');
+    const password = await this.showPasswordModal(window.i18n.t('messages.enterPasswordToUnlock'));
     if (password === note.password) {
       // Permanently unlock
       note.isLocked = false;
@@ -5236,15 +5277,15 @@ class CapnoteApp {
       if (this.currentNote && this.currentNote.id === note.id) {
         this.displayNote(note);
       }
-      this.showNotification('Not kilidi açıldı', 'success');
+      this.showNotification(window.i18n.t('messages.noteUnlocked'), 'success');
     } else if (password !== null) {
       // null means cancelled
-      this.showNotification('Yanlış şifre!', 'error');
+      this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
     }
   }
 
   async unlockNoteForViewing(note) {
-    const password = await this.showPasswordModal('Bu not kilitli');
+    const password = await this.showPasswordModal(window.i18n.t('messages.noteIsLocked'));
     if (password === note.password) {
       // Temporarily unlock the note for viewing
       note.isUnlocked = true;
@@ -5265,10 +5306,10 @@ class CapnoteApp {
       this.displayNote(note);
   this.setActiveNoteInList(this.currentNote.id);
 
-      this.showNotification('Not geçici olarak açıldı', 'info');
+      this.showNotification(window.i18n.t('messages.noteTemporarilyUnlocked'), 'info');
     } else if (password !== null) {
       // null means cancelled
-      this.showNotification('Yanlış şifre!', 'error');
+      this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
     }
   }
 
@@ -5276,7 +5317,7 @@ class CapnoteApp {
     const note = this.notes.find((n) => n.id == noteId);
     if (!note) return;
 
-    this.confirmMessage.textContent = `"${note.title}" notunu silmek istediğinizden emin misiniz?`;
+    this.confirmMessage.textContent = `"${note.title}" ${window.i18n.t('messages.confirmDelete')}`;
     this.confirmCallback = () => {
       const index = this.notes.findIndex((n) => n.id == noteId);
       if (index >= 0) {
@@ -5305,7 +5346,7 @@ class CapnoteApp {
           }
         }
 
-        this.showNotification('Not silindi!', 'success');
+        this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
       }
     };
     this.showModal(this.confirmModal);
@@ -5376,7 +5417,7 @@ class CapnoteApp {
     this.saveNotes();
     this.updateNotesList();
     this.showNotification(
-      note.isFavorite ? 'Favorilere eklendi!' : 'Favorilerden çıkarıldı!',
+      note.isFavorite ? window.i18n.t('messages.addedToFavorites') : window.i18n.t('messages.removedFromFavorites'),
       'success'
     );
   }
@@ -5502,6 +5543,15 @@ class CapnoteApp {
   }
 
   loadSettings() {
+    // Load language preference
+    if (this.languageSelect) {
+      const savedLang = localStorage.getItem('app-language') || 'tr';
+      this.languageSelect.value = savedLang;
+      console.log('Language loaded from settings:', savedLang);
+    } else {
+      console.warn('Language select element not found in loadSettings');
+    }
+
     // Load dark mode preference
     const isDarkMode = localStorage.getItem('darkMode') === 'true';
     this.darkModeToggle.checked = isDarkMode;
@@ -5530,7 +5580,7 @@ class CapnoteApp {
         const v = parseInt(e.target.value, 10);
         if (!isNaN(v) && v >= 3 && v <= 10) {
           localStorage.setItem('maxPinnedNotes', String(v));
-          this.showNotification('Sabit not limiti güncellendi', 'success');
+          this.showNotification(window.i18n.t('messages.pinnedLimitUpdated'), 'success');
         }
       });
     }
@@ -6322,9 +6372,9 @@ class CapnoteApp {
     const titleEl = this.folderModal.querySelector('.modal-title h3');
     const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
-    if (titleEl) titleEl.textContent = 'Yeni Klasör';
+    if (titleEl) titleEl.textContent = window.i18n.t('messages.newFolder');
     if (iconEl) { iconEl.className = 'fas fa-folder-plus'; }
-    if (createBtn) createBtn.textContent = 'Oluştur';
+    if (createBtn) createBtn.textContent = window.i18n.t('buttons.create');
     this.folderNameInput.value = '';
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
@@ -6345,9 +6395,9 @@ class CapnoteApp {
     const titleEl = this.folderModal.querySelector('.modal-title h3');
     const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
-    if (titleEl) titleEl.textContent = 'Klasörü Yeniden Adlandır';
+    if (titleEl) titleEl.textContent = window.i18n.t('messages.renameFolder');
     if (iconEl) { iconEl.className = 'fas fa-edit'; }
-    if (createBtn) createBtn.textContent = 'Kaydet';
+    if (createBtn) createBtn.textContent = window.i18n.t('buttons.save');
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
   }
@@ -6769,22 +6819,22 @@ class CapnoteApp {
             <div class="note-item-actions">
                 <button class="note-action-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isFavorite ? 'Favorilerden çıkar' : 'Favorilere ekle'}">
+                        title="${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}">
                     <i class="fas fa-heart"></i>
                 </button>
                 <button class="note-action-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isPinned ? 'Sabitlemeyi kaldır' : 'Sabitle'}">
+                        title="${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}">
                     <i class="fas fa-thumbtack"></i>
                 </button>
                 <button class="note-action-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
                         data-note-id="${note.id}"
-                        title="${note.isLocked ? 'Kilidi aç' : 'Kilitle'}">
+                        title="${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}">
                     <i class="fas fa-lock"></i>
                 </button>
                 <button class="note-action-btn delete-btn" 
                         data-note-id="${note.id}"
-                        title="Notu sil">
+                        title="${window.i18n.t('messages.deleteNote')}">
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
@@ -6957,7 +7007,7 @@ class CapnoteApp {
     }
   // Keep the current filter selected after toggling metadata
 
-    const message = note.isFavorite ? 'Favorilere eklendi' : 'Favorilerden çıkarıldı';
+    const message = note.isFavorite ? window.i18n.t('messages.addedToFavorites') : window.i18n.t('messages.removedFromFavorites');
     this.showNotification(message, 'success');
   }
 
@@ -7067,7 +7117,7 @@ class CapnoteApp {
       const pinnedCount = this.notes.filter((n) => n.isPinned).length;
       const maxPinned = parseInt(localStorage.getItem('maxPinnedNotes'), 10) || 3;
       if (pinnedCount >= maxPinned) {
-        this.showNotification(`En fazla ${maxPinned} not sabitlenebilir`, 'error');
+        this.showNotification(window.i18n.t('messages.maxPinnedNotes').replace('{count}', maxPinned), 'error');
         return;
       }
     }
@@ -7090,7 +7140,7 @@ class CapnoteApp {
     // If viewing favorites, refresh it to reflect pin changes where applicable
     if (this.currentFilter === 'favorites') this.updateNotesList();
 
-    const message = note.isPinned ? 'Not sabitlendi' : 'Sabitleme kaldırıldı';
+    const message = note.isPinned ? window.i18n.t('messages.notePinned') : window.i18n.t('messages.noteUnpinned');
     this.showNotification(message, 'success');
   }
 
@@ -7100,20 +7150,20 @@ class CapnoteApp {
 
     if (note.isLocked) {
       // Unlock note - ask for password
-      const password = await this.showPasswordModal('Notu açmak için şifre girin');
+      const password = await this.showPasswordModal(window.i18n.t('messages.enterPasswordToOpen'));
       if (!password) return;
 
       // For now, any password unlocks (you can add proper password validation)
       note.isLocked = false;
-      this.showNotification('Not kilidi açıldı', 'success');
+      this.showNotification(window.i18n.t('messages.noteUnlocked'), 'success');
     } else {
       // Lock note - ask for password
-      const password = await this.showPasswordModal('Not için şifre belirleyin');
+      const password = await this.showPasswordModal(window.i18n.t('messages.setPasswordForNote'));
       if (!password) return;
 
       note.isLocked = true;
       note.password = password; // In real app, this should be hashed
-      this.showNotification('Not kilitlendi', 'success');
+      this.showNotification(window.i18n.t('messages.noteLocked'), 'success');
     }
 
     note.updatedAt = new Date().toISOString();
@@ -7158,8 +7208,8 @@ class CapnoteApp {
 
     const message =
       noteCount > 0
-        ? `"${folder.name}" klasörü ve içindeki ${noteCount} not kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?`
-        : `"${folder.name}" klasörü silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?`;
+        ? `"${folder.name}" ${window.i18n.t('messages.confirmDeleteFolderWithNotes').replace('{count}', noteCount)}`
+        : `"${folder.name}" ${window.i18n.t('messages.confirmDeleteFolder')}`;
 
     this.confirmMessage.textContent = message;
 
@@ -7251,7 +7301,7 @@ class CapnoteApp {
     this.saveFolders();
     // Update only the folder header icon in the DOM to avoid re-rendering the entire notes list
     this.updateFolderColorInDOM(folderId, color);
-    this.showNotification('Klasör rengi güncellendi', 'success');
+    this.showNotification(window.i18n.t('messages.folderColorUpdated'), 'success');
     // Clean up the dataset to avoid stale ids
     try {
       if (this.folderColorPicker) delete this.folderColorPicker.dataset.folderId;
@@ -7281,6 +7331,82 @@ class CapnoteApp {
       // fallback: if DOM update fails, do full refresh
       this.updateFoldersList();
       this.updateFolderNotes();
+    }
+  }
+
+  updateDynamicTranslations() {
+    // Re-trigger count updates to use new translations
+    if (this.currentNote) {
+      // Update editor counts
+      this.updateCount();
+      
+      // Update current date display
+      this.updateCurrentDate();
+      
+      // Update note reminders text if visible
+      if (this.noteRemindersList) {
+        const noteReminders = this.reminders.filter(r => 
+          r.noteId === this.currentNote.id && 
+          !r.dismissed && 
+          new Date(r.datetime) > new Date()
+        );
+        
+        if (noteReminders.length === 0) {
+          this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
+        }
+      }
+      
+      // Update history modal if open
+      if (this.historyModal && !this.historyModal.classList.contains('hidden')) {
+        this.showHistory();
+      }
+    }
+    
+    // Update viewer stats if a note is being viewed
+    const viewerActive = document.querySelector('.viewer.active');
+    if (viewerActive && this.viewingNote) {
+      const counts = this.countWordsAndCharsFromHtml(this.viewingNote.content || '');
+      if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
+      if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
+      
+      const WPM = 200;
+      if (!counts.words) {
+        this.readingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
+      } else {
+        const seconds = Math.ceil((counts.words / WPM) * 60);
+        if (seconds < 60) {
+          this.readingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
+        } else {
+          const minutes = Math.round(seconds / 60);
+          this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
+        }
+      }
+      
+      // Update viewer dates
+      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+      const createdDate = new Date(this.viewingNote.createdAt);
+      const updatedDate = new Date(this.viewingNote.updatedAt);
+      
+      if (this.viewerDate) {
+        this.viewerDate.textContent = createdDate.toLocaleDateString(locale, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      }
+      
+      if (this.lastModified) {
+        this.lastModified.textContent = updatedDate.toLocaleString(locale, {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      }
     }
   }
 }
