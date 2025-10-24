@@ -21,13 +21,13 @@
           <i class="fas fa-bars"></i>
         </button>
         <div class="titlebar-buttons">
-          <button id="settingsBtn" class="titlebar-action-btn" title="Ayarlar">
+          <button id="settingsBtn" class="titlebar-action-btn" data-i18n-title="titles.settings">
             <i class="fas fa-cog"></i>
           </button>
-          <button id="homeBtn" class="titlebar-action-btn" title="Ana Sayfa">
+          <button id="homeBtn" class="titlebar-action-btn" data-i18n-title="titles.home">
             <i class="fas fa-home"></i>
           </button>
-          <button id="newNoteBtn" class="titlebar-action-btn" title="Yeni Not">
+          <button id="newNoteBtn" class="titlebar-action-btn" data-i18n-title="titles.newNote">
             <i class="fas fa-plus"></i>
           </button>
         </div>
@@ -66,44 +66,44 @@
             <div class="nav-section">
               <div class="nav-item" id="newNoteNav">
                 <i class="fas fa-edit nav-icon"></i>
-                <span class="nav-text">Yeni Not</span>
+                <span class="nav-text" data-i18n="nav.newNote">Yeni Not</span>
               </div>
               <div class="nav-item" id="notificationsNav">
                 <i class="fas fa-inbox nav-icon"></i>
-                <span class="nav-text">Bildirimler</span>
+                <span class="nav-text" data-i18n="nav.notifications">Bildirimler</span>
                 <span class="nav-unread-badge" id="notificationsUnreadBadge" style="display: none;"></span>
                 <span class="nav-count" id="activeNotificationsCount">(0)</span>
               </div>
               <div class="nav-item" id="remindersNav">
                 <i class="fas fa-bell nav-icon"></i>
-                <span class="nav-text">Hatırlatmalar</span>
+                <span class="nav-text" data-i18n="nav.reminders">Hatırlatmalar</span>
                 <span class="nav-count" id="activeRemindersCount">(0)</span>
               </div>
               <div class="nav-item" data-filter="all">
                 <i class="fas fa-sticky-note nav-icon"></i>
-                <span class="nav-text">Tüm Notlar</span>
+                <span class="nav-text" data-i18n="nav.allNotes">Tüm Notlar</span>
               </div>
               <div class="nav-item" data-filter="today">
                 <i class="fas fa-calendar-day nav-icon"></i>
-                <span class="nav-text">Bugün</span>
+                <span class="nav-text" data-i18n="nav.today">Bugün</span>
               </div>
               <div class="nav-item" data-filter="favorites">
                 <i class="fas fa-heart nav-icon"></i>
-                <span class="nav-text">Favoriler</span>
+                <span class="nav-text" data-i18n="nav.favorites">Favoriler</span>
               </div>
             </div>
 
             <div class="nav-section">
               <div class="nav-section-header">
-                <div class="nav-section-title">Notlar <span class="nav-count" id="navNotesCount">(0)</span></div>
+                <div class="nav-section-title"><span data-i18n="nav.notes">Notlar</span> <span class="nav-count" id="navNotesCount">(0)</span></div>
                 <div class="nav-section-controls">
-                  <button class="nav-control-btn" id="addFolderBtn" title="Klasör Ekle">
+                  <button class="nav-control-btn" id="addFolderBtn" data-i18n-title="titles.addFolder">
                     <i class="fas fa-plus"></i>
                   </button>
-                  <button class="nav-control-btn" id="searchBtn" title="Ara">
+                  <button class="nav-control-btn" id="searchBtn" data-i18n-title="titles.search">
                     <i class="fas fa-search"></i>
                   </button>
-                  <button class="nav-control-btn" id="sortBtn" title="Sırala">
+                  <button class="nav-control-btn" id="sortBtn" data-i18n-title="titles.sort">
                     <i class="fas fa-sort-amount-down"></i>
                   </button>
                 </div>
@@ -116,6 +116,7 @@
                   <input
                     type="text"
                     id="searchInput"
+                    data-i18n-placeholder="placeholders.searchNotes"
                     placeholder="Notlarda ara..."
                     class="search-input"
                   />
@@ -124,11 +125,11 @@
 
               <!-- Sort Options (initially hidden) -->
               <div class="sort-dropdown hidden" id="sortDropdown">
-                <div class="sort-option active" data-value="date-desc">📅 Tarih (Yeni → Eski)</div>
-                <div class="sort-option" data-value="date-asc">📅 Tarih (Eski → Yeni)</div>
-                <div class="sort-option" data-value="updated-desc">🔄 Son Güncellenen</div>
-                <div class="sort-option" data-value="title-asc">🔤 Başlık (A → Z)</div>
-                <div class="sort-option" data-value="title-desc">🔤 Başlık (Z → A)</div>
+                <div class="sort-option active" data-value="date-desc" data-i18n="sort.dateDesc">📅 Tarih (Yeni → Eski)</div>
+                <div class="sort-option" data-value="date-asc" data-i18n="sort.dateAsc">📅 Tarih (Eski → Yeni)</div>
+                <div class="sort-option" data-value="updated-desc" data-i18n="sort.updatedDesc">🔄 Son Güncellenen</div>
+                <div class="sort-option" data-value="title-asc" data-i18n="sort.titleAsc">🔤 Başlık (A → Z)</div>
+                <div class="sort-option" data-value="title-desc" data-i18n="sort.titleDesc">🔤 Başlık (Z → A)</div>
               </div>
 
               <!-- Notes List Container (full width) -->
@@ -150,11 +151,11 @@
         <div class="sidebar-footer">
           <div class="nav-item" id="invitePeople">
             <i class="fas fa-user-plus nav-icon"></i>
-            <span class="nav-text">Kişi Davet Et</span>
+            <span class="nav-text" data-i18n="nav.invitePeople">Kişi Davet Et</span>
           </div>
           <div class="nav-item" id="helpSupport">
             <i class="fas fa-cog nav-icon"></i>
-            <span class="nav-text">Ayarlar</span>
+            <span class="nav-text" data-i18n="nav.settings">Ayarlar</span>
           </div>
         </div>
       </div>
@@ -165,27 +166,27 @@
         <div id="welcomeScreen" class="welcome-screen">
           <div class="welcome-content">
             <i class="fas fa-book-open welcome-icon"></i>
-            <h2>Capnote'a Hoş Geldiniz</h2>
-            <p>Düşüncelerinizi yazın, anılarınızı kaydedin ve hayatınızı belgelendirin</p>
+            <h2 data-i18n="app.welcome">Capnote'a Hoş Geldiniz</h2>
+            <p data-i18n="app.welcomeSubtext">Düşüncelerinizi yazın, anılarınızı kaydedin ve hayatınızı belgelendirin</p>
             <div class="quick-stats">
               <div class="stat-item">
                 <i class="fas fa-sticky-note"></i>
                 <span id="totalNotes">0</span>
-                <small>Toplam Not</small>
+                <small data-i18n="stats.totalNotes">Toplam Not</small>
               </div>
               <div class="stat-item">
                 <i class="fas fa-calendar"></i>
                 <span id="daysActive">0</span>
-                <small>Aktif Gün</small>
+                <small data-i18n="stats.daysActive">Aktif Gün</small>
               </div>
               <div class="stat-item">
                 <i class="fas fa-pen"></i>
                 <span id="totalWords">0</span>
-                <small>Toplam Kelime</small>
+                <small data-i18n="stats.totalWords">Toplam Kelime</small>
               </div>
             </div>
             <button id="startFirstNote" class="btn-primary btn-large">
-              <i class="fas fa-pen"></i> Yazmaya Başlayın
+              <i class="fas fa-pen"></i> <span data-i18n="buttons.start">Yazmaya Başlayın</span>
             </button>
           </div>
         </div>
@@ -193,11 +194,11 @@
         <!-- Bildirimler Ekranı -->
         <div id="notificationsScreen" class="notifications-screen hidden">
           <div class="notifications-header">
-            <h2><i class="fas fa-inbox"></i> Bildirimler</h2>
-            <p class="notifications-subtitle">Geçmiş hatırlatma bildirimleri</p>
+            <h2><i class="fas fa-inbox"></i> <span data-i18n="notifications.title">Bildirimler</span></h2>
+            <p class="notifications-subtitle" data-i18n="notifications.subtitle">Geçmiş hatırlatma bildirimleri</p>
           </div>
           <div class="notifications-actions">
-            <button id="markAllReadBtn" class="notification-action-btn mark-read-btn" title="Tümünü okundu işaretle"><i class="fas fa-check-circle"></i> Tümünü okundu işaretle</button>
+            <button id="markAllReadBtn" class="notification-action-btn mark-read-btn" data-i18n-title="buttons.markAllRead"><i class="fas fa-check-circle"></i> <span data-i18n="buttons.markAllRead">Tümünü okundu işaretle</span></button>
           </div>
           <div id="notificationsList" class="notifications-list">
             <!-- Notifications will be populated here -->
@@ -207,8 +208,8 @@
         <!-- Hatırlatmalar Ekranı -->
         <div id="remindersScreen" class="reminders-screen hidden">
           <div class="reminders-header">
-            <h2><i class="fas fa-bell"></i> Aktif Hatırlatmalar</h2>
-            <p class="reminders-subtitle">Notlarınız için ayarlanmış hatırlatmalar</p>
+            <h2><i class="fas fa-bell"></i> <span data-i18n="notifications.remindersTitle">Aktif Hatırlatmalar</span></h2>
+            <p class="reminders-subtitle" data-i18n="notifications.remindersSubtitle">Notlarınız için ayarlanmış hatırlatmalar</p>
           </div>
           <div id="remindersList" class="reminders-list">
             <!-- Reminders will be populated here -->
@@ -222,21 +223,22 @@
               <input
                 type="text"
                 id="noteTitle"
+                data-i18n-placeholder="placeholders.noteTitle"
                 placeholder="Not başlığı..."
                 class="note-title-input"
               />
               <div class="note-meta">
                 <span id="noteDate"></span>
-                <span id="wordCount">0 kelime</span>
-                <span id="charCount">0 karakter</span>
-                <span id="editorReadingTime">~0 dk okuma</span>
+                <span id="wordCount">0 <span data-i18n="stats.words">kelime</span></span>
+                <span id="charCount">0 <span data-i18n="stats.characters">karakter</span></span>
+                <span id="editorReadingTime">~0 <span data-i18n="stats.readingTime">dk okuma</span></span>
               </div>
             </div>
             <div class="editor-actions">
-              <button id="saveNoteBtn" class="btn-icon" title="Kaydet">
+              <button id="saveNoteBtn" class="btn-icon" data-i18n-title="buttons.save">
                 <i class="fas fa-save"></i>
               </button>
-              <button id="cancelNoteBtn" class="btn-icon" title="İptal">
+              <button id="cancelNoteBtn" class="btn-icon" data-i18n-title="buttons.cancel">
                 <i class="fas fa-times"></i>
               </button>
             </div>
@@ -269,13 +271,13 @@
             </div>
 
             <div class="format-group">
-              <button class="format-btn" data-format="bold" title="Kalın">
+              <button class="format-btn" data-format="bold" data-i18n-title="titles.bold">
                 <i class="fas fa-bold"></i>
               </button>
-              <button class="format-btn" data-format="italic" title="İtalik">
+              <button class="format-btn" data-format="italic" data-i18n-title="titles.italic">
                 <i class="fas fa-italic"></i>
               </button>
-              <button class="format-btn" data-format="underline" title="Altı çizili">
+              <button class="format-btn" data-format="underline" data-i18n-title="titles.underline">
                 <i class="fas fa-underline"></i>
               </button>
             </div>
@@ -286,76 +288,76 @@
                 id="textColor"
                 class="color-picker"
                 value="#000000"
-                title="Metin rengi"
+                data-i18n-title="titles.textColor"
               />
               <input
                 type="color"
                 id="bgColor"
                 class="color-picker"
                 value="#ffffff"
-                title="Arka plan rengi"
+                data-i18n-title="titles.bgColor"
               />
             </div>
 
             <div class="format-group">
-              <button class="format-btn" data-align="left" title="Sola hizala">
+              <button class="format-btn" data-align="left" data-i18n-title="titles.alignLeft">
                 <i class="fas fa-align-left"></i>
               </button>
-              <button class="format-btn" data-align="center" title="Ortala">
+              <button class="format-btn" data-align="center" data-i18n-title="titles.alignCenter">
                 <i class="fas fa-align-center"></i>
               </button>
-              <button class="format-btn" data-align="right" title="Sağa hizala">
+              <button class="format-btn" data-align="right" data-i18n-title="titles.alignRight">
                 <i class="fas fa-align-right"></i>
               </button>
-              <button class="format-btn" data-align="justify" title="İki yana yasla">
+              <button class="format-btn" data-align="justify" data-i18n-title="titles.alignJustify">
                 <i class="fas fa-align-justify"></i>
               </button>
             </div>
 
             <div class="format-group">
-              <button class="format-btn" id="insertList" title="Madde listesi ekle">
+              <button class="format-btn" id="insertList" data-i18n-title="titles.bulletList">
                 <i class="fas fa-list-ul"></i>
               </button>
-              <button class="format-btn" id="insertChecklist" title="Görev listesi ekle">
+              <button class="format-btn" id="insertChecklist" data-i18n-title="titles.taskList">
                 <i class="fas fa-tasks"></i>
               </button>
-              <button class="format-btn" id="insertNumberedList" title="Numaralı liste ekle">
+              <button class="format-btn" id="insertNumberedList" data-i18n-title="titles.numberedList">
                 <i class="fas fa-list-ol"></i>
               </button>
-              <button class="format-btn" id="insertTableBtn" title="Tablo ekle">
+              <button class="format-btn" id="insertTableBtn" data-i18n-title="titles.insertTable">
                 <i class="fas fa-table"></i>
               </button>
             </div>
 
             <div class="format-group">
-              <button class="format-btn" id="insertDate" title="Tarih ekle">
+              <button class="format-btn" id="insertDate" data-i18n-title="titles.insertDate">
                 <i class="fas fa-calendar-plus"></i>
               </button>
-              <button class="format-btn" id="insertTime" title="Saat ekle">
+              <button class="format-btn" id="insertTime" data-i18n-title="titles.insertTime">
                 <i class="fas fa-clock"></i>
               </button>
             </div>
 
             <div class="format-group">
-              <button class="format-btn small-toolbar-btn" id="browseImageBtn" title="Görsel ekle (Gözat)">
+              <button class="format-btn small-toolbar-btn" id="browseImageBtn" data-i18n-title="titles.insertImage">
                 <i class="fas fa-file-import"></i>
               </button>
               <input id="browseImageInput" type="file" accept="image/*" style="display:none" />
-              <button class="format-btn small-toolbar-btn" id="toggleMarkdownBtn" title="Markdown önizleme">
+              <button class="format-btn small-toolbar-btn" id="toggleMarkdownBtn" data-i18n-title="titles.markdownPreview">
                 <i class="fas fa-file-code"></i>
               </button>
-              <button class="format-btn small-toolbar-btn" id="toggleHtmlBtn" title="HTML önizleme">
+              <button class="format-btn small-toolbar-btn" id="toggleHtmlBtn" data-i18n-title="titles.htmlPreview">
                 <i class="fas fa-code"></i>
               </button>
-              <button class="format-btn small-toolbar-btn" id="insertCodeBlockBtn" title="Kod bloğu ekle">
+              <button class="format-btn small-toolbar-btn" id="insertCodeBlockBtn" data-i18n-title="titles.codeBlock">
                 <i class="fas fa-laptop-code"></i>
               </button>
-              <button class="format-btn small-toolbar-btn" id="openEmojiBtn" title="Emoji Ekle">
+              <button class="format-btn small-toolbar-btn" id="openEmojiBtn" data-i18n-title="titles.emoji">
                 <i class="fas fa-face-smile"></i>
               </button>
             </div>
             <div class="format-group">
-              <button class="format-btn" id="toggleSidebar" title="Yan paneli aç/kapat">
+              <button class="format-btn" id="toggleSidebar" data-i18n-title="titles.toggleSidebar">
                 <i class="fas fa-columns"></i>
               </button>
             </div>
@@ -364,34 +366,34 @@
           <div class="editor-content">
             <div class="note-content">
               
-              <textarea id="markdownEditor" class="markdown-editor hidden" placeholder="Markdown girin..."></textarea>
+              <textarea id="markdownEditor" class="markdown-editor hidden" data-i18n-placeholder="placeholders.markdown"></textarea>
               <div
                 id="noteContentEditable"
                 class="rich-editor"
                 contenteditable="true"
-                placeholder="Düşüncelerinizi yazın..."
+                data-i18n-placeholder="placeholders.noteContent"
               ></div>
               <div id="markdownPreview" class="markdown-preview hidden" aria-hidden="true"></div>
               <div id="htmlPreview" class="html-preview hidden" aria-hidden="true"></div>
               <!-- Emoji panel (hidden by default) -->
               <div id="emojiPanel" class="emoji-panel hidden">
                 <div class="emoji-panel-header">
-                  <input type="text" id="emojiSearchInput" placeholder="Emoji ara..." />
+                  <input type="text" id="emojiSearchInput" data-i18n-placeholder="placeholders.searchEmoji" placeholder="Emoji ara..." />
                 </div>
                 <!-- Emoji category tabs (clean professional layout) -->
                 <div class="emoji-tabs-wrap professional">
                   <div class="emoji-tabs-shell">
-                    <div class="emoji-tabs" role="tablist" aria-label="Emoji kategorileri">
-                      <button class="emoji-tab active" data-category="all" role="tab" aria-selected="true" aria-label="Tümü"><i class="fas fa-th-large" aria-hidden="true"></i></button>
-                      <button class="emoji-tab" data-category="smileys" role="tab" aria-label="Gülücükler"><i class="far fa-smile" aria-hidden="true"></i></button>
-                      <button class="emoji-tab" data-category="people" role="tab" aria-label="İnsanlar"><i class="fas fa-user" aria-hidden="true"></i></button>
-                      <button class="emoji-tab" data-category="animals" role="tab" aria-label="Hayvanlar"><i class="fas fa-paw" aria-hidden="true"></i></button>
-                      <button class="emoji-tab" data-category="food" role="tab" aria-label="Yemek"><i class="fas fa-hamburger" aria-hidden="true"></i></button>
-                      <button class="emoji-tab" data-category="activities" role="tab" aria-label="Aktiviteler"><i class="fas fa-futbol" aria-hidden="true"></i></button>
-                      <button class="emoji-tab" data-category="travel" role="tab" aria-label="Seyahat"><i class="fas fa-plane" aria-hidden="true"></i></button>
-                      <button class="emoji-tab" data-category="objects" role="tab" aria-label="Nesneler"><i class="fas fa-lightbulb" aria-hidden="true"></i></button>
-                      <button class="emoji-tab" data-category="symbols" role="tab" aria-label="Semboller"><i class="fas fa-bookmark" aria-hidden="true"></i></button>
-                      <button class="emoji-tab" data-category="flags" role="tab" aria-label="Bayraklar"><i class="fas fa-flag" aria-hidden="true"></i></button>
+                    <div class="emoji-tabs" role="tablist" data-i18n-aria-label="emojiCategories.all" aria-label="Emoji kategorileri">
+                      <button class="emoji-tab active" data-category="all" role="tab" aria-selected="true" data-i18n-aria-label="emojiCategories.all" aria-label="Tümü"><i class="fas fa-th-large" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="smileys" role="tab" data-i18n-aria-label="emojiCategories.smileys" aria-label="Gülücükler"><i class="far fa-smile" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="people" role="tab" data-i18n-aria-label="emojiCategories.people" aria-label="İnsanlar"><i class="fas fa-user" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="animals" role="tab" data-i18n-aria-label="emojiCategories.animals" aria-label="Hayvanlar"><i class="fas fa-paw" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="food" role="tab" data-i18n-aria-label="emojiCategories.food" aria-label="Yemek"><i class="fas fa-hamburger" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="activities" role="tab" data-i18n-aria-label="emojiCategories.activities" aria-label="Aktiviteler"><i class="fas fa-futbol" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="travel" role="tab" data-i18n-aria-label="emojiCategories.travel" aria-label="Seyahat"><i class="fas fa-plane" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="objects" role="tab" data-i18n-aria-label="emojiCategories.objects" aria-label="Nesneler"><i class="fas fa-lightbulb" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="symbols" role="tab" data-i18n-aria-label="emojiCategories.symbols" aria-label="Semboller"><i class="fas fa-bookmark" aria-hidden="true"></i></button>
+                      <button class="emoji-tab" data-category="flags" role="tab" data-i18n-aria-label="emojiCategories.flags" aria-label="Bayraklar"><i class="fas fa-flag" aria-hidden="true"></i></button>
                     </div>
                   </div>
                 </div>
@@ -403,63 +405,63 @@
 
             <div class="editor-sidebar">
               <div class="sidebar-section">
-                <h4><i class="fas fa-smile"></i> Ruh Hali</h4>
+                <h4><i class="fas fa-smile"></i> <span data-i18n="sections.mood">Ruh Hali</span></h4>
                 <div class="mood-selector">
-                  <button class="mood-btn" data-mood="😊" title="Mutlu">😊</button>
-                  <button class="mood-btn" data-mood="😢" title="Üzgün">😢</button>
-                  <button class="mood-btn" data-mood="😡" title="Kızgın">😡</button>
-                  <button class="mood-btn" data-mood="😴" title="Yorgun">😴</button>
-                  <button class="mood-btn" data-mood="😍" title="Aşık">😍</button>
-                  <button class="mood-btn" data-mood="🤔" title="Düşünceli">🤔</button>
-                  <button class="mood-btn" data-mood="😎" title="Havalı">😎</button>
-                  <button class="mood-btn" data-mood="🙄" title="Sıkılmış">🙄</button>
+                  <button class="mood-btn" data-mood="😊" data-i18n-title="titles.happy">😊</button>
+                  <button class="mood-btn" data-mood="😢" data-i18n-title="titles.sad">😢</button>
+                  <button class="mood-btn" data-mood="😡" data-i18n-title="titles.angry">😡</button>
+                  <button class="mood-btn" data-mood="😴" data-i18n-title="titles.tired">😴</button>
+                  <button class="mood-btn" data-mood="😍" data-i18n-title="titles.inLove">😍</button>
+                  <button class="mood-btn" data-mood="🤔" data-i18n-title="titles.thoughtful">🤔</button>
+                  <button class="mood-btn" data-mood="😎" data-i18n-title="titles.cool">😎</button>
+                  <button class="mood-btn" data-mood="🙄" data-i18n-title="titles.bored">🙄</button>
                 </div>
               </div>
 
               <div class="sidebar-section">
-                <h4><i class="fas fa-cloud-sun"></i> Hava Durumu</h4>
+                <h4><i class="fas fa-cloud-sun"></i> <span data-i18n="sections.weather">Hava Durumu</span></h4>
                 <div class="weather-selector">
-                  <button class="weather-btn" data-weather="☀️" title="Güneşli">☀️</button>
-                  <button class="weather-btn" data-weather="⛅" title="Parçalı bulutlu">⛅</button>
-                  <button class="weather-btn" data-weather="☁️" title="Bulutlu">☁️</button>
-                  <button class="weather-btn" data-weather="🌧️" title="Yağmurlu">🌧️</button>
-                  <button class="weather-btn" data-weather="⛈️" title="Fırtınalı">⛈️</button>
-                  <button class="weather-btn" data-weather="❄️" title="Karlı">❄️</button>
+                  <button class="weather-btn" data-weather="☀️" data-i18n-title="titles.sunny">☀️</button>
+                  <button class="weather-btn" data-weather="⛅" data-i18n-title="titles.partlyCloudy">⛅</button>
+                  <button class="weather-btn" data-weather="☁️" data-i18n-title="titles.cloudy">☁️</button>
+                  <button class="weather-btn" data-weather="🌧️" data-i18n-title="titles.rainy">🌧️</button>
+                  <button class="weather-btn" data-weather="⛈️" data-i18n-title="titles.stormy">⛈️</button>
+                  <button class="weather-btn" data-weather="❄️" data-i18n-title="titles.snowy">❄️</button>
                 </div>
               </div>
 
               <div class="sidebar-section">
-                <h4><i class="fas fa-tags"></i> Etiketler</h4>
+                <h4><i class="fas fa-tags"></i> <span data-i18n="sections.tags">Etiketler</span></h4>
                 <div class="tags-container">
-                  <input type="text" id="tagInput" placeholder="Etiket ekle..." />
+                  <input type="text" id="tagInput" data-i18n-placeholder="placeholders.addTag" placeholder="Etiket ekle..." />
                   <div id="tagsList" class="tags-list"></div>
                 </div>
               </div>
 
               <div class="sidebar-section">
-                <h4><i class="fas fa-bell"></i> Hatırlatma</h4>
+                <h4><i class="fas fa-bell"></i> <span data-i18n="sections.reminder">Hatırlatma</span></h4>
                 <div class="reminder-container">
                   <input type="datetime-local" id="reminderDatetime" class="reminder-datetime-input" />
                   <select id="reminderRecurrence" class="select-small" aria-label="Tekrarlama">
-                    <option value="none">Yok</option>
-                    <option value="daily">Günlük</option>
-                    <option value="weekly">Haftalık</option>
-                    <option value="monthly">Aylık</option>
+                    <option value="none" data-i18n="reminder.none">Yok</option>
+                    <option value="daily" data-i18n="reminder.daily">Günlük</option>
+                    <option value="weekly" data-i18n="reminder.weekly">Haftalık</option>
+                    <option value="monthly" data-i18n="reminder.monthly">Aylık</option>
                   </select>
                   <div id="reminderWeekdays" class="reminder-weekdays hidden" aria-hidden="true">
-                    <label for="reminderWeekdays">Günler</label>
+                    <label for="reminderWeekdays" data-i18n="reminder.days">Günler</label>
                     <div class="weekday-list">
-                      <label><input type="checkbox" value="1" class="weekday-checkbox"> Pzt</label>
-                      <label><input type="checkbox" value="2" class="weekday-checkbox"> Sal</label>
-                      <label><input type="checkbox" value="3" class="weekday-checkbox"> Çar</label>
-                      <label><input type="checkbox" value="4" class="weekday-checkbox"> Per</label>
-                      <label><input type="checkbox" value="5" class="weekday-checkbox"> Cum</label>
-                      <label><input type="checkbox" value="6" class="weekday-checkbox"> Cmt</label>
-                      <label><input type="checkbox" value="0" class="weekday-checkbox"> Paz</label>
+                      <label><input type="checkbox" value="1" class="weekday-checkbox"> <span data-i18n="reminder.mon">Pzt</span></label>
+                      <label><input type="checkbox" value="2" class="weekday-checkbox"> <span data-i18n="reminder.tue">Sal</span></label>
+                      <label><input type="checkbox" value="3" class="weekday-checkbox"> <span data-i18n="reminder.wed">Çar</span></label>
+                      <label><input type="checkbox" value="4" class="weekday-checkbox"> <span data-i18n="reminder.thu">Per</span></label>
+                      <label><input type="checkbox" value="5" class="weekday-checkbox"> <span data-i18n="reminder.fri">Cum</span></label>
+                      <label><input type="checkbox" value="6" class="weekday-checkbox"> <span data-i18n="reminder.sat">Cmt</span></label>
+                      <label><input type="checkbox" value="0" class="weekday-checkbox"> <span data-i18n="reminder.sun">Paz</span></label>
                     </div>
                   </div>
                   <button id="setReminderBtn" class="btn-small btn-primary">
-                    <i class="fas fa-plus"></i> Ekle
+                    <i class="fas fa-plus"></i> <span data-i18n="buttons.add">Ekle</span>
                   </button>
                   <div id="noteRemindersList" class="note-reminders-list"></div>
                 </div>
@@ -483,22 +485,22 @@
               </div>
             </div>
             <div class="viewer-actions">
-              <button id="favoriteViewBtn" class="btn-icon" title="Favorilere ekle/çıkar">
+              <button id="favoriteViewBtn" class="btn-icon" data-i18n-title="titles.favorite">
                 <i class="far fa-heart"></i>
               </button>
-              <button id="editNoteBtn" class="btn-icon" title="Düzenle">
+              <button id="editNoteBtn" class="btn-icon" data-i18n-title="buttons.edit">
                 <i class="fas fa-edit"></i>
               </button>
-              <button id="duplicateNoteBtn" class="btn-icon" title="Kopyala">
+              <button id="duplicateNoteBtn" class="btn-icon" data-i18n-title="buttons.duplicate">
                 <i class="fas fa-copy"></i>
               </button>
-              <button id="historyBtn" class="btn-icon" title="Not geçmişini göster">
+              <button id="historyBtn" class="btn-icon" data-i18n-title="titles.history">
                 <i class="fas fa-history"></i>
               </button>
-              <button id="exportNoteBtn" class="btn-icon" title="Dışa aktar">
+              <button id="exportNoteBtn" class="btn-icon" data-i18n-title="buttons.export">
                 <i class="fas fa-download"></i>
               </button>
-              <button id="deleteNoteBtn" class="btn-icon btn-icon-danger" title="Sil">
+              <button id="deleteNoteBtn" class="btn-icon btn-icon-danger" data-i18n-title="buttons.delete">
                 <i class="fas fa-trash"></i>
               </button>
             </div>
@@ -510,19 +512,19 @@
           <div class="viewer-stats">
             <div class="stat">
               <i class="fas fa-font"></i>
-              <span id="viewerWordCount">0 kelime</span>
+              <span id="viewerWordCount">0 <span data-i18n="stats.words">kelime</span></span>
             </div>
             <div class="stat">
               <i class="fas fa-keyboard"></i>
-              <span id="viewerCharCount">0 karakter</span>
+              <span id="viewerCharCount">0 <span data-i18n="stats.characters">karakter</span></span>
             </div>
             <div class="stat">
               <i class="fas fa-stopwatch"></i>
-              <span id="readingTime">~0 dk okuma</span>
+              <span id="readingTime">~0 <span data-i18n="stats.readingTime">dk okuma</span></span>
             </div>
             <div class="stat">
               <i class="fas fa-calendar"></i>
-              <span id="lastModified">Son güncelleme</span>
+              <span id="lastModified" data-i18n="viewer.lastModified">Son güncelleme</span>
             </div>
           </div>
         </div>
@@ -533,7 +535,7 @@
     <div id="pickerModal" class="modal hidden">
       <div class="modal-content picker-modal">
         <div class="modal-header">
-          <h3 id="pickerTitle">Seçim Yap</h3>
+          <h3 id="pickerTitle" data-i18n="modals.selectOption">Seçim Yap</h3>
           <button class="modal-close" id="closePickerModal">
             <i class="fas fa-times"></i>
           </button>
@@ -548,7 +550,7 @@
     <div id="exportModal" class="modal hidden">
       <div class="modal-content">
         <div class="modal-header">
-          <h3>Notu Dışa Aktar</h3>
+          <h3 data-i18n="modals.exportNote">Notu Dışa Aktar</h3>
           <button class="modal-close" id="closeExportModal">
             <i class="fas fa-times"></i>
           </button>
@@ -556,19 +558,19 @@
         <div class="export-options">
           <button class="export-btn" data-type="txt">
             <i class="fas fa-file-alt"></i>
-            Düz Metin (.txt)
+            <span data-i18n="export.plainText">Düz Metin (.txt)</span>
           </button>
           <button class="export-btn" data-type="html">
             <i class="fas fa-code"></i>
-            HTML (.html)
+            <span data-i18n="export.html">HTML (.html)</span>
           </button>
           <button class="export-btn" data-type="pdf">
             <i class="fas fa-file-pdf"></i>
-            PDF (.pdf)
+            <span data-i18n="export.pdf">PDF (.pdf)</span>
           </button>
           <button class="export-btn" data-type="json">
             <i class="fas fa-file-code"></i>
-            JSON (.json)
+            <span data-i18n="export.json">JSON (.json)</span>
           </button>
         </div>
       </div>
@@ -580,7 +582,7 @@
         <div class="modal-header">
           <div class="modal-title">
             <i class="fas fa-table"></i>
-            <h3>Tablo Ekle</h3>
+            <h3 data-i18n="modals.addTable">Tablo Ekle</h3>
           </div>
           <button class="modal-close" id="closeTableModal">
             <i class="fas fa-times"></i>
@@ -589,21 +591,21 @@
         <div class="modal-body">
           <div class="form-row">
             <div class="form-group">
-              <label for="tableRows">Satır sayısı</label>
+              <label for="tableRows" data-i18n="modals.tableRows">Satır sayısı</label>
               <input id="tableRows" class="form-input" type="number" min="1" value="2" />
             </div>
             <div class="form-group">
-              <label for="tableCols">Sütun sayısı</label>
+              <label for="tableCols" data-i18n="modals.tableCols">Sütun sayısı</label>
               <input id="tableCols" class="form-input" type="number" min="1" value="2" />
             </div>
           </div>
           <div class="form-group">
-            <label for="tableHeader"><input id="tableHeader" type="checkbox" /> Başlık satırı ekle</label>
+            <label for="tableHeader"><input id="tableHeader" type="checkbox" /> <span data-i18n="modals.tableHeader">Başlık satırı ekle</span></label>
           </div>
         </div>
         <div class="modal-footer">
-          <button id="cancelTableBtn" class="btn btn-secondary">İptal</button>
-          <button id="insertTableConfirmBtn" class="btn btn-primary">Ekle</button>
+          <button id="cancelTableBtn" class="btn btn-secondary" data-i18n="buttons.cancel">İptal</button>
+          <button id="insertTableConfirmBtn" class="btn btn-primary" data-i18n="buttons.add">Ekle</button>
         </div>
       </div>
     </div>
@@ -614,7 +616,7 @@
       <div class="modal-content history-modal">
         <div class="modal-header">
           <div class="modal-title">
-            <h3>Not Geçmişi</h3>
+            <h3 data-i18n="modals.noteHistory">Not Geçmişi</h3>
           </div>
           <button class="modal-close" id="closeHistoryModal">
             <i class="fas fa-times"></i>
@@ -624,7 +626,7 @@
           <!-- history entries will be injected here -->
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" id="historyCloseBtn">Kapat</button>
+          <button class="btn btn-secondary" id="historyCloseBtn" data-i18n="buttons.close">Kapat</button>
         </div>
       </div>
     </div>
@@ -633,18 +635,32 @@
     <div id="settingsModal" class="modal hidden">
       <div class="modal-content settings-modal">
         <div class="modal-header">
-          <h3><i class="fas fa-cog"></i> Ayarlar</h3>
+          <h3><i class="fas fa-cog"></i> <span data-i18n="nav.settings">Ayarlar</span></h3>
           <button class="modal-close" id="closeSettingsModal">
             <i class="fas fa-times"></i>
           </button>
         </div>
         <div class="settings-content">
           <div class="settings-section">
-            <h4><i class="fas fa-palette"></i> Görünüm</h4>
+            <h4><i class="fas fa-language"></i> <span data-i18n="settings.language">Dil</span></h4>
             <div class="setting-item">
               <div class="setting-info">
-                <label>Karanlık Mod</label>
-                <small>Gözlerinizi yormasın</small>
+                <label data-i18n="settings.language">Dil</label>
+                <small data-i18n="settings.languageDesc">Uygulama dilini değiştir</small>
+              </div>
+              <select id="languageSelect" class="select-small">
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4><i class="fas fa-palette"></i> <span data-i18n="sections.appearance">Görünüm</span></h4>
+            <div class="setting-item">
+              <div class="setting-info">
+                <label data-i18n="settings.darkMode">Karanlık Mod</label>
+                <small data-i18n="settings.darkModeDesc">Gözlerinizi yormasın</small>
               </div>
               <label class="toggle-switch">
                 <input type="checkbox" id="darkModeToggle" />
@@ -654,22 +670,22 @@
               <!-- Theme Accent Selector -->
               <div class="setting-item">
                 <div class="setting-info">
-                  <label>Vurgu Rengi</label>
-                  <small>Vurgu renklerini değiştirin</small>
+                  <label data-i18n="settings.accentColor">Vurgu Rengi</label>
+                  <small data-i18n="settings.accentColorDesc">Vurgu renklerini değiştirin</small>
                 </div>
                 <div class="theme-swatches">
-                  <button class="swatch-btn" id="accentYellow" title="Sarı" aria-label="Sarı" data-color="#f59e0b"></button>
-                  <button class="swatch-btn" id="accentCherry" title="Kiraz Kırmızısı" aria-label="Kiraz Kırmızısı" data-color="#e11d48"></button>
-                  <button class="swatch-btn" id="accentApple" title="Elma Yeşili" aria-label="Elma Yeşili" data-color="#22c55e"></button>
-                  <button class="swatch-btn" id="accentPurple" title="Mor" aria-label="Mor" data-color="#8b5cf6"></button>
-                  <button class="swatch-btn" id="accentBlue" title="Mavi" aria-label="Mavi" data-color="#3b82f6"></button>
+                  <button class="swatch-btn" id="accentYellow" data-i18n-title="titles.yellow" data-i18n-aria-label="titles.yellow" data-color="#f59e0b"></button>
+                  <button class="swatch-btn" id="accentCherry" data-i18n-title="titles.cherryRed" data-i18n-aria-label="titles.cherryRed" data-color="#e11d48"></button>
+                  <button class="swatch-btn" id="accentApple" data-i18n-title="titles.appleGreen" data-i18n-aria-label="titles.appleGreen" data-color="#22c55e"></button>
+                  <button class="swatch-btn" id="accentPurple" data-i18n-title="titles.purple" data-i18n-aria-label="titles.purple" data-color="#8b5cf6"></button>
+                  <button class="swatch-btn" id="accentBlue" data-i18n-title="titles.blue" data-i18n-aria-label="titles.blue" data-color="#3b82f6"></button>
                 </div>
               </div>
               <!-- Sync folders with accent option -->
               <div class="setting-item">
                 <div class="setting-info">
-                  <label>Vurgu rengini klasör rengiyle eşitle</label>
-                  <small>Tüm klasör ikon renklerini vurgu rengine ayarla</small>
+                  <label data-i18n="settings.syncFolderAccent">Vurgu rengini klasör rengiyle eşitle</label>
+                  <small data-i18n="settings.syncFolderAccentDesc">Tüm klasör ikon renklerini vurgu rengine ayarla</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="syncFolderAccentToggle" />
@@ -679,11 +695,11 @@
             </div>
 
             <div class="settings-section">
-              <h4><i class="fas fa-desktop"></i> Sistem</h4>
+              <h4><i class="fas fa-desktop"></i> <span data-i18n="sections.system">Sistem</span></h4>
               <div class="setting-item">
                 <div class="setting-info">
-                  <label>Başlangıçta çalıştır</label>
-                  <small>Oturum açıldığında Capnote arka planda başlasın</small>
+                  <label data-i18n="settings.startAtLogin">Başlangıçta çalıştır</label>
+                  <small data-i18n="settings.startAtLoginDesc">Oturum açıldığında Capnote arka planda başlasın</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="startAtLoginToggle" />
@@ -692,8 +708,8 @@
               </div>
               <div class="setting-item">
                 <div class="setting-info">
-                  <label>Pencereyi kapatınca tepsiye küçült</label>
-                  <small>Kapat düğmesine basınca uygulama sistem tepsisinde çalışmaya devam etsin</small>
+                  <label data-i18n="settings.closeToTray">Pencereyi kapatınca tepsiye küçült</label>
+                  <small data-i18n="settings.closeToTrayDesc">Kapat düğmesine basınca uygulama sistem tepsisinde çalışmaya devam etsin</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="closeToTrayToggle" />
@@ -703,11 +719,11 @@
             </div>
 
             <div class="settings-section">
-            <h4><i class="fas fa-thumbtack"></i> Sabit Not Ayarları</h4>
+            <h4><i class="fas fa-thumbtack"></i> <span data-i18n="sections.pinnedNoteSettings">Sabit Not Ayarları</span></h4>
             <div class="setting-item">
               <div class="setting-info">
-                <label>Sabit Not Sayısı</label>
-                <small>En fazla kaç not sabitlenebilsin (3 - 10)</small>
+                <label data-i18n="settings.maxPinnedNotes">Sabit Not Sayısı</label>
+                <small data-i18n="settings.maxPinnedNotesDesc">En fazla kaç not sabitlenebilsin (3 - 10)</small>
               </div>
               <select id="maxPinnedSelect" class="select-small">
                 <option value="3">3</option>
@@ -723,11 +739,11 @@
           </div>
 
             <div class="settings-section">
-              <h4><i class="fas fa-bell"></i> Bildirimler</h4>
+              <h4><i class="fas fa-bell"></i> <span data-i18n="sections.notifications">Bildirimler</span></h4>
               <div class="setting-item">
                 <div class="setting-info">
-                  <label>Sistem bildirimleri</label>
-                  <small>Hatırlatmalar için işletim sistemi bildirimlerini göster</small>
+                  <label data-i18n="settings.systemNotifications">Sistem bildirimleri</label>
+                  <small data-i18n="settings.systemNotificationsDesc">Hatırlatmalar için işletim sistemi bildirimlerini göster</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="toggleNativeNotifications" />
@@ -736,72 +752,72 @@
               </div>
               <div class="setting-item">
                 <div class="setting-info">
-                  <label>Test bildirimi gönder</label>
-                  <small>Hemen bir test bildirimi göster</small>
+                  <label data-i18n="settings.testNotification">Test bildirimi gönder</label>
+                  <small data-i18n="settings.testNotificationDesc">Hemen bir test bildirimi göster</small>
                 </div>
-                <button id="testNativeNotifBtn" class="btn btn-primary btn-small"><i class="fas fa-bell"></i> Bildirimleri test et</button>
+                <button id="testNativeNotifBtn" class="btn btn-primary btn-small"><i class="fas fa-bell"></i> <span data-i18n="buttons.testNotifications">Bildirimleri test et</span></button>
               </div>
             </div>
 
           <div class="settings-section">
-            <h4><i class="fas fa-database"></i> Verileri İçe/Dışa Aktar</h4>
+            <h4><i class="fas fa-database"></i> <span data-i18n="sections.dataImportExport">Verileri İçe/Dışa Aktar</span></h4>
             <div class="setting-item">
               <div class="setting-info">
-                <label>Verileri İçe Aktar</label>
-                <small>JSON dosyasından tüm verileri (notlar, klasörler, hatırlatmalar, bildirimler, ayarlar) içe aktarın</small>
+                <label data-i18n="settings.importData">Verileri İçe Aktar</label>
+                <small data-i18n="settings.importDataDesc">JSON dosyasından tüm verileri (notlar, klasörler, hatırlatmalar, bildirimler, ayarlar) içe aktarın</small>
               </div>
               <button id="importAllDataBtn" class="btn-outline btn-small">
-                <i class="fas fa-upload"></i> İçe Aktar
+                <i class="fas fa-upload"></i> <span data-i18n="buttons.import">İçe Aktar</span>
               </button>
             </div>
             <div class="setting-item">
               <div class="setting-info">
-                <label>Verileri Dışa Aktar</label>
-                <small>Tüm verilerin bir yedeğini JSON olarak dışa aktarın</small>
+                <label data-i18n="settings.exportData">Verileri Dışa Aktar</label>
+                <small data-i18n="settings.exportDataDesc">Tüm verilerin bir yedeğini JSON olarak dışa aktarın</small>
               </div>
               <button id="exportAllDataBtn" class="btn-outline btn-small">
-                <i class="fas fa-download"></i> Dışa Aktar
+                <i class="fas fa-download"></i> <span data-i18n="buttons.export">Dışa Aktar</span>
               </button>
             </div>
           </div>
 
           <div class="settings-section">
-            <h4><i class="fas fa-trash"></i> Verileri Temizle</h4>
+            <h4><i class="fas fa-trash"></i> <span data-i18n="sections.clearData">Verileri Temizle</span></h4>
             <div class="setting-item">
               <div class="setting-info">
-                <label>Tüm Notları Sil</label>
-                <small>Tüm kayıtlı notlarınızı kalıcı olarak siler</small>
+                <label data-i18n="settings.deleteAllNotes">Tüm Notları Sil</label>
+                <small data-i18n="settings.deleteAllNotesDesc">Tüm kayıtlı notlarınızı kalıcı olarak siler</small>
               </div>
               <button id="clearAllNotesBtn" class="btn-outline btn-small btn-danger">
-                <i class="fas fa-trash-alt"></i> Tüm Notları Sil
+                <i class="fas fa-trash-alt"></i> <span data-i18n="settings.deleteAllNotes">Tüm Notları Sil</span>
               </button>
             </div>
             <div class="setting-item">
               <div class="setting-info">
-                <label>Tüm Klasörleri Sil</label>
-                <small>Tüm klasörleri ve klasör ilişkilerini kaldırır</small>
+                <label data-i18n="settings.deleteAllFolders">Tüm Klasörleri Sil</label>
+                <small data-i18n="settings.deleteAllFoldersDesc">Tüm klasörleri ve klasör ilişkilerini kaldırır</small>
               </div>
               <button id="clearAllFoldersBtn" class="btn-outline btn-small btn-danger">
-                <i class="fas fa-folder-minus"></i> Tüm Klasörleri Sil
+                <i class="fas fa-folder-minus"></i> <span data-i18n="settings.deleteAllFolders">Tüm Klasörleri Sil</span>
               </button>
             </div>
             <div class="setting-item">
               <div class="setting-info">
-                <label>Uygulamayı Sıfırla</label>
-                <small>Notlar, klasörler ve ayarlar dahil uygulamayı varsayılan haline döndürür</small>
+                <label data-i18n="settings.resetApp">Uygulamayı Sıfırla</label>
+                <small data-i18n="settings.resetAppDesc">Notlar, klasörler ve ayarlar dahil uygulamayı varsayılan haline döndürür</small>
               </div>
               <button id="clearAllContentBtn" class="btn-outline btn-small btn-danger">
-                <i class="fas fa-eraser"></i> Uygulamayı Sıfırla
+                <i class="fas fa-eraser"></i> <span data-i18n="settings.resetApp">Uygulamayı Sıfırla</span>
               </button>
             </div>
           </div>
 
           <div class="settings-section">
-            <h4><i class="fas fa-info-circle"></i> Uygulama Bilgileri</h4>
+            <h4><i class="fas fa-info-circle"></i> <span data-i18n="sections.appInfo">Uygulama Bilgileri</span></h4>
             <div class="setting-item">
               <div class="setting-info">
-                <label>Versiyon</label>
-                <small>Capnote v1.0.0</small>
+                <label data-i18n="settings.versionLabel">Versiyon</label>
+                <small data-i18n="app.version">Capnote v1.0.0</small>
               </div>
             </div>
           </div>
@@ -816,12 +832,12 @@
           <i class="fas fa-exclamation-triangle"></i>
         </div>
         <div class="confirm-text">
-          <h3>İşlemi Onayla</h3>
-          <p id="confirmMessage">Bu işlemi gerçekleştirmek istediğinizden emin misiniz?</p>
+          <h3 data-i18n="modals.confirmAction">İşlemi Onayla</h3>
+          <p id="confirmMessage" data-i18n="modals.confirmMessage">Bu işlemi gerçekleştirmek istediğinizden emin misiniz?</p>
         </div>
         <div class="modal-actions">
-          <button id="cancelBtn" class="btn-outline">İptal</button>
-          <button id="confirmBtn" class="btn-danger">Onayla</button>
+          <button id="cancelBtn" class="btn-outline" data-i18n="buttons.cancel">İptal</button>
+          <button id="confirmBtn" class="btn-danger" data-i18n="buttons.confirm">Onayla</button>
         </div>
         <button class="modal-close" id="closeConfirmModal">
           <i class="fas fa-times"></i>
@@ -833,7 +849,7 @@
     <div id="passwordModal" class="modal hidden">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 id="passwordModalTitle">Şifre Girin</h3>
+          <h3 id="passwordModalTitle" data-i18n="modals.enterPassword">Şifre Girin</h3>
           <button class="modal-close" id="closePasswordModal">
             <i class="fas fa-times"></i>
           </button>
@@ -841,19 +857,20 @@
         <div class="modal-body">
           <div id="passwordMessage" class="form-message"></div>
           <div class="form-group">
-            <label for="passwordInput">Şifre:</label>
+            <label for="passwordInput" data-i18n="modals.password">Şifre:</label>
             <input
               type="password"
               id="passwordInput"
               class="form-input"
+              data-i18n-placeholder="placeholders.password"
               placeholder="Şifre girin..."
               autocomplete="off"
             />
           </div>
         </div>
         <div class="modal-footer">
-          <button id="cancelPasswordBtn" class="btn btn-secondary">İptal</button>
-          <button id="confirmPasswordBtn" class="btn btn-primary">Onayla</button>
+          <button id="cancelPasswordBtn" class="btn btn-secondary" data-i18n="buttons.cancel">İptal</button>
+          <button id="confirmPasswordBtn" class="btn btn-primary" data-i18n="buttons.confirm">Onayla</button>
         </div>
       </div>
     </div>
@@ -864,7 +881,7 @@
         <div class="modal-header">
           <div class="modal-title">
             <i class="fas fa-folder-plus"></i>
-            <h3>Yeni Klasör</h3>
+            <h3 data-i18n="modals.newFolder">Yeni Klasör</h3>
           </div>
           <button class="modal-close" id="closeFolderModal">
             <i class="fas fa-times"></i>
@@ -872,19 +889,20 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="folderNameInput">Klasör Adı</label>
+            <label for="folderNameInput" data-i18n="modals.folderName">Klasör Adı</label>
             <input
               type="text"
               id="folderNameInput"
               class="form-input"
+              data-i18n-placeholder="placeholders.folderName"
               placeholder="Klasör adını girin..."
               maxlength="50"
             />
           </div>
         </div>
         <div class="modal-footer">
-          <button id="cancelFolderBtn" class="btn btn-secondary">İptal</button>
-          <button id="createFolderBtn" class="btn btn-primary">Oluştur</button>
+          <button id="cancelFolderBtn" class="btn btn-secondary" data-i18n="buttons.cancel">İptal</button>
+          <button id="createFolderBtn" class="btn btn-primary" data-i18n="buttons.create">Oluştur</button>
         </div>
       </div>
     </div>
@@ -893,15 +911,15 @@
     <div id="contextMenu" class="context-menu hidden">
       <div class="context-menu-item" id="changeFolderColorMenuItem">
         <i class="fas fa-palette"></i>
-        <span>Klasör Rengini Değiştir</span>
+        <span data-i18n="modals.changeFolderColor">Klasör Rengini Değiştir</span>
       </div>
       <div class="context-menu-item" id="renameFolderMenuItem">
         <i class="fas fa-edit"></i>
-        <span>Yeniden Adlandır</span>
+        <span data-i18n="modals.renameFolder">Yeniden Adlandır</span>
       </div>
       <div class="context-menu-item" id="deleteFolderMenuItem">
         <i class="fas fa-trash"></i>
-        <span>Klasörü Sil</span>
+        <span data-i18n="modals.deleteFolder">Klasörü Sil</span>
       </div>
     </div>
 
@@ -914,7 +932,7 @@
         <div class="modal-header">
           <div class="modal-title">
             <i class="fas fa-palette"></i>
-            <h3>Klasör Rengi Seç</h3>
+            <h3 data-i18n="modals.selectFolderColor">Klasör Rengi Seç</h3>
           </div>
           <button class="modal-close" id="closeFolderColorModal">
             <i class="fas fa-times"></i>
@@ -922,13 +940,13 @@
         </div>
         <div class="modal-body">
           <div class="form-group">
-            <label for="folderColorInput">Renk</label>
+            <label for="folderColorInput" data-i18n="modals.color">Renk</label>
             <input type="color" id="folderColorInput" class="form-input" />
           </div>
         </div>
         <div class="modal-footer">
-          <button id="cancelFolderColorBtn" class="btn btn-secondary">İptal</button>
-          <button id="saveFolderColorBtn" class="btn btn-primary">Kaydet</button>
+          <button id="cancelFolderColorBtn" class="btn btn-secondary" data-i18n="buttons.cancel">İptal</button>
+          <button id="saveFolderColorBtn" class="btn btn-primary" data-i18n="buttons.save">Kaydet</button>
         </div>
       </div>
     </div>
@@ -943,6 +961,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+    <script src="i18n.js"></script>
     <script src="app.js"></script>
   </body>
 </html>
