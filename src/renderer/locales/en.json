@@ -255,6 +255,7 @@
     "reminderDeleted": "Reminder deleted",
     "reminderPrefix": "⏰ Reminder:",
     "noteCopied": "Note copied!",
+    "noteCopySuffix": " (Copy)",
     "codeCopied": "Code copied to clipboard",
     "copyFailed": "Copy failed",
     "useSidePanel": "Use side panel to select mood",

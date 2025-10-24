@@ -3505,7 +3505,7 @@ class CapnoteApp {
     const duplicate = {
       ...this.currentNote,
       id: Date.now(),
-      title: this.currentNote.title + ' (Kopya)',
+      title: this.currentNote.title + window.i18n.t('messages.noteCopySuffix'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       isPinned: false, // Kopyalanan not sabitlenmiş olmasın
