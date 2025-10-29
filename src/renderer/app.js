@@ -5265,7 +5265,7 @@ class CapnoteApp {
     this.restoreEditorSelection();
     this.richEditor.focus();
     const uniqueId = 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    const checklistHtml = `<div class="checklist"><div class="checklist-item"><input type="checkbox" id="${uniqueId}"><label for="${uniqueId}">Görev 1</label></div></div><p><br></p>`;
+    const checklistHtml = `<div class="checklist"><div class="checklist-item"><input type="checkbox" id="${uniqueId}"><label for="${uniqueId}">Görev</label></div></div><p><br></p>`;
 
     document.execCommand('insertHTML', false, checklistHtml);
     this.trackContentChanges();
