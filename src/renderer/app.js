@@ -3586,6 +3586,35 @@ class CapnoteApp {
     }
   }
 
+  // Toggle favorite from the viewer action button
+  async toggleFavoriteView() {
+    if (!this.currentNote) return;
+
+    // Mirror behavior of other favorite toggles
+    this.currentNote.isFavorite = !this.currentNote.isFavorite;
+    this.currentNote.updatedAt = new Date().toISOString();
+
+    try {
+      await this.saveNotes();
+    } catch (e) {
+      // ignore save errors for UI responsiveness; still update UI
+    }
+
+    // Update viewer favorite UI
+    this.updateFavoriteButtons();
+
+    // Update any other instances of this note's buttons and lists
+    this.updateActionButtonStates(this.currentNote.id);
+    if (this.currentNote.folderId && this.currentNote.folderId !== 'default') {
+      this.updateSpecificFolder(this.currentNote.folderId);
+    } else {
+      this.updateNotesList();
+    }
+
+    const message = this.currentNote.isFavorite ? window.i18n.t('messages.addedToFavorites') : window.i18n.t('messages.removedFromFavorites');
+    this.showNotification(message, 'success');
+  }
+
   selectNote(note) {
     // Auto-lock the current note if it was unlocked and is locked
     this.autoLockCurrentNote();
