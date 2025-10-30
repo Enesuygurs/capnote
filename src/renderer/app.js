@@ -2385,7 +2385,9 @@ class CapnoteApp {
   createNewNote() {
     // Auto-lock the current note if it was unlocked and is locked
     this.autoLockCurrentNote();
-
+    
+    // Ensure emoji panel is closed when leaving the current note
+    try { this.hideEmojiPanel(); } catch (e) {}
     this.currentNote = {
       id: Date.now(),
       title: '',
@@ -2434,6 +2436,8 @@ class CapnoteApp {
   }
 
   showEditor() {
+    // Hide emoji panel when switching views
+    try { this.hideEmojiPanel(); } catch (e) {}
     this.welcomeScreen.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.noteEditor.classList.remove('hidden');
@@ -2458,6 +2462,8 @@ class CapnoteApp {
   }
 
   showViewer() {
+    // Hide emoji panel when switching views
+    try { this.hideEmojiPanel(); } catch (e) {}
     this.welcomeScreen.classList.add('hidden');
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.remove('hidden');
@@ -2472,6 +2478,8 @@ class CapnoteApp {
   }
 
   showWelcome() {
+    // Hide emoji panel when switching views
+    try { this.hideEmojiPanel(); } catch (e) {}
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.remove('hidden');
@@ -2486,6 +2494,8 @@ class CapnoteApp {
   }
 
   showRemindersScreen() {
+    // Hide emoji panel when switching views
+    try { this.hideEmojiPanel(); } catch (e) {}
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.add('hidden');
@@ -2500,6 +2510,8 @@ class CapnoteApp {
   }
 
   showNotificationsScreen() {
+    // Hide emoji panel when switching views
+    try { this.hideEmojiPanel(); } catch (e) {}
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.add('hidden');
