@@ -1289,6 +1289,12 @@ class CapnoteApp {
         this.applyFormat('color', e.target.value);
       }, 50);
     });
+    
+    // Also apply on change (when picker is closed/committed)
+    this.textColor.addEventListener('change', (e) => {
+      clearTimeout(colorDebounceTimer);
+      this.applyFormat('color', e.target.value);
+    });
 
     // Background color with debounce for performance
     let bgColorDebounceTimer;
@@ -1297,6 +1303,12 @@ class CapnoteApp {
       bgColorDebounceTimer = setTimeout(() => {
         this.applyFormat('backgroundColor', e.target.value);
       }, 50);
+    });
+    
+    // Also apply on change (when picker is closed/committed)
+    this.bgColor.addEventListener('change', (e) => {
+      clearTimeout(bgColorDebounceTimer);
+      this.applyFormat('backgroundColor', e.target.value);
     });
 
     // Format buttons
