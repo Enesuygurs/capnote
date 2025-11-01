@@ -4396,7 +4396,7 @@ class CapnoteApp {
     // If nothing is selected, do nothing (don't apply to whole editor)
     if (range.collapsed) return;
 
-    // Check if selection contains or is inside a checkbox
+    // Check if selection contains or is inside a checkbox - BEFORE extracting
     const commonAncestor = range.commonAncestorContainer;
     const ancestorElement = commonAncestor.nodeType === Node.ELEMENT_NODE 
       ? commonAncestor 
@@ -4407,7 +4407,18 @@ class CapnoteApp {
       ancestorElement.closest('.checkbox-item') ||
       ancestorElement.classList.contains('checkbox-item')
     )) {
-      console.warn('Cannot apply background color to checkbox items');
+      // Just clear selection and exit - don't modify anything
+      selection.removeAllRanges();
+      return;
+    }
+
+    // Also check if range intersects with any checkbox elements
+    const fragment = range.cloneContents();
+    const tempDiv = document.createElement('div');
+    tempDiv.appendChild(fragment);
+    if (tempDiv.querySelector('.checkbox-item')) {
+      // Selection contains checkbox, abort without changes
+      selection.removeAllRanges();
       return;
     }
 
@@ -4418,16 +4429,6 @@ class CapnoteApp {
 
       // Extract selected contents
       const contents = range.extractContents();
-      
-      // Check if extracted contents contain checkbox items
-      const tempDiv = document.createElement('div');
-      tempDiv.appendChild(contents.cloneNode(true));
-      if (tempDiv.querySelector('.checkbox-item')) {
-        // Put contents back and abort
-        range.insertNode(contents);
-        console.warn('Selection contains checkbox items, cannot apply background color');
-        return;
-      }
       
       // If contents is empty, don't apply
       if (!contents.textContent.trim() && !contents.querySelector('img, br')) {
@@ -4448,12 +4449,7 @@ class CapnoteApp {
       this.trackContentChanges();
     } catch (e) {
       console.warn('Background color application failed:', e);
-      // Fallback to execCommand if modern approach fails
-      try {
-        document.execCommand('backColor', false, colorValue);
-      } catch (fallbackError) {
-        console.warn('Fallback backColor also failed:', fallbackError);
-      }
+      // Don't use fallback for checkboxes - it will also break them
     }
   }
 
