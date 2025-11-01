@@ -1281,14 +1281,22 @@ class CapnoteApp {
   }
 
   setupFormattingToolbar() {
-    // Text color
+    // Text color with debounce for performance
+    let colorDebounceTimer;
     this.textColor.addEventListener('input', (e) => {
-      this.applyFormat('color', e.target.value);
+      clearTimeout(colorDebounceTimer);
+      colorDebounceTimer = setTimeout(() => {
+        this.applyFormat('color', e.target.value);
+      }, 50);
     });
 
-    // Background color - use 'input' event for immediate application
+    // Background color with debounce for performance
+    let bgColorDebounceTimer;
     this.bgColor.addEventListener('input', (e) => {
-      this.applyFormat('backgroundColor', e.target.value);
+      clearTimeout(bgColorDebounceTimer);
+      bgColorDebounceTimer = setTimeout(() => {
+        this.applyFormat('backgroundColor', e.target.value);
+      }, 50);
     });
 
     // Format buttons
