@@ -1282,12 +1282,12 @@ class CapnoteApp {
 
   setupFormattingToolbar() {
     // Text color
-    this.textColor.addEventListener('change', (e) => {
+    this.textColor.addEventListener('input', (e) => {
       this.applyFormat('color', e.target.value);
     });
 
-    // Background color
-    this.bgColor.addEventListener('change', (e) => {
+    // Background color - use 'input' event for immediate application
+    this.bgColor.addEventListener('input', (e) => {
       this.applyFormat('backgroundColor', e.target.value);
     });
 
@@ -4314,7 +4314,8 @@ class CapnoteApp {
       } else if (command === 'color') {
         document.execCommand('foreColor', false, value);
       } else if (command === 'backgroundColor') {
-        document.execCommand('backColor', false, value);
+        // Use modern approach for background color for better reliability
+        this.applyBackgroundColor(value);
       } else {
         document.execCommand(command, false, value);
       }
@@ -4358,6 +4359,56 @@ class CapnoteApp {
       else if (sizeNum <= 24) document.execCommand('fontSize', false, '5');
       else if (sizeNum <= 32) document.execCommand('fontSize', false, '6');
       else document.execCommand('fontSize', false, '7');
+    }
+  }
+
+  applyBackgroundColor(colorValue) {
+    // Ensure editor has focus and selection is restored
+    if (!this.richEditor) return;
+    
+    this.richEditor.focus();
+    
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return;
+
+    const range = selection.getRangeAt(0);
+    
+    // If nothing is selected, do nothing (don't apply to whole editor)
+    if (range.collapsed) return;
+
+    try {
+      // Create a span with background color
+      const span = document.createElement('span');
+      span.style.backgroundColor = colorValue;
+
+      // Extract selected contents
+      const contents = range.extractContents();
+      
+      // If contents is empty, don't apply
+      if (!contents.textContent.trim() && !contents.querySelector('img, br')) {
+        return;
+      }
+
+      // Wrap contents in span
+      span.appendChild(contents);
+      range.insertNode(span);
+
+      // Restore selection on the new span
+      selection.removeAllRanges();
+      const newRange = document.createRange();
+      newRange.selectNodeContents(span);
+      selection.addRange(newRange);
+      
+      // Mark as changed
+      this.trackContentChanges();
+    } catch (e) {
+      console.warn('Background color application failed:', e);
+      // Fallback to execCommand if modern approach fails
+      try {
+        document.execCommand('backColor', false, colorValue);
+      } catch (fallbackError) {
+        console.warn('Fallback backColor also failed:', fallbackError);
+      }
     }
   }
 
