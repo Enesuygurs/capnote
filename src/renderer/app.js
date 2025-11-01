@@ -4396,6 +4396,21 @@ class CapnoteApp {
     // If nothing is selected, do nothing (don't apply to whole editor)
     if (range.collapsed) return;
 
+    // Check if selection contains or is inside a checkbox
+    const commonAncestor = range.commonAncestorContainer;
+    const ancestorElement = commonAncestor.nodeType === Node.ELEMENT_NODE 
+      ? commonAncestor 
+      : commonAncestor.parentElement;
+    
+    // Don't apply background color to checkboxes
+    if (ancestorElement && (
+      ancestorElement.closest('.checkbox-item') ||
+      ancestorElement.classList.contains('checkbox-item')
+    )) {
+      console.warn('Cannot apply background color to checkbox items');
+      return;
+    }
+
     try {
       // Create a span with background color
       const span = document.createElement('span');
@@ -4403,6 +4418,16 @@ class CapnoteApp {
 
       // Extract selected contents
       const contents = range.extractContents();
+      
+      // Check if extracted contents contain checkbox items
+      const tempDiv = document.createElement('div');
+      tempDiv.appendChild(contents.cloneNode(true));
+      if (tempDiv.querySelector('.checkbox-item')) {
+        // Put contents back and abort
+        range.insertNode(contents);
+        console.warn('Selection contains checkbox items, cannot apply background color');
+        return;
+      }
       
       // If contents is empty, don't apply
       if (!contents.textContent.trim() && !contents.querySelector('img, br')) {
