@@ -2324,10 +2324,12 @@ input[type="color"].color-picker::-moz-color-swatch {
   max-width: 500px;
   width: 90%;
   max-height: 80vh;
-  overflow-y: auto;
+  overflow: hidden;
   position: relative;
   transform: scale(0.9);
   transition: var(--transition-normal);
+  display: flex;
+  flex-direction: column;
 }
 
 .modal:not(.hidden) .modal-content {
@@ -2341,6 +2343,7 @@ input[type="color"].color-picker::-moz-color-swatch {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .modal-header h3 {
@@ -3570,6 +3573,9 @@ input[type="color"].color-picker::-moz-color-swatch {
 
 .settings-content {
   padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .settings-section {
