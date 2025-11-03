@@ -3554,11 +3554,9 @@ class CapnoteApp {
 
     // Check confirm delete setting
     const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
-    console.log('deleteCurrentNote - confirmDelete setting:', confirmDelete);
-
+    
     if (!confirmDelete) {
       // Don't show confirmation, delete directly
-      console.log('Direct delete (no confirmation)');
       const currentNoteId = this.currentNote.id;
       this.notes = this.notes.filter((note) => note.id !== currentNoteId);
       this.saveNotes();
@@ -3568,15 +3566,12 @@ class CapnoteApp {
 
       if (this.notes.length > 0) {
         const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-        console.log('Direct delete - onNoteDelete setting:', onNoteDelete);
         
         if (onNoteDelete === 'home') {
-          console.log('Opening home');
           this.currentNote = null;
           this.showWelcome();
         } else {
           // 'lastNote' - open last remaining note
-          console.log('Opening last note');
           this.selectNote(this.notes[0]);
         }
       } else {
@@ -3590,7 +3585,6 @@ class CapnoteApp {
     this.showConfirm(
       `"${this.currentNote.title}" ${window.i18n.t('messages.confirmDelete')}`,
       () => {
-        console.log('Confirmed delete with modal');
         const currentNoteId = this.currentNote.id;
         this.notes = this.notes.filter((note) => note.id !== currentNoteId);
         this.saveNotes();
@@ -3600,15 +3594,12 @@ class CapnoteApp {
 
         if (this.notes.length > 0) {
           const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-          console.log('Modal delete - onNoteDelete setting:', onNoteDelete);
           
           if (onNoteDelete === 'home') {
-            console.log('Opening home');
             this.currentNote = null;
             this.showWelcome();
           } else {
             // 'lastNote' - open last remaining note
-            console.log('Opening last note');
             this.selectNote(this.notes[0]);
           }
         } else {
@@ -5552,11 +5543,9 @@ class CapnoteApp {
 
     // Check confirm delete setting
     const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
-    console.log('deleteNoteById - confirmDelete setting:', confirmDelete, 'stored value:', localStorage.getItem('settings.confirmDelete'));
     
     if (!confirmDelete) {
       // Don't show confirmation, delete directly
-      console.log('Direct delete (no confirmation)');
       const index = this.notes.findIndex((n) => n.id == noteId);
       if (index >= 0) {
         const deletedNote = this.notes[index];
@@ -5578,17 +5567,13 @@ class CapnoteApp {
         if (this.currentNote && this.currentNote.id === noteId) {
           this.currentNote = null;
           const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-          console.log('Direct delete - onNoteDelete setting:', onNoteDelete);
           
           if (onNoteDelete === 'home') {
-            console.log('Opening home');
             this.showWelcome();
           } else if (this.notes.length > 0) {
             // 'lastNote' - open last remaining note
-            console.log('Opening last note');
             this.selectNote(this.notes[0]);
           } else {
-            console.log('Opening home (no notes left)');
             this.showWelcome();
           }
         }
@@ -5601,7 +5586,6 @@ class CapnoteApp {
     // Show confirmation modal
     this.confirmMessage.textContent = `"${note.title}" ${window.i18n.t('messages.confirmDelete')}`;
     this.confirmCallback = () => {
-      console.log('Confirmed delete with modal');
       const index = this.notes.findIndex((n) => n.id == noteId);
       if (index >= 0) {
         const deletedNote = this.notes[index];
@@ -5623,17 +5607,13 @@ class CapnoteApp {
         if (this.currentNote && this.currentNote.id === noteId) {
           this.currentNote = null;
           const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-          console.log('Modal delete - onNoteDelete setting:', onNoteDelete);
           
           if (onNoteDelete === 'home') {
-            console.log('Opening home');
             this.showWelcome();
           } else if (this.notes.length > 0) {
             // 'lastNote' - open last remaining note
-            console.log('Opening last note');
             this.selectNote(this.notes[0]);
           } else {
-            console.log('Opening home (no notes left)');
             this.showWelcome();
           }
         }
@@ -5839,9 +5819,6 @@ class CapnoteApp {
     if (this.languageSelect) {
       const savedLang = localStorage.getItem('app-language') || 'tr';
       this.languageSelect.value = savedLang;
-      console.log('Language loaded from settings:', savedLang);
-    } else {
-      console.warn('Language select element not found in loadSettings');
     }
 
     // Load dark mode preference
@@ -5871,18 +5848,12 @@ class CapnoteApp {
     const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
     if (this.onNoteDeleteSelect) {
       this.onNoteDeleteSelect.value = onNoteDelete;
-      console.log('Loaded onNoteDelete setting:', onNoteDelete);
-    } else {
-      console.warn('onNoteDeleteSelect element not found');
     }
 
     // Load confirm delete preference (default true)
     const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
     if (this.confirmDeleteToggle) {
       this.confirmDeleteToggle.checked = confirmDelete;
-      console.log('Loaded confirmDelete setting:', confirmDelete);
-    } else {
-      console.warn('confirmDeleteToggle element not found');
     }
 
     // Query start-at-login from main (async, best-effort)
@@ -5905,43 +5876,29 @@ class CapnoteApp {
   }
 
   setupSettingsEventListeners() {
-    console.log('setupSettingsEventListeners called');
-    
     // Max pinned notes change
     if (this.maxPinnedSelect) {
-      console.log('Attaching maxPinnedSelect listener');
       this.maxPinnedSelect.addEventListener('change', (e) => {
-        console.log('maxPinnedSelect changed to:', e.target.value);
         const v = parseInt(e.target.value, 10);
         if (!isNaN(v) && v >= 3 && v <= 10) {
           localStorage.setItem('maxPinnedNotes', String(v));
           this.showNotification(window.i18n.t('messages.pinnedLimitUpdated'), 'success');
         }
       });
-    } else {
-      console.warn('maxPinnedSelect not found');
     }
 
     // On note delete behavior change
     if (this.onNoteDeleteSelect) {
-      console.log('Attaching onNoteDeleteSelect listener');
       this.onNoteDeleteSelect.addEventListener('change', (e) => {
-        console.log('onNoteDeleteSelect changed to:', e.target.value);
         localStorage.setItem('settings.onNoteDelete', e.target.value);
       });
-    } else {
-      console.warn('onNoteDeleteSelect not found');
     }
 
     // Confirm delete toggle
     if (this.confirmDeleteToggle) {
-      console.log('Attaching confirmDeleteToggle listener');
       this.confirmDeleteToggle.addEventListener('change', (e) => {
-        console.log('confirmDeleteToggle changed to:', e.target.checked);
         localStorage.setItem('settings.confirmDelete', e.target.checked ? 'true' : 'false');
       });
-    } else {
-      console.warn('confirmDeleteToggle not found');
     }
   }
 
