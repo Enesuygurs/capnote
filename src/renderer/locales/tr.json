@@ -115,6 +115,7 @@
     "weather": "Hava Durumu",
     "tags": "Etiketler",
     "reminder": "Hatırlatma",
+    "general": "Genel",
     "appearance": "Görünüm",
     "system": "Sistem",
     "notifications": "Bildirimler",
@@ -152,7 +153,13 @@
     "resetAppDesc": "Notlar, klasörler ve ayarlar dahil uygulamayı varsayılan haline döndürür",
     "versionLabel": "Versiyon",
     "language": "Dil",
-    "languageDesc": "Uygulama dilini değiştir"
+    "languageDesc": "Uygulama dilini değiştir",
+    "onNoteDelete": "Not silindiğinde",
+    "onNoteDeleteDesc": "Not silindiğinde ne olacağını seç",
+    "openLastNote": "Son kalan notu aç",
+    "openHome": "Ana sayfa bölümünü aç",
+    "confirmDelete": "Silme işleminde onay iste",
+    "confirmDeleteDesc": "Notları silerken onay ekranı göster"
   },
   "modals": {
     "selectOption": "Seçim Yap",
