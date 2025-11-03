@@ -269,6 +269,9 @@ class CapnoteApp {
   // System settings toggles
   this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
   this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
+  // General settings
+  this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
+  this.confirmDeleteToggle = document.getElementById('confirmDeleteToggle');
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
@@ -5498,6 +5501,49 @@ class CapnoteApp {
     const note = this.notes.find((n) => n.id == noteId);
     if (!note) return;
 
+    // Check confirm delete setting
+    const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
+    
+    if (!confirmDelete) {
+      // Don't show confirmation, delete directly
+      const index = this.notes.findIndex((n) => n.id == noteId);
+      if (index >= 0) {
+        const deletedNote = this.notes[index];
+        this.notes.splice(index, 1);
+        this.saveNotes();
+
+        // Only update the specific folder if note was in a folder, otherwise update main list
+        if (deletedNote.folderId && deletedNote.folderId !== 'default') {
+          this.updateSpecificFolder(deletedNote.folderId);
+        } else {
+          this.updateNotesList();
+        }
+        this.updateStats();
+
+        // If user is viewing Favorites, refresh the list so it includes/excludes updated favorites
+        if (this.currentFilter === 'favorites') this.updateNotesList();
+
+        // If deleted note was current note, handle based on settings
+        if (this.currentNote && this.currentNote.id === noteId) {
+          this.currentNote = null;
+          const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
+          
+          if (onNoteDelete === 'home') {
+            this.showWelcome();
+          } else if (this.notes.length > 0) {
+            // 'lastNote' - open last remaining note
+            this.selectNote(this.notes[0]);
+          } else {
+            this.showWelcome();
+          }
+        }
+
+        this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
+      }
+      return;
+    }
+
+    // Show confirmation modal
     this.confirmMessage.textContent = `"${note.title}" ${window.i18n.t('messages.confirmDelete')}`;
     this.confirmCallback = () => {
       const index = this.notes.findIndex((n) => n.id == noteId);
@@ -5512,15 +5558,20 @@ class CapnoteApp {
         } else {
           this.updateNotesList();
         }
-    this.updateStats();
+        this.updateStats();
 
-    // If user is viewing Favorites, refresh the list so it includes/excludes updated favorites
-    if (this.currentFilter === 'favorites') this.updateNotesList();
+        // If user is viewing Favorites, refresh the list so it includes/excludes updated favorites
+        if (this.currentFilter === 'favorites') this.updateNotesList();
 
-        // If deleted note was current note, show welcome or select another
+        // If deleted note was current note, handle based on settings
         if (this.currentNote && this.currentNote.id === noteId) {
           this.currentNote = null;
-          if (this.notes.length > 0) {
+          const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
+          
+          if (onNoteDelete === 'home') {
+            this.showWelcome();
+          } else if (this.notes.length > 0) {
+            // 'lastNote' - open last remaining note
             this.selectNote(this.notes[0]);
           } else {
             this.showWelcome();
@@ -5766,6 +5817,24 @@ class CapnoteApp {
       });
     }
 
+    // Load general settings - on note delete behavior (default: 'lastNote')
+    const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
+    if (this.onNoteDeleteSelect) {
+      this.onNoteDeleteSelect.value = onNoteDelete;
+      this.onNoteDeleteSelect.addEventListener('change', (e) => {
+        localStorage.setItem('settings.onNoteDelete', e.target.value);
+      });
+    }
+
+    // Load confirm delete preference (default true)
+    const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
+    if (this.confirmDeleteToggle) {
+      this.confirmDeleteToggle.checked = confirmDelete;
+      this.confirmDeleteToggle.addEventListener('change', (e) => {
+        localStorage.setItem('settings.confirmDelete', e.target.checked ? 'true' : 'false');
+      });
+    }
+
     // Query start-at-login from main (async, best-effort)
     try {
       if (this.startAtLoginToggle && window.electronAPI && typeof window.electronAPI.getStartAtLogin === 'function') {
@@ -5792,6 +5861,9 @@ class CapnoteApp {
     if (this.syncFolderAccentToggle) localStorage.setItem('syncFolderAccent', this.syncFolderAccentToggle.checked ? '1' : '0');
       // Save native/system notifications preference
       if (this.toggleNativeNotifications) localStorage.setItem('settings.nativeNotifications', this.toggleNativeNotifications.checked ? '1' : '0');
+      // Save general settings
+      if (this.onNoteDeleteSelect) localStorage.setItem('settings.onNoteDelete', this.onNoteDeleteSelect.value);
+      if (this.confirmDeleteToggle) localStorage.setItem('settings.confirmDelete', this.confirmDeleteToggle.checked ? 'true' : 'false');
   }
 
   setAccentColor(hex, options = { persist: true }) {

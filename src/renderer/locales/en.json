@@ -115,6 +115,7 @@
     "weather": "Weather",
     "tags": "Tags",
     "reminder": "Reminder",
+    "general": "General",
     "appearance": "Appearance",
     "system": "System",
     "notifications": "Notifications",
@@ -152,7 +153,13 @@
     "resetAppDesc": "Return app to default state including notes, folders and settings",
     "versionLabel": "Version",
     "language": "Language",
-    "languageDesc": "Change application language"
+    "languageDesc": "Change application language",
+    "onNoteDelete": "On note deletion",
+    "onNoteDeleteDesc": "Choose what happens when a note is deleted",
+    "openLastNote": "Open last remaining note",
+    "openHome": "Open home section",
+    "confirmDelete": "Confirm on delete",
+    "confirmDeleteDesc": "Show confirmation screen when deleting notes"
   },
   "modals": {
     "selectOption": "Make Selection",
