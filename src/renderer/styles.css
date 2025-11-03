@@ -3576,6 +3576,14 @@ input[type="color"].color-picker::-moz-color-swatch {
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+  /* Hide scrollbar but keep scrolling functionality */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.settings-content::-webkit-scrollbar {
+  display: none;
 }
 
 .settings-section {
