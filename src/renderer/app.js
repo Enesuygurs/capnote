@@ -4396,28 +4396,38 @@ class CapnoteApp {
     // If nothing is selected, do nothing (don't apply to whole editor)
     if (range.collapsed) return;
 
-    // Check if selection contains or is inside a checkbox - BEFORE extracting
+    // Check if selection is inside or contains checkbox item
     const commonAncestor = range.commonAncestorContainer;
     const ancestorElement = commonAncestor.nodeType === Node.ELEMENT_NODE 
       ? commonAncestor 
       : commonAncestor.parentElement;
     
-    // Don't apply background color to checkboxes
+    // Don't apply background color if directly in checkbox
     if (ancestorElement && (
       ancestorElement.closest('.checkbox-item') ||
       ancestorElement.classList.contains('checkbox-item')
     )) {
-      // Just clear selection and exit - don't modify anything
       selection.removeAllRanges();
       return;
     }
 
-    // Also check if range intersects with any checkbox elements
+    // Check if the selection's parent line contains a checkbox
+    let parent = ancestorElement;
+    while (parent && parent !== this.richEditor) {
+      if (parent.classList && parent.classList.contains('checkbox-item')) {
+        // Parent is a checkbox, don't apply
+        selection.removeAllRanges();
+        return;
+      }
+      parent = parent.parentElement;
+    }
+
+    // Check if range contains checkbox elements
     const fragment = range.cloneContents();
     const tempDiv = document.createElement('div');
     tempDiv.appendChild(fragment);
     if (tempDiv.querySelector('.checkbox-item')) {
-      // Selection contains checkbox, abort without changes
+      // Selection contains or overlaps checkbox, abort
       selection.removeAllRanges();
       return;
     }
