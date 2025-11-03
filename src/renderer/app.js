@@ -3552,17 +3552,65 @@ class CapnoteApp {
   deleteCurrentNote() {
     if (!this.currentNote) return;
 
+    // Check confirm delete setting
+    const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
+    console.log('deleteCurrentNote - confirmDelete setting:', confirmDelete);
+
+    if (!confirmDelete) {
+      // Don't show confirmation, delete directly
+      console.log('Direct delete (no confirmation)');
+      const currentNoteId = this.currentNote.id;
+      this.notes = this.notes.filter((note) => note.id !== currentNoteId);
+      this.saveNotes();
+      this.updateNotesList();
+      this.updateStats();
+      this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
+
+      if (this.notes.length > 0) {
+        const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
+        console.log('Direct delete - onNoteDelete setting:', onNoteDelete);
+        
+        if (onNoteDelete === 'home') {
+          console.log('Opening home');
+          this.currentNote = null;
+          this.showWelcome();
+        } else {
+          // 'lastNote' - open last remaining note
+          console.log('Opening last note');
+          this.selectNote(this.notes[0]);
+        }
+      } else {
+        this.currentNote = null;
+        this.showWelcome();
+      }
+      return;
+    }
+
+    // Show confirmation
     this.showConfirm(
       `"${this.currentNote.title}" ${window.i18n.t('messages.confirmDelete')}`,
       () => {
-        this.notes = this.notes.filter((note) => note.id !== this.currentNote.id);
+        console.log('Confirmed delete with modal');
+        const currentNoteId = this.currentNote.id;
+        this.notes = this.notes.filter((note) => note.id !== currentNoteId);
         this.saveNotes();
         this.updateNotesList();
         this.updateStats();
         this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
 
         if (this.notes.length > 0) {
-          this.selectNote(this.notes[0]);
+          const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
+          console.log('Modal delete - onNoteDelete setting:', onNoteDelete);
+          
+          if (onNoteDelete === 'home') {
+            console.log('Opening home');
+            this.currentNote = null;
+            this.showWelcome();
+          } else {
+            // 'lastNote' - open last remaining note
+            console.log('Opening last note');
+            this.selectNote(this.notes[0]);
+          }
         } else {
           this.currentNote = null;
           this.showWelcome();
