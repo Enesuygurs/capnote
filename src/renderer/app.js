@@ -4396,44 +4396,14 @@ class CapnoteApp {
     // If nothing is selected, do nothing (don't apply to whole editor)
     if (range.collapsed) return;
 
-    // Get the start and end nodes
-    const startNode = range.startContainer;
-    const endNode = range.endContainer;
-    
-    // Helper function to find the block parent (usually a div containing the line)
-    const getLineContainer = (node) => {
-      let current = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
-      while (current && current !== this.richEditor) {
-        // If we find a checkbox item, return it
-        if (current.classList && current.classList.contains('checkbox-item')) {
-          return current;
-        }
-        // If we find a block-level container, check if it contains checkboxes
-        if (current.classList && (current.classList.contains('line') || getComputedStyle(current).display === 'block')) {
-          if (current.querySelector('.checkbox-item')) {
-            return current;
-          }
-        }
-        current = current.parentElement;
-      }
-      return null;
-    };
-
-    // Check if start or end node is in a checkbox line
-    const startLine = getLineContainer(startNode);
-    const endLine = getLineContainer(endNode);
-    
-    if (startLine || endLine) {
-      // Selection touches or is in a checkbox line, abort
-      selection.removeAllRanges();
-      return;
-    }
-
-    // Also verify that the fragment doesn't contain checkbox elements
+    // Check if selection contains any input elements (like checkboxes)
     const fragment = range.cloneContents();
     const tempDiv = document.createElement('div');
     tempDiv.appendChild(fragment);
-    if (tempDiv.querySelector('.checkbox-item')) {
+    
+    // Don't apply if there are any input elements (checkboxes)
+    if (tempDiv.querySelector('input')) {
+      // Selection contains input/checkbox, abort
       selection.removeAllRanges();
       return;
     }
