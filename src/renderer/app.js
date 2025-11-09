@@ -14,6 +14,15 @@ class CapnoteApp {
     this.originalNoteState = null;
     this.isResizing = false; // Flag to prevent re-renders during resize
 
+    // Detect platform for UI adjustments (macOS has traffic lights on left)
+    if (window.electronAPI && window.electronAPI.platform === 'darwin') {
+      document.body.classList.add('is-macos');
+    } else if (window.electronAPI && window.electronAPI.platform === 'win32') {
+      document.body.classList.add('is-windows');
+    } else {
+      document.body.classList.add('is-linux');
+    }
+
     this.defaultFormatting = {
       fontFamily: 'Inter',
       fontSize: '14px',
