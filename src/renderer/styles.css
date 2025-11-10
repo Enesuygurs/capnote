@@ -131,11 +131,6 @@ body {
   z-index: 1000;
   -webkit-app-region: drag;
 }
-
-/* macOS has traffic lights on the left, so add padding */
-body.is-macos .titlebar {
-  padding-left: 75px;
-}
 .titlebar-drag {
   flex: 1;
   display: flex;
