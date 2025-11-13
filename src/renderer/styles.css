@@ -1608,7 +1608,6 @@ div#newNoteNav {
 .note-action-btn:hover {
   background: rgba(0, 0, 0, 0.2);
   color: var(--text-primary);
-  transform: scale(1.1);
 }
 
 .note-action-btn.favorited {
