@@ -201,6 +201,17 @@ body {
   color: var(--text-primary);
 }
 
+/* macOS ve Linux için sol ikonları sağa kaydır (trafik ışıkları için) */
+body.platform-darwin .hamburger-btn,
+body.platform-linux .hamburger-btn {
+  margin-left: 78px;
+}
+
+body.platform-darwin .titlebar-buttons,
+body.platform-linux .titlebar-buttons {
+  margin-left: 8px;
+}
+
 /* Minimize buton ikonunu aşağı kaydır */
 .titlebar-button.minimize i {
   transform: translateY(2px);
