@@ -204,7 +204,7 @@ body {
 /* macOS ve Linux için sol ikonları sağa kaydır (trafik ışıkları için) */
 body.platform-darwin .hamburger-btn,
 body.platform-linux .hamburger-btn {
-  margin-left: 88px;
+  margin-left: 140px;
 }
 
 body.platform-darwin .titlebar-buttons,
