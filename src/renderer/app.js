@@ -107,6 +107,11 @@ class CapnoteApp {
   }
 
   async init() {
+    // Add platform class to body for platform-specific styling
+    if (window.electronAPI && window.electronAPI.platform) {
+      document.body.classList.add(`platform-${window.electronAPI.platform}`);
+    }
+
     // Wait for i18n to be ready
     if (window.i18n && !window.i18n.translations.tr) {
       console.log('Waiting for i18n to initialize...');
