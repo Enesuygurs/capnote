@@ -5002,6 +5002,11 @@ class CapnoteApp {
         const tag = (active.tagName || '').toLowerCase();
         if (tag === 'textarea' || active.isContentEditable) return;
 
+        // Disable Enter key in settings modal to prevent accidental button clicks
+        if (modal.id === 'settingsModal') {
+          return;
+        }
+
         // Special-case: if this is the confirm modal, prefer the explicit confirm button id
         if (modal.id === 'confirmModal') {
           const cb = document.getElementById('confirmBtn');
