@@ -442,6 +442,15 @@ body {
   flex-direction: column;
 }
 
+.sidebar-content::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar-content {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* =====================================================
    GitHub-like Markdown Preview Styles (scoped)
    These styles mimic GitHub's markdown rendering for
