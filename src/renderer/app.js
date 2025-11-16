@@ -7117,7 +7117,7 @@ class CapnoteApp {
     }
 
     const title = note.title || 'Başlıksız Not';
-    const truncatedTitle = title.length > 30 ? title.substring(0, 30) + '...' : title;
+    const truncatedTitle = title.length > 15 ? title.substring(0, 15) + '...' : title;
 
     div.innerHTML = `
             <i class="fas fa-file-alt nav-icon"></i>
