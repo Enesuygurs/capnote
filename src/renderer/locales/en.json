@@ -119,6 +119,8 @@
     "appearance": "Appearance",
     "system": "System",
     "notifications": "Notifications",
+    "dataManagement": "Data Management",
+    "about": "About",
     "pinnedNoteSettings": "Pinned Note Settings",
     "dataImportExport": "Import/Export Data",
     "clearData": "Clear Data",
