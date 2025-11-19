@@ -5886,6 +5886,27 @@ class CapnoteApp {
   }
 
   setupSettingsEventListeners() {
+    // Settings tab switching
+    const settingsTabs = document.querySelectorAll('.settings-tab');
+    const settingsTabContents = document.querySelectorAll('.settings-tab-content');
+    
+    settingsTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetTab = tab.dataset.tab;
+        
+        // Remove active class from all tabs and contents
+        settingsTabs.forEach(t => t.classList.remove('active'));
+        settingsTabContents.forEach(c => c.classList.remove('active'));
+        
+        // Add active class to clicked tab and corresponding content
+        tab.classList.add('active');
+        const targetContent = document.querySelector(`.settings-tab-content[data-content="${targetTab}"]`);
+        if (targetContent) {
+          targetContent.classList.add('active');
+        }
+      });
+    });
+
     // Max pinned notes change
     if (this.maxPinnedSelect) {
       this.maxPinnedSelect.addEventListener('change', (e) => {
