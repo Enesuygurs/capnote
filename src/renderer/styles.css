@@ -3723,11 +3723,15 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 .settings-subsection {
-  margin-top: 28px;
-  padding-top: 20px;
+  margin-top: 24px;
+}
+
+.settings-subsection:first-of-type {
+  margin-top: 0;
 }
 
 .settings-subsection:not(:first-of-type) {
+  padding-top: 20px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
