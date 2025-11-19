@@ -3725,10 +3725,13 @@ input[type="color"].color-picker::-moz-color-swatch {
 .settings-subsection {
   margin-top: 28px;
   padding-top: 20px;
+}
+
+.settings-subsection:not(:first-of-type) {
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-[data-theme='dark'] .settings-subsection {
+[data-theme='dark'] .settings-subsection:not(:first-of-type) {
   border-top-color: rgba(255, 255, 255, 0.08);
 }
 
