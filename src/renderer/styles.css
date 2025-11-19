@@ -155,6 +155,11 @@ body {
   position: absolute;
   right: 10px;
 }
+
+/* macOS'ta trafik ışığı butonlarını gizle */
+body.platform-darwin .titlebar-controls {
+  display: none;
+}
 .titlebar-button {
   width: 32px;
   height: 24px;
