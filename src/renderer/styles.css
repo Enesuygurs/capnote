@@ -3615,7 +3615,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 .settings-tabs {
   width: 200px;
   min-width: 200px;
-  background: rgba(0, 0, 0, 0.02);
+  background: rgb(255 255 255 / 2%);
   border-right: 1px solid rgba(0, 0, 0, 0.06);
   padding: 12px 0;
   overflow-y: auto;
