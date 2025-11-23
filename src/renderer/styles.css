@@ -429,6 +429,12 @@ body.platform-linux .titlebar-buttons {
   justify-content: space-between;
 }
 
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .user-profile:hover {
   background: var(--bg-hover);
 }
