@@ -390,21 +390,6 @@ class CapnoteApp {
     this.newNoteBtn.addEventListener('click', () => this.createNewNote());
     this.settingsBtn.addEventListener('click', () => this.showSettingsModal());
     this.helpSupport.addEventListener('click', () => this.showSettingsModal());
-
-    // Sidebar action buttons
-    const settingsBtnSidebar = document.getElementById('settingsBtnSidebar');
-    const homeBtnSidebar = document.getElementById('homeBtnSidebar');
-    const newNoteBtnSidebar = document.getElementById('newNoteBtnSidebar');
-    
-    if (settingsBtnSidebar) {
-      settingsBtnSidebar.addEventListener('click', () => this.showSettingsModal());
-    }
-    if (homeBtnSidebar) {
-      homeBtnSidebar.addEventListener('click', () => this.showWelcome());
-    }
-    if (newNoteBtnSidebar) {
-      newNoteBtnSidebar.addEventListener('click', () => this.createNewNote());
-    }
   
   // Language selector
   if (this.languageSelect) {
