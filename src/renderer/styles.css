@@ -296,6 +296,41 @@ body.platform-linux .titlebar-buttons {
 .sidebar-header {
   padding: 6px 16px 6px 16px;
   border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sidebar-header-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.sidebar-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.sidebar-action-btn:hover {
+  background: var(--bg-hover);
+  color: var(--accent-color);
+  transform: scale(1.05);
+}
+
+.sidebar-action-btn:active {
+  transform: scale(0.95);
 }
 
 /* Inserted table styles for editor and viewer */
