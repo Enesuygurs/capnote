@@ -124,7 +124,8 @@
     "pinnedNoteSettings": "Sabit Not Ayarları",
     "dataImportExport": "Verileri İçe/Dışa Aktar",
     "clearData": "Verileri Temizle",
-    "appInfo": "Uygulama Bilgileri"
+    "appInfo": "Uygulama Bilgileri",
+    "language": "Dil"
   },
   "settings": {
     "darkMode": "Karanlık Mod",
