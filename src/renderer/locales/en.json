@@ -124,7 +124,8 @@
     "pinnedNoteSettings": "Pinned Note Settings",
     "dataImportExport": "Import/Export Data",
     "clearData": "Clear Data",
-    "appInfo": "App Information"
+    "appInfo": "App Information",
+    "language": "Language"
   },
   "settings": {
     "darkMode": "Dark Mode",
