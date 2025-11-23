@@ -296,10 +296,6 @@ body.platform-linux .titlebar-buttons {
 .sidebar-header {
   padding: 6px 16px 6px 16px;
   border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
 }
 
 /* Inserted table styles for editor and viewer */
@@ -429,7 +425,7 @@ body.platform-linux .titlebar-buttons {
   border-radius: 8px;
   transition: var(--transition-fast);
   cursor: pointer;
-  flex: 1;
+  width: 100%;
   justify-content: space-between;
 }
 
