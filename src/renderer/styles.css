@@ -429,6 +429,8 @@ body.platform-linux .titlebar-buttons {
   border-radius: 8px;
   transition: var(--transition-fast);
   cursor: pointer;
+  flex: 1;
+  justify-content: space-between;
 }
 
 .user-profile:hover {
