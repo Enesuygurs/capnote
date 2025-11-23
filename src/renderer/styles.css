@@ -302,37 +302,6 @@ body.platform-linux .titlebar-buttons {
   gap: 12px;
 }
 
-.sidebar-header-actions {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-
-.sidebar-action-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-sm);
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  font-size: 14px;
-}
-
-.sidebar-action-btn:hover {
-  background: var(--bg-hover);
-  color: var(--accent-color);
-  transform: scale(1.05);
-}
-
-.sidebar-action-btn:active {
-  transform: scale(0.95);
-}
-
 /* Inserted table styles for editor and viewer */
 .rich-editor table,
 .rich-editor .inserted-table,
