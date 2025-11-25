@@ -676,41 +676,45 @@
             <!-- General Tab -->
             <div class="settings-tab-content active" data-content="general">
               <h4><i class="fas fa-cog"></i> <span data-i18n="sections.general">Genel</span></h4>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
-                  <small data-i18n="settings.onNoteDeleteDesc">Not silindiğinde ne olacağını seç</small>
+              
+              <div class="settings-subsection">
+                <h5><i class="fas fa-file-alt"></i> <span data-i18n="sections.noteSettings">Not Ayarları</span></h5>
+                <div class="setting-item">
+                  <div class="setting-info">
+                    <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
+                    <small data-i18n="settings.onNoteDeleteDesc">Not silindiğinde ne olacağını seç</small>
+                  </div>
+                  <select id="onNoteDeleteSelect" class="select-small">
+                    <option value="lastNote" data-i18n="settings.openLastNote">Son kalan notu aç</option>
+                    <option value="home" data-i18n="settings.openHome">Ana sayfa bölümünü aç</option>
+                  </select>
                 </div>
-                <select id="onNoteDeleteSelect" class="select-small">
-                  <option value="lastNote" data-i18n="settings.openLastNote">Son kalan notu aç</option>
-                  <option value="home" data-i18n="settings.openHome">Ana sayfa bölümünü aç</option>
-                </select>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="settings.confirmDelete">Silme işleminde onay iste</label>
-                  <small data-i18n="settings.confirmDeleteDesc">Notları silerken onay ekranı göster</small>
+                <div class="setting-item">
+                  <div class="setting-info">
+                    <label data-i18n="settings.confirmDelete">Silme işleminde onay iste</label>
+                    <small data-i18n="settings.confirmDeleteDesc">Notları silerken onay ekranı göster</small>
+                  </div>
+                  <label class="toggle-switch">
+                    <input type="checkbox" id="confirmDeleteToggle" />
+                    <span class="toggle-slider"></span>
+                  </label>
                 </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="confirmDeleteToggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="settings.maxPinnedNotes">Sabit Not Sayısı</label>
-                  <small data-i18n="settings.maxPinnedNotesDesc">En fazla kaç not sabitlenebilsin (3 - 10)</small>
+                <div class="setting-item">
+                  <div class="setting-info">
+                    <label data-i18n="settings.maxPinnedNotes">Sabit Not Sayısı</label>
+                    <small data-i18n="settings.maxPinnedNotesDesc">En fazla kaç not sabitlenebilsin (3 - 10)</small>
+                  </div>
+                  <select id="maxPinnedSelect" class="select-small">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                  </select>
                 </div>
-                <select id="maxPinnedSelect" class="select-small">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-                </select>
               </div>
 
               <div class="settings-subsection">
