@@ -125,7 +125,8 @@
     "dataImportExport": "Import/Export Data",
     "clearData": "Clear Data",
     "appInfo": "App Information",
-    "language": "Language"
+    "language": "Language",
+    "noteSettings": "Note Settings"
   },
   "settings": {
     "darkMode": "Dark Mode",

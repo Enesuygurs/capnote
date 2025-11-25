@@ -125,7 +125,8 @@
     "dataImportExport": "Verileri İçe/Dışa Aktar",
     "clearData": "Verileri Temizle",
     "appInfo": "Uygulama Bilgileri",
-    "language": "Dil"
+    "language": "Dil",
+    "noteSettings": "Not Ayarları"
   },
   "settings": {
     "darkMode": "Karanlık Mod",
