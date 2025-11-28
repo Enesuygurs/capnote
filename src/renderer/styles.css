@@ -435,7 +435,7 @@ body.platform-linux .titlebar-buttons {
 }
 
 .user-profile:hover {
-  background: var(--bg-hover);
+  background: #f9f9f9;
 }
 
 .user-avatar {
