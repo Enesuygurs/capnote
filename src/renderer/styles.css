@@ -5473,6 +5473,8 @@ body.dark .default-folder.insert-after::after {
 .todo-input {
   flex: 1;
   padding: 8px 12px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   font-size: 13px;
