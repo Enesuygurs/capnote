@@ -5612,7 +5612,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .todo-item {
-  background: var(--bg-tertiary);
+  background: rgba(0, 0, 0, 0.02);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   padding: 10px 12px;
