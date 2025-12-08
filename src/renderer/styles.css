@@ -5490,6 +5490,7 @@ body.dark .default-folder.insert-after::after {
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
+  align-items: stretch;
 }
 
 .todos-section-input .btn-secondary {
@@ -5502,6 +5503,8 @@ body.dark .default-folder.insert-after::after {
   border-radius: var(--radius-md);
   gap: 6px;
   box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
 }
 
 .todos-section-input .btn-secondary:hover {
