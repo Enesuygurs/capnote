@@ -6296,10 +6296,9 @@ body.dark .default-folder.insert-after::after {
 
 /* Dark theme checkbox fix */
 [data-theme='dark'] .todo-checkbox {
-  filter: invert(1) hue-rotate(180deg);
+  filter: invert(0.85) brightness(0.5);
 }
 
 [data-theme='dark'] .todo-checkbox:checked {
   filter: none;
-  accent-color: var(--accent-color);
 }
