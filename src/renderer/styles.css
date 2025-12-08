@@ -5555,7 +5555,6 @@ body.dark .default-folder.insert-after::after {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
   padding-bottom: 8px;
   padding-left: 12px;
   border-bottom: 1px solid var(--border-color);
