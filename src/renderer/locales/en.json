@@ -27,6 +27,7 @@
     "confirm": "Confirm",
     "create": "Create",
     "add": "Add",
+    "addSection": "Add Section",
     "start": "Start Writing",
     "export": "Export",
     "import": "Import",
@@ -87,13 +88,14 @@
   "placeholders": {
     "noteTitle": "Note title...",
     "noteContent": "Write your thoughts...",
-    "searchNotes": "Search in notes...",
+    "searchNotes": "Search notes...",
     "addTag": "Add tag...",
     "folderName": "Enter folder name...",
     "password": "Enter password...",
     "searchEmoji": "Search emoji...",
     "markdown": "Enter markdown...",
-    "newTodo": "Add new task..."
+    "newTodo": "Add new task...",
+    "newSection": "Add new section..."
   },
   "stats": {
     "totalNotes": "Total Notes",

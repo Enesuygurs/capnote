@@ -27,6 +27,7 @@
     "confirm": "Onayla",
     "create": "Oluştur",
     "add": "Ekle",
+    "addSection": "Bölüm Ekle",
     "start": "Yazmaya Başlayın",
     "export": "Dışa Aktar",
     "import": "İçe Aktar",
@@ -93,7 +94,8 @@
     "password": "Şifre girin...",
     "searchEmoji": "Emoji ara...",
     "markdown": "Markdown girin...",
-    "newTodo": "Yeni görev ekle..."
+    "newTodo": "Yeni görev ekle...",
+    "newSection": "Yeni bölüm ekle..."
   },
   "stats": {
     "totalNotes": "Toplam Not",
