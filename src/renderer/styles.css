@@ -6293,3 +6293,13 @@ body.dark .default-folder.insert-after::after {
 .import-modal .modal-footer {
   padding: 12px 18px;
 }
+
+/* Dark theme checkbox fix */
+[data-theme='dark'] .todo-checkbox {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+[data-theme='dark'] .todo-checkbox:checked {
+  filter: none;
+  accent-color: var(--accent-color);
+}
