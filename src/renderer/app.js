@@ -2416,11 +2416,21 @@ class CapnoteApp {
 
   showTodosScreen() {
     this.hideAllModals();
-    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    try { this.hideEmojiPanel(); } catch (e) {}
     
-    this.todosScreen.classList.remove('hidden');
-    this.todosNav.classList.add('active');
+    // Hide all screens
+    this.noteEditor.classList.add('hidden');
+    this.noteViewer.classList.add('hidden');
+    this.welcomeScreen.classList.add('hidden');
+    this.notificationsScreen?.classList.add('hidden');
+    this.remindersScreen?.classList.add('hidden');
+    this.todosScreen?.classList.remove('hidden');
+    
+    // Update active states
+    this.todosNav?.classList.add('active');
+    this.remindersNav?.classList.remove('active');
+    this.notificationsNav?.classList.remove('active');
+    document.querySelectorAll('.nav-item[data-filter]').forEach(n => n.classList.remove('active'));
     
     this.renderTodosList();
   }
@@ -2746,11 +2756,13 @@ class CapnoteApp {
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
+    this.todosScreen?.classList.add('hidden');
     this.remindersScreen?.classList.remove('hidden');
     
   // Update active states for reminders/notifications group only
   this.remindersNav?.classList.add('active');
   this.notificationsNav?.classList.remove('active');
+  this.todosNav?.classList.remove('active');
     
     this.updateRemindersView();
   }
@@ -2762,11 +2774,13 @@ class CapnoteApp {
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.add('hidden');
     this.remindersScreen?.classList.add('hidden');
+    this.todosScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.remove('hidden');
     
   // Update active states for reminders/notifications group only
   this.notificationsNav?.classList.add('active');
   this.remindersNav?.classList.remove('active');
+  this.todosNav?.classList.remove('active');
     
     this.updateNotificationsView();
   }
