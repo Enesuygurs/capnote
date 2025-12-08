@@ -2800,10 +2800,12 @@ class CapnoteApp {
     this.noteEditor.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
+    this.todosScreen?.classList.add('hidden');
 
     // Remove active from reminders and notifications
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
+    this.todosNav?.classList.remove('active');
 
     // Reset form
     this.resetFormState();
@@ -2826,10 +2828,12 @@ class CapnoteApp {
     this.noteViewer.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
+    this.todosScreen?.classList.add('hidden');
     
     // Remove active from reminders and notifications
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
+    this.todosNav?.classList.remove('active');
     
     this.clearSavedSelection();
   }
@@ -2842,10 +2846,12 @@ class CapnoteApp {
     this.welcomeScreen.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
+    this.todosScreen?.classList.add('hidden');
     
     // Remove active from reminders and notifications
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
+    this.todosNav?.classList.remove('active');
     
     this.clearSavedSelection();
   }
