@@ -9,6 +9,7 @@
     "newNote": "New Note",
     "notifications": "Notifications",
     "reminders": "Reminders",
+    "todos": "To-Do List",
     "allNotes": "All Notes",
     "today": "Today",
     "favorites": "Favorites",
@@ -91,7 +92,8 @@
     "folderName": "Enter folder name...",
     "password": "Enter password...",
     "searchEmoji": "Search emoji...",
-    "markdown": "Enter markdown..."
+    "markdown": "Enter markdown...",
+    "newTodo": "Add new task..."
   },
   "stats": {
     "totalNotes": "Total Notes",
@@ -212,6 +214,15 @@
     "subtitle": "Past reminder notifications",
     "remindersTitle": "Active Reminders",
     "remindersSubtitle": "Reminders set for your notes"
+  },
+  "todos": {
+    "todosTitle": "To-Do List",
+    "todosSubtitle": "Keep track of your tasks",
+    "noTodos": "No tasks yet",
+    "todoAdded": "Task added",
+    "todoDeleted": "Task deleted",
+    "todoUpdated": "Task updated",
+    "todoCompleted": "Task completed"
   },
   "emojiCategories": {
     "all": "All",

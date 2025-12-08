@@ -5437,6 +5437,160 @@ body.dark .default-folder.insert-after::after {
 }
 
 /* ============================================
+   TODOS STYLES
+   ============================================ */
+.todos-screen {
+  padding: 40px;
+  overflow-y: auto;
+  height: 100%;
+}
+
+.todos-header {
+  margin-bottom: 32px;
+}
+
+.todos-header h2 {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.todos-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.todos-input-section {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.todo-input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  transition: var(--transition-fast);
+}
+
+.todo-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px var(--accent-color-rgba-10);
+}
+
+.todos-list {
+  display: grid;
+  gap: 12px;
+}
+
+.todo-item {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition-fast);
+}
+
+.todo-item:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateX(2px);
+}
+
+.todo-item.completed {
+  opacity: 0.6;
+}
+
+.todo-item.completed .todo-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.todo-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.todo-text {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.todo-text.editing {
+  display: none;
+}
+
+.todo-edit-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid var(--accent-color);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-sans);
+}
+
+.todo-edit-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-color-rgba-10);
+}
+
+.todo-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.todo-action-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+
+.todo-action-btn:hover {
+  background: var(--accent-color-rgba-10);
+  color: var(--accent-color);
+}
+
+.todo-action-btn.delete-todo:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error-color);
+}
+
+.todos-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+
+.todos-empty i {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+/* ============================================
    NOTIFICATIONS STYLES
    ============================================ */
 .notifications-screen {
