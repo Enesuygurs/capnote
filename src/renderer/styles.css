@@ -5473,7 +5473,7 @@ body.dark .default-folder.insert-after::after {
 .todo-input {
   flex: 1;
   padding: 8px 12px;
-  background: var(--bg-secondary);
+  background: #1a1a1a;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
@@ -5613,14 +5613,14 @@ body.dark .default-folder.insert-after::after {
 
 .todos-list {
   display: grid;
-  gap: 8px;
+  gap: 4px;
 }
 
 .todo-item {
   background: rgba(0, 0, 0, 0.02);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  padding: 4px 12px;
   display: flex;
   align-items: center;
   gap: 10px;
