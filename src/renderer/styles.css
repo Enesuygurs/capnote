@@ -5556,8 +5556,8 @@ body.dark .default-folder.insert-after::after {
 }
 
 .section-action-btn {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   border: none;
   background: transparent;
   color: var(--text-secondary);
@@ -5567,7 +5567,7 @@ body.dark .default-folder.insert-after::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .section-action-btn:hover {
@@ -5650,8 +5650,8 @@ body.dark .default-folder.insert-after::after {
 }
 
 .todo-action-btn {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border: none;
   background: transparent;
   color: var(--text-secondary);
@@ -5661,7 +5661,6 @@ body.dark .default-folder.insert-after::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
   font-size: 13px;
 }
 
