@@ -5,6 +5,7 @@ class CapnoteApp {
     this.folders = [];
     this.reminders = []; // Array of {id, noteId, datetime, noteTitle, dismissed}
     this.notifications = []; // Array of {id, noteId, noteTitle, message, time, read}
+    this.todos = []; // Array of {id, text, completed, createdAt}
     this.currentFilter = 'all';
     this.currentSort = 'date-desc';
     this.selectedMood = null;
@@ -129,6 +130,7 @@ class CapnoteApp {
     await this.loadNotes();
     await this.loadReminders();
     await this.loadNotifications();
+    await this.loadTodos();
     this.initializeElements();
     this.setupEventListeners();
     this.setupSettingsEventListeners();
@@ -138,6 +140,7 @@ class CapnoteApp {
     this.initializeHamburgerIcon();
     this.updateUI();
     this.updateStats();
+    this.updateTodosCount();
     this.startReminderChecker();
 
   // Make sure the current filter (default: 'all') is applied so
@@ -215,6 +218,14 @@ class CapnoteApp {
   this.reminderRecurrence = document.getElementById('reminderRecurrence');
     this.setReminderBtn = document.getElementById('setReminderBtn');
     this.noteRemindersList = document.getElementById('noteRemindersList');
+
+    // Todos elements
+    this.todosScreen = document.getElementById('todosScreen');
+    this.todosNav = document.getElementById('todosNav');
+    this.todosList = document.getElementById('todosList');
+    this.todoInput = document.getElementById('todoInput');
+    this.addTodoBtn = document.getElementById('addTodoBtn');
+    this.todosCount = document.getElementById('todosCount');
 
     // Notifications elements
     this.notificationsScreen = document.getElementById('notificationsScreen');
@@ -1374,6 +1385,21 @@ class CapnoteApp {
       this.setReminderBtn.addEventListener('click', () => this.addReminder());
     }
 
+    // Todos event listeners
+    if (this.todosNav) {
+      this.todosNav.addEventListener('click', () => this.showTodosScreen());
+    }
+    if (this.addTodoBtn) {
+      this.addTodoBtn.addEventListener('click', () => this.addTodo());
+    }
+    if (this.todoInput) {
+      this.todoInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && this.todoInput.value.trim()) {
+          this.addTodo();
+        }
+      });
+    }
+
     // Notifications event listeners
     if (this.notificationsNav) {
       this.notificationsNav.addEventListener('click', () => this.showNotificationsScreen());
@@ -2363,6 +2389,192 @@ class CapnoteApp {
       console.error('Bildirimler kaydedilirken hata:', error);
     }
   }
+
+  // ============================================
+  // TODOS METHODS
+  // ============================================
+
+  async loadTodos() {
+    try {
+      const savedTodos = localStorage.getItem('capnote-todos');
+      this.todos = savedTodos ? JSON.parse(savedTodos) : [];
+      // Sort by createdAt, newest first
+      this.todos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    } catch (error) {
+      console.error('Yapılacaklar yüklenirken hata:', error);
+      this.todos = [];
+    }
+  }
+
+  async saveTodos() {
+    try {
+      localStorage.setItem('capnote-todos', JSON.stringify(this.todos));
+    } catch (error) {
+      console.error('Yapılacaklar kaydedilirken hata:', error);
+    }
+  }
+
+  showTodosScreen() {
+    this.hideAllModals();
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    
+    this.todosScreen.classList.remove('hidden');
+    this.todosNav.classList.add('active');
+    
+    this.renderTodosList();
+  }
+
+  renderTodosList() {
+    if (!this.todosList) return;
+
+    if (this.todos.length === 0) {
+      this.todosList.innerHTML = `
+        <div class="todos-empty">
+          <i class="fas fa-check-circle"></i>
+          <p>${window.i18n.t('todos.noTodos')}</p>
+        </div>
+      `;
+      return;
+    }
+
+    this.todosList.innerHTML = this.todos.map(todo => `
+      <div class="todo-item ${todo.completed ? 'completed' : ''}" data-todo-id="${todo.id}">
+        <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} data-action="toggle" data-todo-id="${todo.id}">
+        <span class="todo-text" data-todo-id="${todo.id}">${this.escapeHtml(todo.text)}</span>
+        <input type="text" class="todo-edit-input hidden" value="${this.escapeHtml(todo.text)}" data-todo-id="${todo.id}">
+        <div class="todo-actions">
+          <button class="todo-action-btn edit-todo" data-action="edit" data-todo-id="${todo.id}" title="${window.i18n.t('actions.edit')}">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="todo-action-btn delete-todo" data-action="delete" data-todo-id="${todo.id}" title="${window.i18n.t('actions.delete')}">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    `).join('');
+
+    // Add event listeners to todo items
+    this.todosList.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const action = btn.dataset.action;
+        const todoId = btn.dataset.todoId;
+        
+        if (action === 'toggle') {
+          this.toggleTodoComplete(todoId);
+        } else if (action === 'edit') {
+          this.editTodo(todoId);
+        } else if (action === 'delete') {
+          this.deleteTodo(todoId);
+        }
+      });
+    });
+
+    // Add click handler for saving edits
+    this.todosList.querySelectorAll('.todo-edit-input').forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          this.saveTodoEdit(input.dataset.todoId, input.value);
+        }
+      });
+      input.addEventListener('blur', (e) => {
+        this.saveTodoEdit(input.dataset.todoId, input.value);
+      });
+    });
+  }
+
+  addTodo() {
+    const text = this.todoInput.value.trim();
+    if (!text) return;
+
+    const newTodo = {
+      id: Date.now().toString(),
+      text: text,
+      completed: false,
+      createdAt: new Date().toISOString()
+    };
+
+    this.todos.unshift(newTodo);
+    this.saveTodos();
+    this.todoInput.value = '';
+    this.renderTodosList();
+    this.updateTodosCount();
+    this.showNotification(window.i18n.t('todos.todoAdded'), 'success');
+  }
+
+  toggleTodoComplete(todoId) {
+    const todo = this.todos.find(t => t.id === todoId);
+    if (!todo) return;
+
+    todo.completed = !todo.completed;
+    this.saveTodos();
+    this.renderTodosList();
+    this.updateTodosCount();
+    
+    if (todo.completed) {
+      this.showNotification(window.i18n.t('todos.todoCompleted'), 'success');
+    }
+  }
+
+  editTodo(todoId) {
+    const todoItem = this.todosList.querySelector(`.todo-item[data-todo-id="${todoId}"]`);
+    if (!todoItem) return;
+
+    const textSpan = todoItem.querySelector('.todo-text');
+    const editInput = todoItem.querySelector('.todo-edit-input');
+    const editBtn = todoItem.querySelector('.edit-todo');
+
+    if (editInput.classList.contains('hidden')) {
+      // Start editing
+      textSpan.classList.add('hidden');
+      editInput.classList.remove('hidden');
+      editInput.focus();
+      editInput.select();
+      editBtn.innerHTML = '<i class="fas fa-check"></i>';
+    } else {
+      // Save edit
+      this.saveTodoEdit(todoId, editInput.value);
+    }
+  }
+
+  saveTodoEdit(todoId, newText) {
+    const text = newText.trim();
+    if (!text) return;
+
+    const todo = this.todos.find(t => t.id === todoId);
+    if (!todo) return;
+
+    todo.text = text;
+    this.saveTodos();
+    this.renderTodosList();
+    this.showNotification(window.i18n.t('todos.todoUpdated'), 'success');
+  }
+
+  deleteTodo(todoId) {
+    this.todos = this.todos.filter(t => t.id !== todoId);
+    this.saveTodos();
+    this.renderTodosList();
+    this.updateTodosCount();
+    this.showNotification(window.i18n.t('todos.todoDeleted'), 'success');
+  }
+
+  updateTodosCount() {
+    if (!this.todosCount) return;
+    
+    const activeCount = this.todos.filter(t => !t.completed).length;
+    this.todosCount.textContent = activeCount;
+    
+    if (activeCount > 0) {
+      this.todosCount.classList.remove('hidden');
+    } else {
+      this.todosCount.classList.add('hidden');
+    }
+  }
+
+  // ============================================
+  // END TODOS METHODS
+  // ============================================
 
   saveLastViewedNote(noteId) {
     try {

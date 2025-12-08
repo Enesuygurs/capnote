@@ -81,6 +81,11 @@
                 <span class="nav-text" data-i18n="nav.reminders">Hatırlatmalar</span>
                 <span class="nav-count" id="activeRemindersCount">(0)</span>
               </div>
+              <div class="nav-item" id="todosNav">
+                <i class="fas fa-tasks nav-icon"></i>
+                <span class="nav-text" data-i18n="nav.todos">Yapılacaklar</span>
+                <span class="nav-count" id="todosCount">(0)</span>
+              </div>
               <div class="nav-item" data-filter="all">
                 <i class="fas fa-sticky-note nav-icon"></i>
                 <span class="nav-text" data-i18n="nav.allNotes">Tüm Notlar</span>
@@ -215,6 +220,23 @@
           </div>
           <div id="remindersList" class="reminders-list">
             <!-- Reminders will be populated here -->
+          </div>
+        </div>
+
+        <!-- Todos Screen -->
+        <div id="todosScreen" class="todos-screen hidden">
+          <div class="todos-header">
+            <h2><i class="fas fa-tasks"></i> <span data-i18n="todos.todosTitle">Yapılacaklar Listesi</span></h2>
+            <p class="todos-subtitle" data-i18n="todos.todosSubtitle">Görevlerinizi takip edin</p>
+          </div>
+          <div class="todos-input-section">
+            <input type="text" id="todoInput" placeholder="Yeni görev ekle..." data-i18n-placeholder="placeholders.newTodo" class="todo-input" />
+            <button id="addTodoBtn" class="btn-primary">
+              <i class="fas fa-plus"></i> <span data-i18n="buttons.add">Ekle</span>
+            </button>
+          </div>
+          <div id="todosList" class="todos-list">
+            <!-- Todos will be populated here -->
           </div>
         </div>
 

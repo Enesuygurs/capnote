@@ -9,6 +9,7 @@
     "newNote": "Yeni Not",
     "notifications": "Bildirimler",
     "reminders": "Hatırlatmalar",
+    "todos": "Yapılacaklar",
     "allNotes": "Tüm Notlar",
     "today": "Bugün",
     "favorites": "Favoriler",
@@ -91,7 +92,8 @@
     "folderName": "Klasör adını girin...",
     "password": "Şifre girin...",
     "searchEmoji": "Emoji ara...",
-    "markdown": "Markdown girin..."
+    "markdown": "Markdown girin...",
+    "newTodo": "Yeni görev ekle..."
   },
   "stats": {
     "totalNotes": "Toplam Not",
@@ -212,6 +214,15 @@
     "subtitle": "Geçmiş hatırlatma bildirimleri",
     "remindersTitle": "Aktif Hatırlatmalar",
     "remindersSubtitle": "Notlarınız için ayarlanmış hatırlatmalar"
+  },
+  "todos": {
+    "todosTitle": "Yapılacaklar Listesi",
+    "todosSubtitle": "Görevlerinizi takip edin",
+    "noTodos": "Henüz görev eklemediniz",
+    "todoAdded": "Görev eklendi",
+    "todoDeleted": "Görev silindi",
+    "todoUpdated": "Görev güncellendi",
+    "todoCompleted": "Görev tamamlandı"
   },
   "emojiCategories": {
     "all": "Tümü",
