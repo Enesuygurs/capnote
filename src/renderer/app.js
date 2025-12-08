@@ -5,7 +5,7 @@ class CapnoteApp {
     this.folders = [];
     this.reminders = []; // Array of {id, noteId, datetime, noteTitle, dismissed}
     this.notifications = []; // Array of {id, noteId, noteTitle, message, time, read}
-    this.todos = []; // Array of {id, text, completed, createdAt}
+    this.todoSections = []; // Array of {id, name, todos: [{id, text, completed, createdAt}]}
     this.currentFilter = 'all';
     this.currentSort = 'date-desc';
     this.selectedMood = null;
@@ -222,9 +222,9 @@ class CapnoteApp {
     // Todos elements
     this.todosScreen = document.getElementById('todosScreen');
     this.todosNav = document.getElementById('todosNav');
-    this.todosList = document.getElementById('todosList');
-    this.todoInput = document.getElementById('todoInput');
-    this.addTodoBtn = document.getElementById('addTodoBtn');
+    this.todosSectionsContainer = document.getElementById('todosSectionsContainer');
+    this.todoSectionInput = document.getElementById('todoSectionInput');
+    this.addTodoSectionBtn = document.getElementById('addTodoSectionBtn');
     this.todosCount = document.getElementById('todosCount');
 
     // Notifications elements
@@ -1389,13 +1389,13 @@ class CapnoteApp {
     if (this.todosNav) {
       this.todosNav.addEventListener('click', () => this.showTodosScreen());
     }
-    if (this.addTodoBtn) {
-      this.addTodoBtn.addEventListener('click', () => this.addTodo());
+    if (this.addTodoSectionBtn) {
+      this.addTodoSectionBtn.addEventListener('click', () => this.addTodoSection());
     }
-    if (this.todoInput) {
-      this.todoInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && this.todoInput.value.trim()) {
-          this.addTodo();
+    if (this.todoSectionInput) {
+      this.todoSectionInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && this.todoSectionInput.value.trim()) {
+          this.addTodoSection();
         }
       });
     }
@@ -2396,19 +2396,17 @@ class CapnoteApp {
 
   async loadTodos() {
     try {
-      const savedTodos = localStorage.getItem('capnote-todos');
-      this.todos = savedTodos ? JSON.parse(savedTodos) : [];
-      // Sort by createdAt, newest first
-      this.todos.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      const savedSections = localStorage.getItem('capnote-todo-sections');
+      this.todoSections = savedSections ? JSON.parse(savedSections) : [];
     } catch (error) {
       console.error('Yapılacaklar yüklenirken hata:', error);
-      this.todos = [];
+      this.todoSections = [];
     }
   }
 
   async saveTodos() {
     try {
-      localStorage.setItem('capnote-todos', JSON.stringify(this.todos));
+      localStorage.setItem('capnote-todo-sections', JSON.stringify(this.todoSections));
     } catch (error) {
       console.error('Yapılacaklar kaydedilirken hata:', error);
     }
@@ -2431,94 +2429,188 @@ class CapnoteApp {
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
     
-    this.renderTodosList();
+    this.renderTodosSections();
   }
 
-  renderTodosList() {
-    if (!this.todosList) return;
+  renderTodosSections() {
+    if (!this.todosSectionsContainer) return;
 
-    if (this.todos.length === 0) {
-      this.todosList.innerHTML = `
+    if (this.todoSections.length === 0) {
+      this.todosSectionsContainer.innerHTML = `
         <div class="todos-empty">
-          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-folder-open"></i>
           <p>${window.i18n.t('todos.noTodos')}</p>
         </div>
       `;
       return;
     }
 
-    this.todosList.innerHTML = this.todos.map(todo => `
-      <div class="todo-item ${todo.completed ? 'completed' : ''}" data-todo-id="${todo.id}">
-        <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} data-action="toggle" data-todo-id="${todo.id}">
-        <span class="todo-text" data-todo-id="${todo.id}">${this.escapeHtml(todo.text)}</span>
-        <input type="text" class="todo-edit-input hidden" value="${this.escapeHtml(todo.text)}" data-todo-id="${todo.id}">
-        <div class="todo-actions">
-          <button class="todo-action-btn edit-todo" data-action="edit" data-todo-id="${todo.id}" title="${window.i18n.t('actions.edit')}">
-            <i class="fas fa-edit"></i>
-          </button>
-          <button class="todo-action-btn delete-todo" data-action="delete" data-todo-id="${todo.id}" title="${window.i18n.t('actions.delete')}">
-            <i class="fas fa-trash"></i>
-          </button>
-        </div>
-      </div>
-    `).join('');
+    this.todosSectionsContainer.innerHTML = this.todoSections.map(section => {
+      const activeTodos = section.todos.filter(t => !t.completed).length;
+      const todosHtml = section.todos.length === 0 ? 
+        `<div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 13px;">Bu bölümde görev yok</div>` :
+        section.todos.map(todo => `
+          <div class="todo-item ${todo.completed ? 'completed' : ''}" data-todo-id="${todo.id}" data-section-id="${section.id}">
+            <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} data-action="toggle" data-todo-id="${todo.id}" data-section-id="${section.id}">
+            <span class="todo-text" data-todo-id="${todo.id}">${this.escapeHtml(todo.text)}</span>
+            <input type="text" class="todo-edit-input hidden" value="${this.escapeHtml(todo.text)}" data-todo-id="${todo.id}" data-section-id="${section.id}">
+            <div class="todo-actions">
+              <button class="todo-action-btn edit-todo" data-action="edit" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${window.i18n.t('actions.edit')}">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="todo-action-btn delete-todo" data-action="delete" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${window.i18n.t('actions.delete')}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
 
-    // Add event listeners to todo items
-    this.todosList.querySelectorAll('[data-action]').forEach(btn => {
+      return `
+        <div class="todo-section" data-section-id="${section.id}">
+          <div class="todo-section-header">
+            <div class="todo-section-title">
+              <h3>${this.escapeHtml(section.name)}</h3>
+              <span class="todo-section-count">${activeTodos} görev</span>
+            </div>
+            <div class="todo-section-actions">
+              <button class="section-action-btn delete-section" data-action="delete-section" data-section-id="${section.id}" title="${window.i18n.t('actions.delete')}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+          <div class="todos-input-section">
+            <input type="text" class="todo-input" placeholder="${window.i18n.t('placeholders.newTodo')}" data-section-id="${section.id}">
+            <button class="btn-primary add-todo-btn" data-section-id="${section.id}">
+              <i class="fas fa-plus"></i> ${window.i18n.t('buttons.add')}
+            </button>
+          </div>
+          <div class="todos-list">
+            ${todosHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Add event listeners
+    this.attachTodoEventListeners();
+  }
+
+  attachTodoEventListeners() {
+    // Section delete buttons
+    this.todosSectionsContainer.querySelectorAll('[data-action="delete-section"]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.deleteTodoSection(btn.dataset.sectionId);
+      });
+    });
+
+    // Add todo buttons
+    this.todosSectionsContainer.querySelectorAll('.add-todo-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const sectionId = btn.dataset.sectionId;
+        const input = this.todosSectionsContainer.querySelector(`.todo-input[data-section-id="${sectionId}"]`);
+        this.addTodoToSection(sectionId, input.value);
+      });
+    });
+
+    // Todo input enter key
+    this.todosSectionsContainer.querySelectorAll('.todo-input').forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && input.value.trim()) {
+          this.addTodoToSection(input.dataset.sectionId, input.value);
+        }
+      });
+    });
+
+    // Todo action buttons
+    this.todosSectionsContainer.querySelectorAll('[data-action]').forEach(btn => {
+      if (btn.dataset.action === 'delete-section') return; // Already handled
+      
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const action = btn.dataset.action;
         const todoId = btn.dataset.todoId;
+        const sectionId = btn.dataset.sectionId;
         
         if (action === 'toggle') {
-          this.toggleTodoComplete(todoId);
+          this.toggleTodoComplete(sectionId, todoId);
         } else if (action === 'edit') {
-          this.editTodo(todoId);
+          this.editTodo(sectionId, todoId);
         } else if (action === 'delete') {
-          this.deleteTodo(todoId);
+          this.deleteTodo(sectionId, todoId);
         }
       });
     });
 
-    // Add click handler for saving edits
-    this.todosList.querySelectorAll('.todo-edit-input').forEach(input => {
+    // Todo edit inputs
+    this.todosSectionsContainer.querySelectorAll('.todo-edit-input').forEach(input => {
       input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-          this.saveTodoEdit(input.dataset.todoId, input.value);
+          this.saveTodoEdit(input.dataset.sectionId, input.dataset.todoId, input.value);
         }
       });
       input.addEventListener('blur', (e) => {
-        this.saveTodoEdit(input.dataset.todoId, input.value);
+        this.saveTodoEdit(input.dataset.sectionId, input.dataset.todoId, input.value);
       });
     });
   }
 
-  addTodo() {
-    const text = this.todoInput.value.trim();
-    if (!text) return;
+  addTodoSection() {
+    const name = this.todoSectionInput.value.trim();
+    if (!name) return;
+
+    const newSection = {
+      id: Date.now().toString(),
+      name: name,
+      todos: []
+    };
+
+    this.todoSections.push(newSection);
+    this.saveTodos();
+    this.todoSectionInput.value = '';
+    this.renderTodosSections();
+    this.showNotification(window.i18n.t('todos.todoAdded'), 'success');
+  }
+
+  deleteTodoSection(sectionId) {
+    this.todoSections = this.todoSections.filter(s => s.id !== sectionId);
+    this.saveTodos();
+    this.renderTodosSections();
+    this.updateTodosCount();
+    this.showNotification(window.i18n.t('todos.todoDeleted'), 'success');
+  }
+
+  addTodoToSection(sectionId, text) {
+    const trimmedText = text.trim();
+    if (!trimmedText) return;
+
+    const section = this.todoSections.find(s => s.id === sectionId);
+    if (!section) return;
 
     const newTodo = {
       id: Date.now().toString(),
-      text: text,
+      text: trimmedText,
       completed: false,
       createdAt: new Date().toISOString()
     };
 
-    this.todos.unshift(newTodo);
+    section.todos.unshift(newTodo);
     this.saveTodos();
-    this.todoInput.value = '';
-    this.renderTodosList();
+    this.renderTodosSections();
     this.updateTodosCount();
     this.showNotification(window.i18n.t('todos.todoAdded'), 'success');
   }
 
-  toggleTodoComplete(todoId) {
-    const todo = this.todos.find(t => t.id === todoId);
+  toggleTodoComplete(sectionId, todoId) {
+    const section = this.todoSections.find(s => s.id === sectionId);
+    if (!section) return;
+
+    const todo = section.todos.find(t => t.id === todoId);
     if (!todo) return;
 
     todo.completed = !todo.completed;
     this.saveTodos();
-    this.renderTodosList();
+    this.renderTodosSections();
     this.updateTodosCount();
     
     if (todo.completed) {
@@ -2526,8 +2618,8 @@ class CapnoteApp {
     }
   }
 
-  editTodo(todoId) {
-    const todoItem = this.todosList.querySelector(`.todo-item[data-todo-id="${todoId}"]`);
+  editTodo(sectionId, todoId) {
+    const todoItem = this.todosSectionsContainer.querySelector(`.todo-item[data-todo-id="${todoId}"][data-section-id="${sectionId}"]`);
     if (!todoItem) return;
 
     const textSpan = todoItem.querySelector('.todo-text');
@@ -2543,27 +2635,33 @@ class CapnoteApp {
       editBtn.innerHTML = '<i class="fas fa-check"></i>';
     } else {
       // Save edit
-      this.saveTodoEdit(todoId, editInput.value);
+      this.saveTodoEdit(sectionId, todoId, editInput.value);
     }
   }
 
-  saveTodoEdit(todoId, newText) {
+  saveTodoEdit(sectionId, todoId, newText) {
     const text = newText.trim();
     if (!text) return;
 
-    const todo = this.todos.find(t => t.id === todoId);
+    const section = this.todoSections.find(s => s.id === sectionId);
+    if (!section) return;
+
+    const todo = section.todos.find(t => t.id === todoId);
     if (!todo) return;
 
     todo.text = text;
     this.saveTodos();
-    this.renderTodosList();
+    this.renderTodosSections();
     this.showNotification(window.i18n.t('todos.todoUpdated'), 'success');
   }
 
-  deleteTodo(todoId) {
-    this.todos = this.todos.filter(t => t.id !== todoId);
+  deleteTodo(sectionId, todoId) {
+    const section = this.todoSections.find(s => s.id === sectionId);
+    if (!section) return;
+
+    section.todos = section.todos.filter(t => t.id !== todoId);
     this.saveTodos();
-    this.renderTodosList();
+    this.renderTodosSections();
     this.updateTodosCount();
     this.showNotification(window.i18n.t('todos.todoDeleted'), 'success');
   }
@@ -2571,7 +2669,11 @@ class CapnoteApp {
   updateTodosCount() {
     if (!this.todosCount) return;
     
-    const activeCount = this.todos.filter(t => !t.completed).length;
+    let activeCount = 0;
+    this.todoSections.forEach(section => {
+      activeCount += section.todos.filter(t => !t.completed).length;
+    });
+    
     this.todosCount.textContent = activeCount;
     
     if (activeCount > 0) {

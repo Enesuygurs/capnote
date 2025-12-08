@@ -229,14 +229,17 @@
             <h2><i class="fas fa-tasks"></i> <span data-i18n="todos.todosTitle">Yapılacaklar Listesi</span></h2>
             <p class="todos-subtitle" data-i18n="todos.todosSubtitle">Görevlerinizi takip edin</p>
           </div>
-          <div class="todos-input-section">
-            <input type="text" id="todoInput" placeholder="Yeni görev ekle..." data-i18n-placeholder="placeholders.newTodo" class="todo-input" />
-            <button id="addTodoBtn" class="btn-primary">
-              <i class="fas fa-plus"></i> <span data-i18n="buttons.add">Ekle</span>
+          
+          <!-- Section input -->
+          <div class="todos-section-input">
+            <input type="text" id="todoSectionInput" placeholder="Yeni bölüm ekle..." data-i18n-placeholder="placeholders.newSection" class="todo-section-input" />
+            <button id="addTodoSectionBtn" class="btn-secondary">
+              <i class="fas fa-folder-plus"></i> <span data-i18n="buttons.addSection">Bölüm Ekle</span>
             </button>
           </div>
-          <div id="todosList" class="todos-list">
-            <!-- Todos will be populated here -->
+
+          <div id="todosSectionsContainer" class="todos-sections-container">
+            <!-- Sections and todos will be populated here -->
           </div>
         </div>
 
