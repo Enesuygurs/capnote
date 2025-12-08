@@ -278,6 +278,7 @@ class CapnoteApp {
   // General settings
   this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
   this.confirmDeleteToggle = document.getElementById('confirmDeleteToggle');
+  this.autoSaveToggle = document.getElementById('autoSaveToggle');
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
@@ -2089,6 +2090,10 @@ class CapnoteApp {
     let autoSaveTimer;
 
     const triggerAutoSave = () => {
+      // Check if auto-save is enabled
+      const autoSaveEnabled = localStorage.getItem('settings.autoSave') !== 'false';
+      if (!autoSaveEnabled) return;
+
       clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
         if (this.currentNote && this.noteEditor && !this.noteEditor.classList.contains('hidden')) {
@@ -5866,6 +5871,12 @@ class CapnoteApp {
       this.confirmDeleteToggle.checked = confirmDelete;
     }
 
+    // Load auto save preference (default true)
+    const autoSave = localStorage.getItem('settings.autoSave') !== 'false';
+    if (this.autoSaveToggle) {
+      this.autoSaveToggle.checked = autoSave;
+    }
+
     // Query start-at-login from main (async, best-effort)
     try {
       if (this.startAtLoginToggle && window.electronAPI && typeof window.electronAPI.getStartAtLogin === 'function') {
@@ -5929,6 +5940,17 @@ class CapnoteApp {
     if (this.confirmDeleteToggle) {
       this.confirmDeleteToggle.addEventListener('change', (e) => {
         localStorage.setItem('settings.confirmDelete', e.target.checked ? 'true' : 'false');
+      });
+    }
+
+    // Auto save toggle
+    if (this.autoSaveToggle) {
+      this.autoSaveToggle.addEventListener('change', (e) => {
+        localStorage.setItem('settings.autoSave', e.target.checked ? 'true' : 'false');
+        const message = e.target.checked 
+          ? window.i18n.t('messages.autoSaveEnabled') 
+          : window.i18n.t('messages.autoSaveDisabled');
+        this.showNotification(message, 'success');
       });
     }
   }
