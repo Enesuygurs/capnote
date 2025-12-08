@@ -3623,7 +3623,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .settings-tabs {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgb(39 37 37 / 3%);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
