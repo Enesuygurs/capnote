@@ -97,6 +97,10 @@
     "newTodo": "Add new task...",
     "newSection": "Add new section..."
   },
+  "actions": {
+    "edit": "Edit",
+    "delete": "Delete"
+  },
   "stats": {
     "totalNotes": "Total Notes",
     "daysActive": "Active Days",
