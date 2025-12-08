@@ -97,6 +97,10 @@
     "newTodo": "Yeni görev ekle...",
     "newSection": "Yeni bölüm ekle..."
   },
+  "actions": {
+    "edit": "Düzenle",
+    "delete": "Sil"
+  },
   "stats": {
     "totalNotes": "Toplam Not",
     "daysActive": "Aktif Gün",
