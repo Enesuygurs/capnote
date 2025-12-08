@@ -5476,7 +5476,7 @@ body.dark .default-folder.insert-after::after {
   background: #f9f9f9;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   font-size: 13px;
   font-family: var(--font-sans);
   transition: var(--transition-fast);
