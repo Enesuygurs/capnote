@@ -5520,7 +5520,7 @@ body.dark .default-folder.insert-after::after {
 .todo-section-input {
   flex: 1;
   padding: 8px 12px;
-  background: var(--bg-tertiary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   font-size: 13px;
