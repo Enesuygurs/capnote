@@ -6302,3 +6302,12 @@ body.dark .default-folder.insert-after::after {
 [data-theme='dark'] .todo-checkbox:checked {
   filter: none;
 }
+
+/* Dark theme todos section button fix */
+[data-theme='dark'] .todos-section-input .btn-secondary:hover {
+  background: var(--accent-color);
+  border: none;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  filter: brightness(0.95);
+}
