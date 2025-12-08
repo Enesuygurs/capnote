@@ -5492,6 +5492,14 @@ body.dark .default-folder.insert-after::after {
   margin-bottom: 16px;
 }
 
+.todos-section-input .btn-secondary,
+.todos-input-section .btn-primary {
+  padding: 8px 14px;
+  font-size: 13px;
+  border-radius: var(--radius-md);
+  gap: 6px;
+}
+
 .todo-section-input {
   flex: 1;
   padding: 8px 12px;
