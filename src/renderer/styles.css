@@ -5473,7 +5473,7 @@ body.dark .default-folder.insert-after::after {
 .todo-input {
   flex: 1;
   padding: 8px 12px;
-  background: #1a1a1a;
+  background: #f9f9f9;
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
@@ -6310,4 +6310,9 @@ body.dark .default-folder.insert-after::after {
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
   filter: brightness(0.95);
+}
+
+/* Dark theme todo input fix */
+[data-theme='dark'] .todo-input {
+  background: #1a1a1a;
 }
