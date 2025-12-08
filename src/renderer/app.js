@@ -2426,11 +2426,10 @@ class CapnoteApp {
     this.remindersScreen?.classList.add('hidden');
     this.todosScreen?.classList.remove('hidden');
     
-    // Update active states
+    // Update active states - only for todos/reminders/notifications group
     this.todosNav?.classList.add('active');
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
-    document.querySelectorAll('.nav-item[data-filter]').forEach(n => n.classList.remove('active'));
     
     this.renderTodosList();
   }
