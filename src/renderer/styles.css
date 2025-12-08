@@ -5492,7 +5492,24 @@ body.dark .default-folder.insert-after::after {
   margin-bottom: 16px;
 }
 
-.todos-section-input .btn-secondary,
+.todos-section-input .btn-secondary {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  gap: 6px;
+  box-shadow: var(--shadow-sm);
+}
+
+.todos-section-input .btn-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  filter: brightness(0.95);
+}
+
 .todos-input-section .btn-primary {
   padding: 8px 14px;
   font-size: 13px;
@@ -5503,6 +5520,7 @@ body.dark .default-folder.insert-after::after {
 .todo-section-input {
   flex: 1;
   padding: 8px 12px;
+  background: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   font-size: 13px;
