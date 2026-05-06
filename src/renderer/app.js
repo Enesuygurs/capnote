@@ -20,7 +20,7 @@ class CapnoteApp {
       fontSize: '14px',
     };
     this.baseFormatting = { ...this.defaultFormatting };
-  this.savedSelection = null;
+    this.savedSelection = null;
 
     this.init();
   }
@@ -126,7 +126,7 @@ class CapnoteApp {
         }, 100);
       });
     }
-    
+
     await this.loadNotes();
     await this.loadReminders();
     await this.loadNotifications();
@@ -143,12 +143,12 @@ class CapnoteApp {
     this.updateTodosCount();
     this.startReminderChecker();
 
-  // Make sure the current filter (default: 'all') is applied so
-  // the corresponding nav item appears active on startup
-  this.changeFilter(this.currentFilter);
+    // Make sure the current filter (default: 'all') is applied so
+    // the corresponding nav item appears active on startup
+    this.changeFilter(this.currentFilter);
 
-  // Load last viewed note if available
-  this.loadLastViewedNote();
+    // Load last viewed note if available
+    this.loadLastViewedNote();
   }
 
   initializeElements() {
@@ -184,15 +184,15 @@ class CapnoteApp {
     this.searchContainer = document.getElementById('searchContainer');
     this.sortDropdown = document.getElementById('sortDropdown');
 
-  // Markdown controls
-  this.toggleMarkdownBtn = document.getElementById('toggleMarkdownBtn');
-  this.markdownEditor = document.getElementById('markdownEditor');
-  this.markdownPreview = document.getElementById('markdownPreview');
-  this.toggleHtmlBtn = document.getElementById('toggleHtmlBtn');
-  this.htmlPreview = document.getElementById('htmlPreview');
-  this.insertCodeBlockBtn = document.getElementById('insertCodeBlockBtn');
-  this.browseImageBtn = document.getElementById('browseImageBtn');
-  this.browseImageInput = document.getElementById('browseImageInput');
+    // Markdown controls
+    this.toggleMarkdownBtn = document.getElementById('toggleMarkdownBtn');
+    this.markdownEditor = document.getElementById('markdownEditor');
+    this.markdownPreview = document.getElementById('markdownPreview');
+    this.toggleHtmlBtn = document.getElementById('toggleHtmlBtn');
+    this.htmlPreview = document.getElementById('htmlPreview');
+    this.insertCodeBlockBtn = document.getElementById('insertCodeBlockBtn');
+    this.browseImageBtn = document.getElementById('browseImageBtn');
+    this.browseImageInput = document.getElementById('browseImageInput');
 
     // Formatting toolbar
     this.fontFamilyDropdown = document.getElementById('fontFamily');
@@ -215,7 +215,7 @@ class CapnoteApp {
     this.remindersList = document.getElementById('remindersList');
     this.activeRemindersCount = document.getElementById('activeRemindersCount');
     this.reminderDatetime = document.getElementById('reminderDatetime');
-  this.reminderRecurrence = document.getElementById('reminderRecurrence');
+    this.reminderRecurrence = document.getElementById('reminderRecurrence');
     this.setReminderBtn = document.getElementById('setReminderBtn');
     this.noteRemindersList = document.getElementById('noteRemindersList');
 
@@ -233,21 +233,21 @@ class CapnoteApp {
     this.notificationsList = document.getElementById('notificationsList');
     this.activeNotificationsCount = document.getElementById('activeNotificationsCount');
     this.notificationsUnreadBadge = document.getElementById('notificationsUnreadBadge');
-  this.markAllReadBtn = document.getElementById('markAllReadBtn');
+    this.markAllReadBtn = document.getElementById('markAllReadBtn');
 
-  this.viewerCharCount = document.getElementById('viewerCharCount');
+    this.viewerCharCount = document.getElementById('viewerCharCount');
     this.readingTime = document.getElementById('readingTime');
     this.lastModified = document.getElementById('lastModified');
-  this.noteHistoryModal = document.getElementById('noteHistoryModal');
-  this.historyBody = document.getElementById('historyBody');
-  this.closeHistoryModal = document.getElementById('closeHistoryModal');
-  this.historyCloseBtn = document.getElementById('historyCloseBtn');
+    this.noteHistoryModal = document.getElementById('noteHistoryModal');
+    this.historyBody = document.getElementById('historyBody');
+    this.closeHistoryModal = document.getElementById('closeHistoryModal');
+    this.historyCloseBtn = document.getElementById('historyCloseBtn');
 
     // Editor meta bilgileri
     this.noteDate = document.getElementById('noteDate');
     this.wordCount = document.getElementById('wordCount');
     this.charCount = document.getElementById('charCount');
-  this.editorReadingTime = document.getElementById('editorReadingTime');
+    this.editorReadingTime = document.getElementById('editorReadingTime');
 
     // Filter tabs (modern navigation)
     this.filterTabs = document.querySelectorAll(
@@ -269,27 +269,27 @@ class CapnoteApp {
     // Settings elements
     this.settingsBtn = document.getElementById('settingsBtn');
     this.helpSupport = document.getElementById('helpSupport');
-  this.toggleNativeNotifications = document.getElementById('toggleNativeNotifications');
-  this.testNativeNotifBtn = document.getElementById('testNativeNotifBtn');
-  this.clearAllNotesBtn = document.getElementById('clearAllNotesBtn');
-  this.clearAllFoldersBtn = document.getElementById('clearAllFoldersBtn');
-  this.clearAllContentBtn = document.getElementById('clearAllContentBtn');
-  this.maxPinnedSelect = document.getElementById('maxPinnedSelect');
+    this.toggleNativeNotifications = document.getElementById('toggleNativeNotifications');
+    this.testNativeNotifBtn = document.getElementById('testNativeNotifBtn');
+    this.clearAllNotesBtn = document.getElementById('clearAllNotesBtn');
+    this.clearAllFoldersBtn = document.getElementById('clearAllFoldersBtn');
+    this.clearAllContentBtn = document.getElementById('clearAllContentBtn');
+    this.maxPinnedSelect = document.getElementById('maxPinnedSelect');
     this.darkModeToggle = document.getElementById('darkModeToggle');
-  this.languageSelect = document.getElementById('languageSelect');
-  this.accentYellowBtn = document.getElementById('accentYellow');
-  this.accentCherryBtn = document.getElementById('accentCherry');
-  this.accentAppleBtn = document.getElementById('accentApple');
-  this.accentPurpleBtn = document.getElementById('accentPurple');
-  this.accentBlueBtn = document.getElementById('accentBlue');
-  this.syncFolderAccentToggle = document.getElementById('syncFolderAccentToggle');
-  // System settings toggles
-  this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
-  this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
-  // General settings
-  this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
-  this.confirmDeleteToggle = document.getElementById('confirmDeleteToggle');
-  this.autoSaveToggle = document.getElementById('autoSaveToggle');
+    this.languageSelect = document.getElementById('languageSelect');
+    this.accentYellowBtn = document.getElementById('accentYellow');
+    this.accentCherryBtn = document.getElementById('accentCherry');
+    this.accentAppleBtn = document.getElementById('accentApple');
+    this.accentPurpleBtn = document.getElementById('accentPurple');
+    this.accentBlueBtn = document.getElementById('accentBlue');
+    this.syncFolderAccentToggle = document.getElementById('syncFolderAccentToggle');
+    // System settings toggles
+    this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
+    this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
+    // General settings
+    this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
+    this.confirmDeleteToggle = document.getElementById('confirmDeleteToggle');
+    this.autoSaveToggle = document.getElementById('autoSaveToggle');
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
@@ -300,31 +300,31 @@ class CapnoteApp {
     this.foldersList = document.getElementById('foldersList');
     this.importNotesBtn = document.getElementById('importNotesBtn');
     this.exportAllNotesBtn = document.getElementById('exportAllNotesBtn');
-  this.importAllDataBtn = document.getElementById('importAllDataBtn');
-  this.exportAllDataBtn = document.getElementById('exportAllDataBtn');
-  // Table modal elements (editor table insertion)
-  this.insertTableBtn = document.getElementById('insertTableBtn');
-  this.tableModal = document.getElementById('tableModal');
-  this.closeTableModal = document.getElementById('closeTableModal');
-  this.tableRowsInput = document.getElementById('tableRows');
-  this.tableColsInput = document.getElementById('tableCols');
-  this.tableHeaderCheckbox = document.getElementById('tableHeader');
-  this.insertTableConfirmBtn = document.getElementById('insertTableConfirmBtn');
-  this.cancelTableBtn = document.getElementById('cancelTableBtn');
+    this.importAllDataBtn = document.getElementById('importAllDataBtn');
+    this.exportAllDataBtn = document.getElementById('exportAllDataBtn');
+    // Table modal elements (editor table insertion)
+    this.insertTableBtn = document.getElementById('insertTableBtn');
+    this.tableModal = document.getElementById('tableModal');
+    this.closeTableModal = document.getElementById('closeTableModal');
+    this.tableRowsInput = document.getElementById('tableRows');
+    this.tableColsInput = document.getElementById('tableCols');
+    this.tableHeaderCheckbox = document.getElementById('tableHeader');
+    this.insertTableConfirmBtn = document.getElementById('insertTableConfirmBtn');
+    this.cancelTableBtn = document.getElementById('cancelTableBtn');
     this.toggleSidebarBtn = document.getElementById('toggleSidebar');
     this.editorSidebar = document.querySelector('.editor-sidebar');
 
     // Context menu
     this.contextMenu = document.getElementById('contextMenu');
     this.deleteFolderMenuItem = document.getElementById('deleteFolderMenuItem');
-  this.renameFolderMenuItem = document.getElementById('renameFolderMenuItem');
-  this.changeFolderColorMenuItem = document.getElementById('changeFolderColorMenuItem');
-  this.folderColorPicker = document.getElementById('folderColorPicker');
-  this.folderColorModal = document.getElementById('folderColorModal');
-  this.folderColorInput = document.getElementById('folderColorInput');
-  this.saveFolderColorBtn = document.getElementById('saveFolderColorBtn');
-  this.cancelFolderColorBtn = document.getElementById('cancelFolderColorBtn');
-  this.closeFolderColorModal = document.getElementById('closeFolderColorModal');
+    this.renameFolderMenuItem = document.getElementById('renameFolderMenuItem');
+    this.changeFolderColorMenuItem = document.getElementById('changeFolderColorMenuItem');
+    this.folderColorPicker = document.getElementById('folderColorPicker');
+    this.folderColorModal = document.getElementById('folderColorModal');
+    this.folderColorInput = document.getElementById('folderColorInput');
+    this.saveFolderColorBtn = document.getElementById('saveFolderColorBtn');
+    this.cancelFolderColorBtn = document.getElementById('cancelFolderColorBtn');
+    this.closeFolderColorModal = document.getElementById('closeFolderColorModal');
 
     // Bildirim
     this.notification = document.getElementById('notification');
@@ -343,7 +343,7 @@ class CapnoteApp {
     this.openEmojiBtn = document.getElementById('openEmojiBtn');
     this.emojiPanel = document.getElementById('emojiPanel');
     this.emojiGrid = document.getElementById('emojiGrid');
-  this.emojiSearchInput = document.getElementById('emojiSearchInput');
+    this.emojiSearchInput = document.getElementById('emojiSearchInput');
 
     // If the emoji panel is placed inside a transformed or positioned ancestor it can
     // change how `position: fixed` is calculated. Move it to document.body so JS can
@@ -424,116 +424,116 @@ class CapnoteApp {
     this.newNoteBtn.addEventListener('click', () => this.createNewNote());
     this.settingsBtn.addEventListener('click', () => this.showSettingsModal());
     this.helpSupport.addEventListener('click', () => this.showSettingsModal());
-  
-  // Language selector
-  if (this.languageSelect) {
-    this.languageSelect.addEventListener('change', (e) => {
-      const lang = e.target.value;
-      console.log('Language selector changed to:', lang);
-      if (window.i18n) {
-        window.i18n.setLanguage(lang);
-        this.showNotification(window.i18n.t('messages.languageChanged'), 'success');
-        // Update dynamic content that may not have data-i18n attributes
-        this.updateDynamicTranslations();
-      } else {
-        console.error('window.i18n is not available');
-      }
-    });
-    console.log('Language selector event listener attached');
-  } else {
-    console.error('Language selector element not found!');
-  }
 
-  // Accent swatches
-  this.accentYellowBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#f59e0b'));
-  this.accentCherryBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#e11d48'));
-  this.accentAppleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#22c55e'));
-  this.accentPurpleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#8b5cf6'));
-  this.accentBlueBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#3b82f6'));
-  this.syncFolderAccentToggle?.addEventListener('change', (e) => {
-    const enabled = e.currentTarget.checked;
-    localStorage.setItem('syncFolderAccent', enabled ? '1' : '0');
-    this.applyFolderAccentSync(enabled);
-    this.updateFoldersList();
-  });
-
-  // Native/system notifications toggle
-  this.toggleNativeNotifications?.addEventListener('change', (e) => {
-    const enabled = e.currentTarget.checked;
-    localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
-    this.showNotification(enabled ? window.i18n.t('messages.systemNotificationsEnabled') : window.i18n.t('messages.systemNotificationsDisabled'), 'success');
-  });
-  // Start at login toggle
-  this.startAtLoginToggle?.addEventListener('change', async (e) => {
-    try {
-      const enabled = !!e.currentTarget.checked;
-      if (window.electronAPI && typeof window.electronAPI.setStartAtLogin === 'function') {
-        const res = await window.electronAPI.setStartAtLogin(enabled);
-        if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
-        this.showNotification(enabled ? window.i18n.t('messages.launchOnStartupEnabled') : window.i18n.t('messages.launchOnStartupDisabled'), 'success');
-      }
-    } catch (err) {
-      console.warn('setStartAtLogin failed:', err);
-      // revert checkbox
-      if (this.startAtLoginToggle) this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
-  this.showNotification(window.i18n.t('messages.launchOnStartupError'), 'error');
-    }
-  });
-  // Close to tray toggle: only wire on Windows (hide on macOS/Linux)
-  try {
-    const plat = (window.electronAPI && window.electronAPI.platform) ? window.electronAPI.platform : (navigator.platform || '').toLowerCase();
-    if (plat === 'win32' && this.closeToTrayToggle) {
-      this.closeToTrayToggle.addEventListener('change', async (e) => {
-        try {
-          const enabled = !!e.currentTarget.checked;
-          if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
-            const res = await window.electronAPI.setCloseToTray(enabled);
-            if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
-            this.showNotification(enabled ? window.i18n.t('messages.minimizeToTrayEnabled') : window.i18n.t('messages.minimizeToTrayDisabled'), 'success');
-          }
-        } catch (err) {
-          console.warn('setCloseToTray failed:', err);
-          if (this.closeToTrayToggle) this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
-          this.showNotification(window.i18n.t('messages.minimizeToTrayError'), 'error');
+    // Language selector
+    if (this.languageSelect) {
+      this.languageSelect.addEventListener('change', (e) => {
+        const lang = e.target.value;
+        console.log('Language selector changed to:', lang);
+        if (window.i18n) {
+          window.i18n.setLanguage(lang);
+          this.showNotification(window.i18n.t('messages.languageChanged'), 'success');
+          // Update dynamic content that may not have data-i18n attributes
+          this.updateDynamicTranslations();
+        } else {
+          console.error('window.i18n is not available');
         }
       });
+      console.log('Language selector event listener attached');
     } else {
-      // hide the close-to-tray UI on non-Windows: find nearest .setting-item container
+      console.error('Language selector element not found!');
+    }
+
+    // Accent swatches
+    this.accentYellowBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#f59e0b'));
+    this.accentCherryBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#e11d48'));
+    this.accentAppleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#22c55e'));
+    this.accentPurpleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#8b5cf6'));
+    this.accentBlueBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#3b82f6'));
+    this.syncFolderAccentToggle?.addEventListener('change', (e) => {
+      const enabled = e.currentTarget.checked;
+      localStorage.setItem('syncFolderAccent', enabled ? '1' : '0');
+      this.applyFolderAccentSync(enabled);
+      this.updateFoldersList();
+    });
+
+    // Native/system notifications toggle
+    this.toggleNativeNotifications?.addEventListener('change', (e) => {
+      const enabled = e.currentTarget.checked;
+      localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
+      this.showNotification(enabled ? window.i18n.t('messages.systemNotificationsEnabled') : window.i18n.t('messages.systemNotificationsDisabled'), 'success');
+    });
+    // Start at login toggle
+    this.startAtLoginToggle?.addEventListener('change', async (e) => {
       try {
-        if (this.closeToTrayToggle) {
-          let el = this.closeToTrayToggle;
-          while (el && !el.classList.contains('setting-item')) el = el.parentElement;
-          if (el) el.style.display = 'none';
+        const enabled = !!e.currentTarget.checked;
+        if (window.electronAPI && typeof window.electronAPI.setStartAtLogin === 'function') {
+          const res = await window.electronAPI.setStartAtLogin(enabled);
+          if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
+          this.showNotification(enabled ? window.i18n.t('messages.launchOnStartupEnabled') : window.i18n.t('messages.launchOnStartupDisabled'), 'success');
         }
-      } catch (hideErr) {}
+      } catch (err) {
+        console.warn('setStartAtLogin failed:', err);
+        // revert checkbox
+        if (this.startAtLoginToggle) this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
+        this.showNotification(window.i18n.t('messages.launchOnStartupError'), 'error');
+      }
+    });
+    // Close to tray toggle: only wire on Windows (hide on macOS/Linux)
+    try {
+      const plat = (window.electronAPI && window.electronAPI.platform) ? window.electronAPI.platform : (navigator.platform || '').toLowerCase();
+      if (plat === 'win32' && this.closeToTrayToggle) {
+        this.closeToTrayToggle.addEventListener('change', async (e) => {
+          try {
+            const enabled = !!e.currentTarget.checked;
+            if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
+              const res = await window.electronAPI.setCloseToTray(enabled);
+              if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
+              this.showNotification(enabled ? window.i18n.t('messages.minimizeToTrayEnabled') : window.i18n.t('messages.minimizeToTrayDisabled'), 'success');
+            }
+          } catch (err) {
+            console.warn('setCloseToTray failed:', err);
+            if (this.closeToTrayToggle) this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
+            this.showNotification(window.i18n.t('messages.minimizeToTrayError'), 'error');
+          }
+        });
+      } else {
+        // hide the close-to-tray UI on non-Windows: find nearest .setting-item container
+        try {
+          if (this.closeToTrayToggle) {
+            let el = this.closeToTrayToggle;
+            while (el && !el.classList.contains('setting-item')) el = el.parentElement;
+            if (el) el.style.display = 'none';
+          }
+        } catch (hideErr) { }
+      }
+    } catch (err) {
+      // ignore
     }
-  } catch (err) {
-    // ignore
-  }
-  
 
-  // Tray context menu -> open notifications
-  try {
-    if (window.electronAPI && typeof window.electronAPI.onOpenNotifications === 'function') {
-      window.electronAPI.onOpenNotifications(() => this.showNotificationsScreen());
-    }
-  } catch {}
 
-  // Tray context menu -> new note
-  try {
-    if (window.electronAPI && typeof window.electronAPI.onNewNote === 'function') {
-      window.electronAPI.onNewNote(() => this.createNewNote());
-    }
-  } catch {}
+    // Tray context menu -> open notifications
+    try {
+      if (window.electronAPI && typeof window.electronAPI.onOpenNotifications === 'function') {
+        window.electronAPI.onOpenNotifications(() => this.showNotificationsScreen());
+      }
+    } catch { }
 
-  // Tray context menu -> settings
-  try {
-    if (window.electronAPI && typeof window.electronAPI.onOpenSettings === 'function') {
-      window.electronAPI.onOpenSettings(() => this.showSettingsModal());
-    }
-  } catch {}
-  // Test notification button (with cooldown)
-  this.testNativeNotifBtn?.addEventListener('click', () => this.handleTestNotificationClick());
+    // Tray context menu -> new note
+    try {
+      if (window.electronAPI && typeof window.electronAPI.onNewNote === 'function') {
+        window.electronAPI.onNewNote(() => this.createNewNote());
+      }
+    } catch { }
+
+    // Tray context menu -> settings
+    try {
+      if (window.electronAPI && typeof window.electronAPI.onOpenSettings === 'function') {
+        window.electronAPI.onOpenSettings(() => this.showSettingsModal());
+      }
+    } catch { }
+    // Test notification button (with cooldown)
+    this.testNativeNotifBtn?.addEventListener('click', () => this.handleTestNotificationClick());
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
     this.saveNoteBtn.addEventListener('click', () => this.saveNote());
     this.cancelNoteBtn.addEventListener('click', () => this.cancelEdit());
@@ -546,17 +546,17 @@ class CapnoteApp {
     // Arama ve filtreler
     this.searchInput.addEventListener('input', (e) => this.searchNotes(e.target.value));
 
-  // Markdown toggle and preview
-  if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.addEventListener('click', () => this.toggleMarkdownMode());
-  if (this.toggleHtmlBtn) this.toggleHtmlBtn.addEventListener('click', () => this.toggleHtmlMode());
-  if (this.insertCodeBlockBtn) this.insertCodeBlockBtn.addEventListener('click', () => this.insertCodeBlock());
-  if (this.markdownEditor) this.markdownEditor.addEventListener('input', () => {
-    // If preview is visible, live-update it (debounced would be better, but keep simple)
-    if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
-      this.renderMarkdownPreview(this.markdownEditor.value);
-    }
-    this.trackContentChanges();
-  });
+    // Markdown toggle and preview
+    if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.addEventListener('click', () => this.toggleMarkdownMode());
+    if (this.toggleHtmlBtn) this.toggleHtmlBtn.addEventListener('click', () => this.toggleHtmlMode());
+    if (this.insertCodeBlockBtn) this.insertCodeBlockBtn.addEventListener('click', () => this.insertCodeBlock());
+    if (this.markdownEditor) this.markdownEditor.addEventListener('input', () => {
+      // If preview is visible, live-update it (debounced would be better, but keep simple)
+      if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
+        this.renderMarkdownPreview(this.markdownEditor.value);
+      }
+      this.trackContentChanges();
+    });
 
     // New control buttons
     this.searchBtn?.addEventListener('click', () => this.toggleSearch());
@@ -568,7 +568,7 @@ class CapnoteApp {
     this.cancelFolderBtn?.addEventListener('click', () => this.hideFolderModal());
 
     // Context menu
-  this.changeFolderColorMenuItem?.addEventListener('click', () => this.openFolderColorModal());
+    this.changeFolderColorMenuItem?.addEventListener('click', () => this.openFolderColorModal());
     this.renameFolderMenuItem?.addEventListener('click', () => this.renameSelectedFolder());
     this.deleteFolderMenuItem?.addEventListener('click', () => this.deleteSelectedFolder());
 
@@ -593,7 +593,7 @@ class CapnoteApp {
               wk.setAttribute('aria-hidden', 'true');
             }
           }
-        } catch (err) {}
+        } catch (err) { }
       });
     }
     this.cancelFolderColorBtn?.addEventListener('click', () => {
@@ -634,7 +634,7 @@ class CapnoteApp {
         }
       });
 
-        notesListContainer.addEventListener('drop', (e) => {
+      notesListContainer.addEventListener('drop', (e) => {
         e.preventDefault();
         notesListContainer.classList.remove('drag-over');
         // If a folder is being dragged, ignore the drop here
@@ -678,25 +678,25 @@ class CapnoteApp {
           const clickedFilter = e.currentTarget.dataset.filter;
 
           // Toggle functionality: if clicking the same filter, deactivate it
-            if (this.currentFilter === clickedFilter) {
-              // Remove active from filter-group items only (keep reminders/notifications state)
-              document
-                .querySelectorAll('.nav-item[data-filter], .nav-subitem[data-filter]')
-                .forEach((nav) => nav.classList.remove('active'));
-              // Reset to "all" filter
-              this.changeFilter('all');
-              // Make "all" filter active
-              document.querySelector('[data-filter="all"]').classList.add('active');
-            } else {
-              // Remove active from other filter-group items only
-              document
-                .querySelectorAll('.nav-item[data-filter], .nav-subitem[data-filter]')
-                .forEach((nav) => nav.classList.remove('active'));
-              // Add active to clicked filter item
-              e.currentTarget.classList.add('active');
-              // Apply filter
-              this.changeFilter(clickedFilter);
-            }
+          if (this.currentFilter === clickedFilter) {
+            // Remove active from filter-group items only (keep reminders/notifications state)
+            document
+              .querySelectorAll('.nav-item[data-filter], .nav-subitem[data-filter]')
+              .forEach((nav) => nav.classList.remove('active'));
+            // Reset to "all" filter
+            this.changeFilter('all');
+            // Make "all" filter active
+            document.querySelector('[data-filter="all"]').classList.add('active');
+          } else {
+            // Remove active from other filter-group items only
+            document
+              .querySelectorAll('.nav-item[data-filter], .nav-subitem[data-filter]')
+              .forEach((nav) => nav.classList.remove('active'));
+            // Add active to clicked filter item
+            e.currentTarget.classList.add('active');
+            // Apply filter
+            this.changeFilter(clickedFilter);
+          }
         });
       });
 
@@ -836,7 +836,7 @@ class CapnoteApp {
             atEndOfCode = nodeText.length === 0 || offset >= nodeText.length;
           }
 
-          
+
           // If user pressed Ctrl/Cmd+Enter, always exit the code block
           if (isExitShortcut) {
             e.preventDefault();
@@ -870,7 +870,7 @@ class CapnoteApp {
           // Only Ctrl/Cmd+Enter above exits the code block; plain Enter should reliably add a newline.
           e.preventDefault();
           try {
-            
+
             // Ensure we operate on a text node if possible
             if (node.nodeType !== Node.TEXT_NODE) {
               // prefer a text child at the offset
@@ -890,7 +890,7 @@ class CapnoteApp {
 
             // If we found or coerced to a text node, insert into it
             if (node && node.nodeType === Node.TEXT_NODE) {
-              
+
               const text = node.nodeValue || '';
               const before = text.substring(0, offset);
               let after = text.substring(offset);
@@ -907,7 +907,7 @@ class CapnoteApp {
               sel.addRange(newRange);
               this.trackContentChanges();
             } else {
-              
+
               // fallback: append a text node with newline to the deepest codeAncestor and place caret after it
               const textNode = document.createTextNode('\n');
               // find a sensible insertion point: prefer range.insertNode if possible
@@ -948,7 +948,7 @@ class CapnoteApp {
                     newRange3.collapse(true);
                     newSel.removeAllRanges();
                     newSel.addRange(newRange3);
-                  } catch (err) {}
+                  } catch (err) { }
                 }
               }
               this.trackContentChanges();
@@ -1079,9 +1079,9 @@ class CapnoteApp {
       this.trackContentChanges();
     });
 
-  // History button opens history modal (instead of clicking date)
-  this.historyBtn = document.getElementById('historyBtn');
-  this.historyBtn?.addEventListener('click', () => this.openNoteHistory());
+    // History button opens history modal (instead of clicking date)
+    this.historyBtn = document.getElementById('historyBtn');
+    this.historyBtn?.addEventListener('click', () => this.openNoteHistory());
 
     // History modal close handlers
     this.closeHistoryModal?.addEventListener('click', () => this.hideModal(this.noteHistoryModal));
@@ -1145,8 +1145,8 @@ class CapnoteApp {
     // Simple in-app notification + store
     const title = '🔔 Test Bildirimi';
     const body = 'Bu bir test bildirimidir.';
-  const nid = this.addNotification(null, title, body);
-  this.showNotification(title, 'info', { notificationId: nid });
+    const nid = this.addNotification(null, title, body);
+    this.showNotification(title, 'info', { notificationId: nid });
 
     // Fire native notification if preference enabled
     try {
@@ -1254,7 +1254,7 @@ class CapnoteApp {
           newSel.removeAllRanges();
           newSel.addRange(range);
           this.richEditor.focus();
-        } catch (err) {}
+        } catch (err) { }
         return;
       }
 
@@ -1288,7 +1288,7 @@ class CapnoteApp {
           newSel.removeAllRanges();
           newSel.addRange(newRange);
           this.richEditor.focus();
-        } catch (err) {}
+        } catch (err) { }
 
         return;
       }
@@ -1302,7 +1302,7 @@ class CapnoteApp {
       newRange.setStart(textNode, 1);
       newRange.collapse(true);
       sel.addRange(newRange);
-      try { this.richEditor.focus(); } catch (e) {}
+      try { this.richEditor.focus(); } catch (e) { }
     } catch (e) {
       // fallback: append
       const pre = document.createElement('pre');
@@ -1319,7 +1319,7 @@ class CapnoteApp {
         sel2.removeAllRanges();
         sel2.addRange(range2);
         this.richEditor.focus();
-      } catch (err) {}
+      } catch (err) { }
     }
   }
 
@@ -1332,7 +1332,7 @@ class CapnoteApp {
         this.applyFormat('color', e.target.value);
       }, 50);
     });
-    
+
     // Also apply on change (when picker is closed/committed)
     this.textColor.addEventListener('change', (e) => {
       clearTimeout(colorDebounceTimer);
@@ -1347,7 +1347,7 @@ class CapnoteApp {
         this.applyFormat('backgroundColor', e.target.value);
       }, 50);
     });
-    
+
     // Also apply on change (when picker is closed/committed)
     this.bgColor.addEventListener('change', (e) => {
       clearTimeout(bgColorDebounceTimer);
@@ -1445,7 +1445,7 @@ class CapnoteApp {
       .addEventListener('click', () => this.insertList('ol'));
   }
 
-  
+
 
   setupMoodWeatherSelectors() {
     this.moodBtns.forEach((btn) => {
@@ -1462,35 +1462,35 @@ class CapnoteApp {
       });
     });
 
-  // Emoji panel handlers: search and populate grid
-  if (this.emojiSearchInput) this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
-  // initialize tabs then populate grid
-  try { this.initEmojiTabs(); } catch (e) {}
-  this.populateEmojiGrid();
+    // Emoji panel handlers: search and populate grid
+    if (this.emojiSearchInput) this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
+    // initialize tabs then populate grid
+    try { this.initEmojiTabs(); } catch (e) { }
+    this.populateEmojiGrid();
   }
 
   setupResizeOptimization() {
     let resizeTimer;
-    
+
     const startResize = () => {
       if (!this.isResizing) {
         // Set flag immediately (synchronously) to prevent renders
         this.isResizing = true;
         document.body.classList.add('resizing');
-        
+
         // Disable smooth scrolling during resize
         document.documentElement.style.scrollBehavior = 'auto';
       }
     };
-    
+
     const endResize = () => {
       this.isResizing = false;
       document.body.classList.remove('resizing');
-      
+
       // Re-enable smooth scrolling after resize
       document.documentElement.style.scrollBehavior = '';
     };
-    
+
     // Use passive event listener for better performance
     window.addEventListener('resize', () => {
       startResize();
@@ -1558,7 +1558,7 @@ class CapnoteApp {
         this.emojiPanel.style.top = '';
       }
       // clear any saved selection when the panel is closed explicitly
-      try { this.clearSavedSelection(); } catch (e) {}
+      try { this.clearSavedSelection(); } catch (e) { }
     }, 200);
     if (this.openEmojiBtn) this.openEmojiBtn.classList.remove('active');
   }
@@ -1570,35 +1570,35 @@ class CapnoteApp {
     const emojiSets = this._emojiSets || {
       all: [],
       smileys: [
-        '😀','😃','😄','😁','😆','😅','😂','🤣','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','😋','😛','😜','🤪','😝','😐','😑','😶','😏','😒','🙄','🤨','🤔','🤫','🤭','🤥','😳','😞','😟','😠','😡','🤬','😔','😕','🙁','☹️','😭','😢','😤','😩','😫','😮','😯','😲','😱','😨','😰','🥵','🥶','😳','🤯','🥴','😵','🤐','🥺','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','🤡','💩','😺','😸','😹','😻','😼','😽','🙀','😿','😾',
+        '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '😐', '😑', '😶', '😏', '😒', '🙄', '🤨', '🤔', '🤫', '🤭', '🤥', '😳', '😞', '😟', '😠', '😡', '🤬', '😔', '😕', '🙁', '☹️', '😭', '😢', '😤', '😩', '😫', '😮', '😯', '😲', '😱', '😨', '😰', '🥵', '🥶', '😳', '🤯', '🥴', '😵', '🤐', '🥺', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '🤡', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾',
         /* commonly expected basics */
-        '😎','🤓','🤖','🙌','🤲'
+        '😎', '🤓', '🤖', '🙌', '🤲'
       ],
       people: [
-        '👶','🧒','👦','👧','🧑','👨','👩','👱','👱‍♀️','👱‍♂️','🧔','👨‍🦰','👩‍🦰','👨‍🦱','👩‍🦱','👨‍🦳','👩‍🦳','🧑‍⚕️','👩‍⚕️','👨‍⚕️','👩‍🏫','👨‍🏫','👩‍⚖️','👨‍⚖️','👩‍💼','👨‍💼','👩‍🔧','👨‍🔧','👩‍🔬','👨‍🔬','👩‍🎨','👨‍🎨','👩‍🚒','👨‍🚒','👮','👷','💂','🕵️','🧕','👳','🤵','👰','🤰','🤱','👩‍🍼','👨‍🍼'
+        '👶', '🧒', '👦', '👧', '🧑', '👨', '👩', '👱', '👱‍♀️', '👱‍♂️', '🧔', '👨‍🦰', '👩‍🦰', '👨‍🦱', '👩‍🦱', '👨‍🦳', '👩‍🦳', '🧑‍⚕️', '👩‍⚕️', '👨‍⚕️', '👩‍🏫', '👨‍🏫', '👩‍⚖️', '👨‍⚖️', '👩‍💼', '👨‍💼', '👩‍🔧', '👨‍🔧', '👩‍🔬', '👨‍🔬', '👩‍🎨', '👨‍🎨', '👩‍🚒', '👨‍🚒', '👮', '👷', '💂', '🕵️', '🧕', '👳', '🤵', '👰', '🤰', '🤱', '👩‍🍼', '👨‍🍼'
       ],
       animals: [
-        '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸','🐵','🐒','🐔','🐤','🐥','🐣','🦆','🦅','🦉','🦇','🐺','🐗','🐴','🦄','🐝','🐛','🦋','🐌','🐞','🐜','🪲','🪳','🐢','🐍','🦎','🐙','🦑','🦐','🦀'
+        '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐒', '🐔', '🐤', '🐥', '🐣', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🪲', '🪳', '🐢', '🐍', '🦎', '🐙', '🦑', '🦐', '🦀'
       ],
       food: [
-        '🍏','🍎','🍐','🍊','🍋','🍌','🍉','🍇','🍓','🫐','🍒','🍑','🥭','🍍','🥥','🥝','🍅','🍆','🥑','🥦','🥬','🥒','🌶️','🌽','🥕','🧄','🧅','🥔','🍠','🥐','🍞','🥖','🥨','🧀','🥚','🍳','🥓','🍗','🍖','🌭','🍔','🍟','🍕','🥪','🌮','🌯','🥗','🍝','🍜','🍲','🍛','🍣','🍱','🍤','🍙','🍚','🍘','🍥','🥟','🧁','🍰','🎂','🍮','🍩','🍪','🍫','🍬','🍭'
+        '🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌶️', '🌽', '🥕', '🧄', '🧅', '🥔', '🍠', '🥐', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🥓', '🍗', '🍖', '🌭', '🍔', '🍟', '🍕', '🥪', '🌮', '🌯', '🥗', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🍤', '🍙', '🍚', '🍘', '🍥', '🥟', '🧁', '🍰', '🎂', '🍮', '🍩', '🍪', '🍫', '🍬', '🍭'
       ],
       activities: [
-        '⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥅','🏒','🏑','🥍','🏏','⛳','🏹','🎣','🤿','🥊','🥋','🎽','🛹','🛼','🏂','🏋️','🏋️‍♀️','🏇','🏄','🚣','🏊','🤺','🤸','🤼','🤾'
+        '⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🥅', '🏒', '🏑', '🥍', '🏏', '⛳', '🏹', '🎣', '🤿', '🥊', '🥋', '🎽', '🛹', '🛼', '🏂', '🏋️', '🏋️‍♀️', '🏇', '🏄', '🚣', '🏊', '🤺', '🤸', '🤼', '🤾'
       ],
       travel: [
-        '🚗','🚕','🚙','🚌','🚎','🏎️','🚓','🚑','🚒','🚐','🚲','🛴','🛵','🏍️','🚨','🚔','🚖','🚘','🚍','✈️','🛩️','🚀','🛸','🚁','🚤','🛳️','⛵','🚢','🚂','🚆','🚈','🚅','🚊'
+        '🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚲', '🛴', '🛵', '🏍️', '🚨', '🚔', '🚖', '🚘', '🚍', '✈️', '🛩️', '🚀', '🛸', '🚁', '🚤', '🛳️', '⛵', '🚢', '🚂', '🚆', '🚈', '🚅', '🚊'
       ],
       objects: [
-        '⌚','📱','📲','💻','🖥️','🖨️','⌨️','🖱️','🖲️','🕹️','🧭','📷','📸','📹','🎥','📺','📻','🎙️','🎧','📡','🔋','🔌','💡','🔦','🧯','🛠️','🔧','🔨','🔩','⚙️','🧰','🧲','🪛','🔍','🧪','🧫','🧬'
+        '⌚', '📱', '📲', '💻', '🖥️', '🖨️', '⌨️', '🖱️', '🖲️', '🕹️', '🧭', '📷', '📸', '📹', '🎥', '📺', '📻', '🎙️', '🎧', '📡', '🔋', '🔌', '💡', '🔦', '🧯', '🛠️', '🔧', '🔨', '🔩', '⚙️', '🧰', '🧲', '🪛', '🔍', '🧪', '🧫', '🧬'
       ],
       symbols: [
-        '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','✨','⭐','⚡','🔥','💥','🌟','💫','💤','🔔','🔕','✔️','❌','❗','❓','⚠️','🔞','🔅','🔆','➕','➖','➗','✖️','♻️','⚕️','♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓',
+        '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '✨', '⭐', '⚡', '🔥', '💥', '🌟', '💫', '💤', '🔔', '🔕', '✔️', '❌', '❗', '❓', '⚠️', '🔞', '🔅', '🔆', '➕', '➖', '➗', '✖️', '♻️', '⚕️', '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓',
         /* reaction/gesture basics */
-        '👍','👎','👏','🙏','💪','🤝'
+        '👍', '👎', '👏', '🙏', '💪', '🤝'
       ],
       flags: [
-        '🏳️','🏴','🏳️‍🌈','🇦🇺','🇧🇷','🇨🇦','🇨🇳','🇫🇷','🇩🇪','🇮🇳','🇮🇹','🇯🇵','🇰🇷','🇲🇽','🇳🇱','🇳🇿','🇳🇴','🇵🇱','🇵🇹','🇷🇺','🇸🇪','🇿🇦','🇹🇷','🇬🇧','🇺🇸'
+        '🏳️', '🏴', '🏳️‍🌈', '🇦🇺', '🇧🇷', '🇨🇦', '🇨🇳', '🇫🇷', '🇩🇪', '🇮🇳', '🇮🇹', '🇯🇵', '🇰🇷', '🇲🇽', '🇳🇱', '🇳🇿', '🇳🇴', '🇵🇱', '🇵🇹', '🇷🇺', '🇸🇪', '🇿🇦', '🇹🇷', '🇬🇧', '🇺🇸'
       ]
     };
     // remove any emoji sequences that contain ZERO WIDTH JOINER U+200D (these often render as multiple glyphs in some fonts)
@@ -1653,13 +1653,13 @@ class CapnoteApp {
           // ignore restore errors
         }
         // make sure editor has focus before insertion
-        try { this.richEditor && this.richEditor.focus(); } catch (e) {}
+        try { this.richEditor && this.richEditor.focus(); } catch (e) { }
 
         this.insertTextAtCursor(emoji);
         this.trackContentChanges();
 
         // update savedSelection to the new caret position after insertion so subsequent clicks insert at the updated spot
-        try { this.captureEditorSelection(); } catch (e) {}
+        try { this.captureEditorSelection(); } catch (e) { }
 
         // NOTE: Do NOT hide the panel here. The panel should only close when the user presses the close button.
       });
@@ -1724,17 +1724,17 @@ class CapnoteApp {
         this.activeEmojiCategory = cat;
         this.populateEmojiGrid();
         // refocus search input
-        setTimeout(() => { try { this.emojiSearchInput && this.emojiSearchInput.focus(); } catch (e) {} }, 50);
+        setTimeout(() => { try { this.emojiSearchInput && this.emojiSearchInput.focus(); } catch (e) { } }, 50);
       });
     });
   }
 
   filterEmojiGrid(query) {
     if (!this.emojiGrid) return;
-  const q = this.normalizeForSearch(query || '');
-  // Ensure english-only emoji keyword map exists
-  if (!this._emojiKeywordMap) this._emojiKeywordMap = this._buildEnglishEmojiKeywordMap();
-  const emojiKeywordMap = this._emojiKeywordMap || {};
+    const q = this.normalizeForSearch(query || '');
+    // Ensure english-only emoji keyword map exists
+    if (!this._emojiKeywordMap) this._emojiKeywordMap = this._buildEnglishEmojiKeywordMap();
+    const emojiKeywordMap = this._emojiKeywordMap || {};
     Array.from(this.emojiGrid.children).forEach((btn) => {
       const emoji = (btn.textContent || '').trim();
       if (!q) {
@@ -1787,16 +1787,16 @@ class CapnoteApp {
     // New combined import/export handlers
     if (this.exportAllDataBtn) this.exportAllDataBtn.addEventListener('click', () => this.exportAllData());
     if (this.importAllDataBtn) this.importAllDataBtn.addEventListener('click', () => this.importAllData());
-  // Table modal events
-  if (this.insertTableBtn) this.insertTableBtn.addEventListener('click', () => this.showModal(this.tableModal));
-  if (this.closeTableModal) this.closeTableModal.addEventListener('click', () => this.hideModal(this.tableModal));
-  if (this.cancelTableBtn) this.cancelTableBtn.addEventListener('click', () => this.hideModal(this.tableModal));
-  if (this.insertTableConfirmBtn) this.insertTableConfirmBtn.addEventListener('click', () => this.handleInsertTable());
+    // Table modal events
+    if (this.insertTableBtn) this.insertTableBtn.addEventListener('click', () => this.showModal(this.tableModal));
+    if (this.closeTableModal) this.closeTableModal.addEventListener('click', () => this.hideModal(this.tableModal));
+    if (this.cancelTableBtn) this.cancelTableBtn.addEventListener('click', () => this.hideModal(this.tableModal));
+    if (this.insertTableConfirmBtn) this.insertTableConfirmBtn.addEventListener('click', () => this.handleInsertTable());
     // Clear actions
     this.clearAllNotesBtn?.addEventListener('click', () => this.confirmClearAllNotes());
     this.clearAllFoldersBtn?.addEventListener('click', () => this.confirmClearAllFolders());
     this.clearAllContentBtn?.addEventListener('click', () => this.confirmClearAllContent());
-  // legacy settings export/import handlers removed (merged into Verileri İçe/Dışa Aktar)
+    // legacy settings export/import handlers removed (merged into Verileri İçe/Dışa Aktar)
 
     // Modal close buttons
     document.querySelectorAll('.modal-close').forEach((btn) => {
@@ -1894,13 +1894,13 @@ class CapnoteApp {
         console.warn('Failed to cleanup notifications after clearing notes', e);
       }
       // Clear last viewed note
-      try { localStorage.removeItem('last-viewed-note'); } catch (e) {}
+      try { localStorage.removeItem('last-viewed-note'); } catch (e) { }
       this.updateNotesList();
       this.updateFoldersList();
-  // Update counters for reminders/notifications
-  try { this.updateActiveRemindersCount(); } catch (e) {}
-  try { this.updateActiveNotificationsCount(); } catch (e) {}
-  this.updateStats();
+      // Update counters for reminders/notifications
+      try { this.updateActiveRemindersCount(); } catch (e) { }
+      try { this.updateActiveNotificationsCount(); } catch (e) { }
+      this.updateStats();
       this.showNotification(window.i18n.t('messages.allNotesDeleted'), 'success');
     } catch (err) {
       console.error('Tüm notlar silinirken hata:', err);
@@ -1910,14 +1910,14 @@ class CapnoteApp {
 
   async clearAllFolders() {
     try {
-  // Delete all notes that belong to any real folder (treat 'default' as folderless)
-  // Some notes use folderId === 'default' to mean no folder; only consider notes
-  // that have a truthy folderId and are not 'default' as belonging to a folder.
-  const notesInFolders = (this.notes || []).filter(n => n.folderId && n.folderId !== 'default');
-  const removedNoteIdSet = new Set(notesInFolders.map(n => String(n.id)));
+      // Delete all notes that belong to any real folder (treat 'default' as folderless)
+      // Some notes use folderId === 'default' to mean no folder; only consider notes
+      // that have a truthy folderId and are not 'default' as belonging to a folder.
+      const notesInFolders = (this.notes || []).filter(n => n.folderId && n.folderId !== 'default');
+      const removedNoteIdSet = new Set(notesInFolders.map(n => String(n.id)));
 
-  // Keep only notes that are folderless (either falsy folderId or 'default')
-  this.notes = (this.notes || []).filter(n => !n.folderId || n.folderId === 'default');
+      // Keep only notes that are folderless (either falsy folderId or 'default')
+      this.notes = (this.notes || []).filter(n => !n.folderId || n.folderId === 'default');
       this.folders = [];
 
       // Persist notes/folders
@@ -1953,11 +1953,11 @@ class CapnoteApp {
 
       this.updateNotesList();
       this.updateFoldersList();
-  try { this.updateActiveRemindersCount(); } catch (e) {}
-  try { this.updateActiveNotificationsCount(); } catch (e) {}
-  // Ensure stats are refreshed (total notes / words / active days)
-  try { this.updateStats(); } catch (e) {}
-  this.showNotification(window.i18n.t('messages.allFoldersDeleted'), 'success');
+      try { this.updateActiveRemindersCount(); } catch (e) { }
+      try { this.updateActiveNotificationsCount(); } catch (e) { }
+      // Ensure stats are refreshed (total notes / words / active days)
+      try { this.updateStats(); } catch (e) { }
+      this.showNotification(window.i18n.t('messages.allFoldersDeleted'), 'success');
     } catch (err) {
       console.error('Tüm klasörler silinirken hata:', err);
       this.showNotification(window.i18n.t('messages.foldersDeleteError'), 'error');
@@ -1974,24 +1974,24 @@ class CapnoteApp {
       this.notifications = [];
 
       // Remove stored data keys
-      try { localStorage.removeItem('capnote-notes'); } catch (e) {}
-      try { localStorage.removeItem('capnote-folders'); } catch (e) {}
-      try { localStorage.removeItem('last-viewed-note'); } catch (e) {}
+      try { localStorage.removeItem('capnote-notes'); } catch (e) { }
+      try { localStorage.removeItem('capnote-folders'); } catch (e) { }
+      try { localStorage.removeItem('last-viewed-note'); } catch (e) { }
 
       // Reset settings to defaults by removing known keys
-      try { localStorage.removeItem('capnote-settings'); } catch (e) {}
-      try { localStorage.removeItem('accentColor'); } catch (e) {}
-      try { localStorage.removeItem('darkMode'); } catch (e) {}
-      try { localStorage.removeItem('maxPinnedNotes'); } catch (e) {}
-      try { localStorage.removeItem('syncFolderAccent'); } catch (e) {}
-      try { localStorage.removeItem('folderColorsBackup'); } catch (e) {}
+      try { localStorage.removeItem('capnote-settings'); } catch (e) { }
+      try { localStorage.removeItem('accentColor'); } catch (e) { }
+      try { localStorage.removeItem('darkMode'); } catch (e) { }
+      try { localStorage.removeItem('maxPinnedNotes'); } catch (e) { }
+      try { localStorage.removeItem('syncFolderAccent'); } catch (e) { }
+      try { localStorage.removeItem('folderColorsBackup'); } catch (e) { }
 
       // Persist empty notes/folders
       await this.saveNotes();
       await this.saveFolders();
-  // Persist clearing reminders/notifications
-  try { await this.saveReminders(); } catch (e) { console.warn(e); }
-  try { await this.saveNotifications(); } catch (e) { console.warn(e); }
+      // Persist clearing reminders/notifications
+      try { await this.saveReminders(); } catch (e) { console.warn(e); }
+      try { await this.saveNotifications(); } catch (e) { console.warn(e); }
 
       // Reset in-memory settings/state to defaults
       // Default accent used elsewhere in the app
@@ -2004,14 +2004,14 @@ class CapnoteApp {
       if (this.darkModeToggle) this.darkModeToggle.checked = false;
 
       // Reset max pinned to default (3)
-      try { localStorage.setItem('maxPinnedNotes', '3'); } catch (e) {}
+      try { localStorage.setItem('maxPinnedNotes', '3'); } catch (e) { }
       if (this.maxPinnedSelect) this.maxPinnedSelect.value = '3';
 
       // Disable folder-accent sync
-      try { localStorage.setItem('syncFolderAccent', '0'); } catch (e) {}
+      try { localStorage.setItem('syncFolderAccent', '0'); } catch (e) { }
       if (this.syncFolderAccentToggle) this.syncFolderAccentToggle.checked = false;
       // Restore folder accents from backup removal (ensure folders list is empty anyway)
-      try { localStorage.removeItem('folderColorsBackup'); } catch (e) {}
+      try { localStorage.removeItem('folderColorsBackup'); } catch (e) { }
 
       // Persist settings that the UI expects to exist
       this.saveSettings();
@@ -2020,21 +2020,21 @@ class CapnoteApp {
       this.updateNotesList();
       this.updateFoldersList();
       this.updateFolderNotes();
-    this.updateRemindersView();
-    this.updateNotificationsView();
-    try { this.updateActiveRemindersCount(); } catch (e) {}
-    try { this.updateActiveNotificationsCount(); } catch (e) {}
-    this.updateStats();
+      this.updateRemindersView();
+      this.updateNotificationsView();
+      try { this.updateActiveRemindersCount(); } catch (e) { }
+      try { this.updateActiveNotificationsCount(); } catch (e) { }
+      this.updateStats();
 
       // Ensure no note remains open after reset
       try {
         this.currentNote = null;
         this.currentNoteContent = '';
         this.lastSavedContent = '';
-      } catch (e) {}
+      } catch (e) { }
 
       // Show welcome/home screen instead of any note
-      try { this.showWelcome(); } catch (e) {}
+      try { this.showWelcome(); } catch (e) { }
 
       this.showNotification(window.i18n.t('messages.appReset'), 'success');
     } catch (err) {
@@ -2225,8 +2225,8 @@ class CapnoteApp {
 
   async loadNotes() {
     try {
-  const savedNotes = localStorage.getItem('capnote-notes');
-  this.notes = savedNotes ? JSON.parse(savedNotes) : [];
+      const savedNotes = localStorage.getItem('capnote-notes');
+      this.notes = savedNotes ? JSON.parse(savedNotes) : [];
 
       // Eski notlarda eksik property'leri ekle
       this.notes.forEach((note) => {
@@ -2259,10 +2259,10 @@ class CapnoteApp {
 
   async loadFolders() {
     try {
-  const savedFolders = localStorage.getItem('capnote-folders');
-  this.folders = savedFolders ? JSON.parse(savedFolders) : [];
-  // Ensure older saved folders get a default expanded flag (true)
-  this.folders = this.folders.map((f) => ({ expanded: f.expanded !== undefined ? f.expanded : true, ...f }));
+      const savedFolders = localStorage.getItem('capnote-folders');
+      this.folders = savedFolders ? JSON.parse(savedFolders) : [];
+      // Ensure older saved folders get a default expanded flag (true)
+      this.folders = this.folders.map((f) => ({ expanded: f.expanded !== undefined ? f.expanded : true, ...f }));
     } catch (error) {
       console.error('Klasörler yüklenirken hata:', error);
       this.folders = [];
@@ -2271,9 +2271,9 @@ class CapnoteApp {
 
   async saveNotes() {
     try {
-  localStorage.setItem('capnote-notes', JSON.stringify(this.notes));
+      localStorage.setItem('capnote-notes', JSON.stringify(this.notes));
       // Ensure overview stats reflect the latest notes immediately
-      try { this.updateStats(); } catch (e) {}
+      try { this.updateStats(); } catch (e) { }
     } catch (error) {
       console.error('Notlar kaydedilirken hata:', error);
       this.showNotification(window.i18n.t('messages.notesSaveError'), 'error');
@@ -2282,7 +2282,7 @@ class CapnoteApp {
 
   async saveFolders() {
     try {
-  localStorage.setItem('capnote-folders', JSON.stringify(this.folders));
+      localStorage.setItem('capnote-folders', JSON.stringify(this.folders));
     } catch (error) {
       console.error('Klasörler kaydedilirken hata:', error);
       this.showNotification(window.i18n.t('messages.foldersSaveError'), 'error');
@@ -2340,7 +2340,7 @@ class CapnoteApp {
       const base = new Date(datetimeIso);
       if (isNaN(base)) return null;
       // Normalize daysArray to sorted unique numbers 0..6
-      const days = Array.from(new Set((daysArray || []).map(d => parseInt(d)).filter(d => !isNaN(d) && d >= 0 && d <= 6))).sort((a,b) => a-b);
+      const days = Array.from(new Set((daysArray || []).map(d => parseInt(d)).filter(d => !isNaN(d) && d >= 0 && d <= 6))).sort((a, b) => a - b);
       if (days.length === 0) return null;
 
       // Start searching from the next minute to avoid returning the same moment
@@ -2436,8 +2436,8 @@ class CapnoteApp {
 
   showTodosScreen() {
     this.hideAllModals();
-    try { this.hideEmojiPanel(); } catch (e) {}
-    
+    try { this.hideEmojiPanel(); } catch (e) { }
+
     // Hide all screens
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
@@ -2445,12 +2445,12 @@ class CapnoteApp {
     this.notificationsScreen?.classList.add('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.todosScreen?.classList.remove('hidden');
-    
+
     // Update active states - only for todos/reminders/notifications group
     this.todosNav?.classList.add('active');
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
-    
+
     this.renderTodosSections();
   }
 
@@ -2469,7 +2469,7 @@ class CapnoteApp {
 
     this.todosSectionsContainer.innerHTML = this.todoSections.map(section => {
       const activeTodos = section.todos.filter(t => !t.completed).length;
-      const todosHtml = section.todos.length === 0 ? 
+      const todosHtml = section.todos.length === 0 ?
         `<div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 13px;">Bu bölümde görev yok</div>` :
         section.todos.map(todo => `
           <div class="todo-item ${todo.completed ? 'completed' : ''}" data-todo-id="${todo.id}" data-section-id="${section.id}">
@@ -2547,13 +2547,13 @@ class CapnoteApp {
     // Todo action buttons
     this.todosSectionsContainer.querySelectorAll('[data-action]').forEach(btn => {
       if (btn.dataset.action === 'delete-section') return; // Already handled
-      
+
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         const action = btn.dataset.action;
         const todoId = btn.dataset.todoId;
         const sectionId = btn.dataset.sectionId;
-        
+
         if (action === 'toggle') {
           this.toggleTodoComplete(sectionId, todoId);
         } else if (action === 'edit') {
@@ -2634,7 +2634,7 @@ class CapnoteApp {
     this.saveTodos();
     this.renderTodosSections();
     this.updateTodosCount();
-    
+
     if (todo.completed) {
       this.showNotification(window.i18n.t('todos.todoCompleted'), 'success');
     }
@@ -2690,14 +2690,14 @@ class CapnoteApp {
 
   updateTodosCount() {
     if (!this.todosCount) return;
-    
+
     let activeCount = 0;
     this.todoSections.forEach(section => {
       activeCount += section.todos.filter(t => !t.completed).length;
     });
-    
+
     this.todosCount.textContent = activeCount;
-    
+
     if (activeCount > 0) {
       this.todosCount.classList.remove('hidden');
     } else {
@@ -2764,9 +2764,9 @@ class CapnoteApp {
   createNewNote() {
     // Auto-lock the current note if it was unlocked and is locked
     this.autoLockCurrentNote();
-    
+
     // Ensure emoji panel is closed when leaving the current note
-    try { this.hideEmojiPanel(); } catch (e) {}
+    try { this.hideEmojiPanel(); } catch (e) { }
     this.currentNote = {
       id: Date.now(),
       title: '',
@@ -2816,7 +2816,7 @@ class CapnoteApp {
 
   showEditor() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) {}
+    try { this.hideEmojiPanel(); } catch (e) { }
     this.welcomeScreen.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.noteEditor.classList.remove('hidden');
@@ -2844,81 +2844,81 @@ class CapnoteApp {
 
   showViewer() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) {}
+    try { this.hideEmojiPanel(); } catch (e) { }
     this.welcomeScreen.classList.add('hidden');
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
     this.todosScreen?.classList.add('hidden');
-    
+
     // Remove active from reminders and notifications
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
     this.todosNav?.classList.remove('active');
-    
+
     this.clearSavedSelection();
   }
 
   showWelcome() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) {}
+    try { this.hideEmojiPanel(); } catch (e) { }
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.remove('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
     this.todosScreen?.classList.add('hidden');
-    
+
     // Remove active from reminders and notifications
     this.remindersNav?.classList.remove('active');
     this.notificationsNav?.classList.remove('active');
     this.todosNav?.classList.remove('active');
-    
+
     this.clearSavedSelection();
   }
 
   showRemindersScreen() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) {}
+    try { this.hideEmojiPanel(); } catch (e) { }
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.add('hidden');
     this.notificationsScreen?.classList.add('hidden');
     this.todosScreen?.classList.add('hidden');
     this.remindersScreen?.classList.remove('hidden');
-    
-  // Update active states for reminders/notifications group only
-  this.remindersNav?.classList.add('active');
-  this.notificationsNav?.classList.remove('active');
-  this.todosNav?.classList.remove('active');
-    
+
+    // Update active states for reminders/notifications group only
+    this.remindersNav?.classList.add('active');
+    this.notificationsNav?.classList.remove('active');
+    this.todosNav?.classList.remove('active');
+
     this.updateRemindersView();
   }
 
   showNotificationsScreen() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) {}
+    try { this.hideEmojiPanel(); } catch (e) { }
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.add('hidden');
     this.remindersScreen?.classList.add('hidden');
     this.todosScreen?.classList.add('hidden');
     this.notificationsScreen?.classList.remove('hidden');
-    
-  // Update active states for reminders/notifications group only
-  this.notificationsNav?.classList.add('active');
-  this.remindersNav?.classList.remove('active');
-  this.todosNav?.classList.remove('active');
-    
+
+    // Update active states for reminders/notifications group only
+    this.notificationsNav?.classList.add('active');
+    this.remindersNav?.classList.remove('active');
+    this.todosNav?.classList.remove('active');
+
     this.updateNotificationsView();
   }
 
   updateRemindersView() {
     if (!this.remindersList) return;
-    
+
     const activeReminders = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date());
-    
+
     if (activeReminders.length === 0) {
       this.remindersList.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">${window.i18n.t('messages.noActiveReminders')}</div>`;
       return;
@@ -2931,13 +2931,13 @@ class CapnoteApp {
           <div class="reminder-note-title">${this.escapeHtml(r.noteTitle)}</div>
           <div class="reminder-datetime">
             <i class="fas fa-clock"></i>
-            ${new Date(r.datetime).toLocaleString('tr-TR', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric', 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
+            ${new Date(r.datetime).toLocaleString('tr-TR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}
             ${r.recurrence && r.recurrence !== 'none' ? `<span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? (': ' + r.recurrenceDays.map(d => this._weekdayShort(d)).join(', ')) : ''}</span>` : ''}
           </div>
           <div class="reminder-actions">
@@ -3016,7 +3016,7 @@ class CapnoteApp {
           const d = new Date(datetime).getDay();
           days.push(d);
         }
-        reminder.recurrenceDays = days.sort((a,b) => a - b);
+        reminder.recurrenceDays = days.sort((a, b) => a - b);
       } catch (err) {
         // ignore
       }
@@ -3045,9 +3045,9 @@ class CapnoteApp {
   updateNoteRemindersDisplay() {
     if (!this.noteRemindersList || !this.currentNote) return;
 
-    const noteReminders = this.reminders.filter(r => 
-      r.noteId === this.currentNote.id && 
-      !r.dismissed && 
+    const noteReminders = this.reminders.filter(r =>
+      r.noteId === this.currentNote.id &&
+      !r.dismissed &&
       new Date(r.datetime) > new Date()
     );
 
@@ -3062,12 +3062,12 @@ class CapnoteApp {
         <div class="note-reminder-item">
           <div class="note-reminder-time">
               <i class="fas fa-bell"></i>
-              ${new Date(r.datetime).toLocaleString('tr-TR', { 
-              month: 'short', 
-              day: 'numeric', 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
+              ${new Date(r.datetime).toLocaleString('tr-TR', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })}
               ${r.recurrence && r.recurrence !== 'none' ? ` <span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? (': ' + r.recurrenceDays.map(d => this._weekdayShort(d)).join(', ')) : ''}</span>` : ''}
           </div>
           <button class="note-reminder-remove" data-reminder-id="${r.id}" title="Sil">
@@ -3189,7 +3189,7 @@ class CapnoteApp {
 
   updateNotificationsView() {
     if (!this.notificationsList) return;
-    
+
     if (this.notifications.length === 0) {
       this.notificationsList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">Henüz bildirim yok</div>';
       return;
@@ -3201,13 +3201,13 @@ class CapnoteApp {
           <div class="notification-note-title">${this.escapeHtml(n.noteTitle)}</div>
           <div class="notification-time">
             <i class="fas fa-clock"></i>
-            ${new Date(n.time).toLocaleString('tr-TR', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric', 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
+            ${new Date(n.time).toLocaleString('tr-TR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })}
           </div>
         </div>
         <div class="notification-message">${this.escapeHtml(n.message)}</div>
@@ -3272,7 +3272,7 @@ class CapnoteApp {
     if (!this.activeNotificationsCount) return;
     const count = this.notifications.filter(n => !n.read).length;
     this.activeNotificationsCount.textContent = `(${count})`;
-    
+
     // Show/hide unread badge
     if (this.notificationsUnreadBadge) {
       if (count > 0) {
@@ -3311,7 +3311,7 @@ class CapnoteApp {
       if (iframe) iframe.srcdoc = '';
       this.htmlPreview.innerHTML = '';
     }
-  const baseFormatting = this.currentNote?.formatting || this.getDefaultFormatting();
+    const baseFormatting = this.currentNote?.formatting || this.getDefaultFormatting();
     this.setEditorFormatting(baseFormatting);
     this.clearSavedSelection();
     this.clearMoodWeatherSelection();
@@ -3386,12 +3386,12 @@ class CapnoteApp {
 
   // Count words/chars from an HTML string (used when saving notes)
   countWordsAndCharsFromHtml(html) {
-  const tmp = document.createElement('div');
-  // Ensure adjacent tags and text-to-tag boundaries have separating spaces so innerText doesn't concatenate words
-  let safeHtml = (html || '').replace(/></g, '> <');
-  // Insert a space before a '<' if it's immediately preceded by a non-space and not already separated
-  safeHtml = safeHtml.replace(/([^\s>])</g, '$1 <');
-  tmp.innerHTML = safeHtml;
+    const tmp = document.createElement('div');
+    // Ensure adjacent tags and text-to-tag boundaries have separating spaces so innerText doesn't concatenate words
+    let safeHtml = (html || '').replace(/></g, '> <');
+    // Insert a space before a '<' if it's immediately preceded by a non-space and not already separated
+    safeHtml = safeHtml.replace(/([^\s>])</g, '$1 <');
+    tmp.innerHTML = safeHtml;
     // Use innerText to reflect visible text (preserves newlines)
     let text = tmp.innerText || tmp.textContent || '';
     text = text.replace(/\u00A0/g, ' ');
@@ -3414,20 +3414,20 @@ class CapnoteApp {
     this.syncCheckboxStates();
 
     const title = this.noteTitle.value.trim() || 'Başlıksız Not';
-  // If markdown editor is visible, save raw markdown; otherwise save HTML from rich editor
-  // If the markdown editor is visible (editing markdown), save raw markdown; otherwise save HTML from rich editor
-  const isMarkdownMode = this.markdownEditor && !this.markdownEditor.classList.contains('hidden');
-  const content = isMarkdownMode ? this.markdownEditor.value : this.richEditor.innerHTML;
+    // If markdown editor is visible, save raw markdown; otherwise save HTML from rich editor
+    // If the markdown editor is visible (editing markdown), save raw markdown; otherwise save HTML from rich editor
+    const isMarkdownMode = this.markdownEditor && !this.markdownEditor.classList.contains('hidden');
+    const content = isMarkdownMode ? this.markdownEditor.value : this.richEditor.innerHTML;
 
     this.currentNote.title = title;
-  this.currentNote.content = content;
-  this.currentNote.isMarkdown = !!isMarkdownMode;
+    this.currentNote.content = content;
+    this.currentNote.isMarkdown = !!isMarkdownMode;
     const nowIso = new Date().toISOString();
     this.currentNote.updatedAt = nowIso;
     // Update UI lists to reflect changes. Keep it simple and robust.
     try {
-  this.updateNotesList();
-  this.updateFoldersList();
+      this.updateNotesList();
+      this.updateFoldersList();
       if (this.currentNote && this.currentNote.id) {
         this.updateActionButtonStates(this.currentNote.id);
       }
@@ -3438,12 +3438,12 @@ class CapnoteApp {
     }
     this.currentNote.mood = this.selectedMood;
     this.currentNote.weather = this.selectedWeather;
-  // Ensure accurate word/char counts are stored (handle multiline and HTML)
-  const counts = this.countWordsAndCharsFromHtml(content);
-  this.currentNote.wordCount = counts.words;
-  this.currentNote.charCount = counts.chars;
+    // Ensure accurate word/char counts are stored (handle multiline and HTML)
+    const counts = this.countWordsAndCharsFromHtml(content);
+    this.currentNote.wordCount = counts.words;
+    this.currentNote.charCount = counts.chars;
     this.currentNote.tags = [...this.tags];
-  this.currentNote.formatting = this.getEditorFormatting();
+    this.currentNote.formatting = this.getEditorFormatting();
 
     // Var olan notu güncelle veya yeni not ekle
     const existingIndex = this.notes.findIndex((note) => note.id === this.currentNote.id);
@@ -3503,7 +3503,7 @@ class CapnoteApp {
     } else {
       this.richEditor.innerHTML = note.content;
       // ensure any images in loaded content are wrapped and wired for resizing
-      try { this.upgradeImagesInEditor(); } catch (e) {}
+      try { this.upgradeImagesInEditor(); } catch (e) { }
       if (this.markdownEditor) this.markdownEditor.value = '';
     }
     this.setEditorFormatting(note.formatting || this.getDefaultFormatting());
@@ -3521,8 +3521,8 @@ class CapnoteApp {
     this.updateCurrentDate();
     this.updateNoteRemindersDisplay();
 
-  // Reset save button state - note is loaded as-is, no changes yet
-  this.lastSavedContent = this.getCurrentNoteContent();
+    // Reset save button state - note is loaded as-is, no changes yet
+    this.lastSavedContent = this.getCurrentNoteContent();
     this.isAutoSaved = true;
     this.updateSaveButtonState();
 
@@ -3621,11 +3621,11 @@ class CapnoteApp {
             parent.replaceWith(img);
           } catch (unwrapErr) {
             // fallback: try to move the img out
-            try { parent.parentNode.insertBefore(img, parent); parent.remove(); } catch (e) {}
+            try { parent.parentNode.insertBefore(img, parent); parent.remove(); } catch (e) { }
           }
         }
         this.ensureImageWrapper(img);
-      } catch (e) {}
+      } catch (e) { }
     });
   }
 
@@ -3663,10 +3663,10 @@ class CapnoteApp {
       const sourceText = (this.markdownEditor && !this.markdownEditor.classList.contains('hidden'))
         ? this.markdownEditor.value
         : (this.richEditor && this.richEditor.innerText)
-        ? this.richEditor.innerText
-        : (this.currentNote && this.currentNote.content)
-        ? this.currentNote.content
-        : '';
+          ? this.richEditor.innerText
+          : (this.currentNote && this.currentNote.content)
+            ? this.currentNote.content
+            : '';
       this.renderMarkdownPreview(sourceText);
       // Hide editors while showing preview
       this.hideRichEditor();
@@ -3919,7 +3919,7 @@ class CapnoteApp {
 
     // Check confirm delete setting
     const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
-    
+
     if (!confirmDelete) {
       // Don't show confirmation, delete directly
       const currentNoteId = this.currentNote.id;
@@ -3931,7 +3931,7 @@ class CapnoteApp {
 
       if (this.notes.length > 0) {
         const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-        
+
         if (onNoteDelete === 'home') {
           this.currentNote = null;
           this.showWelcome();
@@ -3959,7 +3959,7 @@ class CapnoteApp {
 
         if (this.notes.length > 0) {
           const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-          
+
           if (onNoteDelete === 'home') {
             this.currentNote = null;
             this.showWelcome();
@@ -4094,8 +4094,8 @@ class CapnoteApp {
       } else {
         this.viewerText.innerHTML = note.content;
       }
-    // Attach copy buttons to code blocks in the viewer
-    this.attachCopyButtonsToPre(this.viewerText);
+      // Attach copy buttons to code blocks in the viewer
+      this.attachCopyButtonsToPre(this.viewerText);
     }
 
     this.applyViewerFormatting(note.formatting);
@@ -4126,26 +4126,26 @@ class CapnoteApp {
     // Tags
     this.displayViewerTags(note.tags || []);
 
-  // Stats - compute from HTML content to avoid showing stale stored counts
-  const counts = this.countWordsAndCharsFromHtml(note.content || '');
-  // Update in-memory note counts so subsequent actions use the up-to-date value
-  note.wordCount = counts.words;
-  note.charCount = counts.chars;
-  if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
-  if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
-  // Reading time calculation (baseline 200 words per minute)
-  const WPM = 200;
-  if (!counts.words) {
-    this.readingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
-  } else {
-    const seconds = Math.ceil((counts.words / WPM) * 60);
-    if (seconds < 60) {
-      this.readingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
+    // Stats - compute from HTML content to avoid showing stale stored counts
+    const counts = this.countWordsAndCharsFromHtml(note.content || '');
+    // Update in-memory note counts so subsequent actions use the up-to-date value
+    note.wordCount = counts.words;
+    note.charCount = counts.chars;
+    if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
+    if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
+    // Reading time calculation (baseline 200 words per minute)
+    const WPM = 200;
+    if (!counts.words) {
+      this.readingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
     } else {
-      const minutes = Math.round(seconds / 60);
-      this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
+      const seconds = Math.ceil((counts.words / WPM) * 60);
+      if (seconds < 60) {
+        this.readingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
+      } else {
+        const minutes = Math.round(seconds / 60);
+        this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
+      }
     }
-  }
     // Show date + time for last modified (e.g. 12.10.2025 14:35)
     const locale2 = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
     this.lastModified.textContent = updatedDate.toLocaleString(locale2, {
@@ -4212,15 +4212,15 @@ class CapnoteApp {
     if (this.isResizing) {
       return;
     }
-    
+
     this.notesList.innerHTML = '';
 
     const filteredNotes = this.getFilteredNotes();
     const sortedNotes = this.getSortedNotes(filteredNotes);
 
-  // Update nav count for visible notes (include folder-contained notes)
-  const navCountEl = document.getElementById('navNotesCount');
-  if (navCountEl) navCountEl.textContent = `(${this.getVisibleNotesCount()})`;
+    // Update nav count for visible notes (include folder-contained notes)
+    const navCountEl = document.getElementById('navNotesCount');
+    if (navCountEl) navCountEl.textContent = `(${this.getVisibleNotesCount()})`;
 
     sortedNotes.forEach((note) => {
       const noteElement = this.createNoteElement(note);
@@ -4307,7 +4307,7 @@ class CapnoteApp {
     if (this.isResizing) {
       return;
     }
-    
+
     // Update custom folder notes
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
       const folderIdLog = container.getAttribute('data-folder-id');
@@ -4348,9 +4348,9 @@ class CapnoteApp {
         container.appendChild(noteElement);
       });
 
-  // Toggle visibility of the folder wrapper based on visible count / current filter/search
-  const treatAsFilter = this.currentFilter !== 'all' || !!searchTerm;
-  const visibleCount = this.getVisibleCountForFolder(folderId);
+      // Toggle visibility of the folder wrapper based on visible count / current filter/search
+      const treatAsFilter = this.currentFilter !== 'all' || !!searchTerm;
+      const visibleCount = this.getVisibleCountForFolder(folderId);
       const folderWrapper = container.closest('.folder-container');
       if (folderWrapper) {
         if (treatAsFilter && visibleCount === 0) {
@@ -4398,8 +4398,8 @@ class CapnoteApp {
 
   // Compute how many notes match the current filter/search including notes inside folders
   getVisibleNotesCount() {
-  const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
-  const searchTerm = this.normalizeForSearch(rawSearch);
+    const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
+    const searchTerm = this.normalizeForSearch(rawSearch);
     let matched = [...this.notes];
 
     switch (this.currentFilter) {
@@ -4624,7 +4624,7 @@ class CapnoteApp {
       moreOptionsBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isHidden = optionsMenu.classList.contains('hidden');
-        
+
         // Close all other menus
         document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
           menu.classList.add('hidden');
@@ -4639,14 +4639,14 @@ class CapnoteApp {
           if (optionsMenu.parentNode !== document.body) {
             document.body.appendChild(optionsMenu);
           }
-          
+
           // Calculate position for fixed menu
           const rect = moreOptionsBtn.getBoundingClientRect();
           optionsMenu.style.top = `${rect.bottom + 5}px`;
           optionsMenu.style.left = 'auto';
           optionsMenu.style.right = `${window.innerWidth - rect.right}px`;
           optionsMenu.style.display = 'flex';
-          
+
           optionsMenu.classList.remove('hidden');
           optionsContainer.classList.add('menu-open');
         }
@@ -4682,7 +4682,7 @@ class CapnoteApp {
     // Add hover event listeners for title truncation
     const titleElement = div.querySelector('.note-item-title');
     const originalTitle = note.title;
-    const truncatedTitle = note.title.length > 6 ? note.title.substring(0, 6) + '...' : note.title;
+    const truncatedTitle = note.title.length > 18 ? note.title.substring(0, 18) + '...' : note.title;
 
     div.addEventListener('mouseenter', () => {
       titleElement.textContent = truncatedTitle;
@@ -4835,14 +4835,14 @@ class CapnoteApp {
   applyBackgroundColor(colorValue) {
     // Ensure editor has focus and selection is restored
     if (!this.richEditor) return;
-    
+
     this.richEditor.focus();
-    
+
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
 
     const range = selection.getRangeAt(0);
-    
+
     // If nothing is selected, do nothing (don't apply to whole editor)
     if (range.collapsed) return;
 
@@ -4850,7 +4850,7 @@ class CapnoteApp {
     const fragment = range.cloneContents();
     const tempDiv = document.createElement('div');
     tempDiv.appendChild(fragment);
-    
+
     // Don't apply if there are any input elements (checkboxes)
     if (tempDiv.querySelector('input')) {
       // Selection contains input/checkbox, abort
@@ -4865,7 +4865,7 @@ class CapnoteApp {
 
       // Extract selected contents
       const contents = range.extractContents();
-      
+
       // If contents is empty, don't apply
       if (!contents.textContent.trim() && !contents.querySelector('img, br')) {
         return;
@@ -4880,7 +4880,7 @@ class CapnoteApp {
       const newRange = document.createRange();
       newRange.selectNodeContents(span);
       selection.addRange(newRange);
-      
+
       // Mark as changed
       this.trackContentChanges();
     } catch (e) {
@@ -5290,8 +5290,7 @@ class CapnoteApp {
     <div class="content">
         ${note.content}
     </div>
-    ${
-      note.tags && note.tags.length > 0
+    ${note.tags && note.tags.length > 0
         ? `
     <div class="tags">
         <h3>Etiketler:</h3>
@@ -5299,7 +5298,7 @@ class CapnoteApp {
     </div>
     `
         : ''
-    }
+      }
 </body>
 </html>`;
   }
@@ -5372,11 +5371,11 @@ class CapnoteApp {
       container.appendChild(contentWrap);
 
       const opt = {
-        margin:       12,
-        filename:     `${(note.title || 'note').replace(/[^a-z0-9\-\_ ]/gi, '_')}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        margin: 12,
+        filename: `${(note.title || 'note').replace(/[^a-z0-9\-\_ ]/gi, '_')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       this.showNotification(window.i18n.t('messages.pdfCreating'), 'info');
@@ -5646,7 +5645,7 @@ class CapnoteApp {
       }
     } catch (e) {
       // As a last resort, append to editor
-      try { this.richEditor.insertAdjacentHTML('beforeend', html); } catch (e2) {}
+      try { this.richEditor.insertAdjacentHTML('beforeend', html); } catch (e2) { }
     }
   }
 
@@ -5675,8 +5674,8 @@ class CapnoteApp {
     this.insertHtmlAtSavedSelection(html);
 
     // Update word/char counts and mark note dirty
-    try { this.captureEditorSelection(); } catch (e) {}
-    try { this.updateWordCount(); } catch (e) {}
+    try { this.captureEditorSelection(); } catch (e) { }
+    try { this.updateWordCount(); } catch (e) { }
     // Close modal
     this.hideModal(this.tableModal);
   }
@@ -5887,7 +5886,7 @@ class CapnoteApp {
   async lockNote(note) {
     const password = await this.showPasswordModal(window.i18n.t('messages.setPasswordForNote'));
     if (password && password.trim()) {
-  // Locking note (debug logs removed)
+      // Locking note (debug logs removed)
       note.isLocked = true;
       note.password = password.trim();
 
@@ -5897,7 +5896,7 @@ class CapnoteApp {
       this.saveNotes();
       this.updateNotesList();
       this.showNotification(window.i18n.t('messages.noteLocked'), 'success');
-  // Note lock result (debug logs removed)
+      // Note lock result (debug logs removed)
     }
   }
 
@@ -5940,7 +5939,7 @@ class CapnoteApp {
       this.saveLastViewedNote(note.id);
       this.showViewer();
       this.displayNote(note);
-  this.setActiveNoteInList(this.currentNote.id);
+      this.setActiveNoteInList(this.currentNote.id);
 
       this.showNotification(window.i18n.t('messages.noteTemporarilyUnlocked'), 'info');
     } else if (password !== null) {
@@ -5955,7 +5954,7 @@ class CapnoteApp {
 
     // Check confirm delete setting
     const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
-    
+
     if (!confirmDelete) {
       // Don't show confirmation, delete directly
       const index = this.notes.findIndex((n) => n.id == noteId);
@@ -5979,7 +5978,7 @@ class CapnoteApp {
         if (this.currentNote && this.currentNote.id === noteId) {
           this.currentNote = null;
           const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-          
+
           if (onNoteDelete === 'home') {
             this.showWelcome();
           } else if (this.notes.length > 0) {
@@ -6019,7 +6018,7 @@ class CapnoteApp {
         if (this.currentNote && this.currentNote.id === noteId) {
           this.currentNote = null;
           const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-          
+
           if (onNoteDelete === 'home') {
             this.showWelcome();
           } else if (this.notes.length > 0) {
@@ -6239,7 +6238,7 @@ class CapnoteApp {
     this.applyTheme(isDarkMode);
     // Load accent color
     const accent = localStorage.getItem('accentColor') || null;
-    if (accent) this.setAccentColor(accent, {persist:false});
+    if (accent) this.setAccentColor(accent, { persist: false });
 
     // Load sync-folder-accent preference
     const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
@@ -6279,33 +6278,33 @@ class CapnoteApp {
       if (this.startAtLoginToggle && window.electronAPI && typeof window.electronAPI.getStartAtLogin === 'function') {
         window.electronAPI.getStartAtLogin().then((res) => {
           if (res && typeof res.enabled === 'boolean') this.startAtLoginToggle.checked = !!res.enabled;
-        }).catch(() => {});
+        }).catch(() => { });
       }
-    } catch {}
+    } catch { }
 
     // Query close-to-tray preference from main/store
     try {
       if (this.closeToTrayToggle && window.electronAPI && typeof window.electronAPI.getCloseToTray === 'function') {
         window.electronAPI.getCloseToTray().then((res) => {
           if (res && typeof res.enabled === 'boolean') this.closeToTrayToggle.checked = !!res.enabled;
-        }).catch(() => {});
+        }).catch(() => { });
       }
-    } catch {}
+    } catch { }
   }
 
   setupSettingsEventListeners() {
     // Settings tab switching
     const settingsTabs = document.querySelectorAll('.settings-tab');
     const settingsTabContents = document.querySelectorAll('.settings-tab-content');
-    
+
     settingsTabs.forEach(tab => {
       tab.addEventListener('click', () => {
         const targetTab = tab.dataset.tab;
-        
+
         // Remove active class from all tabs and contents
         settingsTabs.forEach(t => t.classList.remove('active'));
         settingsTabContents.forEach(c => c.classList.remove('active'));
-        
+
         // Add active class to clicked tab and corresponding content
         tab.classList.add('active');
         const targetContent = document.querySelector(`.settings-tab-content[data-content="${targetTab}"]`);
@@ -6344,8 +6343,8 @@ class CapnoteApp {
     if (this.autoSaveToggle) {
       this.autoSaveToggle.addEventListener('change', (e) => {
         localStorage.setItem('settings.autoSave', e.target.checked ? 'true' : 'false');
-        const message = e.target.checked 
-          ? window.i18n.t('messages.autoSaveEnabled') 
+        const message = e.target.checked
+          ? window.i18n.t('messages.autoSaveEnabled')
           : window.i18n.t('messages.autoSaveDisabled');
         this.showNotification(message, 'success');
       });
@@ -6357,11 +6356,11 @@ class CapnoteApp {
     localStorage.setItem('darkMode', this.darkModeToggle.checked);
     // Save sync-folder-accent preference
     if (this.syncFolderAccentToggle) localStorage.setItem('syncFolderAccent', this.syncFolderAccentToggle.checked ? '1' : '0');
-      // Save native/system notifications preference
-      if (this.toggleNativeNotifications) localStorage.setItem('settings.nativeNotifications', this.toggleNativeNotifications.checked ? '1' : '0');
-      // Save general settings
-      if (this.onNoteDeleteSelect) localStorage.setItem('settings.onNoteDelete', this.onNoteDeleteSelect.value);
-      if (this.confirmDeleteToggle) localStorage.setItem('settings.confirmDelete', this.confirmDeleteToggle.checked ? 'true' : 'false');
+    // Save native/system notifications preference
+    if (this.toggleNativeNotifications) localStorage.setItem('settings.nativeNotifications', this.toggleNativeNotifications.checked ? '1' : '0');
+    // Save general settings
+    if (this.onNoteDeleteSelect) localStorage.setItem('settings.onNoteDelete', this.onNoteDeleteSelect.value);
+    if (this.confirmDeleteToggle) localStorage.setItem('settings.confirmDelete', this.confirmDeleteToggle.checked ? 'true' : 'false');
   }
 
   setAccentColor(hex, options = { persist: true }) {
@@ -6376,20 +6375,20 @@ class CapnoteApp {
     // naive conversion for the common yellow used previously (245,158,11)
     // we'll generate rgba using a small helper to convert hex -> r,g,b
     function hexToRgb(h) {
-      const hex = h.replace('#','');
-      const bigint = parseInt(hex.length===3?hex.split('').map(c=>c+c).join(''):hex,16);
+      const hex = h.replace('#', '');
+      const bigint = parseInt(hex.length === 3 ? hex.split('').map(c => c + c).join('') : hex, 16);
       const r = (bigint >> 16) & 255;
       const g = (bigint >> 8) & 255;
       const b = bigint & 255;
-      return [r,g,b];
+      return [r, g, b];
     }
-    const [r,g,b] = hexToRgb(color);
+    const [r, g, b] = hexToRgb(color);
     document.documentElement.style.setProperty('--accent-color-rgba-15', `rgba(${r}, ${g}, ${b}, 0.15)`);
     document.documentElement.style.setProperty('--accent-color-rgba-20', `rgba(${r}, ${g}, ${b}, 0.2)`);
     document.documentElement.style.setProperty('--accent-color-rgba-30', `rgba(${r}, ${g}, ${b}, 0.3)`);
-  document.documentElement.style.setProperty('--accent-color-rgba-18', `rgba(${r}, ${g}, ${b}, 0.18)`);
-  document.documentElement.style.setProperty('--accent-color-rgba-10', `rgba(${r}, ${g}, ${b}, 0.10)`);
-  document.documentElement.style.setProperty('--accent-color-rgba-12', `rgba(${r}, ${g}, ${b}, 0.12)`);
+    document.documentElement.style.setProperty('--accent-color-rgba-18', `rgba(${r}, ${g}, ${b}, 0.18)`);
+    document.documentElement.style.setProperty('--accent-color-rgba-10', `rgba(${r}, ${g}, ${b}, 0.10)`);
+    document.documentElement.style.setProperty('--accent-color-rgba-12', `rgba(${r}, ${g}, ${b}, 0.12)`);
 
     if (options.persist !== false) localStorage.setItem('accentColor', color);
     // If sync option enabled, apply accent color to all folder icons
@@ -6442,7 +6441,7 @@ class CapnoteApp {
           console.warn('Failed to parse folder color backup', e);
         }
         // Remove backup after restore
-        try { localStorage.removeItem('folderColorsBackup'); } catch (e) {}
+        try { localStorage.removeItem('folderColorsBackup'); } catch (e) { }
       }
     }
 
@@ -6665,10 +6664,10 @@ class CapnoteApp {
     URL.revokeObjectURL(url);
     this.showNotification('Tüm veriler dışa aktarıldı', 'success');
     // Refresh reminder/notification UI and counters in case data changed
-    try { this.updateRemindersView(); } catch (e) {}
-    try { this.updateNotificationsView(); } catch (e) {}
-    try { this.updateActiveRemindersCount(); } catch (e) {}
-    try { this.updateActiveNotificationsCount(); } catch (e) {}
+    try { this.updateRemindersView(); } catch (e) { }
+    try { this.updateNotificationsView(); } catch (e) { }
+    try { this.updateActiveRemindersCount(); } catch (e) { }
+    try { this.updateActiveNotificationsCount(); } catch (e) { }
   }
 
   // New: import ALL data and offer merge/replace behaviour
@@ -6828,17 +6827,17 @@ class CapnoteApp {
         this.updateFoldersList();
         this.updateNotesList();
         this.updateFolderNotes();
-  // Refresh reminders/notifications UI and counters
-  try { this.updateRemindersView(); } catch (e) {}
-  try { this.updateNotificationsView(); } catch (e) {}
-  try { this.updateActiveRemindersCount(); } catch (e) {}
-  try { this.updateActiveNotificationsCount(); } catch (e) {}
+        // Refresh reminders/notifications UI and counters
+        try { this.updateRemindersView(); } catch (e) { }
+        try { this.updateNotificationsView(); } catch (e) { }
+        try { this.updateActiveRemindersCount(); } catch (e) { }
+        try { this.updateActiveNotificationsCount(); } catch (e) { }
 
-  this.updateStats();
+        this.updateStats();
 
-  this.showNotification('Veriler başarıyla içe aktarıldı', 'success');
-  this.settingsModal.classList.remove('show');
-  this.settingsModal.classList.add('hidden');
+        this.showNotification('Veriler başarıyla içe aktarıldı', 'success');
+        this.settingsModal.classList.remove('show');
+        this.settingsModal.classList.add('hidden');
       } catch (err) {
         console.error('Import all data error', err);
         this.showNotification('Veriler içe aktarılırken hata oluştu: ' + (err.message || err), 'error');
@@ -6863,11 +6862,11 @@ class CapnoteApp {
       // header
       const header = document.createElement('div');
       header.className = 'modal-header';
-  const titleWrap = document.createElement('div');
-  titleWrap.className = 'modal-title';
-  const h3 = document.createElement('h3');
-  h3.textContent = 'İçe Aktarma Seçenekleri';
-  titleWrap.appendChild(h3);
+      const titleWrap = document.createElement('div');
+      titleWrap.className = 'modal-title';
+      const h3 = document.createElement('h3');
+      h3.textContent = 'İçe Aktarma Seçenekleri';
+      titleWrap.appendChild(h3);
       header.appendChild(titleWrap);
 
       const closeBtn = document.createElement('button');
@@ -6882,7 +6881,7 @@ class CapnoteApp {
 
       const form = document.createElement('div');
       form.className = 'form-block';
-      const types = ['notes','folders','reminders','notifications','settings'];
+      const types = ['notes', 'folders', 'reminders', 'notifications', 'settings'];
       const inputs = {};
       types.forEach((t) => {
         if (!available[t]) return;
@@ -6896,7 +6895,7 @@ class CapnoteApp {
         inputs[t] = cb;
         const lbl = document.createElement('label');
         lbl.setAttribute('for', cb.id);
-        lbl.textContent = ({notes:'Notlar', folders:'Klasörler', reminders:'Hatırlatmalar', notifications:'Bildirimler', settings:'Ayarlar'})[t] || t;
+        lbl.textContent = ({ notes: 'Notlar', folders: 'Klasörler', reminders: 'Hatırlatmalar', notifications: 'Bildirimler', settings: 'Ayarlar' })[t] || t;
         row.appendChild(cb);
         row.appendChild(lbl);
         form.appendChild(row);
@@ -6935,7 +6934,7 @@ class CapnoteApp {
       modal.appendChild(content);
       document.body.appendChild(modal);
 
-      const cleanup = () => { try { document.body.removeChild(modal); } catch (e) {} };
+      const cleanup = () => { try { document.body.removeChild(modal); } catch (e) { } };
 
       closeBtn.addEventListener('click', () => { cleanup(); resolve(null); });
       cancelBtn.addEventListener('click', () => { cleanup(); resolve(null); });
@@ -7014,7 +7013,7 @@ class CapnoteApp {
           // make sure CSS variables match the imported accent
           this.setAccentColor(accentToUse, { persist: false });
           // persist the accent in storage so applyFolderAccentSync picks it up
-          try { localStorage.setItem('accentColor', String(accentToUse)); } catch (e) {}
+          try { localStorage.setItem('accentColor', String(accentToUse)); } catch (e) { }
         }
 
 
@@ -7467,7 +7466,7 @@ class CapnoteApp {
         // For folder drag, show only the thin insertion line (insert-before/after) when cursor is near
         // the top or bottom edge of the whole folder container. Do not show insertion when hovering over notes.
         folderHeader.classList.remove('drag-over');
-          if (nearTop) {
+        if (nearTop) {
           folderHeader.classList.add('insert-before');
           folderHeader.classList.remove('insert-after');
         } else if (nearBottom) {
@@ -7567,7 +7566,7 @@ class CapnoteApp {
     }
 
     const title = note.title || 'Başlıksız Not';
-    const truncatedTitle = title.length > 15 ? title.substring(0, 15) + '...' : title;
+    const truncatedTitle = title.length > 30 ? title.substring(0, 30) + '...' : title;
 
     div.innerHTML = `
             <i class="fas fa-file-alt nav-icon"></i>
@@ -7616,7 +7615,7 @@ class CapnoteApp {
       moreOptionsBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isHidden = optionsMenu.classList.contains('hidden');
-        
+
         // Close all other menus
         document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
           menu.classList.add('hidden');
@@ -7631,14 +7630,14 @@ class CapnoteApp {
           if (optionsMenu.parentNode !== document.body) {
             document.body.appendChild(optionsMenu);
           }
-          
+
           // Calculate position for fixed menu
           const rect = moreOptionsBtn.getBoundingClientRect();
           optionsMenu.style.top = `${rect.bottom + 5}px`;
           optionsMenu.style.left = 'auto';
           optionsMenu.style.right = `${window.innerWidth - rect.right}px`;
           optionsMenu.style.display = 'flex';
-          
+
           optionsMenu.classList.remove('hidden');
           optionsContainer.classList.add('menu-open');
         }
@@ -7684,7 +7683,7 @@ class CapnoteApp {
     // Hover title truncation behavior
     const titleElement = div.querySelector('.note-item-title');
     const originalTitle = title;
-    const hoverTruncated = title.length > 6 ? title.substring(0, 6) + '...' : title;
+    const hoverTruncated = title.length > 12 ? title.substring(0, 12) + '...' : title;
 
     div.addEventListener('mouseenter', () => {
       if (titleElement) titleElement.textContent = hoverTruncated;
@@ -7803,7 +7802,7 @@ class CapnoteApp {
     } else {
       this.updateNotesList();
     }
-  // Keep the current filter selected after toggling metadata
+    // Keep the current filter selected after toggling metadata
 
     const message = note.isFavorite ? window.i18n.t('messages.addedToFavorites') : window.i18n.t('messages.removedFromFavorites');
     this.showNotification(message, 'success');
@@ -8000,8 +7999,8 @@ class CapnoteApp {
     const folder = this.folders.find((f) => f.id == this.selectedFolderId);
     if (!folder) return;
 
-  // Count notes that truly belong to this folder. Treat falsy or 'default' folderIds as folderless.
-  const notesInFolder = this.notes.filter((note) => note.folderId && String(note.folderId) === String(this.selectedFolderId));
+    // Count notes that truly belong to this folder. Treat falsy or 'default' folderIds as folderless.
+    const notesInFolder = this.notes.filter((note) => note.folderId && String(note.folderId) === String(this.selectedFolderId));
     const noteCount = notesInFolder.length;
 
     const message =
@@ -8015,12 +8014,12 @@ class CapnoteApp {
     const folderIdToDelete = this.selectedFolderId;
 
     this.confirmCallback = () => {
-  // Delete all notes that truly belong to the folder (ignore folderless notes)
-  const notesToRemove = this.notes.filter((note) => note.folderId && String(note.folderId) === String(folderIdToDelete)).map(n => String(n.id));
-  const removedSet = new Set(notesToRemove);
+      // Delete all notes that truly belong to the folder (ignore folderless notes)
+      const notesToRemove = this.notes.filter((note) => note.folderId && String(note.folderId) === String(folderIdToDelete)).map(n => String(n.id));
+      const removedSet = new Set(notesToRemove);
 
-  // Keep notes that are NOT in the selected folder (preserve folderless notes and other folders)
-  this.notes = this.notes.filter((note) => !(note.folderId && String(note.folderId) === String(folderIdToDelete)));
+      // Keep notes that are NOT in the selected folder (preserve folderless notes and other folders)
+      this.notes = this.notes.filter((note) => !(note.folderId && String(note.folderId) === String(folderIdToDelete)));
 
       // Delete the folder
       this.folders = this.folders.filter((f) => f.id != folderIdToDelete);
@@ -8051,8 +8050,8 @@ class CapnoteApp {
       // Save and update
       this.saveNotes();
       this.saveFolders();
-  // Ensure stats updated after deleting single folder
-  try { this.updateStats(); } catch (e) {}
+      // Ensure stats updated after deleting single folder
+      try { this.updateStats(); } catch (e) { }
       this.updateFoldersList();
       this.updateStats();
       if (this.currentFilter === 'favorites') this.updateNotesList();
@@ -8063,8 +8062,8 @@ class CapnoteApp {
         this.showWelcome();
       }
 
-      try { this.updateActiveRemindersCount(); } catch (e) {}
-      try { this.updateActiveNotificationsCount(); } catch (e) {}
+      try { this.updateActiveRemindersCount(); } catch (e) { }
+      try { this.updateActiveNotificationsCount(); } catch (e) { }
 
       this.showNotification(`"${folder.name}" klasörü ve içindeki notlar silindi`, 'success');
     };
@@ -8103,7 +8102,7 @@ class CapnoteApp {
     // Clean up the dataset to avoid stale ids
     try {
       if (this.folderColorPicker) delete this.folderColorPicker.dataset.folderId;
-    } catch (e) {}
+    } catch (e) { }
   }
 
   updateFolderColorInDOM(folderId, color) {
@@ -8137,36 +8136,36 @@ class CapnoteApp {
     if (this.currentNote) {
       // Update editor counts
       this.updateCount();
-      
+
       // Update current date display
       this.updateCurrentDate();
-      
+
       // Update note reminders text if visible
       if (this.noteRemindersList) {
-        const noteReminders = this.reminders.filter(r => 
-          r.noteId === this.currentNote.id && 
-          !r.dismissed && 
+        const noteReminders = this.reminders.filter(r =>
+          r.noteId === this.currentNote.id &&
+          !r.dismissed &&
           new Date(r.datetime) > new Date()
         );
-        
+
         if (noteReminders.length === 0) {
           this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
         }
       }
-      
+
       // Update history modal if open
       if (this.historyModal && !this.historyModal.classList.contains('hidden')) {
         this.showHistory();
       }
     }
-    
+
     // Update viewer stats if a note is being viewed
     const viewerActive = document.querySelector('.viewer.active');
     if (viewerActive && this.viewingNote) {
       const counts = this.countWordsAndCharsFromHtml(this.viewingNote.content || '');
       if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
       if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
-      
+
       const WPM = 200;
       if (!counts.words) {
         this.readingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
@@ -8179,12 +8178,12 @@ class CapnoteApp {
           this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
         }
       }
-      
+
       // Update viewer dates
       const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
       const createdDate = new Date(this.viewingNote.createdAt);
       const updatedDate = new Date(this.viewingNote.updatedAt);
-      
+
       if (this.viewerDate) {
         this.viewerDate.textContent = createdDate.toLocaleDateString(locale, {
           weekday: 'long',
@@ -8195,7 +8194,7 @@ class CapnoteApp {
           minute: '2-digit',
         });
       }
-      
+
       if (this.lastModified) {
         this.lastModified.textContent = updatedDate.toLocaleString(locale, {
           year: 'numeric',
