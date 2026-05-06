@@ -379,16 +379,27 @@ class CapnoteApp {
   }
 
   setupEventListeners() {
-    // Close note option menus when clicking outside
+    // Close note option menus when clicking outside or scrolling
+    const closeMenus = () => {
+      document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
+        menu.classList.add('hidden');
+        menu.style.display = 'none';
+      });
+      document.querySelectorAll('.note-options-container.menu-open').forEach(container => {
+        container.classList.remove('menu-open');
+      });
+    };
+
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.note-options-container')) {
-        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
-          menu.classList.add('hidden');
-          const container = menu.closest('.note-options-container');
-          if (container) container.classList.remove('menu-open');
-        });
+        closeMenus();
       }
     });
+
+    // Close menus on scroll to prevent floating menus from staying in place
+    // document.addEventListener('scroll', (e) => {
+    //   closeMenus();
+    // }, true);
 
     // Titlebar controls
     document.getElementById('minimizeBtn')?.addEventListener('click', () => {
@@ -4572,7 +4583,7 @@ class CapnoteApp {
                 <button class="more-options-btn" title="Seçenekler">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
-                <div class="note-options-menu hidden">
+                <div class="note-options-menu hidden" data-note-id="${note.id}">
                     <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
                             data-note-id="${note.id}">
                         <i class="fas fa-heart"></i>
@@ -4613,12 +4624,29 @@ class CapnoteApp {
       moreOptionsBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isHidden = optionsMenu.classList.contains('hidden');
+        
+        // Close all other menus
         document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
           menu.classList.add('hidden');
-          const container = menu.closest('.note-options-container');
-          if (container) container.classList.remove('menu-open');
+          menu.style.display = 'none';
         });
+        document.querySelectorAll('.note-options-container.menu-open').forEach(container => {
+          container.classList.remove('menu-open');
+        });
+
         if (isHidden) {
+          // Move to body to prevent clipping/stacking issues
+          if (optionsMenu.parentNode !== document.body) {
+            document.body.appendChild(optionsMenu);
+          }
+          
+          // Calculate position for fixed menu
+          const rect = moreOptionsBtn.getBoundingClientRect();
+          optionsMenu.style.top = `${rect.bottom + 5}px`;
+          optionsMenu.style.left = 'auto';
+          optionsMenu.style.right = `${window.innerWidth - rect.right}px`;
+          optionsMenu.style.display = 'flex';
+          
           optionsMenu.classList.remove('hidden');
           optionsContainer.classList.add('menu-open');
         }
@@ -7548,7 +7576,7 @@ class CapnoteApp {
                 <button class="more-options-btn" title="Seçenekler">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
-                <div class="note-options-menu hidden">
+                <div class="note-options-menu hidden" data-note-id="${note.id}">
                     <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
                             data-note-id="${note.id}">
                         <i class="fas fa-heart"></i>
@@ -7588,12 +7616,29 @@ class CapnoteApp {
       moreOptionsBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isHidden = optionsMenu.classList.contains('hidden');
+        
+        // Close all other menus
         document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
           menu.classList.add('hidden');
-          const container = menu.closest('.note-options-container');
-          if (container) container.classList.remove('menu-open');
+          menu.style.display = 'none';
         });
+        document.querySelectorAll('.note-options-container.menu-open').forEach(container => {
+          container.classList.remove('menu-open');
+        });
+
         if (isHidden) {
+          // Move to body to prevent clipping/stacking issues
+          if (optionsMenu.parentNode !== document.body) {
+            document.body.appendChild(optionsMenu);
+          }
+          
+          // Calculate position for fixed menu
+          const rect = moreOptionsBtn.getBoundingClientRect();
+          optionsMenu.style.top = `${rect.bottom + 5}px`;
+          optionsMenu.style.left = 'auto';
+          optionsMenu.style.right = `${window.innerWidth - rect.right}px`;
+          optionsMenu.style.display = 'flex';
+          
           optionsMenu.classList.remove('hidden');
           optionsContainer.classList.add('menu-open');
         }

@@ -3113,8 +3113,8 @@ input[type="color"].color-picker::-moz-color-swatch {
 .note-options-container {
   position: absolute;
   right: 8px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   z-index: 10;
@@ -3126,6 +3126,7 @@ input[type="color"].color-picker::-moz-color-swatch {
 .folder-note-item:hover .note-options-container,
 .note-options-container.menu-open {
   opacity: 1;
+  z-index: 999999;
 }
 
 .more-options-btn {
@@ -3146,19 +3147,18 @@ input[type="color"].color-picker::-moz-color-swatch {
 }
 
 .note-options-menu {
-  position: absolute;
-  right: 0;
-  top: 100%;
-  margin-top: 4px;
+  position: fixed;
   display: flex;
   flex-direction: column;
   gap: 2px;
   background: var(--bg-primary);
   border-radius: var(--radius-md);
   padding: 6px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  border: 1px solid rgba(0,0,0,0.06);
-  z-index: 20;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border: 1px solid rgba(0,0,0,0.08);
+  z-index: 999999;
+  visibility: visible !important;
+  opacity: 1 !important;
   min-width: 160px;
 }
 
