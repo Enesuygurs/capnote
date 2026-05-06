@@ -1,4 +1,4 @@
-﻿/* ============================================   Capnote - Modern Stil   ============================================ */
+/* ============================================   Capnote - Modern Stil   ============================================ */
 * {
   margin: 0;
   padding: 0;
@@ -1512,7 +1512,6 @@ div#newNoteNav {
   position: relative;
   background: transparent;
   border: none;
-  overflow: hidden;
 }
 
 .note-item:hover {
@@ -1603,20 +1602,7 @@ div#newNoteNav {
   margin-left: auto;
 }
 
-.note-item-actions {
-  position: absolute;
-  right: 0;
-  margin-right: 4px; 
-  display: flex;
-  gap: 4px;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: 10;
-}
 
-.note-item:hover .note-item-actions {
-  opacity: 1;
-}
 
 .note-item:hover .nav-icon {
   opacity: 0.8;
@@ -3124,16 +3110,118 @@ input[type="color"].color-picker::-moz-color-swatch {
   user-select: none;
 }
 
-.note-item-actions {
+.note-options-container {
   position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
-  gap: 4px;
+  align-items: center;
+  z-index: 10;
   opacity: 0;
-  transition: var(--transition-fast);
+  transition: opacity var(--transition-fast);
 }
 
-.note-item:hover .note-item-actions {
+.note-item:hover .note-options-container,
+.folder-note-item:hover .note-options-container,
+.note-options-container.menu-open {
   opacity: 1;
+}
+
+.more-options-btn {
+  background: transparent !important;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.more-options-btn:hover {
+  color: var(--text-primary);
+}
+
+.note-options-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--bg-primary);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.06);
+  z-index: 20;
+  min-width: 160px;
+}
+
+[data-theme="dark"] .note-options-menu {
+  border: 1px solid rgba(255,255,255,0.05);
+  background: var(--dropdown-menu-bg);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+
+.note-options-menu.hidden {
+  display: none !important;
+}
+
+.note-action-menu-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: var(--transition-fast);
+  text-align: left;
+}
+
+.note-action-menu-btn i {
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+
+.note-action-menu-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .note-action-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.note-action-menu-btn.pinned {
+  color: var(--accent-color);
+}
+.note-action-menu-btn.pinned:hover {
+  background: var(--accent-color-rgba-10);
+}
+
+.note-action-menu-btn.locked {
+  color: var(--error-color);
+}
+.note-action-menu-btn.locked:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.note-action-menu-btn.favorited {
+  color: #e91e63;
+}
+.note-action-menu-btn.favorited:hover {
+  background: rgba(233, 30, 99, 0.1);
 }
 
 .note-action-btn {
@@ -5256,7 +5344,6 @@ body.dark .default-folder.insert-after::after {
   font-size: 13px; 
   transition: var(--transition-fast);
   position: relative;
-  overflow: hidden;
 }
 
 .folder-note-item:hover {

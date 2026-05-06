@@ -379,6 +379,17 @@ class CapnoteApp {
   }
 
   setupEventListeners() {
+    // Close note option menus when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.note-options-container')) {
+        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
+          menu.classList.add('hidden');
+          const container = menu.closest('.note-options-container');
+          if (container) container.classList.remove('menu-open');
+        });
+      }
+    });
+
     // Titlebar controls
     document.getElementById('minimizeBtn')?.addEventListener('click', () => {
       window.electronAPI.minimize();
@@ -4557,37 +4568,62 @@ class CapnoteApp {
     div.innerHTML = `
             <i class="fas fa-file-alt nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(note.title)}</span>
-            <div class="note-item-actions">
-                <button class="note-action-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
-                        data-note-id="${note.id}"
-                        title="${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}">
-                    <i class="fas fa-heart"></i>
+            <div class="note-options-container">
+                <button class="more-options-btn" title="Seçenekler">
+                    <i class="fas fa-ellipsis-h"></i>
                 </button>
-                <button class="note-action-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
-                        data-note-id="${note.id}"
-                        title="${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}">
-                    <i class="fas fa-thumbtack"></i>
-                </button>
-                <button class="note-action-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
-                        data-note-id="${note.id}"
-                        title="${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}">
-                    <i class="fas fa-lock"></i>
-                </button>
-                <button class="note-action-btn delete-btn" 
-                        data-note-id="${note.id}"
-                        title="${window.i18n.t('messages.deleteNote')}">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <div class="note-options-menu hidden">
+                    <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
+                            data-note-id="${note.id}">
+                        <i class="fas fa-heart"></i>
+                        <span>${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}</span>
+                    </button>
+                    <button class="note-action-menu-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
+                            data-note-id="${note.id}">
+                        <i class="fas fa-thumbtack"></i>
+                        <span>${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}</span>
+                    </button>
+                    <button class="note-action-menu-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
+                            data-note-id="${note.id}">
+                        <i class="fas fa-lock"></i>
+                        <span>${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}</span>
+                    </button>
+                    <button class="note-action-menu-btn delete-btn" 
+                            data-note-id="${note.id}">
+                        <i class="fas fa-trash"></i>
+                        <span>${window.i18n.t('messages.deleteNote')}</span>
+                    </button>
+                </div>
             </div>
         `;
 
     // Add event listener for note selection (not for action buttons)
     div.addEventListener('click', (e) => {
-      // Only select note if it's not an action button
-      if (!e.target.closest('.note-action-btn')) {
+      // Only select note if it's not an action button or options container
+      if (!e.target.closest('.note-options-container')) {
         this.selectNote(note);
       }
     });
+
+    // Add event listener for more options button
+    const moreOptionsBtn = div.querySelector('.more-options-btn');
+    const optionsMenu = div.querySelector('.note-options-menu');
+    const optionsContainer = div.querySelector('.note-options-container');
+    if (moreOptionsBtn && optionsMenu) {
+      moreOptionsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = optionsMenu.classList.contains('hidden');
+        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
+          menu.classList.add('hidden');
+          const container = menu.closest('.note-options-container');
+          if (container) container.classList.remove('menu-open');
+        });
+        if (isHidden) {
+          optionsMenu.classList.remove('hidden');
+          optionsContainer.classList.add('menu-open');
+        }
+      });
+    }
 
     // Add action button event listeners
     const favoriteBtn = div.querySelector('.favorite-btn');
@@ -7508,36 +7544,61 @@ class CapnoteApp {
     div.innerHTML = `
             <i class="fas fa-file-alt nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(truncatedTitle)}</span>
-            <div class="note-item-actions">
-                <button class="note-action-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
-                        data-note-id="${note.id}"
-                        title="${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}">
-                    <i class="fas fa-heart"></i>
+            <div class="note-options-container">
+                <button class="more-options-btn" title="Seçenekler">
+                    <i class="fas fa-ellipsis-h"></i>
                 </button>
-                <button class="note-action-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
-                        data-note-id="${note.id}"
-                        title="${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}">
-                    <i class="fas fa-thumbtack"></i>
-                </button>
-                <button class="note-action-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
-                        data-note-id="${note.id}"
-                        title="${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}">
-                    <i class="fas fa-lock"></i>
-                </button>
-                <button class="note-action-btn delete-btn" 
-                        data-note-id="${note.id}"
-                        title="${window.i18n.t('messages.deleteNote')}">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <div class="note-options-menu hidden">
+                    <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
+                            data-note-id="${note.id}">
+                        <i class="fas fa-heart"></i>
+                        <span>${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}</span>
+                    </button>
+                    <button class="note-action-menu-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
+                            data-note-id="${note.id}">
+                        <i class="fas fa-thumbtack"></i>
+                        <span>${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}</span>
+                    </button>
+                    <button class="note-action-menu-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
+                            data-note-id="${note.id}">
+                        <i class="fas fa-lock"></i>
+                        <span>${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}</span>
+                    </button>
+                    <button class="note-action-menu-btn delete-btn" 
+                            data-note-id="${note.id}">
+                        <i class="fas fa-trash"></i>
+                        <span>${window.i18n.t('messages.deleteNote')}</span>
+                    </button>
+                </div>
             </div>
         `;
 
     // Click selects note unless an action button was clicked
     div.addEventListener('click', (e) => {
-      if (!e.target.closest('.note-action-btn')) {
+      if (!e.target.closest('.note-options-container')) {
         this.selectNote(note);
       }
     });
+
+    // Add event listener for more options button
+    const moreOptionsBtn = div.querySelector('.more-options-btn');
+    const optionsMenu = div.querySelector('.note-options-menu');
+    const optionsContainer = div.querySelector('.note-options-container');
+    if (moreOptionsBtn && optionsMenu) {
+      moreOptionsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = optionsMenu.classList.contains('hidden');
+        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
+          menu.classList.add('hidden');
+          const container = menu.closest('.note-options-container');
+          if (container) container.classList.remove('menu-open');
+        });
+        if (isHidden) {
+          optionsMenu.classList.remove('hidden');
+          optionsContainer.classList.add('menu-open');
+        }
+      });
+    }
 
     // Wire action buttons
     const favoriteBtn = div.querySelector('.favorite-btn');
