@@ -2168,10 +2168,9 @@ class CapnoteApp {
           this.currentNote.content = content;
           this.currentNote.updatedAt = new Date().toISOString();
 
-          // Update in notes array
-          const existingIndex = this.notes.findIndex((note) => note.id === this.currentNote.id);
-          if (existingIndex >= 0) {
-            this.notes[existingIndex] = { ...this.currentNote };
+          // Update in notes array (only already-saved notes)
+          if (this.notes.some((note) => note.id === this.currentNote.id)) {
+            this.upsertCurrentNote();
           }
 
           // Save to storage
@@ -3389,6 +3388,20 @@ class CapnoteApp {
     return { words, chars, text };
   }
 
+  // Store currentNote in the notes array while keeping one shared object,
+  // so later edits (favorite, pin, lock) always reach what gets persisted
+  upsertCurrentNote() {
+    const index = this.notes.findIndex((note) => note.id === this.currentNote.id);
+    if (index === -1) {
+      this.notes.unshift(this.currentNote);
+      return;
+    }
+    if (this.notes[index] !== this.currentNote) {
+      this.notes[index] = Object.assign(this.notes[index], this.currentNote);
+      this.currentNote = this.notes[index];
+    }
+  }
+
   saveNote(silent = false) {
     if (!this.currentNote) return;
 
@@ -3428,12 +3441,7 @@ class CapnoteApp {
     this.currentNote.formatting = this.getEditorFormatting();
 
     // Var olan notu güncelle veya yeni not ekle
-    const existingIndex = this.notes.findIndex((note) => note.id === this.currentNote.id);
-    if (existingIndex >= 0) {
-      this.notes[existingIndex] = { ...this.currentNote };
-    } else {
-      this.notes.unshift(this.currentNote);
-    }
+    this.upsertCurrentNote();
 
     this.saveNotes();
     this.markAsSaved(); // Mark as saved to disable save button
