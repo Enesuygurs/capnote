@@ -14,6 +14,8 @@ class CapnoteApp {
     this.hasChanges = false;
     this.originalNoteState = null;
     this.isResizing = false; // Flag to prevent re-renders during resize
+    // Ids of locked notes unlocked for this session only (never persisted)
+    this.unlockedNoteIds = new Set();
 
     this.defaultFormatting = {
       fontFamily: 'Inter',
@@ -2242,6 +2244,8 @@ class CapnoteApp {
         if (note.isLocked === undefined) {
           note.isLocked = false;
         }
+        // Older versions persisted the temporary unlock flag; drop it
+        delete note.isUnlocked;
         if (note.folderId === undefined) {
           note.folderId = null;
         }
@@ -3478,8 +3482,13 @@ class CapnoteApp {
     this.updateStats();
   }
 
-  editCurrentNote() {
+  async editCurrentNote() {
     if (!this.currentNote) return;
+    // Editing a locked note requires the password, same as viewing it
+    if (this.isNoteLockedForView(this.currentNote)) {
+      const unlocked = await this.unlockNoteForViewing(this.currentNote);
+      if (!unlocked) return;
+    }
 
     this.originalNoteState = {
       title: this.currentNote.title,
@@ -3985,7 +3994,7 @@ class CapnoteApp {
   }
 
   duplicateNote() {
-    if (!this.currentNote) return;
+    if (!this.currentNote || this.isNoteLockedForView(this.currentNote)) return;
 
     const duplicate = {
       ...this.currentNote,
@@ -3997,6 +4006,7 @@ class CapnoteApp {
       isLocked: false, // Kopyalanan not kilitli olmasın
       isFavorite: false, // Kopyalanan not favorilerde olmasın
     };
+    delete duplicate.password;
 
     this.notes.unshift(duplicate);
     this.saveNotes();
@@ -4057,7 +4067,7 @@ class CapnoteApp {
     this.autoLockCurrentNote();
 
     // Check if note is locked
-    if (note.isLocked && !note.isUnlocked) {
+    if (this.isNoteLockedForView(note)) {
       this.unlockNoteForViewing(note);
       return;
     }
@@ -4085,7 +4095,7 @@ class CapnoteApp {
     this.viewerTitle.textContent = note.title;
 
     // Check if note is locked and not temporarily unlocked
-    if (note.isLocked && !note.isUnlocked) {
+    if (this.isNoteLockedForView(note)) {
       this.viewerText.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: var(--text-muted);">
                     <i class="fas fa-lock" style="font-size: 48px; margin-bottom: 20px;"></i>
@@ -4179,7 +4189,7 @@ class CapnoteApp {
   }
 
   openNoteHistory() {
-    if (!this.currentNote) return;
+    if (!this.currentNote || this.isNoteLockedForView(this.currentNote)) return;
     const hist = this.currentNote.history || [];
     this.historyBody.innerHTML = '';
 
@@ -5230,11 +5240,12 @@ class CapnoteApp {
 
   // Export methods
   showExportModal() {
+    if (!this.currentNote || this.isNoteLockedForView(this.currentNote)) return;
     this.showModal(this.exportModal);
   }
 
   exportNote(type) {
-    if (!this.currentNote) return;
+    if (!this.currentNote || this.isNoteLockedForView(this.currentNote)) return;
 
     let content, filename, mimeType;
 
@@ -5875,64 +5886,25 @@ class CapnoteApp {
 
   // ...existing code...
 
+  isNoteLockedForView(note) {
+    return !!(note && note.isLocked && !this.unlockedNoteIds.has(String(note.id)));
+  }
+
   /**
-   * Geçerli notu otomatik kilitler
+   * Re-locks the current note when leaving it if it was unlocked for this session
    */
   autoLockCurrentNote() {
-    // Auto-lock the current note if it's locked and was temporarily unlocked
-    if (this.currentNote && this.currentNote.isLocked && this.currentNote.isUnlocked) {
-      this.currentNote.isUnlocked = false;
+    if (this.currentNote && this.currentNote.isLocked && this.unlockedNoteIds.has(String(this.currentNote.id))) {
+      this.unlockedNoteIds.delete(String(this.currentNote.id));
       this.updateNotesList();
-    }
-  }
-
-  // ...existing code...
-
-  /**
-   * Notu kilitler
-   * @param {Object} note - Kilitlenecek not
-   */
-  async lockNote(note) {
-    const password = await this.showPasswordModal(window.i18n.t('messages.setPasswordForNote'));
-    if (password && password.trim()) {
-      // Locking note (debug logs removed)
-      note.isLocked = true;
-      note.password = password.trim();
-
-      // Clean up temporary unlock flag if exists
-      delete note.isUnlocked;
-
-      this.saveNotes();
-      this.updateNotesList();
-      this.showNotification(window.i18n.t('messages.noteLocked'), 'success');
-      // Note lock result (debug logs removed)
-    }
-  }
-
-  async unlockNote(note) {
-    const password = await this.showPasswordModal(window.i18n.t('messages.enterPasswordToUnlock'));
-    if (password === note.password) {
-      // Permanently unlock
-      note.isLocked = false;
-      delete note.password;
-      delete note.isUnlocked; // Clean up temporary unlock flag
-      this.saveNotes();
-      this.updateNotesList();
-      if (this.currentNote && this.currentNote.id === note.id) {
-        this.displayNote(note);
-      }
-      this.showNotification(window.i18n.t('messages.noteUnlocked'), 'success');
-    } else if (password !== null) {
-      // null means cancelled
-      this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
     }
   }
 
   async unlockNoteForViewing(note) {
     const password = await this.showPasswordModal(window.i18n.t('messages.noteIsLocked'));
     if (password === note.password) {
-      // Temporarily unlock the note for viewing
-      note.isUnlocked = true;
+      // Temporarily unlock the note for viewing (session only)
+      this.unlockedNoteIds.add(String(note.id));
 
       // Continue with note selection
       this.currentNote = note;
@@ -5951,10 +5923,13 @@ class CapnoteApp {
       this.setActiveNoteInList(this.currentNote.id);
 
       this.showNotification(window.i18n.t('messages.noteTemporarilyUnlocked'), 'info');
-    } else if (password !== null) {
+      return true;
+    }
+    if (password !== null) {
       // null means cancelled
       this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
     }
+    return false;
   }
 
   deleteNoteById(noteId) {
@@ -7957,10 +7932,15 @@ class CapnoteApp {
     if (note.isLocked) {
       // Unlock note - ask for password
       const password = await this.showPasswordModal(window.i18n.t('messages.enterPasswordToOpen'));
-      if (!password) return;
+      if (password === null) return;
+      if (password !== note.password) {
+        this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
+        return;
+      }
 
-      // For now, any password unlocks (you can add proper password validation)
       note.isLocked = false;
+      delete note.password;
+      this.unlockedNoteIds.delete(String(note.id));
       this.showNotification(window.i18n.t('messages.noteUnlocked'), 'success');
     } else {
       // Lock note - ask for password
@@ -7968,8 +7948,14 @@ class CapnoteApp {
       if (!password) return;
 
       note.isLocked = true;
-      note.password = password; // In real app, this should be hashed
+      note.password = password;
+      this.unlockedNoteIds.delete(String(note.id));
       this.showNotification(window.i18n.t('messages.noteLocked'), 'success');
+    }
+
+    // Refresh the viewer if the toggled note is on screen
+    if (this.currentNote && this.currentNote.id == note.id && this.isViewerOpen()) {
+      this.displayNote(note);
     }
 
     note.updatedAt = new Date().toISOString();
