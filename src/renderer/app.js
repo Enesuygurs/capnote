@@ -1912,53 +1912,22 @@ class CapnoteApp {
 
   async clearAllFolders() {
     try {
-      // Delete all notes that belong to any real folder (treat 'default' as folderless)
-      // Some notes use folderId === 'default' to mean no folder; only consider notes
-      // that have a truthy folderId and are not 'default' as belonging to a folder.
-      const notesInFolders = (this.notes || []).filter(n => n.folderId && n.folderId !== 'default');
-      const removedNoteIdSet = new Set(notesInFolders.map(n => String(n.id)));
-
-      // Keep only notes that are folderless (either falsy folderId or 'default')
-      this.notes = (this.notes || []).filter(n => !n.folderId || n.folderId === 'default');
+      // Removing folders keeps the notes: they simply become folderless
+      const now = new Date().toISOString();
+      (this.notes || []).forEach((n) => {
+        if (n.folderId && n.folderId !== 'default') {
+          n.folderId = null;
+          n.updatedAt = now;
+        }
+      });
       this.folders = [];
 
-      // Persist notes/folders
       await this.saveNotes();
       await this.saveFolders();
 
-      // Remove reminders and notifications that reference removed notes
-      try {
-        if (Array.isArray(this.reminders) && this.reminders.length > 0) {
-          this.reminders = this.reminders.filter(r => {
-            if (!r.noteId && r.noteId !== 0) return true;
-            return !removedNoteIdSet.has(String(r.noteId));
-          });
-          await this.saveReminders();
-          this.updateRemindersView();
-        }
-      } catch (e) {
-        console.warn('Failed to cleanup reminders after clearing folders', e);
-      }
-
-      try {
-        if (Array.isArray(this.notifications) && this.notifications.length > 0) {
-          this.notifications = this.notifications.filter(n => {
-            if (!n.noteId && n.noteId !== 0) return true;
-            return !removedNoteIdSet.has(String(n.noteId));
-          });
-          await this.saveNotifications();
-          this.updateNotificationsView();
-        }
-      } catch (e) {
-        console.warn('Failed to cleanup notifications after clearing folders', e);
-      }
-
       this.updateNotesList();
       this.updateFoldersList();
-      try { this.updateActiveRemindersCount(); } catch (e) { }
-      try { this.updateActiveNotificationsCount(); } catch (e) { }
-      // Ensure stats are refreshed (total notes / words / active days)
-      try { this.updateStats(); } catch (e) { }
+      this.updateStats();
       this.showNotification(window.i18n.t('messages.allFoldersDeleted'), 'success');
     } catch (err) {
       console.error('Tüm klasörler silinirken hata:', err);

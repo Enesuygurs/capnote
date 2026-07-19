@@ -269,7 +269,7 @@
     "minimizeToTrayError": "Tepsi ayarı yapılamadı",
     "allNotesDeleted": "Tüm notlar silindi",
     "notesDeleteError": "Notlar silinemedi",
-    "allFoldersDeleted": "Tüm klasörler ve içindeki notlar silindi",
+    "allFoldersDeleted": "Tüm klasörler silindi, notlar korundu",
     "foldersDeleteError": "Klasörler silinemedi",
     "appReset": "Uygulama sıfırlandı",
     "resetError": "İçerik silinirken hata oluştu",
