@@ -269,7 +269,7 @@
     "minimizeToTrayError": "Failed to set tray option",
     "allNotesDeleted": "All notes deleted",
     "notesDeleteError": "Failed to delete notes",
-    "allFoldersDeleted": "All folders and their notes deleted",
+    "allFoldersDeleted": "All folders deleted, notes were kept",
     "foldersDeleteError": "Failed to delete folders",
     "appReset": "Application reset",
     "resetError": "Error occurred while deleting content",
