@@ -2094,6 +2094,14 @@ class CapnoteApp {
     this.passwordModal.classList.add('hidden');
   }
 
+  isEditorOpen() {
+    return !!this.noteEditor && !this.noteEditor.classList.contains('hidden');
+  }
+
+  isViewerOpen() {
+    return !!this.noteViewer && !this.noteViewer.classList.contains('hidden');
+  }
+
   setupKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
       if (e.ctrlKey || e.metaKey) {
@@ -2104,7 +2112,8 @@ class CapnoteApp {
             break;
           case 's':
             e.preventDefault();
-            if (this.currentNote) {
+            // Saving reads from the editor fields, so it is only valid while editing
+            if (this.currentNote && this.isEditorOpen()) {
               this.saveNote();
             }
             break;
@@ -2114,13 +2123,13 @@ class CapnoteApp {
             break;
           case 'e':
             e.preventDefault();
-            if (this.currentNote) {
+            if (this.currentNote && this.isViewerOpen()) {
               this.editCurrentNote();
             }
             break;
           case 'd':
             e.preventDefault();
-            if (this.currentNote) {
+            if (this.currentNote && this.isViewerOpen()) {
               this.duplicateNote();
             }
             break;
