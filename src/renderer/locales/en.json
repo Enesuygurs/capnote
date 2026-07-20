@@ -332,6 +332,7 @@
     "deleteNotification": "Delete",
     "completed": "Completed",
     "reminderDue": "Reminder time:",
+    "reminderMissed": "Missed reminder:",
     "reminderNotification": "⏰ Reminder:",
     "renameFolder": "Rename Folder",
     "confirmDeleteFolder": "folder will be deleted. This action cannot be undone. Do you want to continue?",
