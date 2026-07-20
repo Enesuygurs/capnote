@@ -8074,81 +8074,28 @@ class CapnoteApp {
     }
   }
 
+  // Re-render everything that builds translated text in JS (static markup is handled by i18n.js)
   updateDynamicTranslations() {
-    // Re-trigger count updates to use new translations
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateRemindersView();
+    this.updateNotificationsView();
+    this.renderTodosSections();
+    this.updateTagsDisplay();
+
     if (this.currentNote) {
-      // Update editor counts
-      this.updateCount();
-
-      // Update current date display
-      this.updateCurrentDate();
-
-      // Update note reminders text if visible
-      if (this.noteRemindersList) {
-        const noteReminders = this.reminders.filter(r =>
-          r.noteId === this.currentNote.id &&
-          !r.dismissed &&
-          new Date(r.datetime) > new Date()
-        );
-
-        if (noteReminders.length === 0) {
-          this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
-        }
+      if (this.isViewerOpen()) this.displayNote(this.currentNote);
+      if (this.isEditorOpen()) {
+        this.updateWordCount();
+        this.updateCurrentDate();
+        this.updateNoteRemindersDisplay();
       }
-
-      // Update history modal if open
-      if (this.historyModal && !this.historyModal.classList.contains('hidden')) {
-        this.showHistory();
-      }
-    }
-
-    // Update viewer stats if a note is being viewed
-    const viewerActive = document.querySelector('.viewer.active');
-    if (viewerActive && this.viewingNote) {
-      const counts = this.countWordsAndCharsFromHtml(this.viewingNote.content || '');
-      if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
-      if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
-
-      const WPM = 200;
-      if (!counts.words) {
-        this.readingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
-      } else {
-        const seconds = Math.ceil((counts.words / WPM) * 60);
-        if (seconds < 60) {
-          this.readingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
-        } else {
-          const minutes = Math.round(seconds / 60);
-          this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
-        }
-      }
-
-      // Update viewer dates
-      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
-      const createdDate = new Date(this.viewingNote.createdAt);
-      const updatedDate = new Date(this.viewingNote.updatedAt);
-
-      if (this.viewerDate) {
-        this.viewerDate.textContent = createdDate.toLocaleDateString(locale, {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
-      }
-
-      if (this.lastModified) {
-        this.lastModified.textContent = updatedDate.toLocaleString(locale, {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-        });
+      if (this.noteHistoryModal && !this.noteHistoryModal.classList.contains('hidden')) {
+        this.openNoteHistory();
       }
     }
   }
+
 }
 
 // Initialize app when DOM is loaded
