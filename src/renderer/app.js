@@ -2281,8 +2281,8 @@ class CapnoteApp {
         recurrenceDays: Array.isArray(r.recurrenceDays) ? r.recurrenceDays : (r.recurrenceDays ? r.recurrenceDays : []),
         dismissed: r.dismissed || false
       }));
-      // Filter out dismissed reminders and expired ones
-      this.reminders = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date());
+      // Drop dismissed reminders only; overdue ones are reported by checkDueReminders
+      this.reminders = this.reminders.filter(r => !r.dismissed);
       await this.saveReminders(); // Clean up storage
     } catch (error) {
       console.error('Hatırlatmalar yüklenirken hata:', error);
@@ -3081,75 +3081,84 @@ class CapnoteApp {
   }
 
   startReminderChecker() {
-    // Check every minute for due reminders
-    setInterval(() => {
-      const now = new Date();
-      let hasNotification = false;
-
-      this.reminders.forEach(reminder => {
-        if (!reminder.dismissed && new Date(reminder.datetime) <= now) {
-          // Add to notifications list and show a toast that references the notification id
-          const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
-          const nid = this.addNotification(
-            reminder.noteId,
-            reminder.noteTitle,
-            `${window.i18n.t('messages.reminderDue')} ${new Date(reminder.datetime).toLocaleString(locale)}`
-          );
-          this.showNotification(`${window.i18n.t('messages.reminderPrefix')} ${reminder.noteTitle}`, 'info', { notificationId: nid });
-
-          // Also trigger a native OS notification via the preload bridge if the user enabled it
-          try {
-            const nativePref = this.toggleNativeNotifications ? this.toggleNativeNotifications.checked : (localStorage.getItem('settings.nativeNotifications') === null ? true : (localStorage.getItem('settings.nativeNotifications') === '1' || localStorage.getItem('settings.nativeNotifications') === 'true'));
-            if (nativePref && window && window.electronAPI && typeof window.electronAPI.showNativeNotification === 'function') {
-              window.electronAPI.showNativeNotification({
-                title: `${window.i18n.t('messages.reminderNotification')} ${reminder.noteTitle}`,
-                body: `${window.i18n.t('messages.reminderDue')} ${new Date(reminder.datetime).toLocaleString(locale)}`,
-                silent: false
-              }).catch(err => console.warn('showNativeNotification rejected:', err));
-            }
-          } catch (err) {
-            // Keep app functional if native notification call fails
-            console.warn('Native notification error:', err);
-          }
-
-          // If reminder has recurrence, compute next occurrence instead of dismissing
-          if (reminder.recurrence && reminder.recurrence !== 'none') {
-            // Handle weekly recurrences with specific weekdays
-            if (reminder.recurrence === 'weekly' && Array.isArray(reminder.recurrenceDays) && reminder.recurrenceDays.length > 0) {
-              const next = this._computeNextWeeklyFromDays(reminder.datetime, reminder.recurrenceDays);
-              if (next) {
-                reminder.datetime = next.toISOString();
-              } else {
-                reminder.dismissed = true;
-              }
-            } else {
-              const next = this._computeNextRecurrence(reminder.datetime, reminder.recurrence);
-              if (next) {
-                reminder.datetime = next.toISOString();
-              } else {
-                reminder.dismissed = true;
-              }
-            }
-          } else {
-            reminder.dismissed = true;
-          }
-
-          hasNotification = true;
-        }
-      });
-
-      if (hasNotification) {
-        this.saveReminders();
-        this.updateRemindersView();
-        this.updateNoteRemindersDisplay();
-        this.updateActiveRemindersCount();
-        this.updateActiveNotificationsCount();
-      }
-    }, 60000); // Check every 60 seconds
+    // Catch up on reminders that came due while the app was closed, then check every minute
+    this.checkDueReminders();
+    setInterval(() => this.checkDueReminders(), 60000);
 
     // Also update counts on init
     this.updateActiveRemindersCount();
     this.updateActiveNotificationsCount();
+  }
+
+  checkDueReminders() {
+    const now = new Date();
+    let hasNotification = false;
+
+    this.reminders.forEach(reminder => {
+      if (reminder.dismissed || new Date(reminder.datetime) > now) return;
+
+      // Being later than a couple of check intervals means the app was not running at that time
+      const missed = now - new Date(reminder.datetime) > 2 * 60000;
+      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+      const when = new Date(reminder.datetime).toLocaleString(locale);
+      const body = `${window.i18n.t(missed ? 'messages.reminderMissed' : 'messages.reminderDue')} ${when}`;
+
+      // Add to notifications list and show a toast that references the notification id
+      const nid = this.addNotification(reminder.noteId, reminder.noteTitle, body);
+      this.showNotification(`${window.i18n.t('messages.reminderPrefix')} ${reminder.noteTitle}`, 'info', { notificationId: nid });
+
+      // Also trigger a native OS notification via the preload bridge if the user enabled it
+      try {
+        const nativePref = this.toggleNativeNotifications ? this.toggleNativeNotifications.checked : (localStorage.getItem('settings.nativeNotifications') === null ? true : (localStorage.getItem('settings.nativeNotifications') === '1' || localStorage.getItem('settings.nativeNotifications') === 'true'));
+        if (nativePref && window && window.electronAPI && typeof window.electronAPI.showNativeNotification === 'function') {
+          window.electronAPI.showNativeNotification({
+            title: `${window.i18n.t('messages.reminderNotification')} ${reminder.noteTitle}`,
+            body,
+            silent: false,
+            notificationId: nid
+          }).catch(err => console.warn('showNativeNotification rejected:', err));
+        }
+      } catch (err) {
+        // Keep app functional if native notification call fails
+        console.warn('Native notification error:', err);
+      }
+
+      this.scheduleNextOccurrence(reminder, now);
+      hasNotification = true;
+    });
+
+    if (hasNotification) {
+      this.saveReminders();
+      this.updateRemindersView();
+      this.updateNoteRemindersDisplay();
+      this.updateActiveRemindersCount();
+      this.updateActiveNotificationsCount();
+    }
+  }
+
+  // Move a fired reminder to its next occurrence after `now`, or dismiss it.
+  // Skipping past occurrences keeps a long absence from firing once per missed slot.
+  scheduleNextOccurrence(reminder, now) {
+    if (!reminder.recurrence || reminder.recurrence === 'none') {
+      reminder.dismissed = true;
+      return;
+    }
+    const weeklyDays = reminder.recurrence === 'weekly' && Array.isArray(reminder.recurrenceDays) && reminder.recurrenceDays.length > 0
+      ? reminder.recurrenceDays
+      : null;
+    let next = new Date(reminder.datetime);
+    for (let i = 0; i < 5000 && next <= now; i++) {
+      const candidate = weeklyDays
+        ? this._computeNextWeeklyFromDays(next.toISOString(), weeklyDays)
+        : this._computeNextRecurrence(next.toISOString(), reminder.recurrence);
+      if (!candidate) break;
+      next = candidate;
+    }
+    if (next <= now) {
+      reminder.dismissed = true;
+    } else {
+      reminder.datetime = next.toISOString();
+    }
   }
 
   addNotification(noteId, noteTitle, message) {
