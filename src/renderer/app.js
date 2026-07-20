@@ -2117,7 +2117,7 @@ class CapnoteApp {
   setupAutoSave() {
     let autoSaveTimer;
 
-    const triggerAutoSave = () => {
+    this.scheduleAutoSave = () => {
       // Check if auto-save is enabled
       const autoSaveEnabled = localStorage.getItem('settings.autoSave') !== 'false';
       if (!autoSaveEnabled) return;
@@ -2130,75 +2130,35 @@ class CapnoteApp {
       }, 2000);
     };
 
-    this.richEditor.addEventListener('input', triggerAutoSave);
-    this.noteTitle.addEventListener('input', triggerAutoSave);
+    this.richEditor.addEventListener('input', this.scheduleAutoSave);
+    this.noteTitle.addEventListener('input', this.scheduleAutoSave);
   }
 
   setupCheckboxListeners() {
-    // Function to handle checkbox changes
-    const handleCheckboxChange = (e, isViewer = false) => {
-      if (e.target && e.target.type === 'checkbox') {
-        if (!this.currentNote) return;
-
-        setTimeout(() => {
-          if (isViewer) {
-            // If change happened in viewer, sync to editor first
-            this.richEditor.innerHTML = this.viewerText.innerHTML;
-
-            // Copy checkbox states manually from viewer to editor
-            const viewerCheckboxes = this.viewerText.querySelectorAll('input[type="checkbox"]');
-            const editorCheckboxes = this.richEditor.querySelectorAll('input[type="checkbox"]');
-
-            viewerCheckboxes.forEach((viewerCb, index) => {
-              if (editorCheckboxes[index]) {
-                editorCheckboxes[index].checked = viewerCb.checked;
-              }
-            });
-          }
-
-          // Sync and save from editor
-          this.syncCheckboxStates();
-
-          const title = isViewer
-            ? this.currentNote.title
-            : this.noteTitle.value.trim() || 'Başlıksız Not';
-          const content = this.richEditor.innerHTML;
-
-          this.currentNote.title = title;
-          this.currentNote.content = content;
-          this.currentNote.updatedAt = new Date().toISOString();
-
-          // Update in notes array (only already-saved notes)
-          if (this.notes.some((note) => note.id === this.currentNote.id)) {
-            this.upsertCurrentNote();
-          }
-
-          // Save to storage
-          this.saveNotes();
-
-          // Update viewer if change was from editor
-          if (!isViewer) {
-            this.viewerText.innerHTML = this.richEditor.innerHTML;
-            this.restoreCheckboxStatesInViewer();
-          }
-        }, 50);
-      }
-    };
-
-    // Use event delegation for dynamically added checkboxes in editor
-    this.richEditor.addEventListener('change', (e) => handleCheckboxChange(e, false));
-    this.richEditor.addEventListener('click', (e) => {
-      if (e.target && e.target.type === 'checkbox') {
-        setTimeout(() => handleCheckboxChange(e, false), 10);
-      }
+    // Editor: toggling a checkbox is a regular edit, so mark it dirty and let autosave persist it
+    this.richEditor.addEventListener('change', (e) => {
+      if (!e.target || e.target.type !== 'checkbox') return;
+      this.trackContentChanges();
+      this.scheduleAutoSave();
     });
 
-    // Use event delegation for checkboxes in viewer
-    this.viewerText.addEventListener('change', (e) => handleCheckboxChange(e, true));
-    this.viewerText.addEventListener('click', (e) => {
-      if (e.target && e.target.type === 'checkbox') {
-        setTimeout(() => handleCheckboxChange(e, true), 10);
-      }
+    // Viewer: write only the toggled checkbox state back into the stored content.
+    // The viewer DOM itself must never be saved (it contains UI such as copy buttons).
+    this.viewerText.addEventListener('change', (e) => {
+      if (!e.target || e.target.type !== 'checkbox' || !this.currentNote) return;
+      if (this.currentNote.isMarkdown) return;
+
+      const index = Array.from(this.viewerText.querySelectorAll('input[type="checkbox"]')).indexOf(e.target);
+      const doc = new DOMParser().parseFromString(this.currentNote.content || '', 'text/html');
+      const stored = doc.body.querySelectorAll('input[type="checkbox"]')[index];
+      if (!stored) return;
+
+      if (e.target.checked) stored.setAttribute('checked', 'checked');
+      else stored.removeAttribute('checked');
+
+      this.currentNote.content = doc.body.innerHTML;
+      this.currentNote.updatedAt = new Date().toISOString();
+      this.saveNotes();
     });
   }
 
@@ -3506,6 +3466,8 @@ class CapnoteApp {
       }
     } else {
       this.richEditor.innerHTML = note.content;
+      // Copy buttons are viewer UI and must not end up in edited content
+      this.richEditor.querySelectorAll('.code-copy-btn').forEach((btn) => btn.remove());
       // ensure any images in loaded content are wrapped and wired for resizing
       try { this.upgradeImagesInEditor(); } catch (e) { }
       if (this.markdownEditor) this.markdownEditor.value = '';
@@ -3701,8 +3663,8 @@ class CapnoteApp {
     if (!container) return;
     const pres = container.querySelectorAll('pre');
     pres.forEach((pre) => {
-      // avoid duplicate buttons
-      if (pre.querySelector('.code-copy-btn')) return;
+      // Older versions could persist copy buttons inside note content; replace them with live ones
+      pre.querySelectorAll('.code-copy-btn').forEach((stale) => stale.remove());
 
       const btn = document.createElement('button');
       btn.className = 'code-copy-btn';
