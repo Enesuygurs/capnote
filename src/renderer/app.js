@@ -1862,47 +1862,19 @@ class CapnoteApp {
 
   async clearAllNotes() {
     try {
-      // Collect existing note IDs to remove associated reminders/notifications
       const removedNoteIds = (this.notes || []).map(n => n.id);
-      const removedNoteIdSet = new Set(removedNoteIds.map(id => String(id)));
 
       this.notes = [];
+      this.currentNote = null;
+      this.unlockedNoteIds.clear();
       await this.saveNotes();
-
-      // Remove reminders and notifications that reference removed notes
-      try {
-        if (Array.isArray(this.reminders) && this.reminders.length > 0) {
-          this.reminders = this.reminders.filter(r => {
-            if (!r.noteId && r.noteId !== 0) return true;
-            return !removedNoteIdSet.has(String(r.noteId));
-          });
-          await this.saveReminders();
-          this.updateRemindersView();
-        }
-      } catch (e) {
-        console.warn('Failed to cleanup reminders after clearing notes', e);
-      }
-
-      try {
-        if (Array.isArray(this.notifications) && this.notifications.length > 0) {
-          this.notifications = this.notifications.filter(n => {
-            if (!n.noteId && n.noteId !== 0) return true;
-            return !removedNoteIdSet.has(String(n.noteId));
-          });
-          await this.saveNotifications();
-          this.updateNotificationsView();
-        }
-      } catch (e) {
-        console.warn('Failed to cleanup notifications after clearing notes', e);
-      }
+      this.removeNoteReferences(removedNoteIds);
       // Clear last viewed note
       try { localStorage.removeItem('last-viewed-note'); } catch (e) { }
       this.updateNotesList();
       this.updateFoldersList();
-      // Update counters for reminders/notifications
-      try { this.updateActiveRemindersCount(); } catch (e) { }
-      try { this.updateActiveNotificationsCount(); } catch (e) { }
       this.updateStats();
+      this.showWelcome();
       this.showNotification(window.i18n.t('messages.allNotesDeleted'), 'success');
     } catch (err) {
       console.error('Tüm notlar silinirken hata:', err);
@@ -3882,63 +3854,7 @@ class CapnoteApp {
 
   deleteCurrentNote() {
     if (!this.currentNote) return;
-
-    // Check confirm delete setting
-    const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
-
-    if (!confirmDelete) {
-      // Don't show confirmation, delete directly
-      const currentNoteId = this.currentNote.id;
-      this.notes = this.notes.filter((note) => note.id !== currentNoteId);
-      this.saveNotes();
-      this.updateNotesList();
-      this.updateStats();
-      this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
-
-      if (this.notes.length > 0) {
-        const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-
-        if (onNoteDelete === 'home') {
-          this.currentNote = null;
-          this.showWelcome();
-        } else {
-          // 'lastNote' - open last remaining note
-          this.selectNote(this.notes[0]);
-        }
-      } else {
-        this.currentNote = null;
-        this.showWelcome();
-      }
-      return;
-    }
-
-    // Show confirmation
-    this.showConfirm(
-      `"${this.currentNote.title}" ${window.i18n.t('messages.confirmDelete')}`,
-      () => {
-        const currentNoteId = this.currentNote.id;
-        this.notes = this.notes.filter((note) => note.id !== currentNoteId);
-        this.saveNotes();
-        this.updateNotesList();
-        this.updateStats();
-        this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
-
-        if (this.notes.length > 0) {
-          const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-
-          if (onNoteDelete === 'home') {
-            this.currentNote = null;
-            this.showWelcome();
-          } else {
-            // 'lastNote' - open last remaining note
-            this.selectNote(this.notes[0]);
-          }
-        } else {
-          this.currentNote = null;
-          this.showWelcome();
-        }
-      }
-    );
+    this.deleteNoteById(this.currentNote.id);
   }
 
   duplicateNote() {
@@ -5884,87 +5800,54 @@ class CapnoteApp {
     const note = this.notes.find((n) => n.id == noteId);
     if (!note) return;
 
-    // Check confirm delete setting
     const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
-
     if (!confirmDelete) {
-      // Don't show confirmation, delete directly
-      const index = this.notes.findIndex((n) => n.id == noteId);
-      if (index >= 0) {
-        const deletedNote = this.notes[index];
-        this.notes.splice(index, 1);
-        this.saveNotes();
-
-        // Only update the specific folder if note was in a folder, otherwise update main list
-        if (deletedNote.folderId && deletedNote.folderId !== 'default') {
-          this.updateSpecificFolder(deletedNote.folderId);
-        } else {
-          this.updateNotesList();
-        }
-        this.updateStats();
-
-        // If user is viewing Favorites, refresh the list so it includes/excludes updated favorites
-        if (this.currentFilter === 'favorites') this.updateNotesList();
-
-        // If deleted note was current note, handle based on settings
-        if (this.currentNote && this.currentNote.id === noteId) {
-          this.currentNote = null;
-          const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-
-          if (onNoteDelete === 'home') {
-            this.showWelcome();
-          } else if (this.notes.length > 0) {
-            // 'lastNote' - open last remaining note
-            this.selectNote(this.notes[0]);
-          } else {
-            this.showWelcome();
-          }
-        }
-
-        this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
-      }
+      this.performNoteDeletion(note);
       return;
     }
+    this.showConfirm(`"${note.title}" ${window.i18n.t('messages.confirmDelete')}`, () => this.performNoteDeletion(note));
+  }
 
-    // Show confirmation modal
-    this.confirmMessage.textContent = `"${note.title}" ${window.i18n.t('messages.confirmDelete')}`;
-    this.confirmCallback = () => {
-      const index = this.notes.findIndex((n) => n.id == noteId);
-      if (index >= 0) {
-        const deletedNote = this.notes[index];
-        this.notes.splice(index, 1);
-        this.saveNotes();
+  performNoteDeletion(note) {
+    this.notes = this.notes.filter((n) => n !== note);
+    this.saveNotes();
+    this.removeNoteReferences([note.id]);
+    this.unlockedNoteIds.delete(String(note.id));
 
-        // Only update the specific folder if note was in a folder, otherwise update main list
-        if (deletedNote.folderId && deletedNote.folderId !== 'default') {
-          this.updateSpecificFolder(deletedNote.folderId);
-        } else {
-          this.updateNotesList();
-        }
-        this.updateStats();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
 
-        // If user is viewing Favorites, refresh the list so it includes/excludes updated favorites
-        if (this.currentFilter === 'favorites') this.updateNotesList();
-
-        // If deleted note was current note, handle based on settings
-        if (this.currentNote && this.currentNote.id === noteId) {
-          this.currentNote = null;
-          const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-
-          if (onNoteDelete === 'home') {
-            this.showWelcome();
-          } else if (this.notes.length > 0) {
-            // 'lastNote' - open last remaining note
-            this.selectNote(this.notes[0]);
-          } else {
-            this.showWelcome();
-          }
-        }
-
-        this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
+    // If the deleted note was open, follow the "on note delete" setting
+    if (this.currentNote && this.currentNote.id == note.id) {
+      this.currentNote = null;
+      const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
+      if (onNoteDelete !== 'home' && this.notes.length > 0) {
+        this.openNote(this.notes[0]);
+      } else {
+        this.showWelcome();
       }
-    };
-    this.showModal(this.confirmModal);
+    }
+
+    this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
+  }
+
+  // Remove reminders and notifications that point at deleted notes
+  removeNoteReferences(noteIds) {
+    const ids = new Set(Array.from(noteIds, (id) => String(id)));
+    if (ids.size === 0) return;
+    const keep = (item) => item.noteId === null || item.noteId === undefined || !ids.has(String(item.noteId));
+
+    this.reminders = this.reminders.filter(keep);
+    this.notifications = this.notifications.filter(keep);
+    this.saveReminders();
+    this.saveNotifications();
+
+    this.updateRemindersView();
+    this.updateNotificationsView();
+    this.updateNoteRemindersDisplay();
+    this.updateActiveRemindersCount();
+    this.updateActiveNotificationsCount();
   }
 
   toggleSidebar() {
@@ -7958,8 +7841,7 @@ class CapnoteApp {
 
     this.confirmCallback = () => {
       // Delete all notes that truly belong to the folder (ignore folderless notes)
-      const notesToRemove = this.notes.filter((note) => note.folderId && String(note.folderId) === String(folderIdToDelete)).map(n => String(n.id));
-      const removedSet = new Set(notesToRemove);
+      const notesToRemove = this.notes.filter((note) => note.folderId && String(note.folderId) === String(folderIdToDelete)).map(n => n.id);
 
       // Keep notes that are NOT in the selected folder (preserve folderless notes and other folders)
       this.notes = this.notes.filter((note) => !(note.folderId && String(note.folderId) === String(folderIdToDelete)));
@@ -7967,34 +7849,11 @@ class CapnoteApp {
       // Delete the folder
       this.folders = this.folders.filter((f) => f.id != folderIdToDelete);
 
-      // Remove reminders and notifications associated with deleted notes
-      try {
-        if (Array.isArray(this.reminders) && this.reminders.length > 0) {
-          this.reminders = this.reminders.filter(r => {
-            if (!r.noteId && r.noteId !== 0) return true;
-            return !removedSet.has(String(r.noteId));
-          });
-          this.saveReminders();
-          this.updateRemindersView();
-        }
-      } catch (e) { console.warn('Failed to cleanup reminders after deleting folder', e); }
-
-      try {
-        if (Array.isArray(this.notifications) && this.notifications.length > 0) {
-          this.notifications = this.notifications.filter(n => {
-            if (!n.noteId && n.noteId !== 0) return true;
-            return !removedSet.has(String(n.noteId));
-          });
-          this.saveNotifications();
-          this.updateNotificationsView();
-        }
-      } catch (e) { console.warn('Failed to cleanup notifications after deleting folder', e); }
+      this.removeNoteReferences(notesToRemove);
 
       // Save and update
       this.saveNotes();
       this.saveFolders();
-      // Ensure stats updated after deleting single folder
-      try { this.updateStats(); } catch (e) { }
       this.updateFoldersList();
       this.updateStats();
       if (this.currentFilter === 'favorites') this.updateNotesList();
@@ -8004,9 +7863,6 @@ class CapnoteApp {
         this.currentNote = null;
         this.showWelcome();
       }
-
-      try { this.updateActiveRemindersCount(); } catch (e) { }
-      try { this.updateActiveNotificationsCount(); } catch (e) { }
 
       this.showNotification(`"${folder.name}" klasörü ve içindeki notlar silindi`, 'success');
     };
