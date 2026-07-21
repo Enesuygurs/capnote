@@ -2168,6 +2168,14 @@ class CapnoteApp {
 
     // Klasörleri yükle
     await this.loadFolders();
+
+    // Notes pointing at a missing folder are shown nowhere; move them back to the root list
+    const folderIds = new Set(this.folders.map((f) => String(f.id)));
+    this.notes.forEach((note) => {
+      if (note.folderId && note.folderId !== 'default' && !folderIds.has(String(note.folderId))) {
+        note.folderId = null;
+      }
+    });
   }
 
   async loadFolders() {
@@ -6543,7 +6551,7 @@ class CapnoteApp {
 
         // Remap folder IDs to avoid collisions when merging
         const folderIdMap = {};
-        if (Array.isArray(data.folders)) {
+        if (Array.isArray(data.folders) && importOptions.folders) {
           data.folders.forEach((f) => {
             const newId = Date.now() + Math.floor(Math.random() * 1000000);
             folderIdMap[f.id] = newId;
@@ -6555,15 +6563,24 @@ class CapnoteApp {
 
         // Import notes and remap folderId + build noteId map
         const noteIdMap = {};
+        let skippedDuplicates = 0;
         if (Array.isArray(data.notes) && importOptions.notes) {
           data.notes.forEach((note) => {
             const oldId = note.id;
+            // Re-importing the same backup must not duplicate notes
+            const existing = this.notes.find((n) => n.createdAt === note.createdAt && n.title === note.title && n.content === note.content);
+            if (existing) {
+              skippedDuplicates++;
+              if (oldId !== undefined && oldId !== null) noteIdMap[oldId] = existing.id;
+              return;
+            }
             const newNoteId = Date.now() + Math.floor(Math.random() * 1000000);
-            const mappedFolderId = note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : note.folderId;
+            // A folder reference that was not imported would make the note invisible
+            const mappedFolderId = note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : null;
             const newNote = {
               ...note,
               id: newNoteId,
-              folderId: mappedFolderId || null,
+              folderId: mappedFolderId,
               createdAt: note.createdAt || new Date().toISOString(),
               updatedAt: new Date().toISOString(),
             };
@@ -6619,7 +6636,7 @@ class CapnoteApp {
         }
 
         // Import settings (merge by default)
-        if (data.settings && typeof data.settings === 'object') {
+        if (importOptions.settings && data.settings && typeof data.settings === 'object') {
           Object.entries(data.settings).forEach(([k, v]) => {
             try {
               // Do not import folderColorsBackup from foreign sources
@@ -6650,6 +6667,7 @@ class CapnoteApp {
 
         this.updateStats();
 
+        if (skippedDuplicates > 0) console.info(`Import skipped ${skippedDuplicates} duplicate note(s)`);
         this.showNotification('Veriler başarıyla içe aktarıldı', 'success');
         this.settingsModal.classList.remove('show');
         this.settingsModal.classList.add('hidden');
