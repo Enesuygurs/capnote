@@ -2688,6 +2688,8 @@ class CapnoteApp {
 
     // Ensure emoji panel is closed when leaving the current note
     try { this.hideEmojiPanel(); } catch (e) { }
+    // Remember where we came from so cancelling the new note can go back there
+    this.noteBeforeNew = this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;
     this.currentNote = {
       id: Date.now(),
       title: '',
@@ -3849,14 +3851,26 @@ class CapnoteApp {
   }
 
   cancelEdit() {
-    if (this.notes.length > 0) {
-      this.showViewer();
-      if (this.currentNote) {
-        this.displayNote(this.currentNote);
+    // A brand-new note that was never saved must not be shown as if it existed
+    if (this.currentNote && !this.notes.includes(this.currentNote)) {
+      const previous = this.noteBeforeNew && this.notes.includes(this.noteBeforeNew) ? this.noteBeforeNew : null;
+      this.currentNote = null;
+      this.noteBeforeNew = null;
+      if (previous) {
+        this.openNote(previous);
+      } else if (this.notes.length > 0) {
+        this.openNote(this.notes[0]);
+      } else {
+        this.showWelcome();
       }
+      return;
+    }
+
+    if (this.currentNote) {
+      this.showViewer();
+      this.displayNote(this.currentNote);
     } else {
       this.showWelcome();
-      this.currentNote = null;
     }
   }
 
