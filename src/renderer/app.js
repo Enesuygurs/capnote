@@ -5469,8 +5469,9 @@ class CapnoteApp {
       }
     }
 
-    // Auto hide after 3 seconds
-    setTimeout(() => {
+    // Auto hide after 3 seconds; restart the timer so an earlier toast cannot hide this one early
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => {
       this.hideNotification();
     }, 3000);
   }
