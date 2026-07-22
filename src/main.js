@@ -29,7 +29,9 @@ const store = new Store();
 let mainWindow;
 let tray = null;
 let isQuitting = false;
-let closeToTrayEnabled = true; // persisted in store
+// Close-to-tray is a Windows-only feature (the setting is only shown there)
+const supportsCloseToTray = process.platform === 'win32';
+let closeToTrayEnabled = supportsCloseToTray; // persisted in store
 
 // Ensure the app name is set so native notifications and system UI show 'Capnote'
 try {
@@ -71,8 +73,9 @@ function createWindow() {
       offscreen: false,
       hardwareAcceleration: true,
     },
-    titleBarStyle: 'hiddenInset',
-    frame: false,
+    // macOS keeps its native traffic-light buttons; other platforms use the custom titlebar
+    titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
+    frame: process.platform === 'darwin',
     show: false,
     vibrancy: 'under-window',
     transparent: false,
@@ -197,7 +200,7 @@ function createTray() {
 
 // Uygulama hazır olduğunda pencereyi oluştur
 app.whenReady().then(() => {
-  try { closeToTrayEnabled = store.get('settings.closeToTray', true); } catch {}
+  try { closeToTrayEnabled = supportsCloseToTray && store.get('settings.closeToTray', true); } catch {}
   createWindow();
   createTray();
   // Menü kaldırıldı
@@ -205,6 +208,8 @@ app.whenReady().then(() => {
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       createWindow();
+    } else if (mainWindow) {
+      mainWindow.show();
     }
   });
 });
@@ -397,11 +402,12 @@ ipcMain.handle('set-start-at-login', (event, enabled) => {
 
 // Close-to-tray preference (persist in store)
 ipcMain.handle('get-close-to-tray', () => {
-  try { closeToTrayEnabled = store.get('settings.closeToTray', true); } catch {}
+  try { closeToTrayEnabled = supportsCloseToTray && store.get('settings.closeToTray', true); } catch {}
   return { enabled: !!closeToTrayEnabled };
 });
 
 ipcMain.handle('set-close-to-tray', (event, enabled) => {
+  if (!supportsCloseToTray) return { ok: false, error: 'Close to tray is only supported on Windows' };
   closeToTrayEnabled = !!enabled;
   try { store.set('settings.closeToTray', closeToTrayEnabled); } catch {}
   return { ok: true };
