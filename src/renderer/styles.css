@@ -156,9 +156,12 @@ body {
   right: 10px;
 }
 
-/* macOS'ta trafik ışığı butonlarını gizle */
+/* macOS uses its native traffic-light buttons: hide ours and leave room for them */
 body.platform-darwin .titlebar-controls {
   display: none;
+}
+body.platform-darwin .titlebar {
+  padding-left: 80px;
 }
 .titlebar-button {
   width: 32px;
