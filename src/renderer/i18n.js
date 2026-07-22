@@ -22,28 +22,19 @@ class I18n {
   }
 
   async loadTranslations() {
-    try {
-      console.log('Loading translations...');
-      const trResponse = await fetch('locales/tr.json');
-      const enResponse = await fetch('locales/en.json');
-      
-      if (!trResponse.ok || !enResponse.ok) {
-        throw new Error('Failed to fetch translation files');
-      }
-      
-      this.translations.tr = await trResponse.json();
-      this.translations.en = await enResponse.json();
-      
-      console.log('Translations loaded successfully:', {
-        tr: Object.keys(this.translations.tr).length,
-        en: Object.keys(this.translations.en).length
-      });
-    } catch (error) {
-      console.error('Error loading translations:', error);
-      // Fallback to empty objects
-      this.translations.tr = {};
-      this.translations.en = {};
-    }
+    // Load each language on its own so one broken file does not take the other down
+    await Promise.all(
+      ['tr', 'en'].map(async (lang) => {
+        try {
+          const response = await fetch(`locales/${lang}.json`);
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          this.translations[lang] = await response.json();
+        } catch (error) {
+          console.error(`Error loading ${lang} translations:`, error);
+          this.translations[lang] = {};
+        }
+      })
+    );
   }
 
   t(key) {
@@ -139,14 +130,13 @@ class I18n {
 // Create global i18n instance
 window.i18n = new I18n();
 
-// Initialize on DOM loaded
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', async () => {
-    await window.i18n.init();
-    console.log('i18n initialized, current language:', window.i18n.currentLanguage);
-  });
-} else {
-  window.i18n.init().then(() => {
-    console.log('i18n initialized, current language:', window.i18n.currentLanguage);
-  });
-}
+// Initialize on DOM loaded. `ready` always resolves, even if loading the translations failed,
+// so the app can start with keys as a fallback instead of waiting forever.
+window.i18n.ready = new Promise((resolve) => {
+  const start = () => window.i18n.init().catch((err) => console.error('i18n init failed:', err)).then(resolve);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
+});

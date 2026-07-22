@@ -115,18 +115,9 @@ class CapnoteApp {
       document.body.classList.add(`platform-${window.electronAPI.platform}`);
     }
 
-    // Wait for i18n to be ready
-    if (window.i18n && !window.i18n.translations.tr) {
-      console.log('Waiting for i18n to initialize...');
-      await new Promise(resolve => {
-        const checkI18n = setInterval(() => {
-          if (window.i18n.translations.tr && Object.keys(window.i18n.translations.tr).length > 0) {
-            clearInterval(checkI18n);
-            console.log('i18n is ready');
-            resolve();
-          }
-        }, 100);
-      });
+    // Wait for i18n to be ready (resolves even when translations failed to load)
+    if (window.i18n && window.i18n.ready) {
+      await window.i18n.ready;
     }
 
     await this.loadNotes();
