@@ -2062,7 +2062,8 @@ class CapnoteApp {
             break;
           case 'f':
             e.preventDefault();
-            this.searchInput.focus();
+            if (this.searchContainer.classList.contains('hidden')) this.toggleSearch();
+            else this.searchInput.focus();
             break;
           case 'e':
             e.preventDefault();
@@ -2080,8 +2081,18 @@ class CapnoteApp {
       }
 
       if (e.key === 'Escape') {
-        this.cancelEdit();
-        this.hideAllModals();
+        // Close the top-most thing first; only leave the editor when nothing else is open
+        const openModal = document.querySelector('.modal:not(.hidden)');
+        if (openModal) {
+          if (openModal === this.passwordModal) this.hidePasswordModal();
+          else this.hideAllModals();
+          return;
+        }
+        if (this.emojiPanel && !this.emojiPanel.classList.contains('hidden')) {
+          this.hideEmojiPanel();
+          return;
+        }
+        if (this.isEditorOpen()) this.cancelEdit();
       }
     });
   }
