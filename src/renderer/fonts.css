@@ -1,0 +1,13 @@
+/* Bundled web fonts (previously loaded from Google Fonts) */
+@import url('../../node_modules/@fontsource/inter/300.css');
+@import url('../../node_modules/@fontsource/inter/400.css');
+@import url('../../node_modules/@fontsource/inter/500.css');
+@import url('../../node_modules/@fontsource/inter/600.css');
+@import url('../../node_modules/@fontsource/inter/700.css');
+@import url('../../node_modules/@fontsource/crimson-text/400.css');
+@import url('../../node_modules/@fontsource/crimson-text/400-italic.css');
+@import url('../../node_modules/@fontsource/crimson-text/600.css');
+@import url('../../node_modules/@fontsource/crimson-text/600-italic.css');
+@import url('../../node_modules/@fontsource/roboto-mono/300.css');
+@import url('../../node_modules/@fontsource/roboto-mono/400.css');
+@import url('../../node_modules/@fontsource/roboto-mono/500.css');
