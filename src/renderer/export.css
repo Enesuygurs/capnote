@@ -1,0 +1,66 @@
+/* Standalone styles for exported notes (PDF and HTML) */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #111827;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  font-size: 14px;
+}
+.export-header {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+.export-header h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+  color: #0b1220;
+}
+.export-meta {
+  color: #6b7280;
+  font-size: 12px;
+  margin: 2px 0;
+}
+.export-tags {
+  margin-top: 24px;
+}
+.export-tag {
+  display: inline-block;
+  background: #f3f4f6;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin-right: 6px;
+  font-size: 12px;
+}
+img {
+  max-width: 100%;
+  height: auto;
+}
+pre {
+  background: #f6f8fa;
+  border-radius: 6px;
+  padding: 12px;
+  overflow: auto;
+  white-space: pre-wrap;
+}
+code {
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 12px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th,
+td {
+  border: 1px solid #d1d5db;
+  padding: 6px;
+  text-align: left;
+}
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
