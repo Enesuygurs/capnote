@@ -3,9 +3,10 @@
  * Uygulamanın ana penceresini ve IPC iletişimini yönetir
  */
 
-const { app, BrowserWindow, ipcMain, Notification, Tray, Menu, nativeImage } = require('electron');
+const { app, BrowserWindow, ipcMain, Notification, Tray, Menu, nativeImage, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
+const { pathToFileURL } = require('url');
 const Store = require('electron-store');
 
 // Enable hot reload in development using electron-reloader
@@ -411,4 +412,40 @@ ipcMain.handle('set-close-to-tray', (event, enabled) => {
   closeToTrayEnabled = !!enabled;
   try { store.set('settings.closeToTray', closeToTrayEnabled); } catch {}
   return { ok: true };
+});
+
+// Export a note to PDF with Chromium's own renderer (works offline, no third-party library).
+// The renderer sends the note body; the document is assembled here around the bundled export styles.
+ipcMain.handle('export-pdf', async (event, payload) => {
+  const { title = 'note', bodyHtml = '', fileName = 'note.pdf' } = payload || {};
+  if (typeof bodyHtml !== 'string') return { ok: false, error: 'Invalid content' };
+
+  const parent = BrowserWindow.fromWebContents(event.sender);
+  const { canceled, filePath } = await dialog.showSaveDialog(parent, {
+    defaultPath: fileName,
+    filters: [{ name: 'PDF', extensions: ['pdf'] }],
+  });
+  if (canceled || !filePath) return { ok: false, canceled: true };
+
+  const rendererDir = pathToFileURL(path.join(__dirname, 'renderer') + path.sep).href;
+  const html = `<!doctype html><html><head><meta charset="utf-8"><base href="${rendererDir}">
+<title>${String(title).replace(/[<>&"]/g, '')}</title>
+<link rel="stylesheet" href="fonts.css"><link rel="stylesheet" href="export.css"></head>
+<body>${bodyHtml}</body></html>`;
+
+  const tmpFile = path.join(app.getPath('temp'), `capnote-export-${Date.now()}.html`);
+  const printWindow = new BrowserWindow({ show: false, webPreferences: { javascript: false, sandbox: true } });
+  try {
+    fs.writeFileSync(tmpFile, html, 'utf8');
+    await printWindow.loadFile(tmpFile);
+    const pdf = await printWindow.webContents.printToPDF({ pageSize: 'A4', printBackground: true });
+    fs.writeFileSync(filePath, pdf);
+    return { ok: true, filePath };
+  } catch (err) {
+    console.error('PDF export failed:', err);
+    return { ok: false, error: String(err && err.message ? err.message : err) };
+  } finally {
+    printWindow.destroy();
+    fs.rmSync(tmpFile, { force: true });
+  }
 });
