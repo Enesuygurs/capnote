@@ -3320,14 +3320,12 @@ class CapnoteApp {
 
   // Count words/chars from an HTML string (used when saving notes)
   countWordsAndCharsFromHtml(html) {
-    const tmp = document.createElement('div');
     // Ensure adjacent tags and text-to-tag boundaries have separating spaces so innerText doesn't concatenate words
     let safeHtml = (html || '').replace(/></g, '> <');
     // Insert a space before a '<' if it's immediately preceded by a non-space and not already separated
     safeHtml = safeHtml.replace(/([^\s>])</g, '$1 <');
-    tmp.innerHTML = safeHtml;
-    // Use innerText to reflect visible text (preserves newlines)
-    let text = tmp.innerText || tmp.textContent || '';
+    const tmp = this.parseInertHtml(safeHtml);
+    let text = tmp.textContent || '';
     text = text.replace(/\u00A0/g, ' ');
     const normalized = text.trim().replace(/\s+/g, ' ');
     let words = 0;
@@ -3449,7 +3447,7 @@ class CapnoteApp {
         this.richEditor.innerHTML = '';
       }
     } else {
-      this.richEditor.innerHTML = note.content;
+      this.richEditor.innerHTML = this.sanitizeHtml(note.content);
       // Copy buttons are viewer UI and must not end up in edited content
       this.richEditor.querySelectorAll('.code-copy-btn').forEach((btn) => btn.remove());
       // ensure any images in loaded content are wrapped and wired for resizing
@@ -3634,7 +3632,7 @@ class CapnoteApp {
       // the preview should show markdown-derived output only.
       const escaped = md.replace(/</g, '&lt;').replace(/>/g, '&gt;');
       const html = (window.marked && marked.parse) ? marked.parse(escaped) : escaped;
-      this.markdownPreview.innerHTML = html;
+      this.markdownPreview.innerHTML = this.sanitizeHtml(html);
       // attach copy buttons to any code blocks in the preview
       this.attachCopyButtonsToPre(this.markdownPreview);
     } catch (e) {
@@ -3745,9 +3743,7 @@ class CapnoteApp {
         }
       } else {
         // If rich editor content contains escaped HTML entities like &lt;div&gt;, unescape them
-        const tmp = document.createElement('div');
-        tmp.innerHTML = sourceHtml;
-        const text = tmp.textContent || tmp.innerText || '';
+        const text = this.parseInertHtml(sourceHtml).textContent || '';
         if (text.includes('<') && text.includes('>')) {
           htmlToShow = text;
         } else {
@@ -3994,12 +3990,12 @@ class CapnoteApp {
     } else {
       if (note.isMarkdown) {
         try {
-          this.viewerText.innerHTML = (window.marked && marked.parse) ? marked.parse(note.content || '') : (note.content || '');
+          this.viewerText.innerHTML = this.sanitizeHtml((window.marked && marked.parse) ? marked.parse(note.content || '') : (note.content || ''));
         } catch (e) {
           this.viewerText.textContent = note.content || '';
         }
       } else {
-        this.viewerText.innerHTML = note.content;
+        this.viewerText.innerHTML = this.sanitizeHtml(note.content);
       }
       // Attach copy buttons to code blocks in the viewer
       this.attachCopyButtonsToPre(this.viewerText);
@@ -4613,9 +4609,7 @@ class CapnoteApp {
   }
 
   getTextPreview(html) {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    const text = div.textContent || div.innerText || '';
+    const text = this.parseInertHtml(html).textContent || '';
     return text.length > 100 ? text.substring(0, 100) + '...' : text;
   }
 
@@ -4623,6 +4617,22 @@ class CapnoteApp {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  // Note HTML is untrusted (it can come from an imported file), so it is always sanitized before rendering.
+  // file: and blob: URLs stay allowed because dropped images are stored as local files.
+  sanitizeHtml(html) {
+    if (!window.DOMPurify) return this.escapeHtml(String(html || ''));
+    return window.DOMPurify.sanitize(String(html || ''), {
+      ADD_ATTR: ['contenteditable', 'target', 'checked'],
+      FORBID_TAGS: ['style', 'form'],
+      ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel|file|blob):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+    });
+  }
+
+  // Parse HTML into a detached document that never loads resources or runs handlers
+  parseInertHtml(html) {
+    return new DOMParser().parseFromString(String(html || ''), 'text/html').body;
   }
 
   searchNotes() {
@@ -5111,12 +5121,12 @@ class CapnoteApp {
     this.tags.forEach((tag) => {
       const tagElement = document.createElement('span');
       tagElement.className = 'tag';
-      tagElement.innerHTML = `
-                ${this.escapeHtml(tag)}
-                <button class="tag-remove" onclick="app.removeTag('${tag}')">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
+      tagElement.textContent = tag;
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'tag-remove';
+      removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+      removeBtn.addEventListener('click', () => this.removeTag(tag));
+      tagElement.appendChild(removeBtn);
       this.tagsList.appendChild(tagElement);
     });
   }
@@ -5163,50 +5173,28 @@ class CapnoteApp {
   }
 
   getPlainText(html) {
-    const div = document.createElement('div');
-    div.innerHTML = html;
-    return div.textContent || div.innerText || '';
+    return this.parseInertHtml(html).textContent || '';
   }
 
   generateHTMLExport(note) {
-    return `
-<!DOCTYPE html>
-<html lang="tr">
+    return `<!DOCTYPE html>
+<html lang="${window.i18n.currentLanguage}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>${note.title}</title>
-    <style>
-        body { font-family: 'Inter', sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 20px; }
-        .header { border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 20px; }
-        .meta { color: #666; font-size: 14px; margin: 10px 0; }
-        .content { font-size: 16px; }
-        .tags { margin-top: 20px; }
-        .tag { background: #e1e8ff; padding: 4px 8px; border-radius: 4px; font-size: 12px; margin-right: 8px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${this.escapeHtml(note.title || '')}</title>
+  <style>
+    body { font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif; color: #111827; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 24px; }
+    .export-header { border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 20px; }
+    .export-meta { color: #6b7280; font-size: 12px; margin: 2px 0; }
+    .export-tags { margin-top: 24px; }
+    .export-tag { display: inline-block; background: #f3f4f6; border-radius: 4px; padding: 2px 8px; margin-right: 6px; font-size: 12px; }
+    img { max-width: 100%; height: auto; }
+    pre { background: #f6f8fa; border-radius: 6px; padding: 12px; white-space: pre-wrap; }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <h1>${note.title}</h1>
-        <div class="meta">
-            <p>${window.i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR')}</p>
-            <p>${window.i18n.t('viewer.updatedLabel')} ${new Date(note.updatedAt).toLocaleString(window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR')}</p>
-            ${note.mood ? `<p>Ruh Hali: ${note.mood}</p>` : ''}
-            ${note.weather ? `<p>Hava Durumu: ${note.weather}</p>` : ''}
-        </div>
-    </div>
-    <div class="content">
-        ${note.content}
-    </div>
-    ${note.tags && note.tags.length > 0
-        ? `
-    <div class="tags">
-        <h3>Etiketler:</h3>
-        ${note.tags.map((tag) => `<span class="tag">${tag}</span>`).join('')}
-    </div>
-    `
-        : ''
-      }
+${this.buildExportBody(note)}
 </body>
 </html>`;
   }
@@ -5223,18 +5211,22 @@ class CapnoteApp {
     URL.revokeObjectURL(url);
   }
 
-  // Shared markup for exported notes (used by the PDF export)
+  // Shared markup for exported notes (PDF and HTML exports)
   buildExportBody(note) {
     const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
-    const content = document.createElement('div');
-    content.innerHTML = note.isMarkdown && window.marked ? marked.parse(note.content || '') : note.content || '';
+    const content = this.parseInertHtml(
+      this.sanitizeHtml(note.isMarkdown && window.marked ? marked.parse(note.content || '') : note.content || '')
+    );
     content.querySelectorAll('.code-copy-btn').forEach((btn) => btn.remove());
 
     const tags = (note.tags || []).map((tag) => `<span class="export-tag">${this.escapeHtml(tag)}</span>`).join('');
+    const mood = note.mood ? `<p class="export-meta">${window.i18n.t('sections.mood')}: ${this.escapeHtml(note.mood)}</p>` : '';
+    const weather = note.weather ? `<p class="export-meta">${window.i18n.t('sections.weather')}: ${this.escapeHtml(note.weather)}</p>` : '';
     return `<div class="export-header">
   <h1>${this.escapeHtml(note.title || '')}</h1>
   <p class="export-meta">${window.i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(locale)}</p>
   <p class="export-meta">${window.i18n.t('viewer.updatedLabel')} ${new Date(note.updatedAt).toLocaleString(locale)}</p>
+  ${mood}${weather}
 </div>
 <div class="export-content">${content.innerHTML}</div>
 ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
@@ -7162,6 +7154,11 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     return folderNotes.length;
   }
 
+  // Only accept hex colors in style attributes; anything else falls back to the default
+  safeColor(color) {
+    return /^#[0-9a-f]{3,8}$/i.test(String(color || '')) ? color : '#3b82f6';
+  }
+
   createFolderElement(folder) {
     const container = document.createElement('div');
     container.className = 'folder-container';
@@ -7173,7 +7170,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const noteCount = this.notes.filter((note) => note.folderId === folder.id).length;
 
     folderHeader.innerHTML = `
-            <i class="fas fa-folder nav-icon" style="color: ${folder.color}"></i>
+            <i class="fas fa-folder nav-icon" style="color: ${this.safeColor(folder.color)}"></i>
             <span class="nav-text">${this.escapeHtml(folder.name)}</span>
             <span class="folder-count">${noteCount}</span>
             <i class="fas fa-chevron-down nav-expand"></i>
