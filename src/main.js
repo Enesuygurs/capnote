@@ -3,10 +3,10 @@
  * Uygulamanın ana penceresini ve IPC iletişimini yönetir
  */
 
-const { app, BrowserWindow, ipcMain, Notification, Tray, Menu, nativeImage, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, Notification, Tray, Menu, nativeImage, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
-const { pathToFileURL } = require('url');
+const { pathToFileURL, fileURLToPath } = require('url');
 const Store = require('electron-store');
 
 // Enable hot reload in development using electron-reloader
@@ -44,6 +44,42 @@ try {
   if (app) app.name = 'Capnote';
 } catch (e) {
   // ignore if setting fails
+}
+
+/**
+ * Opens a link from note content outside the app: web and mail links in the default browser,
+ * files saved in the uploads folder with their default application. Anything else is ignored.
+ */
+function openExternalLink(url) {
+  try {
+    if (/^(https?|mailto):/i.test(url)) {
+      shell.openExternal(url);
+      return;
+    }
+    if (/^file:/i.test(url)) {
+      const filePath = fileURLToPath(url);
+      const uploadsDir = path.join(app.getPath('userData'), 'uploads') + path.sep;
+      if (filePath.startsWith(uploadsDir)) shell.openPath(filePath);
+    }
+  } catch (err) {
+    console.warn('Could not open link:', url, err);
+  }
+}
+
+/**
+ * The app window must never navigate away from the app or spawn new windows:
+ * links inside notes are handed to the operating system instead.
+ */
+function lockDownNavigation(win) {
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    openExternalLink(url);
+    return { action: 'deny' };
+  });
+  win.webContents.on('will-navigate', (event, url) => {
+    if (url === win.webContents.getURL()) return;
+    event.preventDefault();
+    openExternalLink(url);
+  });
 }
 
 /**
@@ -85,6 +121,8 @@ function createWindow() {
     // Improve resize performance
     useContentSize: false,
   });
+
+  lockDownNavigation(mainWindow);
 
   // HTML dosyasını yükle
   mainWindow.loadFile(path.join(__dirname, 'renderer/index.html'));
