@@ -319,19 +319,24 @@ ipcMain.on('close-window', () => {
   }
 });
 
-// Save file dropped from OS to app data/uploads and return a file:// path for renderer
+// Largest file accepted into the uploads folder
+const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
+
+// Copy a file dropped from the OS into app data/uploads and return a file:// URL for the renderer.
+// The path comes from the renderer, so only existing regular files of a sane size are accepted.
 ipcMain.handle('save-dropped-file', (event, srcPath) => {
   try {
-    if (!srcPath || typeof srcPath !== 'string') return null;
+    if (!srcPath || typeof srcPath !== 'string' || !path.isAbsolute(srcPath)) return null;
+    const stat = fs.statSync(srcPath);
+    if (!stat.isFile() || stat.size > MAX_UPLOAD_BYTES) return null;
+
     const uploadsDir = path.join(app.getPath('userData'), 'uploads');
-    if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
-    const baseName = path.basename(srcPath);
-    // create a timestamped filename to avoid collisions
-    const targetName = `${Date.now()}-${baseName}`;
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    // Prefix with a timestamp and a random part to avoid collisions
+    const targetName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${path.basename(srcPath)}`;
     const destPath = path.join(uploadsDir, targetName);
     fs.copyFileSync(srcPath, destPath);
-    // return a file:// URI so the renderer can load it in <img src=>
-    return `file://${destPath}`;
+    return pathToFileURL(destPath).href;
   } catch (err) {
     console.error('Failed to save dropped file:', err);
     return null;
