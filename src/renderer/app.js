@@ -14,8 +14,10 @@ class CapnoteApp {
     this.hasChanges = false;
     this.originalNoteState = null;
     this.isResizing = false; // Flag to prevent re-renders during resize
-    // Ids of locked notes unlocked for this session only (never persisted)
-    this.unlockedNoteIds = new Set();
+    // Passwords of locked notes unlocked in this session (memory only, never persisted)
+    this.unlockedNotes = new Map();
+    // Latest re-encryption request per note, so an older result never overwrites a newer one
+    this.sealRequests = new WeakMap();
 
     this.defaultFormatting = {
       fontFamily: 'Inter',
@@ -1857,7 +1859,7 @@ class CapnoteApp {
 
       this.notes = [];
       this.currentNote = null;
-      this.unlockedNoteIds.clear();
+      this.unlockedNotes.clear();
       await this.saveNotes();
       this.removeNoteReferences(removedNoteIds);
       // Clear last viewed note
@@ -2133,6 +2135,7 @@ class CapnoteApp {
       this.currentNote.content = doc.body.innerHTML;
       this.currentNote.updatedAt = new Date().toISOString();
       this.saveNotes();
+      if (this.currentNote.isLocked) this.resealNote(this.currentNote);
     });
   }
 
@@ -2168,6 +2171,8 @@ class CapnoteApp {
       this.notes = [];
     }
 
+    await this.migrateLegacyLockedNotes();
+
     // Klasörleri yükle
     await this.loadFolders();
 
@@ -2192,9 +2197,47 @@ class CapnoteApp {
     }
   }
 
+  // What gets persisted: locked notes keep only their encrypted payload, never plaintext
+  serializeNotes() {
+    return this.notes.map((note) => (note.isLocked ? { ...note, content: '' } : note));
+  }
+
+  // Older versions stored the lock password in plain text next to plaintext content
+  async migrateLegacyLockedNotes() {
+    const legacy = this.notes.filter((note) => note.isLocked && typeof note.password === 'string');
+    for (const note of legacy) {
+      note.encrypted = await window.NoteCrypto.encrypt(note.content || '', note.password);
+      note.content = '';
+      delete note.password;
+    }
+    if (legacy.length > 0) await this.saveNotes();
+  }
+
+  // Re-encrypt an unlocked locked note after its content changed
+  async resealNote(note) {
+    const password = this.unlockedNotes.get(String(note.id));
+    if (!note.isLocked || !password) return;
+    const request = {};
+    this.sealRequests.set(note, request);
+    const encrypted = await window.NoteCrypto.encrypt(note.content || '', password);
+    if (this.sealRequests.get(note) !== request) return;
+    note.encrypted = encrypted;
+    this.saveNotes();
+  }
+
+  // Returns the decrypted content, or null when the password is wrong
+  async decryptNote(note, password) {
+    if (!note.encrypted) return null;
+    try {
+      return await window.NoteCrypto.decrypt(note.encrypted, password);
+    } catch {
+      return null;
+    }
+  }
+
   async saveNotes() {
     try {
-      localStorage.setItem('capnote-notes', JSON.stringify(this.notes));
+      localStorage.setItem('capnote-notes', JSON.stringify(this.serializeNotes()));
       // Ensure overview stats reflect the latest notes immediately
       try { this.updateStats(); } catch (e) { }
     } catch (error) {
@@ -3395,6 +3438,7 @@ class CapnoteApp {
     this.upsertCurrentNote();
 
     this.saveNotes();
+    if (this.currentNote.isLocked) this.resealNote(this.currentNote);
     this.markAsSaved(); // Mark as saved to disable save button
 
     // Update favorite button state after saving
@@ -3890,7 +3934,7 @@ class CapnoteApp {
       isLocked: false, // Kopyalanan not kilitli olmasın
       isFavorite: false, // Kopyalanan not favorilerde olmasın
     };
-    delete duplicate.password;
+    delete duplicate.encrypted;
 
     this.notes.unshift(duplicate);
     this.saveNotes();
@@ -4030,10 +4074,15 @@ class CapnoteApp {
     this.displayViewerTags(note.tags || []);
 
     // Stats - compute from HTML content to avoid showing stale stored counts
-    const counts = this.countWordsAndCharsFromHtml(note.content || '');
-    // Update in-memory note counts so subsequent actions use the up-to-date value
-    note.wordCount = counts.words;
-    note.charCount = counts.chars;
+    const lockedForView = this.isNoteLockedForView(note);
+    const counts = lockedForView
+      ? { words: note.wordCount || 0, chars: note.charCount || 0 }
+      : this.countWordsAndCharsFromHtml(note.content || '');
+    if (!lockedForView) {
+      // Update in-memory note counts so subsequent actions use the up-to-date value
+      note.wordCount = counts.words;
+      note.charCount = counts.chars;
+    }
     if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
     if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
     // Reading time calculation (baseline 200 words per minute)
@@ -5730,24 +5779,27 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   // ...existing code...
 
   isNoteLockedForView(note) {
-    return !!(note && note.isLocked && !this.unlockedNoteIds.has(String(note.id)));
+    return !!(note && note.isLocked && !this.unlockedNotes.has(String(note.id)));
   }
 
   /**
    * Re-locks the current note when leaving it if it was unlocked for this session
    */
   autoLockCurrentNote() {
-    if (this.currentNote && this.currentNote.isLocked && this.unlockedNoteIds.has(String(this.currentNote.id))) {
-      this.unlockedNoteIds.delete(String(this.currentNote.id));
+    if (this.currentNote && this.currentNote.isLocked && this.unlockedNotes.has(String(this.currentNote.id))) {
+      this.unlockedNotes.delete(String(this.currentNote.id));
+      this.currentNote.content = '';
       this.updateNotesList();
     }
   }
 
   async unlockNoteForViewing(note) {
     const password = await this.showPasswordModal(window.i18n.t('messages.noteIsLocked'));
-    if (password === note.password) {
+    const plain = password === null ? null : await this.decryptNote(note, password);
+    if (plain !== null) {
       // Temporarily unlock the note for viewing (session only)
-      this.unlockedNoteIds.add(String(note.id));
+      note.content = plain;
+      this.unlockedNotes.set(String(note.id), password);
 
       // Continue with note selection
       this.currentNote = note;
@@ -5791,7 +5843,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.notes = this.notes.filter((n) => n !== note);
     this.saveNotes();
     this.removeNoteReferences([note.id]);
-    this.unlockedNoteIds.delete(String(note.id));
+    this.unlockedNotes.delete(String(note.id));
 
     this.updateNotesList();
     this.updateFoldersList();
@@ -6428,7 +6480,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const exportData = {
       exportDate: new Date().toISOString(),
       version: '1.0.0',
-      notes: this.notes || [],
+      notes: this.serializeNotes(),
       folders: this.folders || [],
       reminders: this.reminders || [],
       notifications: this.notifications || [],
@@ -6618,6 +6670,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
             }
           });
         }
+
+        // Encrypt locked notes coming from old backups that still carry a plain password
+        await this.migrateLegacyLockedNotes();
 
         // Persist everything
         try { await this.saveFolders(); } catch (e) { console.warn(e); }
@@ -7758,23 +7813,32 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       // Unlock note - ask for password
       const password = await this.showPasswordModal(window.i18n.t('messages.enterPasswordToOpen'));
       if (password === null) return;
-      if (password !== note.password) {
+      const plain = await this.decryptNote(note, password);
+      if (plain === null) {
         this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
         return;
       }
 
+      note.content = plain;
       note.isLocked = false;
-      delete note.password;
-      this.unlockedNoteIds.delete(String(note.id));
+      delete note.encrypted;
+      this.unlockedNotes.delete(String(note.id));
       this.showNotification(window.i18n.t('messages.noteUnlocked'), 'success');
     } else {
       // Lock note - ask for password
       const password = await this.showPasswordModal(window.i18n.t('messages.setPasswordForNote'));
       if (!password) return;
 
+      // Persist pending editor changes of this note before its content is encrypted
+      if (this.currentNote === note && this.isEditorOpen()) {
+        this.saveNote(true);
+        this.showViewer();
+      }
+
+      note.encrypted = await window.NoteCrypto.encrypt(note.content || '', password);
+      note.content = '';
       note.isLocked = true;
-      note.password = password;
-      this.unlockedNoteIds.delete(String(note.id));
+      this.unlockedNotes.delete(String(note.id));
       this.showNotification(window.i18n.t('messages.noteLocked'), 'success');
     }
 
