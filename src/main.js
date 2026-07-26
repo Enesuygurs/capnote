@@ -264,38 +264,6 @@ app.on('before-quit', () => {
   isQuitting = true;
 });
 
-// IPC işleyicileri
-ipcMain.handle('get-notes', () => {
-  return store.get('notes', []);
-});
-
-ipcMain.handle('save-note', (event, note) => {
-  const notes = store.get('notes', []);
-  note.id = Date.now().toString();
-  note.createdAt = new Date().toISOString();
-  notes.unshift(note);
-  store.set('notes', notes);
-  return note;
-});
-
-ipcMain.handle('delete-note', (event, noteId) => {
-  const notes = store.get('notes', []);
-  const filteredNotes = notes.filter((note) => note.id !== noteId);
-  store.set('notes', filteredNotes);
-  return true;
-});
-
-ipcMain.handle('update-note', (event, updatedNote) => {
-  const notes = store.get('notes', []);
-  const noteIndex = notes.findIndex((note) => note.id === updatedNote.id);
-  if (noteIndex !== -1) {
-    notes[noteIndex] = { ...notes[noteIndex], ...updatedNote };
-    store.set('notes', notes);
-    return notes[noteIndex];
-  }
-  return null;
-});
-
 // Pencere kontrolleri
 ipcMain.on('minimize-window', () => {
   if (mainWindow) {
