@@ -293,8 +293,6 @@ class CapnoteApp {
     this.createFolderBtn = document.getElementById('createFolderBtn');
     this.cancelFolderBtn = document.getElementById('cancelFolderBtn');
     this.foldersList = document.getElementById('foldersList');
-    this.importNotesBtn = document.getElementById('importNotesBtn');
-    this.exportAllNotesBtn = document.getElementById('exportAllNotesBtn');
     this.importAllDataBtn = document.getElementById('importAllDataBtn');
     this.exportAllDataBtn = document.getElementById('exportAllDataBtn');
     // Table modal elements (editor table insertion)
@@ -1776,9 +1774,6 @@ class CapnoteApp {
       this.toggleDarkMode(e.target.checked);
     });
 
-    if (this.importNotesBtn) this.importNotesBtn.addEventListener('click', () => { this.importNotes(); });
-    if (this.exportAllNotesBtn) this.exportAllNotesBtn.addEventListener('click', () => { this.exportAllNotes(); });
-
     // New combined import/export handlers
     if (this.exportAllDataBtn) this.exportAllDataBtn.addEventListener('click', () => this.exportAllData());
     if (this.importAllDataBtn) this.importAllDataBtn.addEventListener('click', () => this.importAllData());
@@ -1791,7 +1786,6 @@ class CapnoteApp {
     this.clearAllNotesBtn?.addEventListener('click', () => this.confirmClearAllNotes());
     this.clearAllFoldersBtn?.addEventListener('click', () => this.confirmClearAllFolders());
     this.clearAllContentBtn?.addEventListener('click', () => this.confirmClearAllContent());
-    // legacy settings export/import handlers removed (merged into Verileri İçe/Dışa Aktar)
 
     // Modal close buttons
     document.querySelectorAll('.modal-close').forEach((btn) => {
@@ -5393,37 +5387,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.showModal(this.confirmModal);
   }
 
-  showConfirmDialog(title, message) {
-    return new Promise((resolve) => {
-      // Set up modal
-      const prevTitle = this.confirmModal.querySelector('h3')?.textContent || '';
-      const titleEl = this.confirmModal.querySelector('h3');
-      if (titleEl && title) titleEl.textContent = title;
-      this.confirmMessage.textContent = message;
-
-      const handleConfirm = () => {
-        cleanup();
-        resolve(true);
-      };
-
-      const handleCancel = () => {
-        cleanup();
-        resolve(false);
-      };
-
-      const cleanup = () => {
-        this.confirmBtn.removeEventListener('click', handleConfirm);
-        this.cancelBtn.removeEventListener('click', handleCancel);
-        if (titleEl) titleEl.textContent = prevTitle;
-        this.hideModal(this.confirmModal);
-      };
-
-      this.confirmBtn.addEventListener('click', handleConfirm);
-      this.cancelBtn.addEventListener('click', handleCancel);
-
-      this.showModal(this.confirmModal);
-    });
-  }
 
   // Notification methods
   showNotification(message, type = 'info', meta = {}) {
@@ -6315,165 +6278,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     }
   }
 
-  // ============================================
-  // IMPORT/EXPORT METHODS
-  // ============================================
 
-  importNotes() {
-    // Create file input element
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.style.display = 'none';
 
-    input.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
 
-      try {
-        const text = await file.text();
-        const importedData = JSON.parse(text);
-
-        // Support import format that includes notes and folders
-        if (!importedData || (!Array.isArray(importedData.notes) && !Array.isArray(importedData.folders))) {
-          throw new Error('Geçersiz dosya formatı');
-        }
-
-        // Ask user if they want to merge or replace
-        const totalNotes = Array.isArray(importedData.notes) ? importedData.notes.length : 0;
-        const totalFolders = Array.isArray(importedData.folders) ? importedData.folders.length : 0;
-        const merge = await this.showConfirmDialog(
-          'İçe Aktarma Seçeneği',
-          `${totalNotes} not ve ${totalFolders} klasör bulundu. Mevcut verilerle birleştirmek istiyor musunuz? (Hayır seçerseniz mevcut notlar ve/veya klasörler silinir)`
-        );
-
-        if (!merge) {
-          this.notes = [];
-          this.folders = [];
-        }
-
-        // If folders are provided, import them with ID remapping to avoid collisions
-        const folderIdMap = {};
-        if (Array.isArray(importedData.folders)) {
-          importedData.folders.forEach((f) => {
-            const newId = Date.now() + Math.floor(Math.random() * 1000000);
-            folderIdMap[f.id] = newId;
-            const newFolder = { ...f, id: newId };
-            // ensure expanded flag exists
-            newFolder.expanded = newFolder.expanded !== undefined ? newFolder.expanded : true;
-            this.folders.push(newFolder);
-          });
-        }
-
-        // Add imported notes and remap folderId if needed
-        let addedCount = 0;
-        if (Array.isArray(importedData.notes)) {
-          importedData.notes.forEach((note) => {
-            const newNoteId = Date.now() + Math.floor(Math.random() * 1000000);
-            const mappedFolderId = note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : note.folderId;
-            const newNote = {
-              ...note,
-              id: newNoteId,
-              folderId: mappedFolderId || null,
-              createdAt: note.createdAt || new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            };
-            this.notes.push(newNote);
-            addedCount++;
-          });
-        }
-
-        // Persist folders (if any) and notes, then refresh UI so imported folders/notes appear immediately
-        try {
-          await this.saveFolders();
-        } catch (e) {
-          console.warn('Folder save failed during import', e);
-        }
-        await this.saveNotes();
-        // Refresh UI
-        this.updateFoldersList();
-        this.updateNotesList();
-        this.updateFolderNotes();
-        this.updateStats();
-
-        this.showNotification(`${addedCount} not başarıyla içe aktarıldı!`, 'success');
-        // Close settings modal immediately
-        this.settingsModal.classList.remove('show');
-        this.settingsModal.classList.add('hidden');
-      } catch (error) {
-        console.error('Import error:', error);
-        this.showNotification('Dosya içe aktarılırken hata oluştu: ' + error.message, 'error');
-      }
-    });
-
-    document.body.appendChild(input);
-    input.click();
-    document.body.removeChild(input);
-  }
-
-  exportAllNotes() {
-    if (this.notes.length === 0) {
-      this.showNotification('Dışa aktarılacak not bulunamadı!', 'warning');
-      return;
-    }
-
-    const exportData = {
-      exportDate: new Date().toISOString(),
-      version: '1.0.0',
-      totalNotes: this.notes.length,
-      totalFolders: this.folders.length,
-      notes: this.notes,
-      folders: this.folders,
-      // include some settings for convenience
-      settings: {
-        accentColor: localStorage.getItem('accentColor') || null,
-        darkMode: localStorage.getItem('darkMode') || null,
-        syncFolderAccent: localStorage.getItem('syncFolderAccent') || null,
-      },
-    };
-
-    const dataStr = JSON.stringify(exportData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `gunluk-yedek-${new Date().toISOString().split('T')[0]}.json`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-    this.showNotification(`${this.notes.length} not başarıyla dışa aktarıldı!`, 'success');
-  }
-
-  exportSettings() {
-    const keys = ['accentColor', 'darkMode', 'maxPinnedNotes', 'syncFolderAccent', 'folderColorsBackup'];
-    const settings = {};
-    keys.forEach((k) => {
-      const v = localStorage.getItem(k);
-      if (v !== null) settings[k] = v;
-    });
-
-    const payload = {
-      exportDate: new Date().toISOString(),
-      version: '1.0.0',
-      settings,
-    };
-
-    const dataStr = JSON.stringify(payload, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `capnote-settings-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    this.showNotification('Ayarlar dışa aktarıldı', 'success');
-  }
 
   // New: export ALL data (notes, folders, reminders, notifications, settings)
   exportAllData() {
@@ -6812,114 +6619,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     });
   }
 
-  importSettings() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.style.display = 'none';
-    input.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      try {
-        const text = await file.text();
-        const data = JSON.parse(text);
-        if (!data.settings) throw new Error('Geçersiz ayar dosyası');
-
-        const replace = await this.showConfirmDialog(
-          'Ayarları Değiştir',
-          'Ayarları tamamen değiştirmek ister misiniz? (Hayır seçerseniz sadece eksik ayarlar birleştirilecektir)'
-        );
-
-        if (replace) {
-          Object.keys(data.settings).forEach((k) => localStorage.removeItem(k));
-        }
-
-        Object.entries(data.settings).forEach(([k, v]) => {
-          // Do NOT import a foreign folderColorsBackup: backups should be local to each installation.
-          if (k === 'folderColorsBackup') return;
-          // ensure we store everything as strings (localStorage stores strings)
-          try {
-            localStorage.setItem(k, String(v));
-          } catch (e) {
-            console.warn('Could not persist imported setting', k, e);
-          }
-        });
-
-        // Reload settings into UI/state
-        this.loadSettings();
-
-        // Reload folders from storage so in-memory folder list is up-to-date
-        try {
-          await this.loadFolders();
-        } catch (e) {
-          console.warn('Failed to reload folders before applying accent sync', e);
-        }
-
-        // If the imported payload or the current storage indicates folder-accent sync is enabled,
-        // force-apply the accent to all folders so they reflect the newly imported accent immediately.
-        const importedSyncRaw = data.settings && data.settings.syncFolderAccent;
-        const importedAccentRaw = data.settings && data.settings.accentColor;
-        const importedSync = importedSyncRaw !== undefined
-          ? (String(importedSyncRaw) === '1' || String(importedSyncRaw) === 'true')
-          : null;
-
-        const storageSync = localStorage.getItem('syncFolderAccent') === '1';
-        const shouldSync = importedSync === null ? storageSync : importedSync;
-
-        const accentToUse = importedAccentRaw || localStorage.getItem('accentColor') || null;
-
-        if (accentToUse) {
-          // make sure CSS variables match the imported accent
-          this.setAccentColor(accentToUse, { persist: false });
-          // persist the accent in storage so applyFolderAccentSync picks it up
-          try { localStorage.setItem('accentColor', String(accentToUse)); } catch (e) { }
-        }
-
-
-        if (shouldSync) {
-          try {
-            // ensure folders are loaded then apply sync
-            await this.loadFolders();
-            // Create a fresh local backup of current folder colors so disabling sync later
-            // will restore the user's original colors (do not use imported backups).
-            try {
-              const localBackup = {};
-              (this.folders || []).forEach((f) => { localBackup[f.id] = f.color; });
-              localStorage.setItem('folderColorsBackup', JSON.stringify(localBackup));
-            } catch (e) {
-              console.warn('Could not create local folder color backup before applying sync', e);
-            }
-
-            this.applyFolderAccentSync(true);
-          } catch (e) {
-            console.warn('Failed to apply folder-accent sync after import', e);
-          }
-        }
-
-        // Extra safeguard: if sync is enabled and we have an accent, force-overwrite any folder colors
-        // to guarantee the UI reflects the imported accent (handles edge cases where backups or
-        // other storage entries may have prevented a clean sync).
-        if (shouldSync && accentToUse) {
-          try {
-            this.folders = (this.folders || []).map((f) => ({ ...f, color: String(accentToUse) }));
-            await this.saveFolders();
-            this.updateFoldersList();
-            this.updateFolderNotes();
-          } catch (e) {
-            console.warn('Failed to force-overwrite folder colors after import', e);
-          }
-        }
-
-        this.showNotification('Ayarlar başarıyla yüklendi', 'success');
-      } catch (err) {
-        console.error('Settings import error', err);
-        this.showNotification('Ayarlar içe aktarılırken hata oluştu: ' + err.message, 'error');
-      }
-    });
-    document.body.appendChild(input);
-    input.click();
-    document.body.removeChild(input);
-  }
 
   // ============================================
   // SIDEBAR TOGGLE METHODS
