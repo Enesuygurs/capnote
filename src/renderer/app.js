@@ -30,80 +30,30 @@ class CapnoteApp {
 
   insertImageAtSelection(src, name) {
     if (!this.richEditor) return;
-    const wrapper = document.createElement('span');
-    wrapper.className = 'img-wrap';
-    wrapper.contentEditable = 'false';
-
     const img = document.createElement('img');
     img.src = src;
     img.alt = name || '';
     img.className = 'embedded-image';
 
-    const handle = document.createElement('span');
-    handle.className = 'img-handle';
-
-    wrapper.appendChild(img);
-    wrapper.appendChild(handle);
-
-    // insert wrapper at selection
-    try {
-      const sel = window.getSelection();
-      if (sel && sel.rangeCount) {
-        const range = sel.getRangeAt(0);
-        range.deleteContents();
-        range.insertNode(wrapper);
-        range.setStartAfter(wrapper);
-        range.collapse(true);
-        sel.removeAllRanges(); sel.addRange(range);
-      } else {
-        this.richEditor.appendChild(wrapper);
-      }
-    } catch (err) {
-      this.richEditor.appendChild(wrapper);
+    const sel = window.getSelection();
+    const range = sel && sel.rangeCount ? sel.getRangeAt(0) : null;
+    if (range && this.richEditor.contains(range.commonAncestorContainer)) {
+      range.deleteContents();
+      range.insertNode(img);
+    } else {
+      this.richEditor.appendChild(img);
     }
 
-    // click to select
-    wrapper.addEventListener('click', (e) => {
-      e.stopPropagation();
-      // toggle selection class
-      Array.from(this.richEditor.querySelectorAll('.img-wrap.selected')).forEach((n) => n.classList.remove('selected'));
-      wrapper.classList.add('selected');
-    });
+    // Wrap it with the resize handle and selection behaviour shared with loaded images
+    this.ensureImageWrapper(img);
 
-    // resize handling
-    let isResizing = false;
-    let startX = 0;
-    let startW = 0;
-
-    const onMouseMove = (ev) => {
-      if (!isResizing) return;
-      const dx = ev.clientX - startX;
-      const newW = Math.max(24, startW + dx);
-      img.style.width = newW + 'px';
-      // keep height auto
-    };
-
-    const onMouseUp = () => {
-      if (!isResizing) return;
-      isResizing = false;
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-      this.trackContentChanges();
-    };
-
-    handle.addEventListener('mousedown', (ev) => {
-      ev.preventDefault(); ev.stopPropagation();
-      isResizing = true;
-      startX = ev.clientX;
-      startW = img.getBoundingClientRect().width;
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-    });
-
-    // clicking outside deselects
-    document.addEventListener('click', (e) => {
-      if (!wrapper.contains(e.target)) wrapper.classList.remove('selected');
-    });
+    // Continue typing after the image
+    const wrapper = img.parentElement;
+    const after = document.createRange();
+    after.setStartAfter(wrapper);
+    after.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(after);
   }
 
   async init() {
