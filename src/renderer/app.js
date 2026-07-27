@@ -11,7 +11,6 @@ class CapnoteApp {
     this.selectedMood = null;
     this.selectedWeather = null;
     this.tags = [];
-    this.hasChanges = false;
     this.originalNoteState = null;
     this.isResizing = false; // Flag to prevent re-renders during resize
     // Passwords of locked notes unlocked in this session (memory only, never persisted)
@@ -74,14 +73,11 @@ class CapnoteApp {
     // resize handling
     let isResizing = false;
     let startX = 0;
-    let startY = 0;
     let startW = 0;
-    let startH = 0;
 
     const onMouseMove = (ev) => {
       if (!isResizing) return;
       const dx = ev.clientX - startX;
-      const dy = ev.clientY - startY;
       const newW = Math.max(24, startW + dx);
       img.style.width = newW + 'px';
       // keep height auto
@@ -98,9 +94,8 @@ class CapnoteApp {
     handle.addEventListener('mousedown', (ev) => {
       ev.preventDefault(); ev.stopPropagation();
       isResizing = true;
-      startX = ev.clientX; startY = ev.clientY;
+      startX = ev.clientX;
       startW = img.getBoundingClientRect().width;
-      startH = img.getBoundingClientRect().height;
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     });
@@ -169,7 +164,6 @@ class CapnoteApp {
     this.noteTitle = document.getElementById('noteTitle');
     this.richEditor = document.getElementById('noteContentEditable');
     this.searchInput = document.getElementById('searchInput');
-    this.sortSelect = document.getElementById('sortSelect');
     this.tagInput = document.getElementById('tagInput');
     this.tagsList = document.getElementById('tagsList');
 
@@ -245,9 +239,7 @@ class CapnoteApp {
     this.editorReadingTime = document.getElementById('editorReadingTime');
 
     // Filter tabs (modern navigation)
-    this.filterTabs = document.querySelectorAll(
-      '.nav-item[data-filter], .nav-subitem[data-filter]'
-    );
+    this.filterTabs = document.querySelectorAll('.nav-item[data-filter]');
 
     // Notes list container
     this.notesListContainer = document.getElementById('notesListContainer');
@@ -258,7 +250,6 @@ class CapnoteApp {
     this.cancelBtn = document.getElementById('cancelBtn');
     this.confirmMessage = document.getElementById('confirmMessage');
     this.exportModal = document.getElementById('exportModal');
-    this.pickerModal = document.getElementById('pickerModal');
     this.settingsModal = document.getElementById('settingsModal');
 
     // Settings elements
@@ -312,7 +303,6 @@ class CapnoteApp {
     this.deleteFolderMenuItem = document.getElementById('deleteFolderMenuItem');
     this.renameFolderMenuItem = document.getElementById('renameFolderMenuItem');
     this.changeFolderColorMenuItem = document.getElementById('changeFolderColorMenuItem');
-    this.folderColorPicker = document.getElementById('folderColorPicker');
     this.folderColorModal = document.getElementById('folderColorModal');
     this.folderColorInput = document.getElementById('folderColorInput');
     this.saveFolderColorBtn = document.getElementById('saveFolderColorBtn');
@@ -388,11 +378,6 @@ class CapnoteApp {
         closeMenus();
       }
     });
-
-    // Close menus on scroll to prevent floating menus from staying in place
-    // document.addEventListener('scroll', (e) => {
-    //   closeMenus();
-    // }, true);
 
     // Titlebar controls
     document.getElementById('minimizeBtn')?.addEventListener('click', () => {
@@ -665,7 +650,7 @@ class CapnoteApp {
 
     // Navigation items - modern sidebar
     document
-      .querySelectorAll('.nav-item[data-filter], .nav-subitem[data-filter]')
+      .querySelectorAll('.nav-item[data-filter]')
       .forEach((item) => {
         item.addEventListener('click', (e) => {
           const clickedFilter = e.currentTarget.dataset.filter;
@@ -674,7 +659,7 @@ class CapnoteApp {
           if (this.currentFilter === clickedFilter) {
             // Remove active from filter-group items only (keep reminders/notifications state)
             document
-              .querySelectorAll('.nav-item[data-filter], .nav-subitem[data-filter]')
+              .querySelectorAll('.nav-item[data-filter]')
               .forEach((nav) => nav.classList.remove('active'));
             // Reset to "all" filter
             this.changeFilter('all');
@@ -683,7 +668,7 @@ class CapnoteApp {
           } else {
             // Remove active from other filter-group items only
             document
-              .querySelectorAll('.nav-item[data-filter], .nav-subitem[data-filter]')
+              .querySelectorAll('.nav-item[data-filter]')
               .forEach((nav) => nav.classList.remove('active'));
             // Add active to clicked filter item
             e.currentTarget.classList.add('active');
@@ -695,47 +680,6 @@ class CapnoteApp {
 
     // New note navigation item
     document.getElementById('newNoteNav')?.addEventListener('click', () => this.createNewNote());
-
-    // Expandable nav items
-    document.querySelectorAll('.nav-expandable').forEach((item) => {
-      item.addEventListener('click', (e) => {
-        e.preventDefault();
-        item.classList.toggle('expanded');
-
-        // Special handling for notes toggle
-        if (item.id === 'notesToggle') {
-          const notesContainer = document.getElementById('notesListContainer');
-          const chevron = item.querySelector('.nav-expand');
-
-          if (item.classList.contains('expanded')) {
-            notesContainer.classList.remove('hidden');
-            chevron.style.transform = 'rotate(0deg)';
-          } else {
-            notesContainer.classList.add('hidden');
-            chevron.style.transform = 'rotate(-90deg)';
-          }
-        }
-      });
-    });
-
-    // Event delegation for note action buttons
-    this.notesList.addEventListener('click', (e) => {
-      const target = e.target.closest('.note-action-btn');
-      if (target) {
-        e.stopPropagation();
-        const noteId = target.getAttribute('data-note-id');
-
-        if (target.classList.contains('lock-btn') && noteId) {
-          this.toggleLock(noteId);
-        } else if (target.classList.contains('favorite-btn') && noteId) {
-          this.toggleNoteFavorite(noteId);
-        } else if (target.classList.contains('pin-btn') && noteId) {
-          this.togglePin(noteId);
-        } else if (target.classList.contains('delete-btn') && noteId) {
-          this.deleteNoteById(noteId);
-        }
-      }
-    });
 
     // Rich editor events
     this.richEditor.addEventListener('input', () => {
@@ -803,61 +747,6 @@ class CapnoteApp {
               node = node.childNodes[offset];
               offset = 0;
             }
-          }
-          const nodeText = node && node.nodeType === Node.TEXT_NODE ? (node.nodeValue || '') : '';
-          // Robust check: create a range from caret to the end of the codeAncestor and
-          // if the substring is empty (or whitespace) the caret is effectively at the end.
-          let atEndOfCode = false;
-          try {
-            const tempRange = document.createRange();
-            tempRange.setStart(node, offset);
-            // find deepest last descendant of the codeAncestor
-            let last = codeAncestor;
-            while (last && last.lastChild) last = last.lastChild;
-            if (last) {
-              if (last.nodeType === Node.TEXT_NODE) {
-                tempRange.setEnd(last, last.nodeValue ? last.nodeValue.length : 0);
-              } else {
-                tempRange.setEndAfter(last);
-              }
-            } else {
-              tempRange.setEnd(codeAncestor, codeAncestor.childNodes.length || 0);
-            }
-            const remainder = tempRange.toString();
-            atEndOfCode = remainder === '' || remainder.trim() === '';
-          } catch (err) {
-            atEndOfCode = nodeText.length === 0 || offset >= nodeText.length;
-          }
-
-
-          // If user pressed Ctrl/Cmd+Enter, always exit the code block
-          if (isExitShortcut) {
-            e.preventDefault();
-            try {
-              // prefer the actual <pre> ancestor if present
-              const resolvedPre = preAncestor || (codeAncestor && (codeAncestor.closest ? codeAncestor.closest('pre') : codeAncestor.parentElement));
-              const para = document.createElement('p');
-              para.innerHTML = '<br>';
-              if (resolvedPre && resolvedPre.parentNode) {
-                if (resolvedPre.nextSibling) resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
-                else resolvedPre.parentNode.appendChild(para);
-              } else {
-                // fallback: append to editor
-                this.richEditor.appendChild(para);
-              }
-              // move caret into the new paragraph
-              const newSel = window.getSelection();
-              const newRange = document.createRange();
-              newRange.setStart(para, 0);
-              newRange.collapse(true);
-              newSel.removeAllRanges();
-              newSel.addRange(newRange);
-              this.richEditor.focus();
-              this.trackContentChanges();
-            } catch (err) {
-              // fallback to inserting newline inside code block
-            }
-            return;
           }
           // otherwise we're inside a <code> node: insert a newline at the caret.
           // Only Ctrl/Cmd+Enter above exits the code block; plain Enter should reliably add a newline.
@@ -3939,8 +3828,6 @@ class CapnoteApp {
     this.selectNote(duplicate);
   }
 
-  // ...existing code...
-
   /**
    * Favori butonlarını günceller
    */
@@ -4256,7 +4143,6 @@ class CapnoteApp {
 
     // Update custom folder notes
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
-      const folderIdLog = container.getAttribute('data-folder-id');
       const folderId = container.getAttribute('data-folder-id');
       container.innerHTML = '';
       let folderNotes = this.notes.filter((note) => note.folderId == folderId);
@@ -4358,7 +4244,6 @@ class CapnoteApp {
         break;
       default:
         // no folder restriction here: include all notes for the default 'all' view
-        matched = matched;
         break;
     }
 
@@ -4651,10 +4536,6 @@ class CapnoteApp {
     return div;
   }
 
-  getTextPreview(html) {
-    const text = this.parseInertHtml(html).textContent || '';
-    return text.length > 100 ? text.substring(0, 100) + '...' : text;
-  }
 
   escapeHtml(text) {
     const div = document.createElement('div');
@@ -4963,7 +4844,6 @@ class CapnoteApp {
         // ignore if any issue reading computed styles
       }
 
-      // ...existing code...
     } catch (e) {
       console.warn('Error updating format panel:', e);
     }
@@ -5128,15 +5008,7 @@ class CapnoteApp {
     this.updateMoodWeatherDisplay();
   }
 
-  showMoodPicker() {
-    // Implementation for mood picker modal
-    this.showNotification(window.i18n.t('messages.useSidePanel'), 'info');
-  }
 
-  showWeatherPicker() {
-    // Implementation for weather picker modal
-    this.showNotification(window.i18n.t('messages.useWeatherPanel'), 'info');
-  }
 
   // Tags methods
   addTag(tagText) {
@@ -5446,9 +5318,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.notification.classList.add('hidden');
   }
 
-  applyStoredFormatting(formatting) {
-    this.setEditorFormatting(formatting);
-  }
 
   updateCustomDropdown(dropdownId, value) {
     const dropdown = document.getElementById(dropdownId);
@@ -5739,8 +5608,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.captureEditorSelection();
   }
 
-  // ...existing code...
-
   isNoteLockedForView(note) {
     return !!(note && note.isLocked && !this.unlockedNotes.has(String(note.id)));
   }
@@ -5901,18 +5768,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     }
   }
 
-  toggleNoteFavorite(noteId) {
-    const note = this.notes.find((n) => n.id == noteId);
-    if (!note) return;
-
-    note.isFavorite = !note.isFavorite;
-    this.saveNotes();
-    this.updateNotesList();
-    this.showNotification(
-      note.isFavorite ? window.i18n.t('messages.addedToFavorites') : window.i18n.t('messages.removedFromFavorites'),
-      'success'
-    );
-  }
 
   setupCustomDropdown() {
     // Setup all custom dropdowns
@@ -5965,9 +5820,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
           // Handle different dropdown types
           const dropdownId = customSelect.id;
-          if (dropdownId === 'sortSelect') {
-            this.changeSorting(value);
-          } else if (dropdownId === 'fontFamily') {
+          if (dropdownId === 'fontFamily') {
             this.changeFontFamily(value);
           } else if (dropdownId === 'fontSize') {
             this.changeFontSize(value);
@@ -6430,7 +6283,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         }
 
         // Import reminders and notifications with noteId remapping
-        let unresolvedRefs = 0;
         if (Array.isArray(data.reminders) && importOptions.reminders) {
           data.reminders.forEach((r) => {
             const newR = { ...r };
@@ -6440,9 +6292,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
               if (noteIdMap[newR.noteId]) {
                 newR.noteId = noteIdMap[newR.noteId];
               } else {
-                // unknown note reference -> null it and count unresolved
+                // unknown note reference -> null it
                 newR.noteId = null;
-                unresolvedRefs++;
               }
             }
             this.reminders.push(newR);
@@ -6458,7 +6309,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
                 newN.noteId = noteIdMap[newN.noteId];
               } else {
                 newN.noteId = null;
-                unresolvedRefs++;
               }
             }
             this.notifications.push(newN);
@@ -7628,10 +7478,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.showModal(this.confirmModal);
   }
 
-  openFolderColorPicker() {
-    // Deprecated: use modal-based picker instead
-    this.openFolderColorModal();
-  }
 
   openFolderColorModal() {
     if (!this.selectedFolderId) return;
@@ -7639,13 +7485,13 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     if (!folder) return;
     // Prefill modal input with current folder color
     if (this.folderColorInput) this.folderColorInput.value = folder.color || '#3B82F6';
-    // Store the folder id on the hidden picker so the save handler can find it
-    if (this.folderColorPicker) this.folderColorPicker.dataset.folderId = folder.id;
+    // Remember the target folder; the context menu clears selectedFolderId when it closes
+    this.colorModalFolderId = folder.id;
     this.showModal(this.folderColorModal);
   }
 
   applySelectedFolderColor(color) {
-    const folderId = this.selectedFolderId || (this.folderColorPicker && this.folderColorPicker.dataset.folderId);
+    const folderId = this.colorModalFolderId || this.selectedFolderId;
     if (!folderId) return;
     const folder = this.folders.find((f) => f.id == folderId);
     if (!folder) return;
@@ -7655,10 +7501,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // Update only the folder header icon in the DOM to avoid re-rendering the entire notes list
     this.updateFolderColorInDOM(folderId, color);
     this.showNotification(window.i18n.t('messages.folderColorUpdated'), 'success');
-    // Clean up the dataset to avoid stale ids
-    try {
-      if (this.folderColorPicker) delete this.folderColorPicker.dataset.folderId;
-    } catch (e) { }
+    this.colorModalFolderId = null;
   }
 
   updateFolderColorInDOM(folderId, color) {

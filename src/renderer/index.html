@@ -155,10 +155,6 @@
 
         <!-- Sidebar Footer -->
         <div class="sidebar-footer">
-          <div class="nav-item" id="invitePeople">
-            <i class="fas fa-user-plus nav-icon"></i>
-            <span class="nav-text" data-i18n="nav.invitePeople">Kişi Davet Et</span>
-          </div>
           <div class="nav-item" id="helpSupport">
             <i class="fas fa-cog nav-icon"></i>
             <span class="nav-text" data-i18n="nav.settings">Ayarlar</span>
@@ -557,21 +553,6 @@
       </div>
     </div>
 
-    <!-- Mood/Weather Picker Modal -->
-    <div id="pickerModal" class="modal hidden">
-      <div class="modal-content picker-modal">
-        <div class="modal-header">
-          <h3 id="pickerTitle" data-i18n="modals.selectOption">Seçim Yap</h3>
-          <button class="modal-close" id="closePickerModal">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        <div id="pickerContent" class="picker-content">
-          <!-- Dinamik içerik -->
-        </div>
-      </div>
-    </div>
-
     <!-- Export Modal -->
     <div id="exportModal" class="modal hidden">
       <div class="modal-content">
@@ -634,7 +615,6 @@
           <button id="insertTableConfirmBtn" class="btn btn-primary" data-i18n="buttons.add">Ekle</button>
         </div>
       </div>
-    </div>
     </div>
 
     <!-- Note History Modal -->
@@ -1027,9 +1007,6 @@
         <span data-i18n="modals.deleteFolder">Klasörü Sil</span>
       </div>
     </div>
-
-    <!-- Hidden color input used for picking folder color -->
-    <input type="color" id="folderColorPicker" style="display:none;" aria-hidden="true" />
 
     <!-- Folder Color Modal (custom picker with Save) -->
     <div id="folderColorModal" class="modal hidden">
