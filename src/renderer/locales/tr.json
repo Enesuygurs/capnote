@@ -83,7 +83,8 @@
     "cherryRed": "Kiraz Kırmızısı",
     "appleGreen": "Elma Yeşili",
     "purple": "Mor",
-    "blue": "Mavi"
+    "blue": "Mavi",
+    "options": "Seçenekler"
   },
   "placeholders": {
     "noteTitle": "Not başlığı...",
@@ -193,7 +194,10 @@
     "color": "Renk",
     "tableRows": "Satır sayısı",
     "tableCols": "Sütun sayısı",
-    "tableHeader": "Başlık satırı ekle"
+    "tableHeader": "Başlık satırı ekle",
+    "importOptions": "İçe Aktarma Seçenekleri",
+    "mergeWithExisting": "Mevcut verilerle birleştir",
+    "folders": "Klasörler"
   },
   "export": {
     "plainText": "Düz Metin (.txt)",
@@ -213,7 +217,8 @@
     "thu": "Per",
     "fri": "Cum",
     "sat": "Cmt",
-    "sun": "Paz"
+    "sun": "Paz",
+    "recurrence": "Tekrarlama"
   },
   "notifications": {
     "title": "Bildirimler",
@@ -228,7 +233,11 @@
     "todoAdded": "Görev eklendi",
     "todoDeleted": "Görev silindi",
     "todoUpdated": "Görev güncellendi",
-    "todoCompleted": "Görev tamamlandı"
+    "todoCompleted": "Görev tamamlandı",
+    "sectionAdded": "Bölüm eklendi",
+    "sectionDeleted": "Bölüm silindi",
+    "noTodosInSection": "Bu bölümde görev yok",
+    "taskCount": "{count} görev"
   },
   "emojiCategories": {
     "all": "Tümü",
@@ -252,8 +261,8 @@
   "messages": {
     "noteSaved": "Not kaydedildi!",
     "noteDeleted": "Not silindi!",
-    "folderCreated": "Klasör oluşturuldu",
-    "folderDeleted": "Klasör silindi",
+    "folderCreated": "\"{name}\" klasörü oluşturuldu",
+    "folderDeleted": "\"{name}\" klasörü ve içindeki notlar silindi",
     "dataExported": "Veriler dışa aktarıldı",
     "dataImported": "Veriler içe aktarıldı",
     "error": "Bir hata oluştu",
@@ -336,6 +345,33 @@
     "reminderNotification": "⏰ Hatırlatma:",
     "renameFolder": "Klasörü Yeniden Adlandır",
     "confirmDeleteFolder": "klasörü silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?",
-    "confirmDeleteFolderWithNotes": "klasörü ve içindeki {count} not kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?"
+    "confirmDeleteFolderWithNotes": "klasörü ve içindeki {count} not kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?",
+    "confirmDeleteAllNotes": "Tüm notları kalıcı olarak silmek istiyor musunuz? Bu işlem geri alınamaz.",
+    "confirmDeleteAllFolders": "Tüm klasörleri silmek istiyor musunuz? İçlerindeki notlar korunacak.",
+    "confirmResetApp": "Uygulamayı sıfırlamak istiyor musunuz? Notlar, klasörler ve ayarlar varsayılanlara dönecek. Bu işlem geri alınamaz.",
+    "untitledNote": "Başlıksız Not",
+    "noNotifications": "Henüz bildirim yok",
+    "copyCode": "Kodu kopyala",
+    "copied": "Kopyalandı",
+    "darkModeEnabled": "Karanlık mod etkinleştirildi",
+    "lightModeEnabled": "Aydınlık mod etkinleştirildi",
+    "invalidFileFormat": "Geçersiz dosya formatı",
+    "importCancelled": "İçe aktarma iptal edildi",
+    "dataImportError": "Veriler içe aktarılırken hata oluştu:",
+    "folderNameEmpty": "Klasör adı boş olamaz!",
+    "folderNameTooLong": "Klasör adı çok uzun!",
+    "folderNameExists": "Bu isimde bir klasör zaten var!",
+    "folderRenamed": "\"{name}\" olarak yeniden adlandırıldı",
+    "noteMovedToFolder": "\"{title}\" {folder} klasörüne taşındı",
+    "unknownFolder": "Bilinmeyen klasör",
+    "testNotificationTitle": "🔔 Test bildirimi",
+    "testNotificationBody": "Bu bir test bildirimidir."
+  },
+  "templates": {
+    "listItem1": "Birinci madde",
+    "listItem2": "İkinci madde",
+    "listItem3": "Üçüncü madde",
+    "task": "Görev",
+    "tableHeader": "Başlık {n}"
   }
 }

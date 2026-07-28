@@ -83,7 +83,8 @@
     "cherryRed": "Cherry Red",
     "appleGreen": "Apple Green",
     "purple": "Purple",
-    "blue": "Blue"
+    "blue": "Blue",
+    "options": "Options"
   },
   "placeholders": {
     "noteTitle": "Note title...",
@@ -193,7 +194,10 @@
     "color": "Color",
     "tableRows": "Number of rows",
     "tableCols": "Number of columns",
-    "tableHeader": "Add header row"
+    "tableHeader": "Add header row",
+    "importOptions": "Import Options",
+    "mergeWithExisting": "Merge with existing data",
+    "folders": "Folders"
   },
   "export": {
     "plainText": "Plain Text (.txt)",
@@ -213,7 +217,8 @@
     "thu": "Thu",
     "fri": "Fri",
     "sat": "Sat",
-    "sun": "Sun"
+    "sun": "Sun",
+    "recurrence": "Recurrence"
   },
   "notifications": {
     "title": "Notifications",
@@ -228,7 +233,11 @@
     "todoAdded": "Task added",
     "todoDeleted": "Task deleted",
     "todoUpdated": "Task updated",
-    "todoCompleted": "Task completed"
+    "todoCompleted": "Task completed",
+    "sectionAdded": "Section added",
+    "sectionDeleted": "Section deleted",
+    "noTodosInSection": "No tasks in this section",
+    "taskCount": "{count} tasks"
   },
   "emojiCategories": {
     "all": "All",
@@ -252,8 +261,8 @@
   "messages": {
     "noteSaved": "Note saved!",
     "noteDeleted": "Note deleted!",
-    "folderCreated": "Folder created",
-    "folderDeleted": "Folder deleted",
+    "folderCreated": "Folder \"{name}\" created",
+    "folderDeleted": "Folder \"{name}\" and its notes deleted",
     "dataExported": "Data exported",
     "dataImported": "Data imported",
     "error": "An error occurred",
@@ -336,6 +345,33 @@
     "reminderNotification": "⏰ Reminder:",
     "renameFolder": "Rename Folder",
     "confirmDeleteFolder": "folder will be deleted. This action cannot be undone. Do you want to continue?",
-    "confirmDeleteFolderWithNotes": "folder and its {count} notes will be permanently deleted. This action cannot be undone. Do you want to continue?"
+    "confirmDeleteFolderWithNotes": "folder and its {count} notes will be permanently deleted. This action cannot be undone. Do you want to continue?",
+    "confirmDeleteAllNotes": "Permanently delete all notes? This cannot be undone.",
+    "confirmDeleteAllFolders": "Delete all folders? The notes inside them will be kept.",
+    "confirmResetApp": "Reset the app? Notes, folders and settings return to their defaults. This cannot be undone.",
+    "untitledNote": "Untitled Note",
+    "noNotifications": "No notifications yet",
+    "copyCode": "Copy code",
+    "copied": "Copied",
+    "darkModeEnabled": "Dark mode enabled",
+    "lightModeEnabled": "Light mode enabled",
+    "invalidFileFormat": "Invalid file format",
+    "importCancelled": "Import cancelled",
+    "dataImportError": "Error while importing data:",
+    "folderNameEmpty": "Folder name cannot be empty!",
+    "folderNameTooLong": "Folder name is too long!",
+    "folderNameExists": "A folder with this name already exists!",
+    "folderRenamed": "Renamed to \"{name}\"",
+    "noteMovedToFolder": "\"{title}\" moved to {folder}",
+    "unknownFolder": "Unknown folder",
+    "testNotificationTitle": "🔔 Test notification",
+    "testNotificationBody": "This is a test notification."
+  },
+  "templates": {
+    "listItem1": "First item",
+    "listItem2": "Second item",
+    "listItem3": "Third item",
+    "task": "Task",
+    "tableHeader": "Header {n}"
   }
 }

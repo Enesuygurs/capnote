@@ -76,6 +76,7 @@ class CapnoteApp {
     this.setupSettingsEventListeners();
     this.setupResizeOptimization();
     this.loadSettings();
+    window.electronAPI?.setLanguage?.(window.i18n.getLanguage());
     this.loadSidebarPreference();
     this.initializeHamburgerIcon();
     this.updateUI();
@@ -360,6 +361,7 @@ class CapnoteApp {
         console.log('Language selector changed to:', lang);
         if (window.i18n) {
           window.i18n.setLanguage(lang);
+          window.electronAPI?.setLanguage?.(lang);
           this.showNotification(window.i18n.t('messages.languageChanged'), 'success');
           // Update dynamic content that may not have data-i18n attributes
           this.updateDynamicTranslations();
@@ -975,8 +977,8 @@ class CapnoteApp {
 
   testNativeNotification() {
     // Simple in-app notification + store
-    const title = '🔔 Test Bildirimi';
-    const body = 'Bu bir test bildirimidir.';
+    const title = window.i18n.t('messages.testNotificationTitle');
+    const body = window.i18n.t('messages.testNotificationBody');
     const nid = this.addNotification(null, title, body);
     this.showNotification(title, 'info', { notificationId: nid });
 
@@ -1669,19 +1671,19 @@ class CapnoteApp {
   }
 
   confirmClearAllNotes() {
-    this.showConfirm('Tüm notları kalıcı olarak silmek istiyor musunuz? Bu işlem geri alınamaz.', async () => {
+    this.showConfirm(window.i18n.t('messages.confirmDeleteAllNotes'), async () => {
       await this.clearAllNotes();
     });
   }
 
   confirmClearAllFolders() {
-    this.showConfirm('Tüm klasörleri kalıcı olarak silmek istiyor musunuz? Notların klasör ilişkileri kaldırılacaktır.', async () => {
+    this.showConfirm(window.i18n.t('messages.confirmDeleteAllFolders'), async () => {
       await this.clearAllFolders();
     });
   }
 
   confirmClearAllContent() {
-    this.showConfirm('Uygulamayı sıfırlamak istiyor musunuz? (Notlar, klasörler ve ayarlar varsayılanlara dönecek). Bu işlem geri alınamaz.', async () => {
+    this.showConfirm(window.i18n.t('messages.confirmResetApp'), async () => {
       await this.clearAllContent();
     });
   }
@@ -1861,6 +1863,11 @@ class CapnoteApp {
       this.passwordModalResolve = null;
     }
     this.passwordModal.classList.add('hidden');
+  }
+
+  // Date/number locale matching the UI language
+  getLocale() {
+    return window.i18n && window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
   }
 
   isEditorOpen() {
@@ -2168,18 +2175,18 @@ class CapnoteApp {
 
   _recurrenceLabel(code) {
     switch (code) {
-      case 'daily': return 'Günlük';
-      case 'weekly': return 'Haftalık';
-      case 'monthly': return 'Aylık';
+      case 'daily': return window.i18n.t('reminder.daily');
+      case 'weekly': return window.i18n.t('reminder.weekly');
+      case 'monthly': return window.i18n.t('reminder.monthly');
       default: return '';
     }
   }
 
   _weekdayShort(n) {
-    const map = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt'];
+    const keys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     const idx = parseInt(n);
     if (isNaN(idx) || idx < 0 || idx > 6) return '';
-    return map[idx];
+    return window.i18n.t(`reminder.${keys[idx]}`);
   }
 
   async saveReminders() {
@@ -2269,7 +2276,7 @@ class CapnoteApp {
     this.todosSectionsContainer.innerHTML = this.todoSections.map(section => {
       const activeTodos = section.todos.filter(t => !t.completed).length;
       const todosHtml = section.todos.length === 0 ?
-        `<div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 13px;">Bu bölümde görev yok</div>` :
+        `<div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 13px;">${window.i18n.t('todos.noTodosInSection')}</div>` :
         section.todos.map(todo => `
           <div class="todo-item ${todo.completed ? 'completed' : ''}" data-todo-id="${todo.id}" data-section-id="${section.id}">
             <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} data-action="toggle" data-todo-id="${todo.id}" data-section-id="${section.id}">
@@ -2291,7 +2298,7 @@ class CapnoteApp {
           <div class="todo-section-header">
             <div class="todo-section-title">
               <h3>${this.escapeHtml(section.name)}</h3>
-              <span class="todo-section-count">${activeTodos} görev</span>
+              <span class="todo-section-count">${window.i18n.t('todos.taskCount', { count: activeTodos })}</span>
             </div>
             <div class="todo-section-actions">
               <button class="section-action-btn delete-section" data-action="delete-section" data-section-id="${section.id}" title="${window.i18n.t('actions.delete')}">
@@ -2390,7 +2397,7 @@ class CapnoteApp {
     this.saveTodos();
     this.todoSectionInput.value = '';
     this.renderTodosSections();
-    this.showNotification(window.i18n.t('todos.todoAdded'), 'success');
+    this.showNotification(window.i18n.t('todos.sectionAdded'), 'success');
   }
 
   deleteTodoSection(sectionId) {
@@ -2398,7 +2405,7 @@ class CapnoteApp {
     this.saveTodos();
     this.renderTodosSections();
     this.updateTodosCount();
-    this.showNotification(window.i18n.t('todos.todoDeleted'), 'success');
+    this.showNotification(window.i18n.t('todos.sectionDeleted'), 'success');
   }
 
   addTodoToSection(sectionId, text) {
@@ -2732,7 +2739,7 @@ class CapnoteApp {
           <div class="reminder-note-title">${this.escapeHtml(r.noteTitle)}</div>
           <div class="reminder-datetime">
             <i class="fas fa-clock"></i>
-            ${new Date(r.datetime).toLocaleString('tr-TR', {
+            ${new Date(r.datetime).toLocaleString(this.getLocale(), {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -2794,7 +2801,7 @@ class CapnoteApp {
     const reminder = {
       id: Date.now(),
       noteId: this.currentNote.id,
-      noteTitle: this.currentNote.title || 'Başlıksız Not',
+      noteTitle: this.currentNote.title || window.i18n.t('messages.untitledNote'),
       datetime: datetime,
       recurrence: (this.reminderRecurrence && this.reminderRecurrence.value) ? this.reminderRecurrence.value : 'none',
       dismissed: false,
@@ -2863,7 +2870,7 @@ class CapnoteApp {
         <div class="note-reminder-item">
           <div class="note-reminder-time">
               <i class="fas fa-bell"></i>
-              ${new Date(r.datetime).toLocaleString('tr-TR', {
+              ${new Date(r.datetime).toLocaleString(this.getLocale(), {
         month: 'short',
         day: 'numeric',
         hour: '2-digit',
@@ -2871,7 +2878,7 @@ class CapnoteApp {
       })}
               ${r.recurrence && r.recurrence !== 'none' ? ` <span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? (': ' + r.recurrenceDays.map(d => this._weekdayShort(d)).join(', ')) : ''}</span>` : ''}
           </div>
-          <button class="note-reminder-remove" data-reminder-id="${r.id}" title="Sil">
+          <button class="note-reminder-remove" data-reminder-id="${r.id}" title="${window.i18n.t('buttons.delete')}">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -2919,7 +2926,7 @@ class CapnoteApp {
 
       // Being later than a couple of check intervals means the app was not running at that time
       const missed = now - new Date(reminder.datetime) > 2 * 60000;
-      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+      const locale = this.getLocale();
       const when = new Date(reminder.datetime).toLocaleString(locale);
       const body = `${window.i18n.t(missed ? 'messages.reminderMissed' : 'messages.reminderDue')} ${when}`;
 
@@ -3001,7 +3008,7 @@ class CapnoteApp {
     if (!this.notificationsList) return;
 
     if (this.notifications.length === 0) {
-      this.notificationsList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">Henüz bildirim yok</div>';
+      this.notificationsList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">' + window.i18n.t('messages.noNotifications') + '</div>';
       return;
     }
 
@@ -3011,7 +3018,7 @@ class CapnoteApp {
           <div class="notification-note-title">${this.escapeHtml(n.noteTitle)}</div>
           <div class="notification-time">
             <i class="fas fa-clock"></i>
-            ${new Date(n.time).toLocaleString('tr-TR', {
+            ${new Date(n.time).toLocaleString(this.getLocale(), {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -3141,7 +3148,7 @@ class CapnoteApp {
   updateCurrentDate() {
     if (this.noteDate) {
       const now = new Date();
-      const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+      const locale = this.getLocale();
       this.noteDate.textContent = now.toLocaleDateString(locale, {
         weekday: 'long',
         year: 'numeric',
@@ -3235,7 +3242,7 @@ class CapnoteApp {
     // Sync checkbox states before saving
     this.syncCheckboxStates();
 
-    const title = this.noteTitle.value.trim() || 'Başlıksız Not';
+    const title = this.noteTitle.value.trim() || window.i18n.t('messages.untitledNote');
     // If markdown editor is visible, save raw markdown; otherwise save HTML from rich editor
     // If the markdown editor is visible (editing markdown), save raw markdown; otherwise save HTML from rich editor
     const isMarkdownMode = this.markdownEditor && !this.markdownEditor.classList.contains('hidden');
@@ -3528,7 +3535,7 @@ class CapnoteApp {
       const btn = document.createElement('button');
       btn.className = 'code-copy-btn';
       btn.type = 'button';
-      btn.title = 'Kodu kopyala';
+      btn.title = window.i18n.t('messages.copyCode');
       btn.innerHTML = '<i class="fas fa-copy"></i>';
 
       btn.addEventListener('click', async (e) => {
@@ -3537,12 +3544,12 @@ class CapnoteApp {
         try {
           await navigator.clipboard.writeText(text);
           btn.classList.add('copied');
-          btn.title = 'Kopyalandı';
+          btn.title = window.i18n.t('messages.copied');
           // show toast
-          if (this.showNotification) this.showNotification('Kod panoya kopyalandı', 'success');
+          if (this.showNotification) this.showNotification(window.i18n.t('messages.codeCopied'), 'success');
           setTimeout(() => {
             btn.classList.remove('copied');
-            btn.title = 'Kodu kopyala';
+            btn.title = window.i18n.t('messages.copyCode');
           }, 1200);
         } catch (err) {
           // fallback: select and execCommand
@@ -3887,7 +3894,7 @@ class CapnoteApp {
     // Tarih bilgisi
     const createdDate = new Date(note.createdAt);
     const updatedDate = new Date(note.updatedAt);
-    const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+    const locale = this.getLocale();
     this.viewerDate.textContent = createdDate.toLocaleDateString(locale, {
       weekday: 'long',
       year: 'numeric',
@@ -3930,7 +3937,7 @@ class CapnoteApp {
       }
     }
     // Show date + time for last modified (e.g. 12.10.2025 14:35)
-    const locale2 = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+    const locale2 = this.getLocale();
     this.lastModified.textContent = updatedDate.toLocaleString(locale2, {
       year: 'numeric',
       month: '2-digit',
@@ -3959,7 +3966,7 @@ class CapnoteApp {
 
     // Show createdAt at the top
     const created = this.currentNote.createdAt ? new Date(this.currentNote.createdAt) : null;
-    const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+    const locale = this.getLocale();
     if (created) {
       const el = document.createElement('div');
       el.className = 'history-entry created';
@@ -4361,7 +4368,7 @@ class CapnoteApp {
             <i class="fas fa-file-alt nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(note.title)}</span>
             <div class="note-options-container">
-                <button class="more-options-btn" title="Seçenekler">
+                <button class="more-options-btn" title="${window.i18n.t('titles.options')}">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <div class="note-options-menu hidden" data-note-id="${note.id}">
@@ -4844,14 +4851,14 @@ class CapnoteApp {
     let text;
 
     if (type === 'date') {
-      text = now.toLocaleDateString('tr-TR', {
+      text = now.toLocaleDateString(this.getLocale(), {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
         day: 'numeric',
       });
     } else {
-      text = now.toLocaleTimeString('tr-TR', {
+      text = now.toLocaleTimeString(this.getLocale(), {
         hour: '2-digit',
         minute: '2-digit',
       });
@@ -5078,7 +5085,7 @@ ${this.buildExportBody(note)}
 
   // Shared markup for exported notes (PDF and HTML exports)
   buildExportBody(note) {
-    const locale = window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+    const locale = this.getLocale();
     const content = this.parseInertHtml(
       this.sanitizeHtml(note.isMarkdown && window.marked ? marked.parse(note.content || '') : note.content || '')
     );
@@ -5353,7 +5360,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     let html = '<table class="inserted-table" border="1" style="border-collapse: collapse; width: 100%;">';
     if (hasHeader) {
       html += '<thead><tr>';
-      for (let c = 0; c < cols; c++) html += `<th style="padding:6px;text-align:left">Başlık ${c + 1}</th>`;
+      for (let c = 0; c < cols; c++) html += `<th style="padding:6px;text-align:left">${window.i18n.t('templates.tableHeader', { n: c + 1 })}</th>`;
       html += '</tr></thead>';
     }
     html += '<tbody>';
@@ -5537,10 +5544,10 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   insertList(type) {
     this.restoreEditorSelection();
     this.richEditor.focus();
-    const listHtml =
-      type === 'ol'
-        ? '<ol><li>Birinci madde</li><li>İkinci madde</li><li>Üçüncü madde</li></ol><p><br></p>'
-        : '<ul><li>Birinci madde</li><li>İkinci madde</li><li>Üçüncü madde</li></ul><p><br></p>';
+    const items = ['templates.listItem1', 'templates.listItem2', 'templates.listItem3']
+      .map((key) => `<li>${this.escapeHtml(window.i18n.t(key))}</li>`)
+      .join('');
+    const listHtml = `<${type}>${items}</${type}><p><br></p>`;
 
     document.execCommand('insertHTML', false, listHtml);
     this.trackContentChanges();
@@ -5551,7 +5558,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.restoreEditorSelection();
     this.richEditor.focus();
     const uniqueId = 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    const checklistHtml = `<div class="checklist"><div class="checklist-item"><input type="checkbox" id="${uniqueId}"><label for="${uniqueId}">Görev</label></div></div><p><br></p>`;
+    const checklistHtml = `<div class="checklist"><div class="checklist-item"><input type="checkbox" id="${uniqueId}"><label for="${uniqueId}">${this.escapeHtml(window.i18n.t('templates.task'))}</label></div></div><p><br></p>`;
 
     document.execCommand('insertHTML', false, checklistHtml);
     this.trackContentChanges();
@@ -6068,7 +6075,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.applyTheme(enabled);
     this.saveSettings();
     this.showNotification(
-      enabled ? 'Karanlık mod etkinleştirildi' : 'Aydınlık mod etkinleştirildi',
+      enabled ? window.i18n.t('messages.darkModeEnabled') : window.i18n.t('messages.lightModeEnabled'),
       'info'
     );
   }
@@ -6118,7 +6125,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    this.showNotification('Tüm veriler dışa aktarıldı', 'success');
+    this.showNotification(window.i18n.t('messages.dataExported'), 'success');
     // Refresh reminder/notification UI and counters in case data changed
     try { this.updateRemindersView(); } catch (e) { }
     try { this.updateNotificationsView(); } catch (e) { }
@@ -6141,7 +6148,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         let data = JSON.parse(text || '{}');
 
         // Validate structure
-        if (!data || (typeof data !== 'object')) throw new Error('Geçersiz dosya formatı');
+        if (!data || (typeof data !== 'object')) throw new Error(window.i18n.t('messages.invalidFileFormat'));
 
         // Normalize common single-note or array exports into { notes: [...] }
         // Support: a single note object (exported via exportNote json) or an array of notes
@@ -6168,7 +6175,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         });
 
         if (!importOptions) {
-          this.showNotification('İçe aktarma iptal edildi', 'warning');
+          this.showNotification(window.i18n.t('messages.importCancelled'), 'warning');
           return;
         }
 
@@ -6301,12 +6308,12 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         this.updateStats();
 
         if (skippedDuplicates > 0) console.info(`Import skipped ${skippedDuplicates} duplicate note(s)`);
-        this.showNotification('Veriler başarıyla içe aktarıldı', 'success');
+        this.showNotification(window.i18n.t('messages.dataImported'), 'success');
         this.settingsModal.classList.remove('show');
         this.settingsModal.classList.add('hidden');
       } catch (err) {
         console.error('Import all data error', err);
-        this.showNotification('Veriler içe aktarılırken hata oluştu: ' + (err.message || err), 'error');
+        this.showNotification(`${window.i18n.t('messages.dataImportError')} ${err.message || err}`, 'error');
       }
     });
 
@@ -6331,7 +6338,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       const titleWrap = document.createElement('div');
       titleWrap.className = 'modal-title';
       const h3 = document.createElement('h3');
-      h3.textContent = 'İçe Aktarma Seçenekleri';
+      h3.textContent = window.i18n.t('modals.importOptions');
       titleWrap.appendChild(h3);
       header.appendChild(titleWrap);
 
@@ -6361,7 +6368,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         inputs[t] = cb;
         const lbl = document.createElement('label');
         lbl.setAttribute('for', cb.id);
-        lbl.textContent = ({ notes: 'Notlar', folders: 'Klasörler', reminders: 'Hatırlatmalar', notifications: 'Bildirimler', settings: 'Ayarlar' })[t] || t;
+        lbl.textContent = window.i18n.t({ notes: 'nav.notes', folders: 'modals.folders', reminders: 'nav.reminders', notifications: 'nav.notifications', settings: 'nav.settings' }[t]);
         row.appendChild(cb);
         row.appendChild(lbl);
         form.appendChild(row);
@@ -6376,7 +6383,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       mergeToggle.className = 'form-checkbox';
       const mergeLabel = document.createElement('label');
       mergeLabel.setAttribute('for', mergeToggle.id);
-      mergeLabel.textContent = 'Mevcut verilerle birleştir';
+      mergeLabel.textContent = window.i18n.t('modals.mergeWithExisting');
       mergeRow.appendChild(mergeToggle);
       mergeRow.appendChild(mergeLabel);
 
@@ -6389,10 +6396,10 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       footer.className = 'modal-footer';
       const cancelBtn = document.createElement('button');
       cancelBtn.className = 'btn btn-secondary';
-      cancelBtn.textContent = 'İptal';
+      cancelBtn.textContent = window.i18n.t('buttons.cancel');
       const okBtn = document.createElement('button');
       okBtn.className = 'btn btn-primary';
-      okBtn.textContent = 'İçe Aktar';
+      okBtn.textContent = window.i18n.t('buttons.import');
       footer.appendChild(cancelBtn);
       footer.appendChild(okBtn);
       content.appendChild(footer);
@@ -6514,18 +6521,18 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const name = this.folderNameInput.value.trim();
 
     if (!name) {
-      this.showNotification('Klasör adı boş olamaz!', 'warning');
+      this.showNotification(window.i18n.t('messages.folderNameEmpty'), 'warning');
       return;
     }
 
     if (name.length > 50) {
-      this.showNotification('Klasör adı çok uzun!', 'warning');
+      this.showNotification(window.i18n.t('messages.folderNameTooLong'), 'warning');
       return;
     }
 
     // Check if folder name exists
     if (this.folders.some((folder) => folder.name.toLowerCase() === name.toLowerCase())) {
-      this.showNotification('Bu isimde bir klasör zaten var!', 'warning');
+      this.showNotification(window.i18n.t('messages.folderNameExists'), 'warning');
       return;
     }
 
@@ -6537,7 +6544,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         await this.saveFolders();
         this.updateFoldersList();
         this.hideFolderModal();
-        this.showNotification(`"${name}" olarak yeniden adlandırıldı.`, 'success');
+        this.showNotification(window.i18n.t('messages.folderRenamed', { name }), 'success');
       }
       this._renamingFolderId = null;
       return;
@@ -6555,7 +6562,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     await this.saveFolders();
     this.updateFoldersList();
     this.hideFolderModal();
-    this.showNotification(`"${name}" klasörü oluşturuldu!`, 'success');
+    this.showNotification(window.i18n.t('messages.folderCreated', { name }), 'success');
     if (this.currentFilter === 'favorites') this.updateNotesList();
   }
 
@@ -6928,14 +6935,14 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       div.classList.add('active');
     }
 
-    const title = note.title || 'Başlıksız Not';
+    const title = note.title || window.i18n.t('messages.untitledNote');
     const truncatedTitle = title.length > 30 ? title.substring(0, 30) + '...' : title;
 
     div.innerHTML = `
             <i class="fas fa-file-alt nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(truncatedTitle)}</span>
             <div class="note-options-container">
-                <button class="more-options-btn" title="Seçenekler">
+                <button class="more-options-btn" title="${window.i18n.t('titles.options')}">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <div class="note-options-menu hidden" data-note-id="${note.id}">
@@ -7141,9 +7148,10 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
     const folderName =
       folderId === 'default'
-        ? 'Notlar'
-        : this.folders.find((f) => f.id === folderId)?.name || 'Bilinmeyen Klasör';
-    this.showNotification(`"${note.title || 'Başlıksız not'}" ${folderName} klasörüne taşındı`, 'success');
+        ? window.i18n.t('nav.notes')
+        : this.folders.find((f) => f.id === folderId)?.name || window.i18n.t('messages.unknownFolder');
+    const noteTitle = note.title || window.i18n.t('messages.untitledNote');
+    this.showNotification(window.i18n.t('messages.noteMovedToFolder', { title: noteTitle, folder: folderName }), 'success');
   }
 
   // Action button functions
@@ -7421,7 +7429,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         this.showWelcome();
       }
 
-      this.showNotification(`"${folder.name}" klasörü ve içindeki notlar silindi`, 'success');
+      this.showNotification(window.i18n.t('messages.folderDeleted', { name: folder.name }), 'success');
     };
 
     this.hideContextMenu();
