@@ -1,6 +1,5 @@
 {
   "app": {
-    "name": "Capnote",
     "welcome": "Welcome to Capnote",
     "welcomeSubtext": "Write your thoughts, save your memories, and document your life",
     "version": "Capnote v1.0.0"
@@ -14,9 +13,7 @@
     "today": "Today",
     "favorites": "Favorites",
     "notes": "Notes",
-    "invitePeople": "Invite People",
-    "settings": "Settings",
-    "home": "Home"
+    "settings": "Settings"
   },
   "buttons": {
     "save": "Save",
@@ -130,10 +127,8 @@
     "notifications": "Notifications",
     "dataManagement": "Data Management",
     "about": "About",
-    "pinnedNoteSettings": "Pinned Note Settings",
     "dataImportExport": "Import/Export Data",
     "clearData": "Clear Data",
-    "appInfo": "App Information",
     "language": "Language",
     "noteSettings": "Note Settings"
   },
@@ -177,7 +172,6 @@
     "confirmDeleteDesc": "Show confirmation screen when deleting notes"
   },
   "modals": {
-    "selectOption": "Make Selection",
     "exportNote": "Export Note",
     "addTable": "Add Table",
     "noteHistory": "Note History",
@@ -252,7 +246,6 @@
     "flags": "Flags"
   },
   "viewer": {
-    "lastModified": "Last updated",
     "created": "Created:",
     "updated": "Updated",
     "createdLabel": "Created:",
@@ -265,8 +258,6 @@
     "folderDeleted": "Folder \"{name}\" and its notes deleted",
     "dataExported": "Data exported",
     "dataImported": "Data imported",
-    "error": "An error occurred",
-    "success": "Operation successful",
     "languageChanged": "Language changed",
     "systemNotificationsEnabled": "System notifications enabled",
     "systemNotificationsDisabled": "System notifications disabled",
@@ -299,12 +290,9 @@
     "noteCopySuffix": " (Copy)",
     "codeCopied": "Code copied to clipboard",
     "copyFailed": "Copy failed",
-    "useSidePanel": "Use side panel to select mood",
-    "useWeatherPanel": "Use side panel to select weather",
     "maxTags": "Maximum 5 tags allowed!",
     "noteExported": "Note exported!",
     "noNoteSelected": "No note selected for export",
-    "pdfCreating": "Creating PDF...",
     "pdfCreated": "PDF created",
     "pdfError": "Failed to create PDF",
     "pdfExportError": "Error occurred while exporting PDF",
@@ -315,10 +303,8 @@
     "pinnedLimitUpdated": "Pinned note limit updated",
     "noActiveReminders": "No active reminders",
     "confirmDelete": "are you sure you want to delete the note?",
-    "confirmAction": "Confirm Action",
     "folderColorUpdated": "Folder color updated",
     "setPasswordForNote": "Set password for note",
-    "enterPasswordToUnlock": "Enter password to unlock note",
     "enterPasswordToOpen": "Enter password to open note",
     "noteIsLocked": "This note is locked",
     "newFolder": "New Folder",

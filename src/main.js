@@ -228,10 +228,6 @@ function createTray() {
       return;
     }
     tray = new Tray(icon || undefined);
-    try {
-      const sizeDesc = icon ? `${icon.getSize().width}x${icon.getSize().height}` : 'undefined';
-      console.log(`[tray] created for platform=${process.platform}, icon size=${sizeDesc}`);
-    } catch {}
     tray.setToolTip('Capnote');
     updateTrayMenu();
     tray.on('click', () => {
