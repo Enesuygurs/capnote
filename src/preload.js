@@ -30,6 +30,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Autostart (start at login)
   getStartAtLogin: () => ipcRenderer.invoke('get-start-at-login'),
   setStartAtLogin: (enabled) => ipcRenderer.invoke('set-start-at-login', enabled),
+  // Keep main-process UI (tray menu) in the app language
+  setLanguage: (lang) => ipcRenderer.send('set-language', lang),
   // Close-to-tray preference
   getCloseToTray: () => ipcRenderer.invoke('get-close-to-tray'),
   setCloseToTray: (enabled) => ipcRenderer.invoke('set-close-to-tray', enabled),

@@ -30,6 +30,13 @@ const store = new Store();
 let mainWindow;
 let tray = null;
 let isQuitting = false;
+let trayLanguage = 'tr';
+
+// Tray menu labels; the renderer reports the selected UI language
+const TRAY_LABELS = {
+  tr: { show: 'Göster', hide: 'Gizle', newNote: 'Yeni Not', notifications: 'Bildirimler', settings: 'Ayarlar', quit: 'Çıkış' },
+  en: { show: 'Show', hide: 'Hide', newNote: 'New Note', notifications: 'Notifications', settings: 'Settings', quit: 'Quit' },
+};
 // Close-to-tray is a Windows-only feature (the setting is only shown there)
 const supportsCloseToTray = process.platform === 'win32';
 let closeToTrayEnabled = supportsCloseToTray; // persisted in store
@@ -180,6 +187,39 @@ function resolveTrayIcon() {
   return null;
 }
 
+function updateTrayMenu() {
+  if (!tray) return;
+  const labels = TRAY_LABELS[trayLanguage] || TRAY_LABELS.tr;
+  const contextMenu = Menu.buildFromTemplate([
+    { label: labels.show, click: () => {
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) {
+          mainWindow.restore();
+        }
+        mainWindow.show();
+        mainWindow.focus();
+      }
+    } },
+    { label: labels.hide, click: () => {
+      if (mainWindow) {
+        try {
+          if (mainWindow.isFullScreen && mainWindow.isFullScreen()) {
+            mainWindow.setFullScreen(false);
+          }
+        } catch {}
+        mainWindow.minimize();
+      }
+    } },
+    { type: 'separator' },
+    { label: labels.newNote, click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('new-note'); } } },
+    { label: labels.notifications, click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('open-notifications'); } } },
+    { label: labels.settings, click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('open-settings'); } } },
+    { type: 'separator' },
+    { label: labels.quit, click: () => { isQuitting = true; app.quit(); } },
+  ]);
+  tray.setContextMenu(contextMenu);
+}
+
 function createTray() {
   try {
     const icon = resolveTrayIcon();
@@ -193,34 +233,7 @@ function createTray() {
       console.log(`[tray] created for platform=${process.platform}, icon size=${sizeDesc}`);
     } catch {}
     tray.setToolTip('Capnote');
-    const contextMenu = Menu.buildFromTemplate([
-      { label: 'Göster', click: () => {
-        if (mainWindow) {
-          if (mainWindow.isMinimized()) {
-            mainWindow.restore();
-          }
-          mainWindow.show();
-          mainWindow.focus();
-        }
-      } },
-      { label: 'Gizle', click: () => {
-        if (mainWindow) {
-          try {
-            if (mainWindow.isFullScreen && mainWindow.isFullScreen()) {
-              mainWindow.setFullScreen(false);
-            }
-          } catch {}
-          mainWindow.minimize();
-        }
-      } },
-      { type: 'separator' },
-      { label: 'Yeni Not', click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('new-note'); } } },
-      { label: 'Bildirimler', click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('open-notifications'); } } },
-      { label: 'Ayarlar', click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('open-settings'); } } },
-      { type: 'separator' },
-      { label: 'Çıkış', click: () => { isQuitting = true; app.quit(); } },
-    ]);
-    tray.setContextMenu(contextMenu);
+    updateTrayMenu();
     tray.on('click', () => {
       if (process.platform === 'darwin') {
         // macOS: Don't auto-show the window on click; show the tray menu instead
@@ -459,4 +472,10 @@ ipcMain.handle('export-pdf', async (event, payload) => {
     printWindow.destroy();
     fs.rmSync(tmpFile, { force: true });
   }
+});
+
+ipcMain.on('set-language', (event, lang) => {
+  if (!TRAY_LABELS[lang]) return;
+  trayLanguage = lang;
+  updateTrayMenu();
 });

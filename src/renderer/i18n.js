@@ -37,10 +37,11 @@ class I18n {
     );
   }
 
-  t(key) {
+  // Translate a dotted key; {name} placeholders are filled from params
+  t(key, params) {
     const keys = key.split('.');
     let value = this.translations[this.currentLanguage];
-    
+
     for (const k of keys) {
       if (value && typeof value === 'object') {
         value = value[k];
@@ -48,8 +49,10 @@ class I18n {
         return key; // Return key if translation not found
       }
     }
-    
-    return value || key;
+
+    if (typeof value !== 'string') return key;
+    if (!params) return value;
+    return value.replace(/\{(\w+)\}/g, (match, name) => (name in params ? String(params[name]) : match));
   }
 
   setLanguage(lang) {
