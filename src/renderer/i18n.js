@@ -61,7 +61,6 @@ class I18n {
       localStorage.setItem('app-language', lang);
       this.applyTranslations();
       this.notifyObservers();
-      console.log('Language changed to:', lang);
     } else {
       console.error('Language not available:', lang);
     }
@@ -72,14 +71,12 @@ class I18n {
   }
 
   applyTranslations() {
-    console.log('Applying translations for language:', this.currentLanguage);
     
     // Update HTML lang attribute
     document.documentElement.lang = this.currentLanguage;
 
     // Update all elements with data-i18n attribute
     const i18nElements = document.querySelectorAll('[data-i18n]');
-    console.log('Found', i18nElements.length, 'elements with data-i18n');
     i18nElements.forEach(element => {
       const key = element.getAttribute('data-i18n');
       const translation = this.t(key);
@@ -88,7 +85,6 @@ class I18n {
 
     // Update all elements with data-i18n-placeholder attribute
     const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
-    console.log('Found', placeholderElements.length, 'elements with data-i18n-placeholder');
     placeholderElements.forEach(element => {
       const key = element.getAttribute('data-i18n-placeholder');
       const translation = this.t(key);
@@ -103,7 +99,6 @@ class I18n {
 
     // Update all elements with data-i18n-title attribute
     const titleElements = document.querySelectorAll('[data-i18n-title]');
-    console.log('Found', titleElements.length, 'elements with data-i18n-title');
     titleElements.forEach(element => {
       const key = element.getAttribute('data-i18n-title');
       element.title = this.t(key);
@@ -111,13 +106,11 @@ class I18n {
 
     // Update all elements with data-i18n-aria-label attribute
     const ariaElements = document.querySelectorAll('[data-i18n-aria-label]');
-    console.log('Found', ariaElements.length, 'elements with data-i18n-aria-label');
     ariaElements.forEach(element => {
       const key = element.getAttribute('data-i18n-aria-label');
       element.setAttribute('aria-label', this.t(key));
     });
     
-    console.log('Translation application complete');
   }
 
   // Observer pattern for components that need to react to language changes

@@ -1,6 +1,5 @@
 {
   "app": {
-    "name": "Capnote",
     "welcome": "Capnote'a Hoş Geldiniz",
     "welcomeSubtext": "Düşüncelerinizi yazın, anılarınızı kaydedin ve hayatınızı belgelendirin",
     "version": "Capnote v1.0.0"
@@ -14,9 +13,7 @@
     "today": "Bugün",
     "favorites": "Favoriler",
     "notes": "Notlar",
-    "invitePeople": "Kişi Davet Et",
-    "settings": "Ayarlar",
-    "home": "Ana Sayfa"
+    "settings": "Ayarlar"
   },
   "buttons": {
     "save": "Kaydet",
@@ -130,10 +127,8 @@
     "notifications": "Bildirimler",
     "dataManagement": "Veri Yönetimi",
     "about": "Hakkında",
-    "pinnedNoteSettings": "Sabit Not Ayarları",
     "dataImportExport": "Verileri İçe/Dışa Aktar",
     "clearData": "Verileri Temizle",
-    "appInfo": "Uygulama Bilgileri",
     "language": "Dil",
     "noteSettings": "Not Ayarları"
   },
@@ -177,7 +172,6 @@
     "confirmDeleteDesc": "Notları silerken onay ekranı göster"
   },
   "modals": {
-    "selectOption": "Seçim Yap",
     "exportNote": "Notu Dışa Aktar",
     "addTable": "Tablo Ekle",
     "noteHistory": "Not Geçmişi",
@@ -252,7 +246,6 @@
     "flags": "Bayraklar"
   },
   "viewer": {
-    "lastModified": "Son güncelleme",
     "created": "Oluşturuldu:",
     "updated": "Güncellendi",
     "createdLabel": "Oluşturulma:",
@@ -265,8 +258,6 @@
     "folderDeleted": "\"{name}\" klasörü ve içindeki notlar silindi",
     "dataExported": "Veriler dışa aktarıldı",
     "dataImported": "Veriler içe aktarıldı",
-    "error": "Bir hata oluştu",
-    "success": "İşlem başarılı",
     "languageChanged": "Dil değiştirildi",
     "systemNotificationsEnabled": "Sistem bildirimleri açıldı",
     "systemNotificationsDisabled": "Sistem bildirimleri kapatıldı",
@@ -299,12 +290,9 @@
     "noteCopySuffix": " (Kopya)",
     "codeCopied": "Kod panoya kopyalandı",
     "copyFailed": "Kopyalama başarısız",
-    "useSidePanel": "Ruh hali seçimi için yan paneli kullanın",
-    "useWeatherPanel": "Hava durumu seçimi için yan paneli kullanın",
     "maxTags": "Maksimum 5 etiket ekleyebilirsiniz!",
     "noteExported": "Not dışa aktarıldı!",
     "noNoteSelected": "Dışa aktarılacak not seçili değil",
-    "pdfCreating": "PDF oluşturuluyor...",
     "pdfCreated": "PDF oluşturuldu",
     "pdfError": "PDF oluşturulamadı",
     "pdfExportError": "PDF dışa aktarılırken hata oluştu",
@@ -315,10 +303,8 @@
     "pinnedLimitUpdated": "Sabit not limiti güncellendi",
     "noActiveReminders": "Aktif hatırlatma bulunmuyor",
     "confirmDelete": "notunu silmek istediğinizden emin misiniz?",
-    "confirmAction": "İşlemi Onayla",
     "folderColorUpdated": "Klasör rengi güncellendi",
     "setPasswordForNote": "Not için şifre belirleyin",
-    "enterPasswordToUnlock": "Not kilidini açmak için şifre girin",
     "enterPasswordToOpen": "Notu açmak için şifre girin",
     "noteIsLocked": "Bu not kilitli",
     "newFolder": "Yeni Klasör",

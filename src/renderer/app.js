@@ -358,20 +358,14 @@ class CapnoteApp {
     if (this.languageSelect) {
       this.languageSelect.addEventListener('change', (e) => {
         const lang = e.target.value;
-        console.log('Language selector changed to:', lang);
         if (window.i18n) {
           window.i18n.setLanguage(lang);
           window.electronAPI?.setLanguage?.(lang);
           this.showNotification(window.i18n.t('messages.languageChanged'), 'success');
           // Update dynamic content that may not have data-i18n attributes
           this.updateDynamicTranslations();
-        } else {
-          console.error('window.i18n is not available');
         }
       });
-      console.log('Language selector event listener attached');
-    } else {
-      console.error('Language selector element not found!');
     }
 
     // Accent swatches
