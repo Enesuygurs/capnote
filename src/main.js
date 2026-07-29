@@ -13,7 +13,6 @@ const Store = require('electron-store');
 try {
   const isDev = process.argv.includes('--dev') || process.env.NODE_ENV !== 'production';
   if (isDev) {
-    // eslint-disable-next-line import/no-extraneous-dependencies, global-require
     require('electron-reloader')(module, {
       watchRenderer: true,
       debug: false,
