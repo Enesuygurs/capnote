@@ -4031,7 +4031,6 @@ class CapnoteApp {
 
     // Also update any folder note lists
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
-      const folderId = container.getAttribute('data-folder-id');
       const prev = container.querySelector('.folder-note-item.active');
       if (prev && prev.getAttribute('data-note-id') != noteId) {
         prev.classList.remove('active');
@@ -4049,7 +4048,6 @@ class CapnoteApp {
     if (!foundInFolder) {
       requestAnimationFrame(() => {
         document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
-          const folderId = container.getAttribute('data-folder-id');
           const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
           if (current) {
             current.classList.add('active');
@@ -4060,7 +4058,6 @@ class CapnoteApp {
       // Also schedule a fallback after a short delay in case other async updates occur
       setTimeout(() => {
         document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
-          const folderId = container.getAttribute('data-folder-id');
           const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
           if (current) {
             current.classList.add('active');
@@ -4101,9 +4098,8 @@ class CapnoteApp {
       // Apply current filter to folder notes
       switch (this.currentFilter) {
         case 'today':
-          const today = new Date().toDateString();
           folderNotes = folderNotes.filter(
-            (note) => new Date(note.createdAt).toDateString() === today
+            (note) => this.isCreatedToday(note)
           );
           break;
         case 'favorites':
@@ -4145,16 +4141,19 @@ class CapnoteApp {
     });
   }
 
+  isCreatedToday(note) {
+    return new Date(note.createdAt).toDateString() === new Date().toDateString();
+  }
+
   getFilteredNotes() {
     let filtered = [...this.notes];
 
     // Filter by type
     switch (this.currentFilter) {
       case 'today':
-        const today = new Date().toDateString();
         filtered = filtered.filter(
           (note) =>
-            new Date(note.createdAt).toDateString() === today &&
+            this.isCreatedToday(note) &&
             (!note.folderId || note.folderId === 'default')
         );
         break;
@@ -4187,8 +4186,7 @@ class CapnoteApp {
 
     switch (this.currentFilter) {
       case 'today':
-        const today = new Date().toDateString();
-        matched = matched.filter((note) => new Date(note.createdAt).toDateString() === today);
+        matched = matched.filter((note) => this.isCreatedToday(note));
         break;
       case 'favorites':
         matched = matched.filter((note) => note.isFavorite);
@@ -6682,8 +6680,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // Apply current filter
     switch (this.currentFilter) {
       case 'today':
-        const today = new Date().toDateString();
-        folderNotes = folderNotes.filter((note) => new Date(note.createdAt).toDateString() === today);
+        folderNotes = folderNotes.filter((note) => this.isCreatedToday(note));
         break;
       case 'favorites':
         folderNotes = folderNotes.filter((note) => note.isFavorite);
@@ -7226,9 +7223,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // Apply current filter to folder notes
     switch (this.currentFilter) {
       case 'today':
-        const today = new Date().toDateString();
         folderNotes = folderNotes.filter(
-          (note) => new Date(note.createdAt).toDateString() === today
+          (note) => this.isCreatedToday(note)
         );
         break;
       case 'favorites':
