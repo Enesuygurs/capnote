@@ -1,7 +1,7 @@
 {
   "name": "capnote",
   "version": "1.0.0",
-  "description": "Capnote — modern masaüstü not ve günlük uygulaması",
+  "description": "Capnote - a modern desktop notes and journal app",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
@@ -15,12 +15,17 @@
     "format": "prettier --write \"src/**/*.{js,html,css,json}\"",
     "format:check": "prettier --check \"src/**/*.{js,html,css,json}\""
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Enesuygurs/capnote.git"
+  },
   "keywords": [
     "electron",
     "capnote",
-    "voice",
-    "speech-to-text",
-    "notes"
+    "notes",
+    "journal",
+    "diary",
+    "markdown"
   ],
   "author": "Valkyr",
   "license": "MIT",
