@@ -17,9 +17,13 @@
   const fromBase64 = (base64) => Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
 
   async function deriveKey(password, salt, iterations) {
-    const baseKey = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, [
-      'deriveKey',
-    ]);
+    const baseKey = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(password),
+      'PBKDF2',
+      false,
+      ['deriveKey']
+    );
     return crypto.subtle.deriveKey(
       { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
       baseKey,
@@ -33,7 +37,9 @@
     const salt = crypto.getRandomValues(new Uint8Array(16));
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const key = await deriveKey(password, salt, ITERATIONS);
-    const data = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoder.encode(text)));
+    const data = new Uint8Array(
+      await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoder.encode(text))
+    );
     return {
       v: 1,
       iterations: ITERATIONS,
@@ -46,8 +52,16 @@
   // Throws when the password is wrong (AES-GCM authentication fails) or the payload is corrupt
   async function decrypt(payload, password) {
     if (!payload || payload.v !== 1) throw new Error('Unsupported encrypted payload');
-    const key = await deriveKey(password, fromBase64(payload.salt), payload.iterations || ITERATIONS);
-    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromBase64(payload.iv) }, key, fromBase64(payload.data));
+    const key = await deriveKey(
+      password,
+      fromBase64(payload.salt),
+      payload.iterations || ITERATIONS
+    );
+    const plain = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: fromBase64(payload.iv) },
+      key,
+      fromBase64(payload.data)
+    );
     return decoder.decode(plain);
   }
 

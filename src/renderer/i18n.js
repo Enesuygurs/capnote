@@ -16,7 +16,7 @@ class I18n {
 
     // Load translation files
     await this.loadTranslations();
-    
+
     // Apply translations
     this.applyTranslations();
   }
@@ -52,7 +52,9 @@ class I18n {
 
     if (typeof value !== 'string') return key;
     if (!params) return value;
-    return value.replace(/\{(\w+)\}/g, (match, name) => (name in params ? String(params[name]) : match));
+    return value.replace(/\{(\w+)\}/g, (match, name) =>
+      name in params ? String(params[name]) : match
+    );
   }
 
   setLanguage(lang) {
@@ -71,13 +73,12 @@ class I18n {
   }
 
   applyTranslations() {
-    
     // Update HTML lang attribute
     document.documentElement.lang = this.currentLanguage;
 
     // Update all elements with data-i18n attribute
     const i18nElements = document.querySelectorAll('[data-i18n]');
-    i18nElements.forEach(element => {
+    i18nElements.forEach((element) => {
       const key = element.getAttribute('data-i18n');
       const translation = this.t(key);
       element.textContent = translation;
@@ -85,10 +86,10 @@ class I18n {
 
     // Update all elements with data-i18n-placeholder attribute
     const placeholderElements = document.querySelectorAll('[data-i18n-placeholder]');
-    placeholderElements.forEach(element => {
+    placeholderElements.forEach((element) => {
       const key = element.getAttribute('data-i18n-placeholder');
       const translation = this.t(key);
-      
+
       // Handle both input/textarea and contenteditable elements
       if (element.hasAttribute('contenteditable')) {
         element.setAttribute('data-placeholder', translation);
@@ -99,18 +100,17 @@ class I18n {
 
     // Update all elements with data-i18n-title attribute
     const titleElements = document.querySelectorAll('[data-i18n-title]');
-    titleElements.forEach(element => {
+    titleElements.forEach((element) => {
       const key = element.getAttribute('data-i18n-title');
       element.title = this.t(key);
     });
 
     // Update all elements with data-i18n-aria-label attribute
     const ariaElements = document.querySelectorAll('[data-i18n-aria-label]');
-    ariaElements.forEach(element => {
+    ariaElements.forEach((element) => {
       const key = element.getAttribute('data-i18n-aria-label');
       element.setAttribute('aria-label', this.t(key));
     });
-    
   }
 
   // Observer pattern for components that need to react to language changes
@@ -119,7 +119,7 @@ class I18n {
   }
 
   notifyObservers() {
-    this.observers.forEach(callback => callback(this.currentLanguage));
+    this.observers.forEach((callback) => callback(this.currentLanguage));
   }
 }
 
@@ -129,7 +129,11 @@ window.i18n = new I18n();
 // Initialize on DOM loaded. `ready` always resolves, even if loading the translations failed,
 // so the app can start with keys as a fallback instead of waiting forever.
 window.i18n.ready = new Promise((resolve) => {
-  const start = () => window.i18n.init().catch((err) => console.error('i18n init failed:', err)).then(resolve);
+  const start = () =>
+    window.i18n
+      .init()
+      .catch((err) => console.error('i18n init failed:', err))
+      .then(resolve);
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', start);
   } else {

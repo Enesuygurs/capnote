@@ -315,11 +315,11 @@ class CapnoteApp {
   setupEventListeners() {
     // Close note option menus when clicking outside or scrolling
     const closeMenus = () => {
-      document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
+      document.querySelectorAll('.note-options-menu:not(.hidden)').forEach((menu) => {
         menu.classList.add('hidden');
         menu.style.display = 'none';
       });
-      document.querySelectorAll('.note-options-container.menu-open').forEach(container => {
+      document.querySelectorAll('.note-options-container.menu-open').forEach((container) => {
         container.classList.remove('menu-open');
       });
     };
@@ -369,11 +369,21 @@ class CapnoteApp {
     }
 
     // Accent swatches
-    this.accentYellowBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#f59e0b'));
-    this.accentCherryBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#e11d48'));
-    this.accentAppleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#22c55e'));
-    this.accentPurpleBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#8b5cf6'));
-    this.accentBlueBtn?.addEventListener('click', (e) => this.setAccentColor(e.currentTarget.dataset.color || '#3b82f6'));
+    this.accentYellowBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#f59e0b')
+    );
+    this.accentCherryBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#e11d48')
+    );
+    this.accentAppleBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#22c55e')
+    );
+    this.accentPurpleBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#8b5cf6')
+    );
+    this.accentBlueBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#3b82f6')
+    );
     this.syncFolderAccentToggle?.addEventListener('change', (e) => {
       const enabled = e.currentTarget.checked;
       localStorage.setItem('syncFolderAccent', enabled ? '1' : '0');
@@ -385,7 +395,12 @@ class CapnoteApp {
     this.toggleNativeNotifications?.addEventListener('change', (e) => {
       const enabled = e.currentTarget.checked;
       localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
-      this.showNotification(enabled ? window.i18n.t('messages.systemNotificationsEnabled') : window.i18n.t('messages.systemNotificationsDisabled'), 'success');
+      this.showNotification(
+        enabled
+          ? window.i18n.t('messages.systemNotificationsEnabled')
+          : window.i18n.t('messages.systemNotificationsDisabled'),
+        'success'
+      );
     });
     // Start at login toggle
     this.startAtLoginToggle?.addEventListener('change', async (e) => {
@@ -393,31 +408,48 @@ class CapnoteApp {
         const enabled = !!e.currentTarget.checked;
         if (window.electronAPI && typeof window.electronAPI.setStartAtLogin === 'function') {
           const res = await window.electronAPI.setStartAtLogin(enabled);
-          if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
-          this.showNotification(enabled ? window.i18n.t('messages.launchOnStartupEnabled') : window.i18n.t('messages.launchOnStartupDisabled'), 'success');
+          if (!res || res.ok !== true)
+            throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
+          this.showNotification(
+            enabled
+              ? window.i18n.t('messages.launchOnStartupEnabled')
+              : window.i18n.t('messages.launchOnStartupDisabled'),
+            'success'
+          );
         }
       } catch (err) {
         console.warn('setStartAtLogin failed:', err);
         // revert checkbox
-        if (this.startAtLoginToggle) this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
+        if (this.startAtLoginToggle)
+          this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
         this.showNotification(window.i18n.t('messages.launchOnStartupError'), 'error');
       }
     });
     // Close to tray toggle: only wire on Windows (hide on macOS/Linux)
     try {
-      const plat = (window.electronAPI && window.electronAPI.platform) ? window.electronAPI.platform : (navigator.platform || '').toLowerCase();
+      const plat =
+        window.electronAPI && window.electronAPI.platform
+          ? window.electronAPI.platform
+          : (navigator.platform || '').toLowerCase();
       if (plat === 'win32' && this.closeToTrayToggle) {
         this.closeToTrayToggle.addEventListener('change', async (e) => {
           try {
             const enabled = !!e.currentTarget.checked;
             if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
               const res = await window.electronAPI.setCloseToTray(enabled);
-              if (!res || res.ok !== true) throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
-              this.showNotification(enabled ? window.i18n.t('messages.minimizeToTrayEnabled') : window.i18n.t('messages.minimizeToTrayDisabled'), 'success');
+              if (!res || res.ok !== true)
+                throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
+              this.showNotification(
+                enabled
+                  ? window.i18n.t('messages.minimizeToTrayEnabled')
+                  : window.i18n.t('messages.minimizeToTrayDisabled'),
+                'success'
+              );
             }
           } catch (err) {
             console.warn('setCloseToTray failed:', err);
-            if (this.closeToTrayToggle) this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
+            if (this.closeToTrayToggle)
+              this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
             this.showNotification(window.i18n.t('messages.minimizeToTrayError'), 'error');
           }
         });
@@ -429,33 +461,32 @@ class CapnoteApp {
             while (el && !el.classList.contains('setting-item')) el = el.parentElement;
             if (el) el.style.display = 'none';
           }
-        } catch (hideErr) { }
+        } catch (hideErr) {}
       }
     } catch (err) {
       // ignore
     }
-
 
     // Tray context menu -> open notifications
     try {
       if (window.electronAPI && typeof window.electronAPI.onOpenNotifications === 'function') {
         window.electronAPI.onOpenNotifications(() => this.showNotificationsScreen());
       }
-    } catch { }
+    } catch {}
 
     // Tray context menu -> new note
     try {
       if (window.electronAPI && typeof window.electronAPI.onNewNote === 'function') {
         window.electronAPI.onNewNote(() => this.createNewNote());
       }
-    } catch { }
+    } catch {}
 
     // Tray context menu -> settings
     try {
       if (window.electronAPI && typeof window.electronAPI.onOpenSettings === 'function') {
         window.electronAPI.onOpenSettings(() => this.showSettingsModal());
       }
-    } catch { }
+    } catch {}
     // Test notification button (with cooldown)
     this.testNativeNotifBtn?.addEventListener('click', () => this.handleTestNotificationClick());
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
@@ -471,16 +502,20 @@ class CapnoteApp {
     this.searchInput.addEventListener('input', (e) => this.searchNotes(e.target.value));
 
     // Markdown toggle and preview
-    if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.addEventListener('click', () => this.toggleMarkdownMode());
-    if (this.toggleHtmlBtn) this.toggleHtmlBtn.addEventListener('click', () => this.toggleHtmlMode());
-    if (this.insertCodeBlockBtn) this.insertCodeBlockBtn.addEventListener('click', () => this.insertCodeBlock());
-    if (this.markdownEditor) this.markdownEditor.addEventListener('input', () => {
-      // If preview is visible, live-update it (debounced would be better, but keep simple)
-      if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
-        this.renderMarkdownPreview(this.markdownEditor.value);
-      }
-      this.trackContentChanges();
-    });
+    if (this.toggleMarkdownBtn)
+      this.toggleMarkdownBtn.addEventListener('click', () => this.toggleMarkdownMode());
+    if (this.toggleHtmlBtn)
+      this.toggleHtmlBtn.addEventListener('click', () => this.toggleHtmlMode());
+    if (this.insertCodeBlockBtn)
+      this.insertCodeBlockBtn.addEventListener('click', () => this.insertCodeBlock());
+    if (this.markdownEditor)
+      this.markdownEditor.addEventListener('input', () => {
+        // If preview is visible, live-update it (debounced would be better, but keep simple)
+        if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
+          this.renderMarkdownPreview(this.markdownEditor.value);
+        }
+        this.trackContentChanges();
+      });
 
     // New control buttons
     this.searchBtn?.addEventListener('click', () => this.toggleSearch());
@@ -517,7 +552,7 @@ class CapnoteApp {
               wk.setAttribute('aria-hidden', 'true');
             }
           }
-        } catch (err) { }
+        } catch (err) {}
       });
     }
     this.cancelFolderColorBtn?.addEventListener('click', () => {
@@ -536,10 +571,13 @@ class CapnoteApp {
       notesListContainer.addEventListener('dragover', (e) => {
         e.preventDefault();
         // If the active drag is a folder, ignore: folders should not be dropped into the "no-folder" area
-        const types = e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
+        const types =
+          e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
         let isFolderDrag = false;
         try {
-          isFolderDrag = types.includes('text/folder-id') || Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
+          isFolderDrag =
+            types.includes('text/folder-id') ||
+            Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
         } catch (err) {
           isFolderDrag = types.includes('text/folder-id');
         }
@@ -595,34 +633,32 @@ class CapnoteApp {
     this.setupCustomDropdown();
 
     // Navigation items - modern sidebar
-    document
-      .querySelectorAll('.nav-item[data-filter]')
-      .forEach((item) => {
-        item.addEventListener('click', (e) => {
-          const clickedFilter = e.currentTarget.dataset.filter;
+    document.querySelectorAll('.nav-item[data-filter]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        const clickedFilter = e.currentTarget.dataset.filter;
 
-          // Toggle functionality: if clicking the same filter, deactivate it
-          if (this.currentFilter === clickedFilter) {
-            // Remove active from filter-group items only (keep reminders/notifications state)
-            document
-              .querySelectorAll('.nav-item[data-filter]')
-              .forEach((nav) => nav.classList.remove('active'));
-            // Reset to "all" filter
-            this.changeFilter('all');
-            // Make "all" filter active
-            document.querySelector('[data-filter="all"]').classList.add('active');
-          } else {
-            // Remove active from other filter-group items only
-            document
-              .querySelectorAll('.nav-item[data-filter]')
-              .forEach((nav) => nav.classList.remove('active'));
-            // Add active to clicked filter item
-            e.currentTarget.classList.add('active');
-            // Apply filter
-            this.changeFilter(clickedFilter);
-          }
-        });
+        // Toggle functionality: if clicking the same filter, deactivate it
+        if (this.currentFilter === clickedFilter) {
+          // Remove active from filter-group items only (keep reminders/notifications state)
+          document
+            .querySelectorAll('.nav-item[data-filter]')
+            .forEach((nav) => nav.classList.remove('active'));
+          // Reset to "all" filter
+          this.changeFilter('all');
+          // Make "all" filter active
+          document.querySelector('[data-filter="all"]').classList.add('active');
+        } else {
+          // Remove active from other filter-group items only
+          document
+            .querySelectorAll('.nav-item[data-filter]')
+            .forEach((nav) => nav.classList.remove('active'));
+          // Add active to clicked filter item
+          e.currentTarget.classList.add('active');
+          // Apply filter
+          this.changeFilter(clickedFilter);
+        }
       });
+    });
 
     // New note navigation item
     document.getElementById('newNoteNav')?.addEventListener('click', () => this.createNewNote());
@@ -639,13 +675,17 @@ class CapnoteApp {
         const sel = window.getSelection();
         if (!sel || !sel.rangeCount) return;
         const range = sel.getRangeAt(0);
-        const codeAncestor = range.startContainer.nodeType === Node.ELEMENT_NODE
-          ? range.startContainer.closest && range.startContainer.closest('code')
-          : range.startContainer.parentElement && range.startContainer.parentElement.closest('code');
+        const codeAncestor =
+          range.startContainer.nodeType === Node.ELEMENT_NODE
+            ? range.startContainer.closest && range.startContainer.closest('code')
+            : range.startContainer.parentElement &&
+              range.startContainer.parentElement.closest('code');
         // also detect a containing <pre> in case selection sits directly inside <pre>
-        const preAncestor = range.startContainer.nodeType === Node.ELEMENT_NODE
-          ? range.startContainer.closest && range.startContainer.closest('pre')
-          : range.startContainer.parentElement && range.startContainer.parentElement.closest('pre');
+        const preAncestor =
+          range.startContainer.nodeType === Node.ELEMENT_NODE
+            ? range.startContainer.closest && range.startContainer.closest('pre')
+            : range.startContainer.parentElement &&
+              range.startContainer.parentElement.closest('pre');
         if (codeAncestor || preAncestor) {
           // inside a <code> node. Allow exiting the code block via Ctrl/Cmd+Enter or
           // by pressing Enter on an empty line at the end of the code block.
@@ -662,14 +702,23 @@ class CapnoteApp {
             try {
               // find a <pre> ancestor starting from the startContainer
               let findNode = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
-              while (findNode && findNode !== this.richEditor && findNode.tagName && findNode.tagName.toLowerCase() !== 'pre') {
+              while (
+                findNode &&
+                findNode !== this.richEditor &&
+                findNode.tagName &&
+                findNode.tagName.toLowerCase() !== 'pre'
+              ) {
                 findNode = findNode.parentElement;
               }
-              const resolvedPre = findNode && findNode.tagName && findNode.tagName.toLowerCase() === 'pre' ? findNode : null;
+              const resolvedPre =
+                findNode && findNode.tagName && findNode.tagName.toLowerCase() === 'pre'
+                  ? findNode
+                  : null;
               const para = document.createElement('p');
               para.innerHTML = '<br>';
               if (resolvedPre && resolvedPre.parentNode) {
-                if (resolvedPre.nextSibling) resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
+                if (resolvedPre.nextSibling)
+                  resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
                 else resolvedPre.parentNode.appendChild(para);
               } else {
                 // fallback: append to editor
@@ -698,17 +747,24 @@ class CapnoteApp {
           // Only Ctrl/Cmd+Enter above exits the code block; plain Enter should reliably add a newline.
           e.preventDefault();
           try {
-
             // Ensure we operate on a text node if possible
             if (node.nodeType !== Node.TEXT_NODE) {
               // prefer a text child at the offset
-              if (node.childNodes && node.childNodes[offset] && node.childNodes[offset].nodeType === Node.TEXT_NODE) {
+              if (
+                node.childNodes &&
+                node.childNodes[offset] &&
+                node.childNodes[offset].nodeType === Node.TEXT_NODE
+              ) {
                 node = node.childNodes[offset];
                 offset = 0;
               } else {
                 // try previous sibling text node
-                let prev = node.childNodes && node.childNodes[offset - 1] ? node.childNodes[offset - 1] : null;
-                while (prev && prev.nodeType !== Node.TEXT_NODE) prev = prev && prev.previousSibling ? prev.previousSibling : null;
+                let prev =
+                  node.childNodes && node.childNodes[offset - 1]
+                    ? node.childNodes[offset - 1]
+                    : null;
+                while (prev && prev.nodeType !== Node.TEXT_NODE)
+                  prev = prev && prev.previousSibling ? prev.previousSibling : null;
                 if (prev && prev.nodeType === Node.TEXT_NODE) {
                   node = prev;
                   offset = node.nodeValue ? node.nodeValue.length : 0;
@@ -718,7 +774,6 @@ class CapnoteApp {
 
             // If we found or coerced to a text node, insert into it
             if (node && node.nodeType === Node.TEXT_NODE) {
-
               const text = node.nodeValue || '';
               const before = text.substring(0, offset);
               let after = text.substring(offset);
@@ -735,14 +790,14 @@ class CapnoteApp {
               sel.addRange(newRange);
               this.trackContentChanges();
             } else {
-
               // fallback: append a text node with newline to the deepest codeAncestor and place caret after it
               const textNode = document.createTextNode('\n');
               // find a sensible insertion point: prefer range.insertNode if possible
               try {
                 // if inserting a new line node, include a ZWSP so caret has a visible spot
                 const ZW = '\u200B';
-                if (!textNode.nodeValue || !textNode.nodeValue.startsWith('\n')) textNode.nodeValue = '\n' + ZW;
+                if (!textNode.nodeValue || !textNode.nodeValue.startsWith('\n'))
+                  textNode.nodeValue = '\n' + ZW;
                 range.insertNode(textNode);
                 // move caret after inserted node (position will be after the newline)
                 range.setStartAfter(textNode);
@@ -763,9 +818,15 @@ class CapnoteApp {
                   try {
                     const para = document.createElement('p');
                     para.innerHTML = '<br>';
-                    const resolvedPre = preAncestor || (codeAncestor && (codeAncestor.closest ? codeAncestor.closest('pre') : codeAncestor.parentElement));
+                    const resolvedPre =
+                      preAncestor ||
+                      (codeAncestor &&
+                        (codeAncestor.closest
+                          ? codeAncestor.closest('pre')
+                          : codeAncestor.parentElement));
                     if (resolvedPre && resolvedPre.parentNode) {
-                      if (resolvedPre.nextSibling) resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
+                      if (resolvedPre.nextSibling)
+                        resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
                       else resolvedPre.parentNode.appendChild(para);
                     } else {
                       this.richEditor.appendChild(para);
@@ -776,7 +837,7 @@ class CapnoteApp {
                     newRange3.collapse(true);
                     newSel.removeAllRanges();
                     newSel.addRange(newRange3);
-                  } catch (err) { }
+                  } catch (err) {}
                 }
               }
               this.trackContentChanges();
@@ -843,7 +904,8 @@ class CapnoteApp {
                 range.insertNode(a);
                 range.setStartAfter(a);
                 range.collapse(true);
-                sel.removeAllRanges(); sel.addRange(range);
+                sel.removeAllRanges();
+                sel.addRange(range);
               } else {
                 this.richEditor.appendChild(a);
               }
@@ -947,7 +1009,10 @@ class CapnoteApp {
 
     // Listen for native notification clicks forwarded from the main process
     try {
-      if (window.electronAPI && typeof window.electronAPI.onNativeNotificationClick === 'function') {
+      if (
+        window.electronAPI &&
+        typeof window.electronAPI.onNativeNotificationClick === 'function'
+      ) {
         window.electronAPI.onNativeNotificationClick((notificationId) => {
           try {
             const nid = parseInt(notificationId);
@@ -978,13 +1043,25 @@ class CapnoteApp {
 
     // Fire native notification if preference enabled
     try {
-      const nativePref = this.toggleNativeNotifications ? this.toggleNativeNotifications.checked : (localStorage.getItem('settings.nativeNotifications') === null ? true : (localStorage.getItem('settings.nativeNotifications') === '1' || localStorage.getItem('settings.nativeNotifications') === 'true'));
-      if (nativePref && window && window.electronAPI && typeof window.electronAPI.showNativeNotification === 'function') {
-        window.electronAPI.showNativeNotification({
-          title,
-          body,
-          silent: false
-        }).catch(err => console.warn('showNativeNotification rejected:', err));
+      const nativePref = this.toggleNativeNotifications
+        ? this.toggleNativeNotifications.checked
+        : localStorage.getItem('settings.nativeNotifications') === null
+          ? true
+          : localStorage.getItem('settings.nativeNotifications') === '1' ||
+            localStorage.getItem('settings.nativeNotifications') === 'true';
+      if (
+        nativePref &&
+        window &&
+        window.electronAPI &&
+        typeof window.electronAPI.showNativeNotification === 'function'
+      ) {
+        window.electronAPI
+          .showNativeNotification({
+            title,
+            body,
+            silent: false,
+          })
+          .catch((err) => console.warn('showNativeNotification rejected:', err));
       }
     } catch (err) {
       console.warn('Native notification test error:', err);
@@ -1012,7 +1089,7 @@ class CapnoteApp {
   insertCodeBlock() {
     // Insert a fenced code block at the current caret/selection in the appropriate editor.
     // Empty fenced block - caret will be placed inside the empty code area
-    const fenceTemplate = "```language\n\n```\n";
+    const fenceTemplate = '```language\n\n```\n';
 
     // If markdown editor is visible, insert into textarea at cursor
     if (this.markdownEditor && !this.markdownEditor.classList.contains('hidden')) {
@@ -1082,7 +1159,7 @@ class CapnoteApp {
           newSel.removeAllRanges();
           newSel.addRange(range);
           this.richEditor.focus();
-        } catch (err) { }
+        } catch (err) {}
         return;
       }
 
@@ -1090,17 +1167,24 @@ class CapnoteApp {
 
       // determine if selection is inside an existing <pre> or <code>
       const commonNode = range.commonAncestorContainer;
-      const elementNode = commonNode.nodeType === Node.ELEMENT_NODE ? commonNode : commonNode.parentElement;
+      const elementNode =
+        commonNode.nodeType === Node.ELEMENT_NODE ? commonNode : commonNode.parentElement;
       const ancestor = elementNode && elementNode.closest ? elementNode.closest('pre, code') : null;
 
       if (ancestor) {
         // If we are inside a <code> or <pre>, insert the new block after the containing <pre>
-        let preAncestor = ancestor.tagName && ancestor.tagName.toLowerCase() === 'pre' ? ancestor : (ancestor.closest ? ancestor.closest('pre') : null);
+        let preAncestor =
+          ancestor.tagName && ancestor.tagName.toLowerCase() === 'pre'
+            ? ancestor
+            : ancestor.closest
+              ? ancestor.closest('pre')
+              : null;
         if (!preAncestor) preAncestor = ancestor.parentElement;
 
         const { pre, textNode } = createPreWithZW();
         if (preAncestor && preAncestor.parentNode) {
-          if (preAncestor.nextSibling) preAncestor.parentNode.insertBefore(pre, preAncestor.nextSibling);
+          if (preAncestor.nextSibling)
+            preAncestor.parentNode.insertBefore(pre, preAncestor.nextSibling);
           else preAncestor.parentNode.appendChild(pre);
         } else {
           // fallback: insert at current range
@@ -1116,7 +1200,7 @@ class CapnoteApp {
           newSel.removeAllRanges();
           newSel.addRange(newRange);
           this.richEditor.focus();
-        } catch (err) { }
+        } catch (err) {}
 
         return;
       }
@@ -1130,7 +1214,9 @@ class CapnoteApp {
       newRange.setStart(textNode, 1);
       newRange.collapse(true);
       sel.addRange(newRange);
-      try { this.richEditor.focus(); } catch (e) { }
+      try {
+        this.richEditor.focus();
+      } catch (e) {}
     } catch (e) {
       // fallback: append
       const pre = document.createElement('pre');
@@ -1147,7 +1233,7 @@ class CapnoteApp {
         sel2.removeAllRanges();
         sel2.addRange(range2);
         this.richEditor.focus();
-      } catch (err) { }
+      } catch (err) {}
     }
   }
 
@@ -1205,7 +1291,8 @@ class CapnoteApp {
       .addEventListener('click', () => this.insertDateTime('time'));
 
     // Emoji panel toggle
-    if (this.openEmojiBtn) this.openEmojiBtn.addEventListener('click', (e) => this.toggleEmojiPanel());
+    if (this.openEmojiBtn)
+      this.openEmojiBtn.addEventListener('click', (e) => this.toggleEmojiPanel());
     // Browse image button opens hidden file input
     if (this.browseImageBtn && this.browseImageInput) {
       this.browseImageBtn.addEventListener('click', () => this.browseImageInput.click());
@@ -1273,8 +1360,6 @@ class CapnoteApp {
       .addEventListener('click', () => this.insertList('ol'));
   }
 
-
-
   setupMoodWeatherSelectors() {
     this.moodBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
@@ -1291,9 +1376,12 @@ class CapnoteApp {
     });
 
     // Emoji panel handlers: search and populate grid
-    if (this.emojiSearchInput) this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
+    if (this.emojiSearchInput)
+      this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
     // initialize tabs then populate grid
-    try { this.initEmojiTabs(); } catch (e) { }
+    try {
+      this.initEmojiTabs();
+    } catch (e) {}
     this.populateEmojiGrid();
   }
 
@@ -1320,12 +1408,16 @@ class CapnoteApp {
     };
 
     // Use passive event listener for better performance
-    window.addEventListener('resize', () => {
-      startResize();
-      clearTimeout(resizeTimer);
-      // Increased timeout to 100ms to ensure resize is complete
-      resizeTimer = setTimeout(endResize, 100);
-    }, { passive: true });
+    window.addEventListener(
+      'resize',
+      () => {
+        startResize();
+        clearTimeout(resizeTimer);
+        // Increased timeout to 100ms to ensure resize is complete
+        resizeTimer = setTimeout(endResize, 100);
+      },
+      { passive: true }
+    );
   }
 
   toggleEmojiPanel() {
@@ -1356,7 +1448,7 @@ class CapnoteApp {
           this.emojiPanel.style.left = left + 'px';
           // flush: top edge slightly below button bottom for breathing room
           const verticalNudge = 10; // px
-          this.emojiPanel.style.top = (Math.round(btnRect.bottom) + verticalNudge) + 'px';
+          this.emojiPanel.style.top = Math.round(btnRect.bottom) + verticalNudge + 'px';
           this.emojiPanel.style.right = 'auto';
         }
 
@@ -1386,7 +1478,9 @@ class CapnoteApp {
         this.emojiPanel.style.top = '';
       }
       // clear any saved selection when the panel is closed explicitly
-      try { this.clearSavedSelection(); } catch (e) { }
+      try {
+        this.clearSavedSelection();
+      } catch (e) {}
     }, 200);
     if (this.openEmojiBtn) this.openEmojiBtn.classList.remove('active');
   }
@@ -1398,40 +1492,461 @@ class CapnoteApp {
     const emojiSets = this._emojiSets || {
       all: [],
       smileys: [
-        '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '😋', '😛', '😜', '🤪', '😝', '😐', '😑', '😶', '😏', '😒', '🙄', '🤨', '🤔', '🤫', '🤭', '🤥', '😳', '😞', '😟', '😠', '😡', '🤬', '😔', '😕', '🙁', '☹️', '😭', '😢', '😤', '😩', '😫', '😮', '😯', '😲', '😱', '😨', '😰', '🥵', '🥶', '😳', '🤯', '🥴', '😵', '🤐', '🥺', '🤢', '🤮', '🤧', '😷', '🤒', '🤕', '🤑', '🤠', '😈', '👿', '🤡', '💩', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾',
+        '😀',
+        '😃',
+        '😄',
+        '😁',
+        '😆',
+        '😅',
+        '😂',
+        '🤣',
+        '🙂',
+        '🙃',
+        '😉',
+        '😊',
+        '😇',
+        '🥰',
+        '😍',
+        '🤩',
+        '😘',
+        '😗',
+        '😚',
+        '😙',
+        '😋',
+        '😛',
+        '😜',
+        '🤪',
+        '😝',
+        '😐',
+        '😑',
+        '😶',
+        '😏',
+        '😒',
+        '🙄',
+        '🤨',
+        '🤔',
+        '🤫',
+        '🤭',
+        '🤥',
+        '😳',
+        '😞',
+        '😟',
+        '😠',
+        '😡',
+        '🤬',
+        '😔',
+        '😕',
+        '🙁',
+        '☹️',
+        '😭',
+        '😢',
+        '😤',
+        '😩',
+        '😫',
+        '😮',
+        '😯',
+        '😲',
+        '😱',
+        '😨',
+        '😰',
+        '🥵',
+        '🥶',
+        '😳',
+        '🤯',
+        '🥴',
+        '😵',
+        '🤐',
+        '🥺',
+        '🤢',
+        '🤮',
+        '🤧',
+        '😷',
+        '🤒',
+        '🤕',
+        '🤑',
+        '🤠',
+        '😈',
+        '👿',
+        '🤡',
+        '💩',
+        '😺',
+        '😸',
+        '😹',
+        '😻',
+        '😼',
+        '😽',
+        '🙀',
+        '😿',
+        '😾',
         /* commonly expected basics */
-        '😎', '🤓', '🤖', '🙌', '🤲'
+        '😎',
+        '🤓',
+        '🤖',
+        '🙌',
+        '🤲',
       ],
       people: [
-        '👶', '🧒', '👦', '👧', '🧑', '👨', '👩', '👱', '👱‍♀️', '👱‍♂️', '🧔', '👨‍🦰', '👩‍🦰', '👨‍🦱', '👩‍🦱', '👨‍🦳', '👩‍🦳', '🧑‍⚕️', '👩‍⚕️', '👨‍⚕️', '👩‍🏫', '👨‍🏫', '👩‍⚖️', '👨‍⚖️', '👩‍💼', '👨‍💼', '👩‍🔧', '👨‍🔧', '👩‍🔬', '👨‍🔬', '👩‍🎨', '👨‍🎨', '👩‍🚒', '👨‍🚒', '👮', '👷', '💂', '🕵️', '🧕', '👳', '🤵', '👰', '🤰', '🤱', '👩‍🍼', '👨‍🍼'
+        '👶',
+        '🧒',
+        '👦',
+        '👧',
+        '🧑',
+        '👨',
+        '👩',
+        '👱',
+        '👱‍♀️',
+        '👱‍♂️',
+        '🧔',
+        '👨‍🦰',
+        '👩‍🦰',
+        '👨‍🦱',
+        '👩‍🦱',
+        '👨‍🦳',
+        '👩‍🦳',
+        '🧑‍⚕️',
+        '👩‍⚕️',
+        '👨‍⚕️',
+        '👩‍🏫',
+        '👨‍🏫',
+        '👩‍⚖️',
+        '👨‍⚖️',
+        '👩‍💼',
+        '👨‍💼',
+        '👩‍🔧',
+        '👨‍🔧',
+        '👩‍🔬',
+        '👨‍🔬',
+        '👩‍🎨',
+        '👨‍🎨',
+        '👩‍🚒',
+        '👨‍🚒',
+        '👮',
+        '👷',
+        '💂',
+        '🕵️',
+        '🧕',
+        '👳',
+        '🤵',
+        '👰',
+        '🤰',
+        '🤱',
+        '👩‍🍼',
+        '👨‍🍼',
       ],
       animals: [
-        '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐒', '🐔', '🐤', '🐥', '🐣', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🪲', '🪳', '🐢', '🐍', '🦎', '🐙', '🦑', '🦐', '🦀'
+        '🐶',
+        '🐱',
+        '🐭',
+        '🐹',
+        '🐰',
+        '🦊',
+        '🐻',
+        '🐼',
+        '🐨',
+        '🐯',
+        '🦁',
+        '🐮',
+        '🐷',
+        '🐸',
+        '🐵',
+        '🐒',
+        '🐔',
+        '🐤',
+        '🐥',
+        '🐣',
+        '🦆',
+        '🦅',
+        '🦉',
+        '🦇',
+        '🐺',
+        '🐗',
+        '🐴',
+        '🦄',
+        '🐝',
+        '🐛',
+        '🦋',
+        '🐌',
+        '🐞',
+        '🐜',
+        '🪲',
+        '🪳',
+        '🐢',
+        '🐍',
+        '🦎',
+        '🐙',
+        '🦑',
+        '🦐',
+        '🦀',
       ],
       food: [
-        '🍏', '🍎', '🍐', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐', '🍒', '🍑', '🥭', '🍍', '🥥', '🥝', '🍅', '🍆', '🥑', '🥦', '🥬', '🥒', '🌶️', '🌽', '🥕', '🧄', '🧅', '🥔', '🍠', '🥐', '🍞', '🥖', '🥨', '🧀', '🥚', '🍳', '🥓', '🍗', '🍖', '🌭', '🍔', '🍟', '🍕', '🥪', '🌮', '🌯', '🥗', '🍝', '🍜', '🍲', '🍛', '🍣', '🍱', '🍤', '🍙', '🍚', '🍘', '🍥', '🥟', '🧁', '🍰', '🎂', '🍮', '🍩', '🍪', '🍫', '🍬', '🍭'
+        '🍏',
+        '🍎',
+        '🍐',
+        '🍊',
+        '🍋',
+        '🍌',
+        '🍉',
+        '🍇',
+        '🍓',
+        '🫐',
+        '🍒',
+        '🍑',
+        '🥭',
+        '🍍',
+        '🥥',
+        '🥝',
+        '🍅',
+        '🍆',
+        '🥑',
+        '🥦',
+        '🥬',
+        '🥒',
+        '🌶️',
+        '🌽',
+        '🥕',
+        '🧄',
+        '🧅',
+        '🥔',
+        '🍠',
+        '🥐',
+        '🍞',
+        '🥖',
+        '🥨',
+        '🧀',
+        '🥚',
+        '🍳',
+        '🥓',
+        '🍗',
+        '🍖',
+        '🌭',
+        '🍔',
+        '🍟',
+        '🍕',
+        '🥪',
+        '🌮',
+        '🌯',
+        '🥗',
+        '🍝',
+        '🍜',
+        '🍲',
+        '🍛',
+        '🍣',
+        '🍱',
+        '🍤',
+        '🍙',
+        '🍚',
+        '🍘',
+        '🍥',
+        '🥟',
+        '🧁',
+        '🍰',
+        '🎂',
+        '🍮',
+        '🍩',
+        '🍪',
+        '🍫',
+        '🍬',
+        '🍭',
       ],
       activities: [
-        '⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🥅', '🏒', '🏑', '🥍', '🏏', '⛳', '🏹', '🎣', '🤿', '🥊', '🥋', '🎽', '🛹', '🛼', '🏂', '🏋️', '🏋️‍♀️', '🏇', '🏄', '🚣', '🏊', '🤺', '🤸', '🤼', '🤾'
+        '⚽',
+        '🏀',
+        '🏈',
+        '⚾',
+        '🎾',
+        '🏐',
+        '🏉',
+        '🎱',
+        '🏓',
+        '🏸',
+        '🥅',
+        '🏒',
+        '🏑',
+        '🥍',
+        '🏏',
+        '⛳',
+        '🏹',
+        '🎣',
+        '🤿',
+        '🥊',
+        '🥋',
+        '🎽',
+        '🛹',
+        '🛼',
+        '🏂',
+        '🏋️',
+        '🏋️‍♀️',
+        '🏇',
+        '🏄',
+        '🚣',
+        '🏊',
+        '🤺',
+        '🤸',
+        '🤼',
+        '🤾',
       ],
       travel: [
-        '🚗', '🚕', '🚙', '🚌', '🚎', '🏎️', '🚓', '🚑', '🚒', '🚐', '🚲', '🛴', '🛵', '🏍️', '🚨', '🚔', '🚖', '🚘', '🚍', '✈️', '🛩️', '🚀', '🛸', '🚁', '🚤', '🛳️', '⛵', '🚢', '🚂', '🚆', '🚈', '🚅', '🚊'
+        '🚗',
+        '🚕',
+        '🚙',
+        '🚌',
+        '🚎',
+        '🏎️',
+        '🚓',
+        '🚑',
+        '🚒',
+        '🚐',
+        '🚲',
+        '🛴',
+        '🛵',
+        '🏍️',
+        '🚨',
+        '🚔',
+        '🚖',
+        '🚘',
+        '🚍',
+        '✈️',
+        '🛩️',
+        '🚀',
+        '🛸',
+        '🚁',
+        '🚤',
+        '🛳️',
+        '⛵',
+        '🚢',
+        '🚂',
+        '🚆',
+        '🚈',
+        '🚅',
+        '🚊',
       ],
       objects: [
-        '⌚', '📱', '📲', '💻', '🖥️', '🖨️', '⌨️', '🖱️', '🖲️', '🕹️', '🧭', '📷', '📸', '📹', '🎥', '📺', '📻', '🎙️', '🎧', '📡', '🔋', '🔌', '💡', '🔦', '🧯', '🛠️', '🔧', '🔨', '🔩', '⚙️', '🧰', '🧲', '🪛', '🔍', '🧪', '🧫', '🧬'
+        '⌚',
+        '📱',
+        '📲',
+        '💻',
+        '🖥️',
+        '🖨️',
+        '⌨️',
+        '🖱️',
+        '🖲️',
+        '🕹️',
+        '🧭',
+        '📷',
+        '📸',
+        '📹',
+        '🎥',
+        '📺',
+        '📻',
+        '🎙️',
+        '🎧',
+        '📡',
+        '🔋',
+        '🔌',
+        '💡',
+        '🔦',
+        '🧯',
+        '🛠️',
+        '🔧',
+        '🔨',
+        '🔩',
+        '⚙️',
+        '🧰',
+        '🧲',
+        '🪛',
+        '🔍',
+        '🧪',
+        '🧫',
+        '🧬',
       ],
       symbols: [
-        '❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💔', '✨', '⭐', '⚡', '🔥', '💥', '🌟', '💫', '💤', '🔔', '🔕', '✔️', '❌', '❗', '❓', '⚠️', '🔞', '🔅', '🔆', '➕', '➖', '➗', '✖️', '♻️', '⚕️', '♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓',
+        '❤️',
+        '🧡',
+        '💛',
+        '💚',
+        '💙',
+        '💜',
+        '🖤',
+        '🤍',
+        '🤎',
+        '💔',
+        '✨',
+        '⭐',
+        '⚡',
+        '🔥',
+        '💥',
+        '🌟',
+        '💫',
+        '💤',
+        '🔔',
+        '🔕',
+        '✔️',
+        '❌',
+        '❗',
+        '❓',
+        '⚠️',
+        '🔞',
+        '🔅',
+        '🔆',
+        '➕',
+        '➖',
+        '➗',
+        '✖️',
+        '♻️',
+        '⚕️',
+        '♈',
+        '♉',
+        '♊',
+        '♋',
+        '♌',
+        '♍',
+        '♎',
+        '♏',
+        '♐',
+        '♑',
+        '♒',
+        '♓',
         /* reaction/gesture basics */
-        '👍', '👎', '👏', '🙏', '💪', '🤝'
+        '👍',
+        '👎',
+        '👏',
+        '🙏',
+        '💪',
+        '🤝',
       ],
       flags: [
-        '🏳️', '🏴', '🏳️‍🌈', '🇦🇺', '🇧🇷', '🇨🇦', '🇨🇳', '🇫🇷', '🇩🇪', '🇮🇳', '🇮🇹', '🇯🇵', '🇰🇷', '🇲🇽', '🇳🇱', '🇳🇿', '🇳🇴', '🇵🇱', '🇵🇹', '🇷🇺', '🇸🇪', '🇿🇦', '🇹🇷', '🇬🇧', '🇺🇸'
-      ]
+        '🏳️',
+        '🏴',
+        '🏳️‍🌈',
+        '🇦🇺',
+        '🇧🇷',
+        '🇨🇦',
+        '🇨🇳',
+        '🇫🇷',
+        '🇩🇪',
+        '🇮🇳',
+        '🇮🇹',
+        '🇯🇵',
+        '🇰🇷',
+        '🇲🇽',
+        '🇳🇱',
+        '🇳🇿',
+        '🇳🇴',
+        '🇵🇱',
+        '🇵🇹',
+        '🇷🇺',
+        '🇸🇪',
+        '🇿🇦',
+        '🇹🇷',
+        '🇬🇧',
+        '🇺🇸',
+      ],
     };
     // remove any emoji sequences that contain ZERO WIDTH JOINER U+200D (these often render as multiple glyphs in some fonts)
     Object.keys(emojiSets).forEach((k) => {
-      emojiSets[k] = (emojiSets[k] || []).filter((ch) => typeof ch === 'string' && ch.indexOf('\u200D') === -1 && ch.indexOf('\u200d') === -1);
+      emojiSets[k] = (emojiSets[k] || []).filter(
+        (ch) => typeof ch === 'string' && ch.indexOf('\u200D') === -1 && ch.indexOf('\u200d') === -1
+      );
       // also dedupe
       emojiSets[k] = Array.from(new Set(emojiSets[k]));
     });
@@ -1457,11 +1972,12 @@ class CapnoteApp {
       this._emojiKeywordMap = this._emojiKeywordMap || {};
     }
 
-    const emojis = Array.from((this._emojiSets[category] || this._emojiSets.all || []));
+    const emojis = Array.from(this._emojiSets[category] || this._emojiSets.all || []);
     // dedupe to ensure a stable order and no duplicates
     try {
       const uniq = Array.from(new Set(emojis));
-      emojis.length = 0; emojis.push(...uniq);
+      emojis.length = 0;
+      emojis.push(...uniq);
     } catch (e) {
       // ignore any unexpected errors while normalizing the list
     }
@@ -1481,13 +1997,17 @@ class CapnoteApp {
           // ignore restore errors
         }
         // make sure editor has focus before insertion
-        try { this.richEditor && this.richEditor.focus(); } catch (e) { }
+        try {
+          this.richEditor && this.richEditor.focus();
+        } catch (e) {}
 
         this.insertTextAtCursor(emoji);
         this.trackContentChanges();
 
         // update savedSelection to the new caret position after insertion so subsequent clicks insert at the updated spot
-        try { this.captureEditorSelection(); } catch (e) { }
+        try {
+          this.captureEditorSelection();
+        } catch (e) {}
 
         // NOTE: Do NOT hide the panel here. The panel should only close when the user presses the close button.
       });
@@ -1527,17 +2047,25 @@ class CapnoteApp {
       });
 
       // touch support
-      tabsContainer.addEventListener('touchstart', (e) => {
-        if (e.touches.length !== 1) return;
-        startX = e.touches[0].pageX - tabsContainer.offsetLeft;
-        scrollLeftStart = tabsContainer.scrollLeft;
-      }, { passive: true });
-      tabsContainer.addEventListener('touchmove', (e) => {
-        if (e.touches.length !== 1) return;
-        const x = e.touches[0].pageX - tabsContainer.offsetLeft;
-        const walk = (x - startX) * 1;
-        tabsContainer.scrollLeft = scrollLeftStart - walk;
-      }, { passive: true });
+      tabsContainer.addEventListener(
+        'touchstart',
+        (e) => {
+          if (e.touches.length !== 1) return;
+          startX = e.touches[0].pageX - tabsContainer.offsetLeft;
+          scrollLeftStart = tabsContainer.scrollLeft;
+        },
+        { passive: true }
+      );
+      tabsContainer.addEventListener(
+        'touchmove',
+        (e) => {
+          if (e.touches.length !== 1) return;
+          const x = e.touches[0].pageX - tabsContainer.offsetLeft;
+          const walk = (x - startX) * 1;
+          tabsContainer.scrollLeft = scrollLeftStart - walk;
+        },
+        { passive: true }
+      );
     }
     tabs.forEach((t) => {
       t.addEventListener('click', (e) => {
@@ -1552,7 +2080,11 @@ class CapnoteApp {
         this.activeEmojiCategory = cat;
         this.populateEmojiGrid();
         // refocus search input
-        setTimeout(() => { try { this.emojiSearchInput && this.emojiSearchInput.focus(); } catch (e) { } }, 50);
+        setTimeout(() => {
+          try {
+            this.emojiSearchInput && this.emojiSearchInput.focus();
+          } catch (e) {}
+        }, 50);
       });
     });
   }
@@ -1573,13 +2105,16 @@ class CapnoteApp {
       const charMatch = emoji.includes(q);
       // Match against our english keyword map
       let engMatch = false;
-      const engKeywords = (emojiKeywordMap[emoji] || []);
+      const engKeywords = emojiKeywordMap[emoji] || [];
       for (let i = 0; i < engKeywords.length; i++) {
         const kw = this.normalizeForSearch(String(engKeywords[i] || ''));
         if (!kw) continue;
-        if (kw.indexOf(q) !== -1 || q.indexOf(kw) !== -1) { engMatch = true; break; }
+        if (kw.indexOf(q) !== -1 || q.indexOf(kw) !== -1) {
+          engMatch = true;
+          break;
+        }
       }
-      btn.style.display = (charMatch || engMatch) ? '' : 'none';
+      btn.style.display = charMatch || engMatch ? '' : 'none';
     });
   }
 
@@ -1610,13 +2145,19 @@ class CapnoteApp {
     });
 
     // New combined import/export handlers
-    if (this.exportAllDataBtn) this.exportAllDataBtn.addEventListener('click', () => this.exportAllData());
-    if (this.importAllDataBtn) this.importAllDataBtn.addEventListener('click', () => this.importAllData());
+    if (this.exportAllDataBtn)
+      this.exportAllDataBtn.addEventListener('click', () => this.exportAllData());
+    if (this.importAllDataBtn)
+      this.importAllDataBtn.addEventListener('click', () => this.importAllData());
     // Table modal events
-    if (this.insertTableBtn) this.insertTableBtn.addEventListener('click', () => this.showModal(this.tableModal));
-    if (this.closeTableModal) this.closeTableModal.addEventListener('click', () => this.hideModal(this.tableModal));
-    if (this.cancelTableBtn) this.cancelTableBtn.addEventListener('click', () => this.hideModal(this.tableModal));
-    if (this.insertTableConfirmBtn) this.insertTableConfirmBtn.addEventListener('click', () => this.handleInsertTable());
+    if (this.insertTableBtn)
+      this.insertTableBtn.addEventListener('click', () => this.showModal(this.tableModal));
+    if (this.closeTableModal)
+      this.closeTableModal.addEventListener('click', () => this.hideModal(this.tableModal));
+    if (this.cancelTableBtn)
+      this.cancelTableBtn.addEventListener('click', () => this.hideModal(this.tableModal));
+    if (this.insertTableConfirmBtn)
+      this.insertTableConfirmBtn.addEventListener('click', () => this.handleInsertTable());
     // Clear actions
     this.clearAllNotesBtn?.addEventListener('click', () => this.confirmClearAllNotes());
     this.clearAllFoldersBtn?.addEventListener('click', () => this.confirmClearAllFolders());
@@ -1684,7 +2225,7 @@ class CapnoteApp {
 
   async clearAllNotes() {
     try {
-      const removedNoteIds = (this.notes || []).map(n => n.id);
+      const removedNoteIds = (this.notes || []).map((n) => n.id);
 
       this.notes = [];
       this.currentNote = null;
@@ -1692,7 +2233,9 @@ class CapnoteApp {
       await this.saveNotes();
       this.removeNoteReferences(removedNoteIds);
       // Clear last viewed note
-      try { localStorage.removeItem('last-viewed-note'); } catch (e) { }
+      try {
+        localStorage.removeItem('last-viewed-note');
+      } catch (e) {}
       this.updateNotesList();
       this.updateFoldersList();
       this.updateStats();
@@ -1739,24 +2282,50 @@ class CapnoteApp {
       this.notifications = [];
 
       // Remove stored data keys
-      try { localStorage.removeItem('capnote-notes'); } catch (e) { }
-      try { localStorage.removeItem('capnote-folders'); } catch (e) { }
-      try { localStorage.removeItem('last-viewed-note'); } catch (e) { }
+      try {
+        localStorage.removeItem('capnote-notes');
+      } catch (e) {}
+      try {
+        localStorage.removeItem('capnote-folders');
+      } catch (e) {}
+      try {
+        localStorage.removeItem('last-viewed-note');
+      } catch (e) {}
 
       // Reset settings to defaults by removing known keys
-      try { localStorage.removeItem('capnote-settings'); } catch (e) { }
-      try { localStorage.removeItem('accentColor'); } catch (e) { }
-      try { localStorage.removeItem('darkMode'); } catch (e) { }
-      try { localStorage.removeItem('maxPinnedNotes'); } catch (e) { }
-      try { localStorage.removeItem('syncFolderAccent'); } catch (e) { }
-      try { localStorage.removeItem('folderColorsBackup'); } catch (e) { }
+      try {
+        localStorage.removeItem('capnote-settings');
+      } catch (e) {}
+      try {
+        localStorage.removeItem('accentColor');
+      } catch (e) {}
+      try {
+        localStorage.removeItem('darkMode');
+      } catch (e) {}
+      try {
+        localStorage.removeItem('maxPinnedNotes');
+      } catch (e) {}
+      try {
+        localStorage.removeItem('syncFolderAccent');
+      } catch (e) {}
+      try {
+        localStorage.removeItem('folderColorsBackup');
+      } catch (e) {}
 
       // Persist empty notes/folders
       await this.saveNotes();
       await this.saveFolders();
       // Persist clearing reminders/notifications
-      try { await this.saveReminders(); } catch (e) { console.warn(e); }
-      try { await this.saveNotifications(); } catch (e) { console.warn(e); }
+      try {
+        await this.saveReminders();
+      } catch (e) {
+        console.warn(e);
+      }
+      try {
+        await this.saveNotifications();
+      } catch (e) {
+        console.warn(e);
+      }
 
       // Reset in-memory settings/state to defaults
       // Default accent used elsewhere in the app
@@ -1769,14 +2338,20 @@ class CapnoteApp {
       if (this.darkModeToggle) this.darkModeToggle.checked = false;
 
       // Reset max pinned to default (3)
-      try { localStorage.setItem('maxPinnedNotes', '3'); } catch (e) { }
+      try {
+        localStorage.setItem('maxPinnedNotes', '3');
+      } catch (e) {}
       if (this.maxPinnedSelect) this.maxPinnedSelect.value = '3';
 
       // Disable folder-accent sync
-      try { localStorage.setItem('syncFolderAccent', '0'); } catch (e) { }
+      try {
+        localStorage.setItem('syncFolderAccent', '0');
+      } catch (e) {}
       if (this.syncFolderAccentToggle) this.syncFolderAccentToggle.checked = false;
       // Restore folder accents from backup removal (ensure folders list is empty anyway)
-      try { localStorage.removeItem('folderColorsBackup'); } catch (e) { }
+      try {
+        localStorage.removeItem('folderColorsBackup');
+      } catch (e) {}
 
       // Persist settings that the UI expects to exist
       this.saveSettings();
@@ -1787,8 +2362,12 @@ class CapnoteApp {
       this.updateFolderNotes();
       this.updateRemindersView();
       this.updateNotificationsView();
-      try { this.updateActiveRemindersCount(); } catch (e) { }
-      try { this.updateActiveNotificationsCount(); } catch (e) { }
+      try {
+        this.updateActiveRemindersCount();
+      } catch (e) {}
+      try {
+        this.updateActiveNotificationsCount();
+      } catch (e) {}
       this.updateStats();
 
       // Ensure no note remains open after reset
@@ -1796,10 +2375,12 @@ class CapnoteApp {
         this.currentNote = null;
         this.currentNoteContent = '';
         this.lastSavedContent = '';
-      } catch (e) { }
+      } catch (e) {}
 
       // Show welcome/home screen instead of any note
-      try { this.showWelcome(); } catch (e) { }
+      try {
+        this.showWelcome();
+      } catch (e) {}
 
       this.showNotification(window.i18n.t('messages.appReset'), 'success');
     } catch (err) {
@@ -1958,7 +2539,9 @@ class CapnoteApp {
       if (!e.target || e.target.type !== 'checkbox' || !this.currentNote) return;
       if (this.currentNote.isMarkdown) return;
 
-      const index = Array.from(this.viewerText.querySelectorAll('input[type="checkbox"]')).indexOf(e.target);
+      const index = Array.from(this.viewerText.querySelectorAll('input[type="checkbox"]')).indexOf(
+        e.target
+      );
       const doc = new DOMParser().parseFromString(this.currentNote.content || '', 'text/html');
       const stored = doc.body.querySelectorAll('input[type="checkbox"]')[index];
       if (!stored) return;
@@ -2024,7 +2607,10 @@ class CapnoteApp {
       const savedFolders = localStorage.getItem('capnote-folders');
       this.folders = savedFolders ? JSON.parse(savedFolders) : [];
       // Ensure older saved folders get a default expanded flag (true)
-      this.folders = this.folders.map((f) => ({ expanded: f.expanded !== undefined ? f.expanded : true, ...f }));
+      this.folders = this.folders.map((f) => ({
+        expanded: f.expanded !== undefined ? f.expanded : true,
+        ...f,
+      }));
     } catch (error) {
       console.error('Klasörler yüklenirken hata:', error);
       this.folders = [];
@@ -2073,7 +2659,9 @@ class CapnoteApp {
     try {
       localStorage.setItem('capnote-notes', JSON.stringify(this.serializeNotes()));
       // Ensure overview stats reflect the latest notes immediately
-      try { this.updateStats(); } catch (e) { }
+      try {
+        this.updateStats();
+      } catch (e) {}
     } catch (error) {
       console.error('Notlar kaydedilirken hata:', error);
       this.showNotification(window.i18n.t('messages.notesSaveError'), 'error');
@@ -2094,14 +2682,18 @@ class CapnoteApp {
       const savedReminders = localStorage.getItem('capnote-reminders');
       this.reminders = savedReminders ? JSON.parse(savedReminders) : [];
       // Normalize reminders: ensure recurrence field exists
-      this.reminders = this.reminders.map(r => ({
+      this.reminders = this.reminders.map((r) => ({
         ...r,
         recurrence: r.recurrence || 'none',
-        recurrenceDays: Array.isArray(r.recurrenceDays) ? r.recurrenceDays : (r.recurrenceDays ? r.recurrenceDays : []),
-        dismissed: r.dismissed || false
+        recurrenceDays: Array.isArray(r.recurrenceDays)
+          ? r.recurrenceDays
+          : r.recurrenceDays
+            ? r.recurrenceDays
+            : [],
+        dismissed: r.dismissed || false,
       }));
       // Drop dismissed reminders only; overdue ones are reported by checkDueReminders
-      this.reminders = this.reminders.filter(r => !r.dismissed);
+      this.reminders = this.reminders.filter((r) => !r.dismissed);
       await this.saveReminders(); // Clean up storage
     } catch (error) {
       console.error('Hatırlatmalar yüklenirken hata:', error);
@@ -2140,7 +2732,11 @@ class CapnoteApp {
       const base = new Date(datetimeIso);
       if (isNaN(base)) return null;
       // Normalize daysArray to sorted unique numbers 0..6
-      const days = Array.from(new Set((daysArray || []).map(d => parseInt(d)).filter(d => !isNaN(d) && d >= 0 && d <= 6))).sort((a, b) => a - b);
+      const days = Array.from(
+        new Set(
+          (daysArray || []).map((d) => parseInt(d)).filter((d) => !isNaN(d) && d >= 0 && d <= 6)
+        )
+      ).sort((a, b) => a - b);
       if (days.length === 0) return null;
 
       // Start searching from the next minute to avoid returning the same moment
@@ -2151,7 +2747,12 @@ class CapnoteApp {
         const wd = candidate.getDay();
         if (days.includes(wd)) {
           // Preserve the original time of day from base
-          candidate.setHours(base.getHours(), base.getMinutes(), base.getSeconds(), base.getMilliseconds());
+          candidate.setHours(
+            base.getHours(),
+            base.getMinutes(),
+            base.getSeconds(),
+            base.getMilliseconds()
+          );
           // If candidate is still <= base (unlikely due to start shift), continue
           if (candidate.getTime() <= base.getTime()) continue;
           return candidate;
@@ -2169,10 +2770,14 @@ class CapnoteApp {
 
   _recurrenceLabel(code) {
     switch (code) {
-      case 'daily': return window.i18n.t('reminder.daily');
-      case 'weekly': return window.i18n.t('reminder.weekly');
-      case 'monthly': return window.i18n.t('reminder.monthly');
-      default: return '';
+      case 'daily':
+        return window.i18n.t('reminder.daily');
+      case 'weekly':
+        return window.i18n.t('reminder.weekly');
+      case 'monthly':
+        return window.i18n.t('reminder.monthly');
+      default:
+        return '';
     }
   }
 
@@ -2236,7 +2841,9 @@ class CapnoteApp {
 
   showTodosScreen() {
     this.hideAllModals();
-    try { this.hideEmojiPanel(); } catch (e) { }
+    try {
+      this.hideEmojiPanel();
+    } catch (e) {}
 
     // Hide all screens
     this.noteEditor.classList.add('hidden');
@@ -2267,11 +2874,15 @@ class CapnoteApp {
       return;
     }
 
-    this.todosSectionsContainer.innerHTML = this.todoSections.map(section => {
-      const activeTodos = section.todos.filter(t => !t.completed).length;
-      const todosHtml = section.todos.length === 0 ?
-        `<div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 13px;">${window.i18n.t('todos.noTodosInSection')}</div>` :
-        section.todos.map(todo => `
+    this.todosSectionsContainer.innerHTML = this.todoSections
+      .map((section) => {
+        const activeTodos = section.todos.filter((t) => !t.completed).length;
+        const todosHtml =
+          section.todos.length === 0
+            ? `<div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 13px;">${window.i18n.t('todos.noTodosInSection')}</div>`
+            : section.todos
+                .map(
+                  (todo) => `
           <div class="todo-item ${todo.completed ? 'completed' : ''}" data-todo-id="${todo.id}" data-section-id="${section.id}">
             <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} data-action="toggle" data-todo-id="${todo.id}" data-section-id="${section.id}">
             <span class="todo-text" data-todo-id="${todo.id}">${this.escapeHtml(todo.text)}</span>
@@ -2285,9 +2896,11 @@ class CapnoteApp {
               </button>
             </div>
           </div>
-        `).join('');
+        `
+                )
+                .join('');
 
-      return `
+        return `
         <div class="todo-section" data-section-id="${section.id}">
           <div class="todo-section-header">
             <div class="todo-section-title">
@@ -2311,7 +2924,8 @@ class CapnoteApp {
           </div>
         </div>
       `;
-    }).join('');
+      })
+      .join('');
 
     // Add event listeners
     this.attachTodoEventListeners();
@@ -2319,24 +2933,28 @@ class CapnoteApp {
 
   attachTodoEventListeners() {
     // Section delete buttons
-    this.todosSectionsContainer.querySelectorAll('[data-action="delete-section"]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.deleteTodoSection(btn.dataset.sectionId);
+    this.todosSectionsContainer
+      .querySelectorAll('[data-action="delete-section"]')
+      .forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.deleteTodoSection(btn.dataset.sectionId);
+        });
       });
-    });
 
     // Add todo buttons
-    this.todosSectionsContainer.querySelectorAll('.add-todo-btn').forEach(btn => {
+    this.todosSectionsContainer.querySelectorAll('.add-todo-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const sectionId = btn.dataset.sectionId;
-        const input = this.todosSectionsContainer.querySelector(`.todo-input[data-section-id="${sectionId}"]`);
+        const input = this.todosSectionsContainer.querySelector(
+          `.todo-input[data-section-id="${sectionId}"]`
+        );
         this.addTodoToSection(sectionId, input.value);
       });
     });
 
     // Todo input enter key
-    this.todosSectionsContainer.querySelectorAll('.todo-input').forEach(input => {
+    this.todosSectionsContainer.querySelectorAll('.todo-input').forEach((input) => {
       input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && input.value.trim()) {
           this.addTodoToSection(input.dataset.sectionId, input.value);
@@ -2345,7 +2963,7 @@ class CapnoteApp {
     });
 
     // Todo action buttons
-    this.todosSectionsContainer.querySelectorAll('[data-action]').forEach(btn => {
+    this.todosSectionsContainer.querySelectorAll('[data-action]').forEach((btn) => {
       if (btn.dataset.action === 'delete-section') return; // Already handled
 
       btn.addEventListener('click', (e) => {
@@ -2365,7 +2983,7 @@ class CapnoteApp {
     });
 
     // Todo edit inputs
-    this.todosSectionsContainer.querySelectorAll('.todo-edit-input').forEach(input => {
+    this.todosSectionsContainer.querySelectorAll('.todo-edit-input').forEach((input) => {
       input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           this.saveTodoEdit(input.dataset.sectionId, input.dataset.todoId, input.value);
@@ -2384,7 +3002,7 @@ class CapnoteApp {
     const newSection = {
       id: Date.now().toString(),
       name: name,
-      todos: []
+      todos: [],
     };
 
     this.todoSections.push(newSection);
@@ -2395,7 +3013,7 @@ class CapnoteApp {
   }
 
   deleteTodoSection(sectionId) {
-    this.todoSections = this.todoSections.filter(s => s.id !== sectionId);
+    this.todoSections = this.todoSections.filter((s) => s.id !== sectionId);
     this.saveTodos();
     this.renderTodosSections();
     this.updateTodosCount();
@@ -2406,14 +3024,14 @@ class CapnoteApp {
     const trimmedText = text.trim();
     if (!trimmedText) return;
 
-    const section = this.todoSections.find(s => s.id === sectionId);
+    const section = this.todoSections.find((s) => s.id === sectionId);
     if (!section) return;
 
     const newTodo = {
       id: Date.now().toString(),
       text: trimmedText,
       completed: false,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     };
 
     section.todos.unshift(newTodo);
@@ -2424,10 +3042,10 @@ class CapnoteApp {
   }
 
   toggleTodoComplete(sectionId, todoId) {
-    const section = this.todoSections.find(s => s.id === sectionId);
+    const section = this.todoSections.find((s) => s.id === sectionId);
     if (!section) return;
 
-    const todo = section.todos.find(t => t.id === todoId);
+    const todo = section.todos.find((t) => t.id === todoId);
     if (!todo) return;
 
     todo.completed = !todo.completed;
@@ -2441,7 +3059,9 @@ class CapnoteApp {
   }
 
   editTodo(sectionId, todoId) {
-    const todoItem = this.todosSectionsContainer.querySelector(`.todo-item[data-todo-id="${todoId}"][data-section-id="${sectionId}"]`);
+    const todoItem = this.todosSectionsContainer.querySelector(
+      `.todo-item[data-todo-id="${todoId}"][data-section-id="${sectionId}"]`
+    );
     if (!todoItem) return;
 
     const textSpan = todoItem.querySelector('.todo-text');
@@ -2465,10 +3085,10 @@ class CapnoteApp {
     const text = newText.trim();
     if (!text) return;
 
-    const section = this.todoSections.find(s => s.id === sectionId);
+    const section = this.todoSections.find((s) => s.id === sectionId);
     if (!section) return;
 
-    const todo = section.todos.find(t => t.id === todoId);
+    const todo = section.todos.find((t) => t.id === todoId);
     if (!todo) return;
 
     todo.text = text;
@@ -2478,10 +3098,10 @@ class CapnoteApp {
   }
 
   deleteTodo(sectionId, todoId) {
-    const section = this.todoSections.find(s => s.id === sectionId);
+    const section = this.todoSections.find((s) => s.id === sectionId);
     if (!section) return;
 
-    section.todos = section.todos.filter(t => t.id !== todoId);
+    section.todos = section.todos.filter((t) => t.id !== todoId);
     this.saveTodos();
     this.renderTodosSections();
     this.updateTodosCount();
@@ -2492,8 +3112,8 @@ class CapnoteApp {
     if (!this.todosCount) return;
 
     let activeCount = 0;
-    this.todoSections.forEach(section => {
-      activeCount += section.todos.filter(t => !t.completed).length;
+    this.todoSections.forEach((section) => {
+      activeCount += section.todos.filter((t) => !t.completed).length;
     });
 
     this.todosCount.textContent = activeCount;
@@ -2566,9 +3186,12 @@ class CapnoteApp {
     this.autoLockCurrentNote();
 
     // Ensure emoji panel is closed when leaving the current note
-    try { this.hideEmojiPanel(); } catch (e) { }
+    try {
+      this.hideEmojiPanel();
+    } catch (e) {}
     // Remember where we came from so cancelling the new note can go back there
-    this.noteBeforeNew = this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;
+    this.noteBeforeNew =
+      this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;
     this.currentNote = {
       id: Date.now(),
       title: '',
@@ -2618,7 +3241,9 @@ class CapnoteApp {
 
   showEditor() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) { }
+    try {
+      this.hideEmojiPanel();
+    } catch (e) {}
     this.welcomeScreen.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.noteEditor.classList.remove('hidden');
@@ -2646,7 +3271,9 @@ class CapnoteApp {
 
   showViewer() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) { }
+    try {
+      this.hideEmojiPanel();
+    } catch (e) {}
     this.welcomeScreen.classList.add('hidden');
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.remove('hidden');
@@ -2664,7 +3291,9 @@ class CapnoteApp {
 
   showWelcome() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) { }
+    try {
+      this.hideEmojiPanel();
+    } catch (e) {}
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.remove('hidden');
@@ -2682,7 +3311,9 @@ class CapnoteApp {
 
   showRemindersScreen() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) { }
+    try {
+      this.hideEmojiPanel();
+    } catch (e) {}
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.add('hidden');
@@ -2700,7 +3331,9 @@ class CapnoteApp {
 
   showNotificationsScreen() {
     // Hide emoji panel when switching views
-    try { this.hideEmojiPanel(); } catch (e) { }
+    try {
+      this.hideEmojiPanel();
+    } catch (e) {}
     this.noteEditor.classList.add('hidden');
     this.noteViewer.classList.add('hidden');
     this.welcomeScreen.classList.add('hidden');
@@ -2719,7 +3352,9 @@ class CapnoteApp {
   updateRemindersView() {
     if (!this.remindersList) return;
 
-    const activeReminders = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date());
+    const activeReminders = this.reminders.filter(
+      (r) => !r.dismissed && new Date(r.datetime) > new Date()
+    );
 
     if (activeReminders.length === 0) {
       this.remindersList.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">${window.i18n.t('messages.noActiveReminders')}</div>`;
@@ -2728,19 +3363,20 @@ class CapnoteApp {
 
     this.remindersList.innerHTML = activeReminders
       .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
-      .map(r => `
+      .map(
+        (r) => `
         <div class="reminder-card" data-reminder-id="${r.id}">
           <div class="reminder-note-title">${this.escapeHtml(r.noteTitle)}</div>
           <div class="reminder-datetime">
             <i class="fas fa-clock"></i>
             ${new Date(r.datetime).toLocaleString(this.getLocale(), {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })}
-            ${r.recurrence && r.recurrence !== 'none' ? `<span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? (': ' + r.recurrenceDays.map(d => this._weekdayShort(d)).join(', ')) : ''}</span>` : ''}
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+            ${r.recurrence && r.recurrence !== 'none' ? `<span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? ': ' + r.recurrenceDays.map((d) => this._weekdayShort(d)).join(', ') : ''}</span>` : ''}
           </div>
           <div class="reminder-actions">
             <button class="reminder-action-btn view-note-btn" data-note-id="${r.noteId}">
@@ -2751,18 +3387,20 @@ class CapnoteApp {
             </button>
           </div>
         </div>
-      `).join('');
+      `
+      )
+      .join('');
 
     // Add event listeners to action buttons
-    this.remindersList.querySelectorAll('.view-note-btn').forEach(btn => {
+    this.remindersList.querySelectorAll('.view-note-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const noteId = parseInt(e.currentTarget.dataset.noteId);
-        const note = this.notes.find(n => n.id === noteId);
+        const note = this.notes.find((n) => n.id === noteId);
         if (note) this.openNote(note);
       });
     });
 
-    this.remindersList.querySelectorAll('.dismiss-btn').forEach(btn => {
+    this.remindersList.querySelectorAll('.dismiss-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const reminderId = parseInt(e.currentTarget.dataset.reminderId);
         this.dismissReminder(reminderId);
@@ -2777,7 +3415,7 @@ class CapnoteApp {
     }
 
     // Check if note is saved (exists in notes array)
-    const notExists = this.notes.some(n => n.id === this.currentNote.id);
+    const notExists = this.notes.some((n) => n.id === this.currentNote.id);
     if (!notExists) {
       this.showNotification(window.i18n.t('messages.saveNoteFirst'), 'warning');
       return;
@@ -2797,9 +3435,12 @@ class CapnoteApp {
       noteId: this.currentNote.id,
       noteTitle: this.currentNote.title || window.i18n.t('messages.untitledNote'),
       datetime: datetime,
-      recurrence: (this.reminderRecurrence && this.reminderRecurrence.value) ? this.reminderRecurrence.value : 'none',
+      recurrence:
+        this.reminderRecurrence && this.reminderRecurrence.value
+          ? this.reminderRecurrence.value
+          : 'none',
       dismissed: false,
-      recurrenceDays: []
+      recurrenceDays: [],
     };
 
     // If weekly recurrence selected, collect checked weekdays (0=Sun..6=Sat)
@@ -2807,7 +3448,7 @@ class CapnoteApp {
       try {
         const checkboxes = document.querySelectorAll('#reminderWeekdays .weekday-checkbox');
         const days = [];
-        checkboxes.forEach(cb => {
+        checkboxes.forEach((cb) => {
           if (cb.checked) {
             const v = parseInt(cb.value);
             if (!isNaN(v)) days.push(v);
@@ -2833,7 +3474,7 @@ class CapnoteApp {
   }
 
   async dismissReminder(reminderId) {
-    const reminder = this.reminders.find(r => r.id === reminderId);
+    const reminder = this.reminders.find((r) => r.id === reminderId);
     if (reminder) {
       reminder.dismissed = true;
       await this.saveReminders();
@@ -2847,10 +3488,8 @@ class CapnoteApp {
   updateNoteRemindersDisplay() {
     if (!this.noteRemindersList || !this.currentNote) return;
 
-    const noteReminders = this.reminders.filter(r =>
-      r.noteId === this.currentNote.id &&
-      !r.dismissed &&
-      new Date(r.datetime) > new Date()
+    const noteReminders = this.reminders.filter(
+      (r) => r.noteId === this.currentNote.id && !r.dismissed && new Date(r.datetime) > new Date()
     );
 
     if (noteReminders.length === 0) {
@@ -2860,26 +3499,29 @@ class CapnoteApp {
 
     this.noteRemindersList.innerHTML = noteReminders
       .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
-      .map(r => `
+      .map(
+        (r) => `
         <div class="note-reminder-item">
           <div class="note-reminder-time">
               <i class="fas fa-bell"></i>
               ${new Date(r.datetime).toLocaleString(this.getLocale(), {
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      })}
-              ${r.recurrence && r.recurrence !== 'none' ? ` <span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? (': ' + r.recurrenceDays.map(d => this._weekdayShort(d)).join(', ')) : ''}</span>` : ''}
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+              ${r.recurrence && r.recurrence !== 'none' ? ` <span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? ': ' + r.recurrenceDays.map((d) => this._weekdayShort(d)).join(', ') : ''}</span>` : ''}
           </div>
           <button class="note-reminder-remove" data-reminder-id="${r.id}" title="${window.i18n.t('buttons.delete')}">
             <i class="fas fa-times"></i>
           </button>
         </div>
-      `).join('');
+      `
+      )
+      .join('');
 
     // Add remove event listeners
-    this.noteRemindersList.querySelectorAll('.note-reminder-remove').forEach(btn => {
+    this.noteRemindersList.querySelectorAll('.note-reminder-remove').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const reminderId = parseInt(e.currentTarget.dataset.reminderId);
         this.removeReminder(reminderId);
@@ -2888,7 +3530,7 @@ class CapnoteApp {
   }
 
   async removeReminder(reminderId) {
-    this.reminders = this.reminders.filter(r => r.id !== reminderId);
+    this.reminders = this.reminders.filter((r) => r.id !== reminderId);
     await this.saveReminders();
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
@@ -2897,7 +3539,9 @@ class CapnoteApp {
 
   updateActiveRemindersCount() {
     if (!this.activeRemindersCount) return;
-    const count = this.reminders.filter(r => !r.dismissed && new Date(r.datetime) > new Date()).length;
+    const count = this.reminders.filter(
+      (r) => !r.dismissed && new Date(r.datetime) > new Date()
+    ).length;
     this.activeRemindersCount.textContent = `(${count})`;
   }
 
@@ -2915,7 +3559,7 @@ class CapnoteApp {
     const now = new Date();
     let hasNotification = false;
 
-    this.reminders.forEach(reminder => {
+    this.reminders.forEach((reminder) => {
       if (reminder.dismissed || new Date(reminder.datetime) > now) return;
 
       // Being later than a couple of check intervals means the app was not running at that time
@@ -2926,18 +3570,34 @@ class CapnoteApp {
 
       // Add to notifications list and show a toast that references the notification id
       const nid = this.addNotification(reminder.noteId, reminder.noteTitle, body);
-      this.showNotification(`${window.i18n.t('messages.reminderPrefix')} ${reminder.noteTitle}`, 'info', { notificationId: nid });
+      this.showNotification(
+        `${window.i18n.t('messages.reminderPrefix')} ${reminder.noteTitle}`,
+        'info',
+        { notificationId: nid }
+      );
 
       // Also trigger a native OS notification via the preload bridge if the user enabled it
       try {
-        const nativePref = this.toggleNativeNotifications ? this.toggleNativeNotifications.checked : (localStorage.getItem('settings.nativeNotifications') === null ? true : (localStorage.getItem('settings.nativeNotifications') === '1' || localStorage.getItem('settings.nativeNotifications') === 'true'));
-        if (nativePref && window && window.electronAPI && typeof window.electronAPI.showNativeNotification === 'function') {
-          window.electronAPI.showNativeNotification({
-            title: `${window.i18n.t('messages.reminderNotification')} ${reminder.noteTitle}`,
-            body,
-            silent: false,
-            notificationId: nid
-          }).catch(err => console.warn('showNativeNotification rejected:', err));
+        const nativePref = this.toggleNativeNotifications
+          ? this.toggleNativeNotifications.checked
+          : localStorage.getItem('settings.nativeNotifications') === null
+            ? true
+            : localStorage.getItem('settings.nativeNotifications') === '1' ||
+              localStorage.getItem('settings.nativeNotifications') === 'true';
+        if (
+          nativePref &&
+          window &&
+          window.electronAPI &&
+          typeof window.electronAPI.showNativeNotification === 'function'
+        ) {
+          window.electronAPI
+            .showNativeNotification({
+              title: `${window.i18n.t('messages.reminderNotification')} ${reminder.noteTitle}`,
+              body,
+              silent: false,
+              notificationId: nid,
+            })
+            .catch((err) => console.warn('showNativeNotification rejected:', err));
         }
       } catch (err) {
         // Keep app functional if native notification call fails
@@ -2964,9 +3624,12 @@ class CapnoteApp {
       reminder.dismissed = true;
       return;
     }
-    const weeklyDays = reminder.recurrence === 'weekly' && Array.isArray(reminder.recurrenceDays) && reminder.recurrenceDays.length > 0
-      ? reminder.recurrenceDays
-      : null;
+    const weeklyDays =
+      reminder.recurrence === 'weekly' &&
+      Array.isArray(reminder.recurrenceDays) &&
+      reminder.recurrenceDays.length > 0
+        ? reminder.recurrenceDays
+        : null;
     let next = new Date(reminder.datetime);
     for (let i = 0; i < 5000 && next <= now; i++) {
       const candidate = weeklyDays
@@ -2989,7 +3652,7 @@ class CapnoteApp {
       noteTitle: noteTitle,
       message: message,
       time: new Date().toISOString(),
-      read: false
+      read: false,
     };
     this.notifications.unshift(notification); // Add to beginning
     this.saveNotifications();
@@ -3002,23 +3665,28 @@ class CapnoteApp {
     if (!this.notificationsList) return;
 
     if (this.notifications.length === 0) {
-      this.notificationsList.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">' + window.i18n.t('messages.noNotifications') + '</div>';
+      this.notificationsList.innerHTML =
+        '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">' +
+        window.i18n.t('messages.noNotifications') +
+        '</div>';
       return;
     }
 
-    this.notificationsList.innerHTML = this.notifications.map(n => `
+    this.notificationsList.innerHTML = this.notifications
+      .map(
+        (n) => `
       <div class="notification-card ${n.read ? '' : 'unread'}" data-notification-id="${n.id}">
         <div class="notification-header">
           <div class="notification-note-title">${this.escapeHtml(n.noteTitle)}</div>
           <div class="notification-time">
             <i class="fas fa-clock"></i>
             ${new Date(n.time).toLocaleString(this.getLocale(), {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })}
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
           </div>
         </div>
         <div class="notification-message">${this.escapeHtml(n.message)}</div>
@@ -3026,35 +3694,41 @@ class CapnoteApp {
           <button class="notification-action-btn view-notification-note-btn" data-note-id="${n.noteId}">
             <i class="fas fa-eye"></i> ${window.i18n.t('messages.view')}
           </button>
-          ${!n.read ? `
+          ${
+            !n.read
+              ? `
             <button class="notification-action-btn mark-read-btn" data-notification-id="${n.id}">
               <i class="fas fa-check"></i> ${window.i18n.t('messages.markAsRead')}
             </button>
-          ` : ''}
+          `
+              : ''
+          }
           <button class="notification-action-btn delete-notification-btn" data-notification-id="${n.id}">
             <i class="fas fa-trash"></i> ${window.i18n.t('messages.deleteNotification')}
           </button>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join('');
 
     // Add event listeners
-    this.notificationsList.querySelectorAll('.view-notification-note-btn').forEach(btn => {
+    this.notificationsList.querySelectorAll('.view-notification-note-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const noteId = parseInt(e.currentTarget.dataset.noteId);
-        const note = this.notes.find(n => n.id === noteId);
+        const note = this.notes.find((n) => n.id === noteId);
         if (note) this.openNote(note);
       });
     });
 
-    this.notificationsList.querySelectorAll('.mark-read-btn').forEach(btn => {
+    this.notificationsList.querySelectorAll('.mark-read-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const notificationId = parseInt(e.currentTarget.dataset.notificationId);
         this.markNotificationAsRead(notificationId);
       });
     });
 
-    this.notificationsList.querySelectorAll('.delete-notification-btn').forEach(btn => {
+    this.notificationsList.querySelectorAll('.delete-notification-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const notificationId = parseInt(e.currentTarget.dataset.notificationId);
         this.deleteNotification(notificationId);
@@ -3063,7 +3737,7 @@ class CapnoteApp {
   }
 
   markNotificationAsRead(notificationId) {
-    const notification = this.notifications.find(n => n.id === notificationId);
+    const notification = this.notifications.find((n) => n.id === notificationId);
     if (notification) {
       notification.read = true;
       this.saveNotifications();
@@ -3073,7 +3747,7 @@ class CapnoteApp {
   }
 
   deleteNotification(notificationId) {
-    this.notifications = this.notifications.filter(n => n.id !== notificationId);
+    this.notifications = this.notifications.filter((n) => n.id !== notificationId);
     this.saveNotifications();
     this.updateNotificationsView();
     this.updateActiveNotificationsCount();
@@ -3081,7 +3755,7 @@ class CapnoteApp {
 
   updateActiveNotificationsCount() {
     if (!this.activeNotificationsCount) return;
-    const count = this.notifications.filter(n => !n.read).length;
+    const count = this.notifications.filter((n) => !n.read).length;
     this.activeNotificationsCount.textContent = `(${count})`;
 
     // Show/hide unread badge
@@ -3097,7 +3771,7 @@ class CapnoteApp {
   markAllNotificationsRead() {
     if (!this.notifications || this.notifications.length === 0) return;
     let changed = false;
-    this.notifications.forEach(n => {
+    this.notifications.forEach((n) => {
       if (!n.read) {
         n.read = true;
         changed = true;
@@ -3156,7 +3830,10 @@ class CapnoteApp {
 
   updateWordCount() {
     // Use innerText to preserve visible line breaks from the rich editor
-    let text = (this.richEditor && this.richEditor.innerText) ? this.richEditor.innerText : (this.richEditor.textContent || '');
+    let text =
+      this.richEditor && this.richEditor.innerText
+        ? this.richEditor.innerText
+        : this.richEditor.textContent || '';
     // Normalize non-breaking spaces and other unicode spaces to regular spaces
     text = text.replace(/\u00A0/g, ' ');
     // Trim and collapse multiple whitespace (including newlines)
@@ -3185,8 +3862,10 @@ class CapnoteApp {
     const seconds = words ? Math.ceil((words / WPM) * 60) : 0;
     if (this.editorReadingTime) {
       if (!seconds) this.editorReadingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
-      else if (seconds < 60) this.editorReadingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
-      else this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} ${window.i18n.t('stats.readingTime')}`;
+      else if (seconds < 60)
+        this.editorReadingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
+      else
+        this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} ${window.i18n.t('stats.readingTime')}`;
     }
 
     if (this.currentNote) {
@@ -3329,7 +4008,9 @@ class CapnoteApp {
       // Copy buttons are viewer UI and must not end up in edited content
       this.richEditor.querySelectorAll('.code-copy-btn').forEach((btn) => btn.remove());
       // ensure any images in loaded content are wrapped and wired for resizing
-      try { this.upgradeImagesInEditor(); } catch (e) { }
+      try {
+        this.upgradeImagesInEditor();
+      } catch (e) {}
       if (this.markdownEditor) this.markdownEditor.value = '';
     }
     this.setEditorFormatting(note.formatting || this.getDefaultFormatting());
@@ -3390,7 +4071,9 @@ class CapnoteApp {
     // click to select
     wrapper.addEventListener('click', (e) => {
       e.stopPropagation();
-      Array.from(this.richEditor.querySelectorAll('.img-wrap.selected')).forEach((n) => n.classList.remove('selected'));
+      Array.from(this.richEditor.querySelectorAll('.img-wrap.selected')).forEach((n) =>
+        n.classList.remove('selected')
+      );
       wrapper.classList.add('selected');
     });
 
@@ -3413,7 +4096,8 @@ class CapnoteApp {
       this.trackContentChanges();
     };
     handle.addEventListener('mousedown', (ev) => {
-      ev.preventDefault(); ev.stopPropagation();
+      ev.preventDefault();
+      ev.stopPropagation();
       isResizing = true;
       startX = ev.clientX;
       startW = imgEl ? imgEl.getBoundingClientRect().width : 0;
@@ -3447,11 +4131,14 @@ class CapnoteApp {
             parent.replaceWith(img);
           } catch (unwrapErr) {
             // fallback: try to move the img out
-            try { parent.parentNode.insertBefore(img, parent); parent.remove(); } catch (e) { }
+            try {
+              parent.parentNode.insertBefore(img, parent);
+              parent.remove();
+            } catch (e) {}
           }
         }
         this.ensureImageWrapper(img);
-      } catch (e) { }
+      } catch (e) {}
     });
   }
 
@@ -3486,13 +4173,14 @@ class CapnoteApp {
       }
     } else {
       // Get source text: prefer current rich editor text (so user edits immediately reflect preview)
-      const sourceText = (this.markdownEditor && !this.markdownEditor.classList.contains('hidden'))
-        ? this.markdownEditor.value
-        : (this.richEditor && this.richEditor.innerText)
-          ? this.richEditor.innerText
-          : (this.currentNote && this.currentNote.content)
-            ? this.currentNote.content
-            : '';
+      const sourceText =
+        this.markdownEditor && !this.markdownEditor.classList.contains('hidden')
+          ? this.markdownEditor.value
+          : this.richEditor && this.richEditor.innerText
+            ? this.richEditor.innerText
+            : this.currentNote && this.currentNote.content
+              ? this.currentNote.content
+              : '';
       this.renderMarkdownPreview(sourceText);
       // Hide editors while showing preview
       this.hideRichEditor();
@@ -3509,7 +4197,7 @@ class CapnoteApp {
       // We escape angle brackets so user HTML doesn't get rendered as HTML in the preview;
       // the preview should show markdown-derived output only.
       const escaped = md.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      const html = (window.marked && marked.parse) ? marked.parse(escaped) : escaped;
+      const html = window.marked && marked.parse ? marked.parse(escaped) : escaped;
       this.markdownPreview.innerHTML = this.sanitizeHtml(html);
       // attach copy buttons to any code blocks in the preview
       this.attachCopyButtonsToPre(this.markdownPreview);
@@ -3540,7 +4228,8 @@ class CapnoteApp {
           btn.classList.add('copied');
           btn.title = window.i18n.t('messages.copied');
           // show toast
-          if (this.showNotification) this.showNotification(window.i18n.t('messages.codeCopied'), 'success');
+          if (this.showNotification)
+            this.showNotification(window.i18n.t('messages.codeCopied'), 'success');
           setTimeout(() => {
             btn.classList.remove('copied');
             btn.title = window.i18n.t('messages.copyCode');
@@ -3556,11 +4245,13 @@ class CapnoteApp {
             document.execCommand('copy');
             sel.removeAllRanges();
             btn.classList.add('copied');
-            if (this.showNotification) this.showNotification(window.i18n.t('messages.codeCopied'), 'success');
+            if (this.showNotification)
+              this.showNotification(window.i18n.t('messages.codeCopied'), 'success');
             setTimeout(() => btn.classList.remove('copied'), 1200);
           } catch (e) {
             console.error('copy failed', e);
-            if (this.showNotification) this.showNotification(window.i18n.t('messages.copyFailed'), 'error');
+            if (this.showNotification)
+              this.showNotification(window.i18n.t('messages.copyFailed'), 'error');
           }
         }
       });
@@ -3591,7 +4282,8 @@ class CapnoteApp {
     if (isVisible) {
       this.hideHtmlPreview();
       // restore editor
-      if (this.currentNote && this.currentNote.isMarkdown && this.markdownEditor) this.showMarkdownEditor();
+      if (this.currentNote && this.currentNote.isMarkdown && this.markdownEditor)
+        this.showMarkdownEditor();
       else this.showRichEditor();
       return;
     }
@@ -3603,9 +4295,12 @@ class CapnoteApp {
     if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.classList.remove('active');
 
     // Render raw HTML from current source: prefer markdownEditor (if editing markdown), else richEditor.innerHTML
-    const sourceHtml = (this.markdownEditor && !this.markdownEditor.classList.contains('hidden'))
-      ? this.markdownEditor.value
-      : (this.richEditor ? this.richEditor.innerHTML : '');
+    const sourceHtml =
+      this.markdownEditor && !this.markdownEditor.classList.contains('hidden')
+        ? this.markdownEditor.value
+        : this.richEditor
+          ? this.richEditor.innerHTML
+          : '';
 
     // If sourceHtml is Markdown (note.isMarkdown), render via marked then show raw HTML
     try {
@@ -3617,7 +4312,7 @@ class CapnoteApp {
           htmlToShow = fenceMatch[1];
         } else {
           // Otherwise render the markdown to HTML
-          htmlToShow = (window.marked && marked.parse) ? marked.parse(sourceHtml) : sourceHtml;
+          htmlToShow = window.marked && marked.parse ? marked.parse(sourceHtml) : sourceHtml;
         }
       } else {
         // If rich editor content contains escaped HTML entities like &lt;div&gt;, unescape them
@@ -3646,7 +4341,8 @@ class CapnoteApp {
       }
 
       // Build srcdoc that ensures minimal reset so content renders correctly inside iframe
-      const doc = `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">` +
+      const doc =
+        `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">` +
         `<style>html,body{margin:0;padding:0;box-sizing:border-box;font-family:inherit;color:inherit;} img{max-width:100%;height:auto;}</style></head><body>${htmlToShow}</body></html>`;
       iframe.srcdoc = doc;
     } catch (e) {
@@ -3729,7 +4425,8 @@ class CapnoteApp {
   cancelEdit() {
     // A brand-new note that was never saved must not be shown as if it existed
     if (this.currentNote && !this.notes.includes(this.currentNote)) {
-      const previous = this.noteBeforeNew && this.notes.includes(this.noteBeforeNew) ? this.noteBeforeNew : null;
+      const previous =
+        this.noteBeforeNew && this.notes.includes(this.noteBeforeNew) ? this.noteBeforeNew : null;
       this.currentNote = null;
       this.noteBeforeNew = null;
       if (previous) {
@@ -3818,7 +4515,9 @@ class CapnoteApp {
       this.updateNotesList();
     }
 
-    const message = this.currentNote.isFavorite ? window.i18n.t('messages.addedToFavorites') : window.i18n.t('messages.removedFromFavorites');
+    const message = this.currentNote.isFavorite
+      ? window.i18n.t('messages.addedToFavorites')
+      : window.i18n.t('messages.removedFromFavorites');
     this.showNotification(message, 'success');
   }
 
@@ -3866,7 +4565,9 @@ class CapnoteApp {
     } else {
       if (note.isMarkdown) {
         try {
-          this.viewerText.innerHTML = this.sanitizeHtml((window.marked && marked.parse) ? marked.parse(note.content || '') : (note.content || ''));
+          this.viewerText.innerHTML = this.sanitizeHtml(
+            window.marked && marked.parse ? marked.parse(note.content || '') : note.content || ''
+          );
         } catch (e) {
           this.viewerText.textContent = note.content || '';
         }
@@ -3915,8 +4616,10 @@ class CapnoteApp {
       note.wordCount = counts.words;
       note.charCount = counts.chars;
     }
-    if (this.viewerWordCount) this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
-    if (this.viewerCharCount) this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
+    if (this.viewerWordCount)
+      this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
+    if (this.viewerCharCount)
+      this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
     // Reading time calculation (baseline 200 words per minute)
     const WPM = 200;
     if (!counts.words) {
@@ -4042,27 +4745,31 @@ class CapnoteApp {
     });
 
     // If folder item wasn't found (likely due to render timing), retry once on the next frame
-    const foundInFolder = Array.from(document.querySelectorAll('.folder-notes-container[data-folder-id]')).some((container) =>
-      !!container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`)
-    );
+    const foundInFolder = Array.from(
+      document.querySelectorAll('.folder-notes-container[data-folder-id]')
+    ).some((container) => !!container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`));
     if (!foundInFolder) {
       requestAnimationFrame(() => {
-        document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
-          const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
-          if (current) {
-            current.classList.add('active');
-          }
-        });
+        document
+          .querySelectorAll('.folder-notes-container[data-folder-id]')
+          .forEach((container) => {
+            const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
+            if (current) {
+              current.classList.add('active');
+            }
+          });
       });
 
       // Also schedule a fallback after a short delay in case other async updates occur
       setTimeout(() => {
-        document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
-          const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
-          if (current) {
-            current.classList.add('active');
-          }
-        });
+        document
+          .querySelectorAll('.folder-notes-container[data-folder-id]')
+          .forEach((container) => {
+            const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
+            if (current) {
+              current.classList.add('active');
+            }
+          });
       }, 50);
     }
   }
@@ -4098,9 +4805,7 @@ class CapnoteApp {
       // Apply current filter to folder notes
       switch (this.currentFilter) {
         case 'today':
-          folderNotes = folderNotes.filter(
-            (note) => this.isCreatedToday(note)
-          );
+          folderNotes = folderNotes.filter((note) => this.isCreatedToday(note));
           break;
         case 'favorites':
           folderNotes = folderNotes.filter((note) => note.isFavorite);
@@ -4115,7 +4820,8 @@ class CapnoteApp {
       if (searchTerm) {
         // If folder name matches the search, include all folder notes (still respecting currentFilter applied above)
         const folderObj = this.folders.find((f) => f.id == folderId);
-        const folderNameMatches = folderObj && this.normalizeForSearch(folderObj.name || '').includes(searchTerm);
+        const folderNameMatches =
+          folderObj && this.normalizeForSearch(folderObj.name || '').includes(searchTerm);
         if (!folderNameMatches) {
           folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTerm));
         }
@@ -4152,9 +4858,7 @@ class CapnoteApp {
     switch (this.currentFilter) {
       case 'today':
         filtered = filtered.filter(
-          (note) =>
-            this.isCreatedToday(note) &&
-            (!note.folderId || note.folderId === 'default')
+          (note) => this.isCreatedToday(note) && (!note.folderId || note.folderId === 'default')
         );
         break;
       case 'favorites':
@@ -4169,7 +4873,8 @@ class CapnoteApp {
     }
 
     // Search filter (include mood/weather keywords and emoji)
-    const rawSearch = (this.searchInput && this.searchInput.value) ? String(this.searchInput.value) : '';
+    const rawSearch =
+      this.searchInput && this.searchInput.value ? String(this.searchInput.value) : '';
     const searchTerm = this.normalizeForSearch(rawSearch);
     if (searchTerm) {
       filtered = filtered.filter((note) => this.noteMatchesSearch(note, searchTerm));
@@ -4205,7 +4910,9 @@ class CapnoteApp {
 
   // Normalize strings for search (lowercase, trim)
   normalizeForSearch(text) {
-    return String(text || '').toLowerCase().trim();
+    return String(text || '')
+      .toLowerCase()
+      .trim();
   }
 
   // Map emoji to localized keywords to support text search for moods/weather
@@ -4268,7 +4975,11 @@ class CapnoteApp {
               map[emoji] = [String(cat).toLowerCase()];
             } else {
               // normalize explicit keywords: lowercase and dedupe
-              const kws = Array.from(new Set((map[emoji] || []).map((k) => String(k || '').toLowerCase()).filter(Boolean)));
+              const kws = Array.from(
+                new Set(
+                  (map[emoji] || []).map((k) => String(k || '').toLowerCase()).filter(Boolean)
+                )
+              );
               map[emoji] = kws.length ? kws : [String(cat).toLowerCase()];
             }
           });
@@ -4406,11 +5117,11 @@ class CapnoteApp {
         const isHidden = optionsMenu.classList.contains('hidden');
 
         // Close all other menus
-        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
+        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach((menu) => {
           menu.classList.add('hidden');
           menu.style.display = 'none';
         });
-        document.querySelectorAll('.note-options-container.menu-open').forEach(container => {
+        document.querySelectorAll('.note-options-container.menu-open').forEach((container) => {
           container.classList.remove('menu-open');
         });
 
@@ -4462,7 +5173,8 @@ class CapnoteApp {
     // Add hover event listeners for title truncation
     const titleElement = div.querySelector('.note-item-title');
     const originalTitle = note.title;
-    const truncatedTitle = note.title.length > 18 ? note.title.substring(0, 18) + '...' : note.title;
+    const truncatedTitle =
+      note.title.length > 18 ? note.title.substring(0, 18) + '...' : note.title;
 
     div.addEventListener('mouseenter', () => {
       titleElement.textContent = truncatedTitle;
@@ -4485,7 +5197,6 @@ class CapnoteApp {
     return div;
   }
 
-
   escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
@@ -4499,7 +5210,8 @@ class CapnoteApp {
     return window.DOMPurify.sanitize(String(html || ''), {
       ADD_ATTR: ['contenteditable', 'target', 'checked'],
       FORBID_TAGS: ['style', 'form'],
-      ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel|file|blob):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+      ALLOWED_URI_REGEXP:
+        /^(?:(?:https?|mailto|tel|file|blob):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
     });
   }
 
@@ -4792,7 +5504,6 @@ class CapnoteApp {
       } catch (e) {
         // ignore if any issue reading computed styles
       }
-
     } catch (e) {
       console.warn('Error updating format panel:', e);
     }
@@ -4815,9 +5526,7 @@ class CapnoteApp {
       // If fully transparent, return null so we can fallback to ancestor/bg
       if (a === 0) return null;
 
-      return (
-        '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)
-      ).toLowerCase();
+      return ('#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)).toLowerCase();
     }
 
     // If already a hex color, normalize
@@ -4826,11 +5535,7 @@ class CapnoteApp {
       let hex = rgb.toLowerCase();
       // Expand short form #rgb to #rrggbb
       if (hex.length === 4) {
-        hex =
-          '#' +
-          hex[1] + hex[1] +
-          hex[2] + hex[2] +
-          hex[3] + hex[3];
+        hex = '#' + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3];
       }
       return hex;
     }
@@ -4878,9 +5583,10 @@ class CapnoteApp {
 
     const range = sel.getRangeAt(0);
     // Check if we're pasting inside an existing <code> element
-    const codeAncestor = range.startContainer.nodeType === Node.ELEMENT_NODE
-      ? range.startContainer.closest && range.startContainer.closest('code')
-      : range.startContainer.parentElement && range.startContainer.parentElement.closest('code');
+    const codeAncestor =
+      range.startContainer.nodeType === Node.ELEMENT_NODE
+        ? range.startContainer.closest && range.startContainer.closest('code')
+        : range.startContainer.parentElement && range.startContainer.parentElement.closest('code');
 
     if (codeAncestor) {
       // Insert the plaintext into the current text node inside <code> preserving newlines
@@ -4903,7 +5609,7 @@ class CapnoteApp {
       node.nodeValue = before + text + after;
       // place caret after pasted text
       const newRange = document.createRange();
-      newRange.setStart(node, (before.length + text.length));
+      newRange.setStart(node, before.length + text.length);
       newRange.collapse(true);
       sel.removeAllRanges();
       sel.addRange(newRange);
@@ -4956,8 +5662,6 @@ class CapnoteApp {
     this.selectedWeather = null;
     this.updateMoodWeatherDisplay();
   }
-
-
 
   // Tags methods
   addTag(tagText) {
@@ -5079,13 +5783,21 @@ ${this.buildExportBody(note)}
   buildExportBody(note) {
     const locale = this.getLocale();
     const content = this.parseInertHtml(
-      this.sanitizeHtml(note.isMarkdown && window.marked ? marked.parse(note.content || '') : note.content || '')
+      this.sanitizeHtml(
+        note.isMarkdown && window.marked ? marked.parse(note.content || '') : note.content || ''
+      )
     );
     content.querySelectorAll('.code-copy-btn').forEach((btn) => btn.remove());
 
-    const tags = (note.tags || []).map((tag) => `<span class="export-tag">${this.escapeHtml(tag)}</span>`).join('');
-    const mood = note.mood ? `<p class="export-meta">${window.i18n.t('sections.mood')}: ${this.escapeHtml(note.mood)}</p>` : '';
-    const weather = note.weather ? `<p class="export-meta">${window.i18n.t('sections.weather')}: ${this.escapeHtml(note.weather)}</p>` : '';
+    const tags = (note.tags || [])
+      .map((tag) => `<span class="export-tag">${this.escapeHtml(tag)}</span>`)
+      .join('');
+    const mood = note.mood
+      ? `<p class="export-meta">${window.i18n.t('sections.mood')}: ${this.escapeHtml(note.mood)}</p>`
+      : '';
+    const weather = note.weather
+      ? `<p class="export-meta">${window.i18n.t('sections.weather')}: ${this.escapeHtml(note.weather)}</p>`
+      : '';
     return `<div class="export-header">
   <h1>${this.escapeHtml(note.title || '')}</h1>
   <p class="export-meta">${window.i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(locale)}</p>
@@ -5159,7 +5871,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           '.modal-actions .btn',
           '.btn-primary',
           '.btn-danger',
-          '.btn'
+          '.btn',
         ];
 
         let primary = null;
@@ -5208,7 +5920,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.showModal(this.confirmModal);
   }
 
-
   // Notification methods
   showNotification(message, type = 'info', meta = {}) {
     this.notificationText.textContent = message;
@@ -5238,7 +5949,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       this.notification.dataset.notificationId = String(meta.notificationId);
       this.notification.style.cursor = 'pointer';
       // Remove previous handler if any
-      if (this._toastClickHandler) this.notification.removeEventListener('click', this._toastClickHandler);
+      if (this._toastClickHandler)
+        this.notification.removeEventListener('click', this._toastClickHandler);
       this._toastClickHandler = (e) => {
         const nid = parseInt(this.notification.dataset.notificationId);
         if (!Number.isNaN(nid)) {
@@ -5266,7 +5978,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   hideNotification() {
     this.notification.classList.add('hidden');
   }
-
 
   updateCustomDropdown(dropdownId, value) {
     const dropdown = document.getElementById(dropdownId);
@@ -5312,7 +6023,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     if (!selection) return;
 
     selection.removeAllRanges();
-    const range = this.savedSelection.cloneRange ? this.savedSelection.cloneRange() : this.savedSelection;
+    const range = this.savedSelection.cloneRange
+      ? this.savedSelection.cloneRange()
+      : this.savedSelection;
     selection.addRange(range);
   }
 
@@ -5338,7 +6051,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       }
     } catch (e) {
       // As a last resort, append to editor
-      try { this.richEditor.insertAdjacentHTML('beforeend', html); } catch (e2) { }
+      try {
+        this.richEditor.insertAdjacentHTML('beforeend', html);
+      } catch (e2) {}
     }
   }
 
@@ -5349,10 +6064,12 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const hasHeader = !!(this.tableHeaderCheckbox && this.tableHeaderCheckbox.checked);
 
     // Build simple table HTML
-    let html = '<table class="inserted-table" border="1" style="border-collapse: collapse; width: 100%;">';
+    let html =
+      '<table class="inserted-table" border="1" style="border-collapse: collapse; width: 100%;">';
     if (hasHeader) {
       html += '<thead><tr>';
-      for (let c = 0; c < cols; c++) html += `<th style="padding:6px;text-align:left">${window.i18n.t('templates.tableHeader', { n: c + 1 })}</th>`;
+      for (let c = 0; c < cols; c++)
+        html += `<th style="padding:6px;text-align:left">${window.i18n.t('templates.tableHeader', { n: c + 1 })}</th>`;
       html += '</tr></thead>';
     }
     html += '<tbody>';
@@ -5367,8 +6084,12 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.insertHtmlAtSavedSelection(html);
 
     // Update word/char counts and mark note dirty
-    try { this.captureEditorSelection(); } catch (e) { }
-    try { this.updateWordCount(); } catch (e) { }
+    try {
+      this.captureEditorSelection();
+    } catch (e) {}
+    try {
+      this.updateWordCount();
+    } catch (e) {}
     // Close modal
     this.hideModal(this.tableModal);
   }
@@ -5423,8 +6144,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
   areFormattingsEqual(a = {}, b = {}) {
     return (
-      (a.fontFamily || '') === (b.fontFamily || '') &&
-      (a.fontSize || '') === (b.fontSize || '')
+      (a.fontFamily || '') === (b.fontFamily || '') && (a.fontSize || '') === (b.fontSize || '')
     );
   }
 
@@ -5565,7 +6285,11 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
    * Re-locks the current note when leaving it if it was unlocked for this session
    */
   autoLockCurrentNote() {
-    if (this.currentNote && this.currentNote.isLocked && this.unlockedNotes.has(String(this.currentNote.id))) {
+    if (
+      this.currentNote &&
+      this.currentNote.isLocked &&
+      this.unlockedNotes.has(String(this.currentNote.id))
+    ) {
       this.unlockedNotes.delete(String(this.currentNote.id));
       this.currentNote.content = '';
       this.updateNotesList();
@@ -5615,7 +6339,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       this.performNoteDeletion(note);
       return;
     }
-    this.showConfirm(`"${note.title}" ${window.i18n.t('messages.confirmDelete')}`, () => this.performNoteDeletion(note));
+    this.showConfirm(`"${note.title}" ${window.i18n.t('messages.confirmDelete')}`, () =>
+      this.performNoteDeletion(note)
+    );
   }
 
   performNoteDeletion(note) {
@@ -5646,7 +6372,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   removeNoteReferences(noteIds) {
     const ids = new Set(Array.from(noteIds, (id) => String(id)));
     if (ids.size === 0) return;
-    const keep = (item) => item.noteId === null || item.noteId === undefined || !ids.has(String(item.noteId));
+    const keep = (item) =>
+      item.noteId === null || item.noteId === undefined || !ids.has(String(item.noteId));
 
     this.reminders = this.reminders.filter(keep);
     this.notifications = this.notifications.filter(keep);
@@ -5716,7 +6443,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       this.sortBtn.classList.remove('active');
     }
   }
-
 
   setupCustomDropdown() {
     // Setup all custom dropdowns
@@ -5859,7 +6585,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
     // Load native/system notifications preference (default true)
     const nativeNotif = localStorage.getItem('settings.nativeNotifications');
-    const nativeEnabled = nativeNotif === null ? true : (nativeNotif === '1' || nativeNotif === 'true');
+    const nativeEnabled =
+      nativeNotif === null ? true : nativeNotif === '1' || nativeNotif === 'true';
     if (this.toggleNativeNotifications) this.toggleNativeNotifications.checked = nativeEnabled;
 
     // Load max pinned notes preference (default 3)
@@ -5886,21 +6613,37 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
     // Query start-at-login from main (async, best-effort)
     try {
-      if (this.startAtLoginToggle && window.electronAPI && typeof window.electronAPI.getStartAtLogin === 'function') {
-        window.electronAPI.getStartAtLogin().then((res) => {
-          if (res && typeof res.enabled === 'boolean') this.startAtLoginToggle.checked = !!res.enabled;
-        }).catch(() => { });
+      if (
+        this.startAtLoginToggle &&
+        window.electronAPI &&
+        typeof window.electronAPI.getStartAtLogin === 'function'
+      ) {
+        window.electronAPI
+          .getStartAtLogin()
+          .then((res) => {
+            if (res && typeof res.enabled === 'boolean')
+              this.startAtLoginToggle.checked = !!res.enabled;
+          })
+          .catch(() => {});
       }
-    } catch { }
+    } catch {}
 
     // Query close-to-tray preference from main/store
     try {
-      if (this.closeToTrayToggle && window.electronAPI && typeof window.electronAPI.getCloseToTray === 'function') {
-        window.electronAPI.getCloseToTray().then((res) => {
-          if (res && typeof res.enabled === 'boolean') this.closeToTrayToggle.checked = !!res.enabled;
-        }).catch(() => { });
+      if (
+        this.closeToTrayToggle &&
+        window.electronAPI &&
+        typeof window.electronAPI.getCloseToTray === 'function'
+      ) {
+        window.electronAPI
+          .getCloseToTray()
+          .then((res) => {
+            if (res && typeof res.enabled === 'boolean')
+              this.closeToTrayToggle.checked = !!res.enabled;
+          })
+          .catch(() => {});
       }
-    } catch { }
+    } catch {}
   }
 
   setupSettingsEventListeners() {
@@ -5908,17 +6651,19 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const settingsTabs = document.querySelectorAll('.settings-tab');
     const settingsTabContents = document.querySelectorAll('.settings-tab-content');
 
-    settingsTabs.forEach(tab => {
+    settingsTabs.forEach((tab) => {
       tab.addEventListener('click', () => {
         const targetTab = tab.dataset.tab;
 
         // Remove active class from all tabs and contents
-        settingsTabs.forEach(t => t.classList.remove('active'));
-        settingsTabContents.forEach(c => c.classList.remove('active'));
+        settingsTabs.forEach((t) => t.classList.remove('active'));
+        settingsTabContents.forEach((c) => c.classList.remove('active'));
 
         // Add active class to clicked tab and corresponding content
         tab.classList.add('active');
-        const targetContent = document.querySelector(`.settings-tab-content[data-content="${targetTab}"]`);
+        const targetContent = document.querySelector(
+          `.settings-tab-content[data-content="${targetTab}"]`
+        );
         if (targetContent) {
           targetContent.classList.add('active');
         }
@@ -5966,12 +6711,22 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // Save dark mode preference
     localStorage.setItem('darkMode', this.darkModeToggle.checked);
     // Save sync-folder-accent preference
-    if (this.syncFolderAccentToggle) localStorage.setItem('syncFolderAccent', this.syncFolderAccentToggle.checked ? '1' : '0');
+    if (this.syncFolderAccentToggle)
+      localStorage.setItem('syncFolderAccent', this.syncFolderAccentToggle.checked ? '1' : '0');
     // Save native/system notifications preference
-    if (this.toggleNativeNotifications) localStorage.setItem('settings.nativeNotifications', this.toggleNativeNotifications.checked ? '1' : '0');
+    if (this.toggleNativeNotifications)
+      localStorage.setItem(
+        'settings.nativeNotifications',
+        this.toggleNativeNotifications.checked ? '1' : '0'
+      );
     // Save general settings
-    if (this.onNoteDeleteSelect) localStorage.setItem('settings.onNoteDelete', this.onNoteDeleteSelect.value);
-    if (this.confirmDeleteToggle) localStorage.setItem('settings.confirmDelete', this.confirmDeleteToggle.checked ? 'true' : 'false');
+    if (this.onNoteDeleteSelect)
+      localStorage.setItem('settings.onNoteDelete', this.onNoteDeleteSelect.value);
+    if (this.confirmDeleteToggle)
+      localStorage.setItem(
+        'settings.confirmDelete',
+        this.confirmDeleteToggle.checked ? 'true' : 'false'
+      );
   }
 
   setAccentColor(hex, options = { persist: true }) {
@@ -5987,19 +6742,45 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // we'll generate rgba using a small helper to convert hex -> r,g,b
     function hexToRgb(h) {
       const hex = h.replace('#', '');
-      const bigint = parseInt(hex.length === 3 ? hex.split('').map(c => c + c).join('') : hex, 16);
+      const bigint = parseInt(
+        hex.length === 3
+          ? hex
+              .split('')
+              .map((c) => c + c)
+              .join('')
+          : hex,
+        16
+      );
       const r = (bigint >> 16) & 255;
       const g = (bigint >> 8) & 255;
       const b = bigint & 255;
       return [r, g, b];
     }
     const [r, g, b] = hexToRgb(color);
-    document.documentElement.style.setProperty('--accent-color-rgba-15', `rgba(${r}, ${g}, ${b}, 0.15)`);
-    document.documentElement.style.setProperty('--accent-color-rgba-20', `rgba(${r}, ${g}, ${b}, 0.2)`);
-    document.documentElement.style.setProperty('--accent-color-rgba-30', `rgba(${r}, ${g}, ${b}, 0.3)`);
-    document.documentElement.style.setProperty('--accent-color-rgba-18', `rgba(${r}, ${g}, ${b}, 0.18)`);
-    document.documentElement.style.setProperty('--accent-color-rgba-10', `rgba(${r}, ${g}, ${b}, 0.10)`);
-    document.documentElement.style.setProperty('--accent-color-rgba-12', `rgba(${r}, ${g}, ${b}, 0.12)`);
+    document.documentElement.style.setProperty(
+      '--accent-color-rgba-15',
+      `rgba(${r}, ${g}, ${b}, 0.15)`
+    );
+    document.documentElement.style.setProperty(
+      '--accent-color-rgba-20',
+      `rgba(${r}, ${g}, ${b}, 0.2)`
+    );
+    document.documentElement.style.setProperty(
+      '--accent-color-rgba-30',
+      `rgba(${r}, ${g}, ${b}, 0.3)`
+    );
+    document.documentElement.style.setProperty(
+      '--accent-color-rgba-18',
+      `rgba(${r}, ${g}, ${b}, 0.18)`
+    );
+    document.documentElement.style.setProperty(
+      '--accent-color-rgba-10',
+      `rgba(${r}, ${g}, ${b}, 0.10)`
+    );
+    document.documentElement.style.setProperty(
+      '--accent-color-rgba-12',
+      `rgba(${r}, ${g}, ${b}, 0.12)`
+    );
 
     if (options.persist !== false) localStorage.setItem('accentColor', color);
     // If sync option enabled, apply accent color to all folder icons
@@ -6014,7 +6795,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           const btnColor = (btn.dataset.color || '').toLowerCase();
           if (btnColor && btnColor === color) btn.classList.add('active');
           else btn.classList.remove('active');
-        } catch (e) { /* noop for individual button */ }
+        } catch (e) {
+          /* noop for individual button */
+        }
       });
     } catch (e) {
       // non-fatal
@@ -6039,7 +6822,10 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         }
       }
 
-      const accent = localStorage.getItem('accentColor') || getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#f59e0b';
+      const accent =
+        localStorage.getItem('accentColor') ||
+        getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() ||
+        '#f59e0b';
       this.folders = this.folders.map((f) => ({ ...f, color: accent }));
     } else {
       // Restore from backup if available
@@ -6052,7 +6838,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           console.warn('Failed to parse folder color backup', e);
         }
         // Remove backup after restore
-        try { localStorage.removeItem('folderColorsBackup'); } catch (e) { }
+        try {
+          localStorage.removeItem('folderColorsBackup');
+        } catch (e) {}
       }
     }
 
@@ -6067,7 +6855,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.applyTheme(enabled);
     this.saveSettings();
     this.showNotification(
-      enabled ? window.i18n.t('messages.darkModeEnabled') : window.i18n.t('messages.lightModeEnabled'),
+      enabled
+        ? window.i18n.t('messages.darkModeEnabled')
+        : window.i18n.t('messages.lightModeEnabled'),
       'info'
     );
   }
@@ -6079,10 +6869,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       document.documentElement.removeAttribute('data-theme');
     }
   }
-
-
-
-
 
   // New: export ALL data (notes, folders, reminders, notifications, settings)
   exportAllData() {
@@ -6119,10 +6905,18 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     URL.revokeObjectURL(url);
     this.showNotification(window.i18n.t('messages.dataExported'), 'success');
     // Refresh reminder/notification UI and counters in case data changed
-    try { this.updateRemindersView(); } catch (e) { }
-    try { this.updateNotificationsView(); } catch (e) { }
-    try { this.updateActiveRemindersCount(); } catch (e) { }
-    try { this.updateActiveNotificationsCount(); } catch (e) { }
+    try {
+      this.updateRemindersView();
+    } catch (e) {}
+    try {
+      this.updateNotificationsView();
+    } catch (e) {}
+    try {
+      this.updateActiveRemindersCount();
+    } catch (e) {}
+    try {
+      this.updateActiveNotificationsCount();
+    } catch (e) {}
   }
 
   // New: import ALL data and offer merge/replace behaviour
@@ -6140,13 +6934,17 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         let data = JSON.parse(text || '{}');
 
         // Validate structure
-        if (!data || (typeof data !== 'object')) throw new Error(window.i18n.t('messages.invalidFileFormat'));
+        if (!data || typeof data !== 'object')
+          throw new Error(window.i18n.t('messages.invalidFileFormat'));
 
         // Normalize common single-note or array exports into { notes: [...] }
         // Support: a single note object (exported via exportNote json) or an array of notes
         if (Array.isArray(data)) {
           data = { notes: data };
-        } else if (!data.notes && (data.content !== undefined || data.title !== undefined || data.id !== undefined)) {
+        } else if (
+          !data.notes &&
+          (data.content !== undefined || data.title !== undefined || data.id !== undefined)
+        ) {
           // Looks like a single note object
           data = { notes: [data] };
         }
@@ -6200,7 +6998,12 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           data.notes.forEach((note) => {
             const oldId = note.id;
             // Re-importing the same backup must not duplicate notes
-            const existing = this.notes.find((n) => n.createdAt === note.createdAt && n.title === note.title && n.content === note.content);
+            const existing = this.notes.find(
+              (n) =>
+                n.createdAt === note.createdAt &&
+                n.title === note.title &&
+                n.content === note.content
+            );
             if (existing) {
               skippedDuplicates++;
               if (oldId !== undefined && oldId !== null) noteIdMap[oldId] = existing.id;
@@ -6208,7 +7011,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
             }
             const newNoteId = Date.now() + Math.floor(Math.random() * 1000000);
             // A folder reference that was not imported would make the note invisible
-            const mappedFolderId = note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : null;
+            const mappedFolderId =
+              note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : null;
             const newNote = {
               ...note,
               id: newNoteId,
@@ -6281,10 +7085,26 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         await this.migrateLegacyLockedNotes();
 
         // Persist everything
-        try { await this.saveFolders(); } catch (e) { console.warn(e); }
-        try { await this.saveNotes(); } catch (e) { console.warn(e); }
-        try { await this.saveReminders(); } catch (e) { console.warn(e); }
-        try { await this.saveNotifications(); } catch (e) { console.warn(e); }
+        try {
+          await this.saveFolders();
+        } catch (e) {
+          console.warn(e);
+        }
+        try {
+          await this.saveNotes();
+        } catch (e) {
+          console.warn(e);
+        }
+        try {
+          await this.saveReminders();
+        } catch (e) {
+          console.warn(e);
+        }
+        try {
+          await this.saveNotifications();
+        } catch (e) {
+          console.warn(e);
+        }
 
         // Reload UI/state
         this.loadSettings();
@@ -6292,20 +7112,32 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         this.updateNotesList();
         this.updateFolderNotes();
         // Refresh reminders/notifications UI and counters
-        try { this.updateRemindersView(); } catch (e) { }
-        try { this.updateNotificationsView(); } catch (e) { }
-        try { this.updateActiveRemindersCount(); } catch (e) { }
-        try { this.updateActiveNotificationsCount(); } catch (e) { }
+        try {
+          this.updateRemindersView();
+        } catch (e) {}
+        try {
+          this.updateNotificationsView();
+        } catch (e) {}
+        try {
+          this.updateActiveRemindersCount();
+        } catch (e) {}
+        try {
+          this.updateActiveNotificationsCount();
+        } catch (e) {}
 
         this.updateStats();
 
-        if (skippedDuplicates > 0) console.info(`Import skipped ${skippedDuplicates} duplicate note(s)`);
+        if (skippedDuplicates > 0)
+          console.info(`Import skipped ${skippedDuplicates} duplicate note(s)`);
         this.showNotification(window.i18n.t('messages.dataImported'), 'success');
         this.settingsModal.classList.remove('show');
         this.settingsModal.classList.add('hidden');
       } catch (err) {
         console.error('Import all data error', err);
-        this.showNotification(`${window.i18n.t('messages.dataImportError')} ${err.message || err}`, 'error');
+        this.showNotification(
+          `${window.i18n.t('messages.dataImportError')} ${err.message || err}`,
+          'error'
+        );
       }
     });
 
@@ -6360,7 +7192,15 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         inputs[t] = cb;
         const lbl = document.createElement('label');
         lbl.setAttribute('for', cb.id);
-        lbl.textContent = window.i18n.t({ notes: 'nav.notes', folders: 'modals.folders', reminders: 'nav.reminders', notifications: 'nav.notifications', settings: 'nav.settings' }[t]);
+        lbl.textContent = window.i18n.t(
+          {
+            notes: 'nav.notes',
+            folders: 'modals.folders',
+            reminders: 'nav.reminders',
+            notifications: 'nav.notifications',
+            settings: 'nav.settings',
+          }[t]
+        );
         row.appendChild(cb);
         row.appendChild(lbl);
         form.appendChild(row);
@@ -6399,10 +7239,20 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       modal.appendChild(content);
       document.body.appendChild(modal);
 
-      const cleanup = () => { try { document.body.removeChild(modal); } catch (e) { } };
+      const cleanup = () => {
+        try {
+          document.body.removeChild(modal);
+        } catch (e) {}
+      };
 
-      closeBtn.addEventListener('click', () => { cleanup(); resolve(null); });
-      cancelBtn.addEventListener('click', () => { cleanup(); resolve(null); });
+      closeBtn.addEventListener('click', () => {
+        cleanup();
+        resolve(null);
+      });
+      cancelBtn.addEventListener('click', () => {
+        cleanup();
+        resolve(null);
+      });
       okBtn.addEventListener('click', () => {
         const result = {
           merge: mergeToggle.checked,
@@ -6417,7 +7267,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       });
     });
   }
-
 
   // ============================================
   // SIDEBAR TOGGLE METHODS
@@ -6480,7 +7329,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
     if (titleEl) titleEl.textContent = window.i18n.t('messages.newFolder');
-    if (iconEl) { iconEl.className = 'fas fa-folder-plus'; }
+    if (iconEl) {
+      iconEl.className = 'fas fa-folder-plus';
+    }
     if (createBtn) createBtn.textContent = window.i18n.t('buttons.create');
     this.folderNameInput.value = '';
     this.showModal(this.folderModal);
@@ -6503,7 +7354,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
     if (titleEl) titleEl.textContent = window.i18n.t('messages.renameFolder');
-    if (iconEl) { iconEl.className = 'fas fa-edit'; }
+    if (iconEl) {
+      iconEl.className = 'fas fa-edit';
+    }
     if (createBtn) createBtn.textContent = window.i18n.t('buttons.save');
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
@@ -6562,7 +7415,11 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // If sync-to-accent is enabled, return the accent color
     const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
     if (syncFolders) {
-      return localStorage.getItem('accentColor') || getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#f59e0b';
+      return (
+        localStorage.getItem('accentColor') ||
+        getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() ||
+        '#f59e0b'
+      );
     }
 
     // Extended palette (16 colors)
@@ -6626,7 +7483,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   // Update the visible count badge for a specific folder in the sidebar
   updateFolderCountInDOM(folderId) {
     if (!folderId || folderId === 'default') return;
-    const countEl = document.querySelector(`.folder-item[data-folder-id="${folderId}"] .folder-count`);
+    const countEl = document.querySelector(
+      `.folder-item[data-folder-id="${folderId}"] .folder-count`
+    );
     if (!countEl) return;
     // Show visible count depending on current filter/search
     const visibleCount = this.getVisibleCountForFolder(folderId);
@@ -6636,9 +7495,15 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const searchTerm = this.normalizeForSearch(rawSearch);
     const treatAsFilter = this.currentFilter !== 'all' || !!searchTerm;
     if (treatAsFilter) {
-      const folderContainer = document.querySelector(`.folder-container:has(.folder-item[data-folder-id="${folderId}"])`);
+      const folderContainer = document.querySelector(
+        `.folder-container:has(.folder-item[data-folder-id="${folderId}"])`
+      );
       // Fallback for environments without :has support
-      const fallbackContainer = folderContainer || document.querySelector(`.folder-item[data-folder-id="${folderId}"]`)?.closest('.folder-container');
+      const fallbackContainer =
+        folderContainer ||
+        document
+          .querySelector(`.folder-item[data-folder-id="${folderId}"]`)
+          ?.closest('.folder-container');
       if (fallbackContainer) {
         if (visibleCount === 0) {
           // Remove/hide the folder container
@@ -6697,7 +7562,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       // If the folder name itself matches the search term, consider the folder visible and
       // include all its notes (still respecting the current filter like 'today' or 'favorites').
       const folderObj = this.folders.find((f) => f.id == folderId);
-      const folderNameMatches = folderObj && this.normalizeForSearch(folderObj.name || '').includes(searchTerm);
+      const folderNameMatches =
+        folderObj && this.normalizeForSearch(folderObj.name || '').includes(searchTerm);
       if (!folderNameMatches) {
         folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTerm));
       }
@@ -6789,7 +7655,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       folderHeader.classList.remove('dragging');
       // remove any drag-over / insert indicator classes left behind
       document
-        .querySelectorAll('.folder-item.drag-over, .folder-item.insert-before, .folder-item.insert-after, .default-folder.drag-over, .default-folder.insert-before, .default-folder.insert-after')
+        .querySelectorAll(
+          '.folder-item.drag-over, .folder-item.insert-before, .folder-item.insert-after, .default-folder.drag-over, .default-folder.insert-before, .default-folder.insert-after'
+        )
         .forEach((el) => el.classList.remove('drag-over', 'insert-before', 'insert-after'));
     });
     folderHeader.addEventListener('dragover', (e) => {
@@ -6798,7 +7666,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       const types = e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
       let isFolderDrag = false;
       try {
-        isFolderDrag = types.includes('text/folder-id') || Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
+        isFolderDrag =
+          types.includes('text/folder-id') ||
+          Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
       } catch (err) {
         // accessing getData during dragover can throw in some browsers; fallback to types check only
         isFolderDrag = types.includes('text/folder-id');
@@ -6810,10 +7680,12 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       const headerRect = folderHeader.getBoundingClientRect();
       const edgeThreshold = Math.max(8, Math.min(20, headerRect.height / 2));
 
-      const nearTop = (e.clientY - containerRect.top) <= edgeThreshold;
-      const nearBottom = (containerRect.bottom - e.clientY) <= edgeThreshold;
+      const nearTop = e.clientY - containerRect.top <= edgeThreshold;
+      const nearBottom = containerRect.bottom - e.clientY <= edgeThreshold;
 
-      const siblings = Array.from(folderHeader.parentElement.querySelectorAll('.folder-item, .default-folder'));
+      const siblings = Array.from(
+        folderHeader.parentElement.querySelectorAll('.folder-item, .default-folder')
+      );
 
       // find the currently dragging folder element (if any) and avoid setting insertion classes on it
       const draggingEl = document.querySelector('.folder-item.dragging, .default-folder.dragging');
@@ -6868,9 +7740,16 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         const sourceId = String(draggedFolderId);
         const targetId = String(folder.id);
         // If the dragged folder is the same DOM element as the target, ignore
-        const draggingEl = document.querySelector('.folder-item.dragging, .default-folder.dragging');
+        const draggingEl = document.querySelector(
+          '.folder-item.dragging, .default-folder.dragging'
+        );
         const targetEl = folderHeader;
-        if (draggingEl && (draggingEl === targetEl || String(draggingEl.getAttribute('data-folder-id')) === sourceId && String(targetEl.getAttribute('data-folder-id')) === sourceId)) {
+        if (
+          draggingEl &&
+          (draggingEl === targetEl ||
+            (String(draggingEl.getAttribute('data-folder-id')) === sourceId &&
+              String(targetEl.getAttribute('data-folder-id')) === sourceId))
+        ) {
           // cleanup and ignore
           folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
           return;
@@ -6881,8 +7760,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           const containerRect = container.getBoundingClientRect();
           const headerRect = folderHeader.getBoundingClientRect();
           const edgeThreshold = Math.max(8, Math.min(20, headerRect.height / 2));
-          const nearTop = (e.clientY - containerRect.top) <= edgeThreshold;
-          const nearBottom = (containerRect.bottom - e.clientY) <= edgeThreshold;
+          const nearTop = e.clientY - containerRect.top <= edgeThreshold;
+          const nearBottom = containerRect.bottom - e.clientY <= edgeThreshold;
 
           let insertBefore = false;
           if (nearTop) insertBefore = true;
@@ -6978,11 +7857,11 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         const isHidden = optionsMenu.classList.contains('hidden');
 
         // Close all other menus
-        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach(menu => {
+        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach((menu) => {
           menu.classList.add('hidden');
           menu.style.display = 'none';
         });
-        document.querySelectorAll('.note-options-container.menu-open').forEach(container => {
+        document.querySelectorAll('.note-options-container.menu-open').forEach((container) => {
           container.classList.remove('menu-open');
         });
 
@@ -7089,7 +7968,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
       // Insert into destination if it should be visible under current filter/search
       if (folderId && folderId !== 'default') {
-        const folderContainer = document.querySelector(`.folder-notes-container[data-folder-id="${folderId}"]`);
+        const folderContainer = document.querySelector(
+          `.folder-notes-container[data-folder-id="${folderId}"]`
+        );
         if (folderContainer) {
           // Respect current filter (today/favorites) and search
           let visible = true;
@@ -7140,9 +8021,13 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const folderName =
       folderId === 'default'
         ? window.i18n.t('nav.notes')
-        : this.folders.find((f) => f.id === folderId)?.name || window.i18n.t('messages.unknownFolder');
+        : this.folders.find((f) => f.id === folderId)?.name ||
+          window.i18n.t('messages.unknownFolder');
     const noteTitle = note.title || window.i18n.t('messages.untitledNote');
-    this.showNotification(window.i18n.t('messages.noteMovedToFolder', { title: noteTitle, folder: folderName }), 'success');
+    this.showNotification(
+      window.i18n.t('messages.noteMovedToFolder', { title: noteTitle, folder: folderName }),
+      'success'
+    );
   }
 
   // Action button functions
@@ -7166,7 +8051,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     }
     // Keep the current filter selected after toggling metadata
 
-    const message = note.isFavorite ? window.i18n.t('messages.addedToFavorites') : window.i18n.t('messages.removedFromFavorites');
+    const message = note.isFavorite
+      ? window.i18n.t('messages.addedToFavorites')
+      : window.i18n.t('messages.removedFromFavorites');
     this.showNotification(message, 'success');
   }
 
@@ -7223,9 +8110,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // Apply current filter to folder notes
     switch (this.currentFilter) {
       case 'today':
-        folderNotes = folderNotes.filter(
-          (note) => this.isCreatedToday(note)
-        );
+        folderNotes = folderNotes.filter((note) => this.isCreatedToday(note));
         break;
       case 'favorites':
         folderNotes = folderNotes.filter((note) => note.isFavorite);
@@ -7275,7 +8160,10 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       const pinnedCount = this.notes.filter((n) => n.isPinned).length;
       const maxPinned = parseInt(localStorage.getItem('maxPinnedNotes'), 10) || 3;
       if (pinnedCount >= maxPinned) {
-        this.showNotification(window.i18n.t('messages.maxPinnedNotes').replace('{count}', maxPinned), 'error');
+        this.showNotification(
+          window.i18n.t('messages.maxPinnedNotes').replace('{count}', maxPinned),
+          'error'
+        );
         return;
       }
     }
@@ -7298,7 +8186,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // If viewing favorites, refresh it to reflect pin changes where applicable
     if (this.currentFilter === 'favorites') this.updateNotesList();
 
-    const message = note.isPinned ? window.i18n.t('messages.notePinned') : window.i18n.t('messages.noteUnpinned');
+    const message = note.isPinned
+      ? window.i18n.t('messages.notePinned')
+      : window.i18n.t('messages.noteUnpinned');
     this.showNotification(message, 'success');
   }
 
@@ -7381,7 +8271,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     if (!folder) return;
 
     // Count notes that truly belong to this folder. Treat falsy or 'default' folderIds as folderless.
-    const notesInFolder = this.notes.filter((note) => note.folderId && String(note.folderId) === String(this.selectedFolderId));
+    const notesInFolder = this.notes.filter(
+      (note) => note.folderId && String(note.folderId) === String(this.selectedFolderId)
+    );
     const noteCount = notesInFolder.length;
 
     const message =
@@ -7396,10 +8288,14 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
     this.confirmCallback = () => {
       // Delete all notes that truly belong to the folder (ignore folderless notes)
-      const notesToRemove = this.notes.filter((note) => note.folderId && String(note.folderId) === String(folderIdToDelete)).map(n => n.id);
+      const notesToRemove = this.notes
+        .filter((note) => note.folderId && String(note.folderId) === String(folderIdToDelete))
+        .map((n) => n.id);
 
       // Keep notes that are NOT in the selected folder (preserve folderless notes and other folders)
-      this.notes = this.notes.filter((note) => !(note.folderId && String(note.folderId) === String(folderIdToDelete)));
+      this.notes = this.notes.filter(
+        (note) => !(note.folderId && String(note.folderId) === String(folderIdToDelete))
+      );
 
       // Delete the folder
       this.folders = this.folders.filter((f) => f.id != folderIdToDelete);
@@ -7419,13 +8315,15 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         this.showWelcome();
       }
 
-      this.showNotification(window.i18n.t('messages.folderDeleted', { name: folder.name }), 'success');
+      this.showNotification(
+        window.i18n.t('messages.folderDeleted', { name: folder.name }),
+        'success'
+      );
     };
 
     this.hideContextMenu();
     this.showModal(this.confirmModal);
   }
-
 
   openFolderColorModal() {
     if (!this.selectedFolderId) return;
@@ -7499,7 +8397,6 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       }
     }
   }
-
 }
 
 // Initialize app when DOM is loaded

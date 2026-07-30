@@ -3,7 +3,17 @@
  * Uygulamanın ana penceresini ve IPC iletişimini yönetir
  */
 
-const { app, BrowserWindow, ipcMain, Notification, Tray, Menu, nativeImage, dialog, shell } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Notification,
+  Tray,
+  Menu,
+  nativeImage,
+  dialog,
+  shell,
+} = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL, fileURLToPath } = require('url');
@@ -33,8 +43,22 @@ let trayLanguage = 'tr';
 
 // Tray menu labels; the renderer reports the selected UI language
 const TRAY_LABELS = {
-  tr: { show: 'Göster', hide: 'Gizle', newNote: 'Yeni Not', notifications: 'Bildirimler', settings: 'Ayarlar', quit: 'Çıkış' },
-  en: { show: 'Show', hide: 'Hide', newNote: 'New Note', notifications: 'Notifications', settings: 'Settings', quit: 'Quit' },
+  tr: {
+    show: 'Göster',
+    hide: 'Gizle',
+    newNote: 'Yeni Not',
+    notifications: 'Bildirimler',
+    settings: 'Ayarlar',
+    quit: 'Çıkış',
+  },
+  en: {
+    show: 'Show',
+    hide: 'Hide',
+    newNote: 'New Note',
+    notifications: 'Notifications',
+    settings: 'Settings',
+    quit: 'Quit',
+  },
 };
 // Close-to-tray is a Windows-only feature (the setting is only shown there)
 const supportsCloseToTray = process.platform === 'win32';
@@ -174,12 +198,15 @@ function resolveTrayIcon() {
       else if (fs.existsSync(png32)) base = nativeImage.createFromPath(png32);
       if (base) {
         const img = base.resize({ width: 18, height: 18, quality: 'best' });
-        try { img.setTemplateImage(true); } catch {}
+        try {
+          img.setTemplateImage(true);
+        } catch {}
         return img;
       }
     } else {
       // Linux: prefer 22-24px; resize from 32 if available
-      if (fs.existsSync(png32)) return nativeImage.createFromPath(png32).resize({ width: 22, height: 22 });
+      if (fs.existsSync(png32))
+        return nativeImage.createFromPath(png32).resize({ width: 22, height: 22 });
       if (fs.existsSync(png16)) return nativeImage.createFromPath(png16);
     }
   } catch {}
@@ -190,31 +217,67 @@ function updateTrayMenu() {
   if (!tray) return;
   const labels = TRAY_LABELS[trayLanguage] || TRAY_LABELS.tr;
   const contextMenu = Menu.buildFromTemplate([
-    { label: labels.show, click: () => {
-      if (mainWindow) {
-        if (mainWindow.isMinimized()) {
-          mainWindow.restore();
-        }
-        mainWindow.show();
-        mainWindow.focus();
-      }
-    } },
-    { label: labels.hide, click: () => {
-      if (mainWindow) {
-        try {
-          if (mainWindow.isFullScreen && mainWindow.isFullScreen()) {
-            mainWindow.setFullScreen(false);
+    {
+      label: labels.show,
+      click: () => {
+        if (mainWindow) {
+          if (mainWindow.isMinimized()) {
+            mainWindow.restore();
           }
-        } catch {}
-        mainWindow.minimize();
-      }
-    } },
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      },
+    },
+    {
+      label: labels.hide,
+      click: () => {
+        if (mainWindow) {
+          try {
+            if (mainWindow.isFullScreen && mainWindow.isFullScreen()) {
+              mainWindow.setFullScreen(false);
+            }
+          } catch {}
+          mainWindow.minimize();
+        }
+      },
+    },
     { type: 'separator' },
-    { label: labels.newNote, click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('new-note'); } } },
-    { label: labels.notifications, click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('open-notifications'); } } },
-    { label: labels.settings, click: () => { if (mainWindow && mainWindow.webContents) { mainWindow.show(); mainWindow.webContents.send('open-settings'); } } },
+    {
+      label: labels.newNote,
+      click: () => {
+        if (mainWindow && mainWindow.webContents) {
+          mainWindow.show();
+          mainWindow.webContents.send('new-note');
+        }
+      },
+    },
+    {
+      label: labels.notifications,
+      click: () => {
+        if (mainWindow && mainWindow.webContents) {
+          mainWindow.show();
+          mainWindow.webContents.send('open-notifications');
+        }
+      },
+    },
+    {
+      label: labels.settings,
+      click: () => {
+        if (mainWindow && mainWindow.webContents) {
+          mainWindow.show();
+          mainWindow.webContents.send('open-settings');
+        }
+      },
+    },
     { type: 'separator' },
-    { label: labels.quit, click: () => { isQuitting = true; app.quit(); } },
+    {
+      label: labels.quit,
+      click: () => {
+        isQuitting = true;
+        app.quit();
+      },
+    },
   ]);
   tray.setContextMenu(contextMenu);
 }
@@ -232,13 +295,18 @@ function createTray() {
     tray.on('click', () => {
       if (process.platform === 'darwin') {
         // macOS: Don't auto-show the window on click; show the tray menu instead
-        try { tray.popUpContextMenu(); } catch {}
+        try {
+          tray.popUpContextMenu();
+        } catch {}
         return;
       }
       if (!mainWindow) return;
       // Other platforms: toggle visibility on left-click for convenience
       if (mainWindow.isVisible()) mainWindow.hide();
-      else { mainWindow.show(); mainWindow.focus(); }
+      else {
+        mainWindow.show();
+        mainWindow.focus();
+      }
     });
   } catch (err) {
     console.warn('Failed to create system tray:', err);
@@ -247,7 +315,9 @@ function createTray() {
 
 // Uygulama hazır olduğunda pencereyi oluştur
 app.whenReady().then(() => {
-  try { closeToTrayEnabled = supportsCloseToTray && store.get('settings.closeToTray', true); } catch {}
+  try {
+    closeToTrayEnabled = supportsCloseToTray && store.get('settings.closeToTray', true);
+  } catch {}
   createWindow();
   createTray();
   // Menü kaldırıldı
@@ -323,9 +393,9 @@ ipcMain.handle('save-dropped-file', (event, srcPath) => {
 ipcMain.handle('show-native-notification', (event, opts) => {
   try {
     // opts: { title, body, silent, icon }
-  const { title = '', body = '', silent = false, icon } = opts || {};
-  // Use app name as default title when not provided to avoid showing internal identifiers
-  const notifTitle = title && title.length ? title : 'Capnote';
+    const { title = '', body = '', silent = false, icon } = opts || {};
+    // Use app name as default title when not provided to avoid showing internal identifiers
+    const notifTitle = title && title.length ? title : 'Capnote';
     // Some platforms require Notification.isSupported check
     if (Notification.isSupported && !Notification.isSupported()) {
       return false;
@@ -345,7 +415,10 @@ ipcMain.handle('show-native-notification', (event, opts) => {
             // Send the notificationId back if provided in opts
             mainWindow.show();
             mainWindow.focus();
-            mainWindow.webContents.send('native-notif-click', opts && opts.notificationId ? opts.notificationId : null);
+            mainWindow.webContents.send(
+              'native-notif-click',
+              opts && opts.notificationId ? opts.notificationId : null
+            );
           } catch (e) {
             console.warn('Failed to send native-notif-click to renderer', e);
           }
@@ -388,7 +461,9 @@ ipcMain.handle('set-start-at-login', (event, enabled) => {
     const autostartDir = path.join(home, '.config', 'autostart');
     const entry = path.join(autostartDir, 'capnote.desktop');
     if (openAtLogin) {
-      try { if (!fs.existsSync(autostartDir)) fs.mkdirSync(autostartDir, { recursive: true }); } catch {}
+      try {
+        if (!fs.existsSync(autostartDir)) fs.mkdirSync(autostartDir, { recursive: true });
+      } catch {}
       const execPath = app.getPath('exe');
       // Try to set an icon path for the desktop entry (best-effort)
       let iconPath = '';
@@ -404,7 +479,7 @@ ipcMain.handle('set-start-at-login', (event, enabled) => {
         'Type=Application',
         'Name=Capnote',
         `Exec=${execPath} %U`,
-        (iconPath ? `Icon=${iconPath}` : ''),
+        iconPath ? `Icon=${iconPath}` : '',
         'X-GNOME-Autostart-enabled=true',
         'NoDisplay=false',
         'Hidden=false',
@@ -413,7 +488,11 @@ ipcMain.handle('set-start-at-login', (event, enabled) => {
       fs.writeFileSync(entry, desktop.replace(/\n\n+/g, '\n'), { encoding: 'utf8' });
       return { ok: true };
     }
-    if (fs.existsSync(entry)) { try { fs.unlinkSync(entry); } catch {} }
+    if (fs.existsSync(entry)) {
+      try {
+        fs.unlinkSync(entry);
+      } catch {}
+    }
     return { ok: true };
   } catch (e) {
     return { ok: false, error: String(e && e.message ? e.message : e) };
@@ -422,14 +501,19 @@ ipcMain.handle('set-start-at-login', (event, enabled) => {
 
 // Close-to-tray preference (persist in store)
 ipcMain.handle('get-close-to-tray', () => {
-  try { closeToTrayEnabled = supportsCloseToTray && store.get('settings.closeToTray', true); } catch {}
+  try {
+    closeToTrayEnabled = supportsCloseToTray && store.get('settings.closeToTray', true);
+  } catch {}
   return { enabled: !!closeToTrayEnabled };
 });
 
 ipcMain.handle('set-close-to-tray', (event, enabled) => {
-  if (!supportsCloseToTray) return { ok: false, error: 'Close to tray is only supported on Windows' };
+  if (!supportsCloseToTray)
+    return { ok: false, error: 'Close to tray is only supported on Windows' };
   closeToTrayEnabled = !!enabled;
-  try { store.set('settings.closeToTray', closeToTrayEnabled); } catch {}
+  try {
+    store.set('settings.closeToTray', closeToTrayEnabled);
+  } catch {}
   return { ok: true };
 });
 
@@ -453,7 +537,10 @@ ipcMain.handle('export-pdf', async (event, payload) => {
 <body>${bodyHtml}</body></html>`;
 
   const tmpFile = path.join(app.getPath('temp'), `capnote-export-${Date.now()}.html`);
-  const printWindow = new BrowserWindow({ show: false, webPreferences: { javascript: false, sandbox: true } });
+  const printWindow = new BrowserWindow({
+    show: false,
+    webPreferences: { javascript: false, sandbox: true },
+  });
   try {
     fs.writeFileSync(tmpFile, html, 'utf8');
     await printWindow.loadFile(tmpFile);
