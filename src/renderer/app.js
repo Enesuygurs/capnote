@@ -610,7 +610,7 @@ class CapnoteApp {
         }
 
         const noteId = e.dataTransfer.getData('text/plain');
-        this.moveNoteToFolder(parseInt(noteId), 'default');
+        this.moveNoteToFolder(noteId, null);
       });
     }
 
@@ -1015,9 +1015,8 @@ class CapnoteApp {
       ) {
         window.electronAPI.onNativeNotificationClick((notificationId) => {
           try {
-            const nid = parseInt(notificationId);
-            if (!Number.isNaN(nid)) {
-              this.markNotificationAsRead(nid);
+            if (notificationId) {
+              this.markNotificationAsRead(String(notificationId));
             }
             this.showNotificationsScreen();
           } catch (e) {
@@ -2252,7 +2251,7 @@ class CapnoteApp {
       // Removing folders keeps the notes: they simply become folderless
       const now = new Date().toISOString();
       (this.notes || []).forEach((n) => {
-        if (n.folderId && n.folderId !== 'default') {
+        if (n.folderId) {
           n.folderId = null;
           n.updatedAt = now;
         }
@@ -2440,6 +2439,18 @@ class CapnoteApp {
     this.passwordModal.classList.add('hidden');
   }
 
+  // Every record id is a string; new ones are random UUIDs
+  newId() {
+    return crypto.randomUUID();
+  }
+
+  // Normalize stored references: ids become strings, and every "no folder/no note" value becomes null
+  toId(value) {
+    return value === null || value === undefined || value === '' || value === 'default'
+      ? null
+      : String(value);
+  }
+
   // Date/number locale matching the UI language
   getLocale() {
     return window.i18n && window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
@@ -2563,14 +2574,13 @@ class CapnoteApp {
 
       // Eski notlarda eksik property'leri ekle
       this.notes.forEach((note) => {
+        note.id = String(note.id);
+        note.folderId = this.toId(note.folderId);
         if (note.isLocked === undefined) {
           note.isLocked = false;
         }
         // Older versions persisted the temporary unlock flag; drop it
         delete note.isUnlocked;
-        if (note.folderId === undefined) {
-          note.folderId = null;
-        }
         if (!note.formatting) {
           note.formatting = this.getDefaultFormatting();
         } else {
@@ -2594,9 +2604,9 @@ class CapnoteApp {
     await this.loadFolders();
 
     // Notes pointing at a missing folder are shown nowhere; move them back to the root list
-    const folderIds = new Set(this.folders.map((f) => String(f.id)));
+    const folderIds = new Set(this.folders.map((f) => f.id));
     this.notes.forEach((note) => {
-      if (note.folderId && note.folderId !== 'default' && !folderIds.has(String(note.folderId))) {
+      if (note.folderId && !folderIds.has(note.folderId)) {
         note.folderId = null;
       }
     });
@@ -2610,6 +2620,7 @@ class CapnoteApp {
       this.folders = this.folders.map((f) => ({
         expanded: f.expanded !== undefined ? f.expanded : true,
         ...f,
+        id: String(f.id),
       }));
     } catch (error) {
       console.error('Klasörler yüklenirken hata:', error);
@@ -2684,6 +2695,8 @@ class CapnoteApp {
       // Normalize reminders: ensure recurrence field exists
       this.reminders = this.reminders.map((r) => ({
         ...r,
+        id: String(r.id),
+        noteId: this.toId(r.noteId),
         recurrence: r.recurrence || 'none',
         recurrenceDays: Array.isArray(r.recurrenceDays)
           ? r.recurrenceDays
@@ -2800,7 +2813,11 @@ class CapnoteApp {
   async loadNotifications() {
     try {
       const savedNotifications = localStorage.getItem('capnote-notifications');
-      this.notifications = savedNotifications ? JSON.parse(savedNotifications) : [];
+      this.notifications = (savedNotifications ? JSON.parse(savedNotifications) : []).map((n) => ({
+        ...n,
+        id: String(n.id),
+        noteId: this.toId(n.noteId),
+      }));
       // Sort by time, newest first
       this.notifications.sort((a, b) => new Date(b.time) - new Date(a.time));
     } catch (error) {
@@ -2824,7 +2841,11 @@ class CapnoteApp {
   async loadTodos() {
     try {
       const savedSections = localStorage.getItem('capnote-todo-sections');
-      this.todoSections = savedSections ? JSON.parse(savedSections) : [];
+      this.todoSections = (savedSections ? JSON.parse(savedSections) : []).map((section) => ({
+        ...section,
+        id: String(section.id),
+        todos: (section.todos || []).map((todo) => ({ ...todo, id: String(todo.id) })),
+      }));
     } catch (error) {
       console.error('Yapılacaklar yüklenirken hata:', error);
       this.todoSections = [];
@@ -3000,7 +3021,7 @@ class CapnoteApp {
     if (!name) return;
 
     const newSection = {
-      id: Date.now().toString(),
+      id: this.newId(),
       name: name,
       todos: [],
     };
@@ -3028,7 +3049,7 @@ class CapnoteApp {
     if (!section) return;
 
     const newTodo = {
-      id: Date.now().toString(),
+      id: this.newId(),
       text: trimmedText,
       completed: false,
       createdAt: new Date().toISOString(),
@@ -3156,7 +3177,7 @@ class CapnoteApp {
 
     if (lastViewedNoteId && this.notes.length > 0) {
       // Find the note with the saved ID
-      const lastNote = this.notes.find((note) => note.id == lastViewedNoteId);
+      const lastNote = this.notes.find((note) => note.id === lastViewedNoteId);
 
       if (lastNote) {
         // Open the last viewed note
@@ -3193,7 +3214,7 @@ class CapnoteApp {
     this.noteBeforeNew =
       this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;
     this.currentNote = {
-      id: Date.now(),
+      id: this.newId(),
       title: '',
       content: '',
       createdAt: new Date().toISOString(),
@@ -3394,7 +3415,7 @@ class CapnoteApp {
     // Add event listeners to action buttons
     this.remindersList.querySelectorAll('.view-note-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const noteId = parseInt(e.currentTarget.dataset.noteId);
+        const noteId = e.currentTarget.dataset.noteId;
         const note = this.notes.find((n) => n.id === noteId);
         if (note) this.openNote(note);
       });
@@ -3402,7 +3423,7 @@ class CapnoteApp {
 
     this.remindersList.querySelectorAll('.dismiss-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const reminderId = parseInt(e.currentTarget.dataset.reminderId);
+        const reminderId = e.currentTarget.dataset.reminderId;
         this.dismissReminder(reminderId);
       });
     });
@@ -3431,7 +3452,7 @@ class CapnoteApp {
     }
 
     const reminder = {
-      id: Date.now(),
+      id: this.newId(),
       noteId: this.currentNote.id,
       noteTitle: this.currentNote.title || window.i18n.t('messages.untitledNote'),
       datetime: datetime,
@@ -3523,7 +3544,7 @@ class CapnoteApp {
     // Add remove event listeners
     this.noteRemindersList.querySelectorAll('.note-reminder-remove').forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const reminderId = parseInt(e.currentTarget.dataset.reminderId);
+        const reminderId = e.currentTarget.dataset.reminderId;
         this.removeReminder(reminderId);
       });
     });
@@ -3647,7 +3668,7 @@ class CapnoteApp {
 
   addNotification(noteId, noteTitle, message) {
     const notification = {
-      id: Date.now(),
+      id: this.newId(),
       noteId: noteId,
       noteTitle: noteTitle,
       message: message,
@@ -3715,7 +3736,7 @@ class CapnoteApp {
     // Add event listeners
     this.notificationsList.querySelectorAll('.view-notification-note-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const noteId = parseInt(e.currentTarget.dataset.noteId);
+        const noteId = e.currentTarget.dataset.noteId;
         const note = this.notes.find((n) => n.id === noteId);
         if (note) this.openNote(note);
       });
@@ -3723,14 +3744,14 @@ class CapnoteApp {
 
     this.notificationsList.querySelectorAll('.mark-read-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const notificationId = parseInt(e.currentTarget.dataset.notificationId);
+        const notificationId = e.currentTarget.dataset.notificationId;
         this.markNotificationAsRead(notificationId);
       });
     });
 
     this.notificationsList.querySelectorAll('.delete-notification-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const notificationId = parseInt(e.currentTarget.dataset.notificationId);
+        const notificationId = e.currentTarget.dataset.notificationId;
         this.deleteNotification(notificationId);
       });
     });
@@ -4457,7 +4478,7 @@ class CapnoteApp {
 
     const duplicate = {
       ...this.currentNote,
-      id: Date.now(),
+      id: this.newId(),
       title: this.currentNote.title + window.i18n.t('messages.noteCopySuffix'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -4509,7 +4530,7 @@ class CapnoteApp {
 
     // Update any other instances of this note's buttons and lists
     this.updateActionButtonStates(this.currentNote.id);
-    if (this.currentNote.folderId && this.currentNote.folderId !== 'default') {
+    if (this.currentNote.folderId) {
       this.updateSpecificFolder(this.currentNote.folderId);
     } else {
       this.updateNotesList();
@@ -4722,7 +4743,7 @@ class CapnoteApp {
   setActiveNoteInList(noteId) {
     // Clear previous active in main notes list
     const prevActive = this.notesList.querySelector('.note-item.active');
-    if (prevActive && prevActive.getAttribute('data-note-id') != noteId) {
+    if (prevActive && prevActive.getAttribute('data-note-id') !== noteId) {
       prevActive.classList.remove('active');
     }
 
@@ -4735,7 +4756,7 @@ class CapnoteApp {
     // Also update any folder note lists
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
       const prev = container.querySelector('.folder-note-item.active');
-      if (prev && prev.getAttribute('data-note-id') != noteId) {
+      if (prev && prev.getAttribute('data-note-id') !== noteId) {
         prev.classList.remove('active');
       }
       const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
@@ -4800,7 +4821,7 @@ class CapnoteApp {
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
       const folderId = container.getAttribute('data-folder-id');
       container.innerHTML = '';
-      let folderNotes = this.notes.filter((note) => note.folderId == folderId);
+      let folderNotes = this.notes.filter((note) => note.folderId === folderId);
 
       // Apply current filter to folder notes
       switch (this.currentFilter) {
@@ -4819,7 +4840,7 @@ class CapnoteApp {
       const searchTerm = this.normalizeForSearch(rawSearch);
       if (searchTerm) {
         // If folder name matches the search, include all folder notes (still respecting currentFilter applied above)
-        const folderObj = this.folders.find((f) => f.id == folderId);
+        const folderObj = this.folders.find((f) => f.id === folderId);
         const folderNameMatches =
           folderObj && this.normalizeForSearch(folderObj.name || '').includes(searchTerm);
         if (!folderNameMatches) {
@@ -4857,18 +4878,14 @@ class CapnoteApp {
     // Filter by type
     switch (this.currentFilter) {
       case 'today':
-        filtered = filtered.filter(
-          (note) => this.isCreatedToday(note) && (!note.folderId || note.folderId === 'default')
-        );
+        filtered = filtered.filter((note) => this.isCreatedToday(note) && !note.folderId);
         break;
       case 'favorites':
-        filtered = filtered.filter(
-          (note) => note.isFavorite && (!note.folderId || note.folderId === 'default')
-        );
+        filtered = filtered.filter((note) => note.isFavorite && !note.folderId);
         break;
       default:
         // Show only notes without folder (klasörsüz)
-        filtered = filtered.filter((note) => !note.folderId || note.folderId === 'default');
+        filtered = filtered.filter((note) => !note.folderId);
         break;
     }
 
@@ -5952,8 +5969,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       if (this._toastClickHandler)
         this.notification.removeEventListener('click', this._toastClickHandler);
       this._toastClickHandler = (e) => {
-        const nid = parseInt(this.notification.dataset.notificationId);
-        if (!Number.isNaN(nid)) {
+        const nid = this.notification.dataset.notificationId;
+        if (nid) {
           this.markNotificationAsRead(nid);
         }
         this.showNotificationsScreen();
@@ -6331,7 +6348,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   }
 
   deleteNoteById(noteId) {
-    const note = this.notes.find((n) => n.id == noteId);
+    const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
 
     const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
@@ -6355,7 +6372,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.updateStats();
 
     // If the deleted note was open, follow the "on note delete" setting
-    if (this.currentNote && this.currentNote.id == note.id) {
+    if (this.currentNote && this.currentNote.id === note.id) {
       this.currentNote = null;
       const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
       if (onNoteDelete !== 'home' && this.notes.length > 0) {
@@ -6983,7 +7000,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         const folderIdMap = {};
         if (Array.isArray(data.folders) && importOptions.folders) {
           data.folders.forEach((f) => {
-            const newId = Date.now() + Math.floor(Math.random() * 1000000);
+            const newId = this.newId();
             folderIdMap[f.id] = newId;
             const newFolder = { ...f, id: newId };
             newFolder.expanded = newFolder.expanded !== undefined ? newFolder.expanded : true;
@@ -7009,7 +7026,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
               if (oldId !== undefined && oldId !== null) noteIdMap[oldId] = existing.id;
               return;
             }
-            const newNoteId = Date.now() + Math.floor(Math.random() * 1000000);
+            const newNoteId = this.newId();
             // A folder reference that was not imported would make the note invisible
             const mappedFolderId =
               note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : null;
@@ -7039,7 +7056,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         if (Array.isArray(data.reminders) && importOptions.reminders) {
           data.reminders.forEach((r) => {
             const newR = { ...r };
-            newR.id = Date.now() + Math.floor(Math.random() * 1000000);
+            newR.id = this.newId();
             if (newR.noteId) {
               // remap if possible
               if (noteIdMap[newR.noteId]) {
@@ -7056,7 +7073,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         if (Array.isArray(data.notifications) && importOptions.notifications) {
           data.notifications.forEach((n) => {
             const newN = { ...n };
-            newN.id = Date.now() + Math.floor(Math.random() * 1000000);
+            newN.id = this.newId();
             if (newN.noteId) {
               if (noteIdMap[newN.noteId]) {
                 newN.noteId = noteIdMap[newN.noteId];
@@ -7344,7 +7361,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
   renameSelectedFolder() {
     if (!this.selectedFolderId) return;
-    const folder = this.folders.find((f) => f.id == this.selectedFolderId);
+    const folder = this.folders.find((f) => f.id === this.selectedFolderId);
     if (!folder) return;
     // Pre-fill folder modal and set renaming flag
     this.folderNameInput.value = folder.name;
@@ -7383,7 +7400,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
     // If we're in rename mode, update the existing folder
     if (this._renamingFolderId) {
-      const folder = this.folders.find((f) => f.id == this._renamingFolderId);
+      const folder = this.folders.find((f) => f.id === this._renamingFolderId);
       if (folder) {
         folder.name = name;
         await this.saveFolders();
@@ -7396,7 +7413,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     }
 
     const folder = {
-      id: Date.now() + Math.random(),
+      id: this.newId(),
       name: name,
       createdAt: new Date().toISOString(),
       color: this.getRandomFolderColor(),
@@ -7482,7 +7499,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
   // Update the visible count badge for a specific folder in the sidebar
   updateFolderCountInDOM(folderId) {
-    if (!folderId || folderId === 'default') return;
+    if (!folderId) return;
     const countEl = document.querySelector(
       `.folder-item[data-folder-id="${folderId}"] .folder-count`
     );
@@ -7540,7 +7557,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   // Return how many notes in a folder match current filter and search
   getVisibleCountForFolder(folderId) {
     // Use loose equality to tolerate string/number id differences coming from DOM attributes
-    let folderNotes = this.notes.filter((n) => n.folderId == folderId);
+    let folderNotes = this.notes.filter((n) => n.folderId === folderId);
 
     // Apply current filter
     switch (this.currentFilter) {
@@ -7561,7 +7578,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     if (searchTerm) {
       // If the folder name itself matches the search term, consider the folder visible and
       // include all its notes (still respecting the current filter like 'today' or 'favorites').
-      const folderObj = this.folders.find((f) => f.id == folderId);
+      const folderObj = this.folders.find((f) => f.id === folderId);
       const folderNameMatches =
         folderObj && this.normalizeForSearch(folderObj.name || '').includes(searchTerm);
       if (!folderNameMatches) {
@@ -7782,7 +7799,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       // Otherwise assume a note was dropped onto this folder
       const noteId = e.dataTransfer.getData('text/plain');
       if (noteId) {
-        this.moveNoteToFolder(parseInt(noteId), folder.id);
+        this.moveNoteToFolder(noteId, folder.id);
       }
     });
 
@@ -7940,11 +7957,12 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
 
-    const oldFolderId = note.folderId || 'default';
+    const oldFolderId = note.folderId || null;
+    const targetFolderId = folderId || null;
     // No-op if nothing changed
-    if (oldFolderId === (folderId || 'default')) return;
+    if (oldFolderId === targetFolderId) return;
 
-    note.folderId = folderId;
+    note.folderId = targetFolderId;
     note.updatedAt = new Date().toISOString();
 
     try {
@@ -7963,11 +7981,11 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       const searchTerm = this.normalizeForSearch(rawSearch);
 
       // Update folder count badges for old and new folders
-      if (oldFolderId && oldFolderId !== 'default') this.updateFolderCountInDOM(oldFolderId);
-      if (folderId && folderId !== 'default') this.updateFolderCountInDOM(folderId);
+      if (oldFolderId) this.updateFolderCountInDOM(oldFolderId);
+      if (folderId) this.updateFolderCountInDOM(folderId);
 
       // Insert into destination if it should be visible under current filter/search
-      if (folderId && folderId !== 'default') {
+      if (folderId) {
         const folderContainer = document.querySelector(
           `.folder-notes-container[data-folder-id="${folderId}"]`
         );
@@ -7995,7 +8013,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           visible = !!note.isFavorite;
         } else {
           // default: only notes without folder are shown in main list
-          visible = !note.folderId || note.folderId === 'default';
+          visible = !note.folderId;
         }
         if (searchTerm) visible = visible && this.noteMatchesSearch(note, searchTerm);
 
@@ -8018,11 +8036,10 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       this.updateFoldersList();
     }
 
-    const folderName =
-      folderId === 'default'
-        ? window.i18n.t('nav.notes')
-        : this.folders.find((f) => f.id === folderId)?.name ||
-          window.i18n.t('messages.unknownFolder');
+    const folderName = !folderId
+      ? window.i18n.t('nav.notes')
+      : this.folders.find((f) => f.id === folderId)?.name ||
+        window.i18n.t('messages.unknownFolder');
     const noteTitle = note.title || window.i18n.t('messages.untitledNote');
     this.showNotification(
       window.i18n.t('messages.noteMovedToFolder', { title: noteTitle, folder: folderName }),
@@ -8032,7 +8049,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
   // Action button functions
   async toggleFavorite(noteId) {
-    const note = this.notes.find((n) => n.id == noteId);
+    const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
 
     note.isFavorite = !note.isFavorite;
@@ -8044,7 +8061,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.updateActionButtonStates(noteId);
 
     // Only update the specific folder if note is in a folder, otherwise update main list
-    if (note.folderId && note.folderId !== 'default') {
+    if (note.folderId) {
       this.updateSpecificFolder(note.folderId);
     } else {
       this.updateNotesList();
@@ -8058,7 +8075,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   }
 
   updateActionButtonStates(noteId) {
-    const note = this.notes.find((n) => n.id == noteId);
+    const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
 
     // Find all instances of this note in DOM (main list and folders)
@@ -8105,7 +8122,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     if (!folderContainer) return;
 
     folderContainer.innerHTML = '';
-    let folderNotes = this.notes.filter((note) => note.folderId == folderId);
+    let folderNotes = this.notes.filter((note) => note.folderId === folderId);
 
     // Apply current filter to folder notes
     switch (this.currentFilter) {
@@ -8152,7 +8169,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   }
 
   async togglePin(noteId) {
-    const note = this.notes.find((n) => n.id == noteId);
+    const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
 
     // If trying to pin and already 3 notes are pinned, block and notify
@@ -8177,7 +8194,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.updateActionButtonStates(noteId);
 
     // Only update the specific folder if note is in a folder, otherwise update main list
-    if (note.folderId && note.folderId !== 'default') {
+    if (note.folderId) {
       this.updateSpecificFolder(note.folderId);
     } else {
       this.updateNotesList();
@@ -8193,7 +8210,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   }
 
   async toggleLock(noteId) {
-    const note = this.notes.find((n) => n.id == noteId);
+    const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
 
     if (note.isLocked) {
@@ -8230,7 +8247,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     }
 
     // Refresh the viewer if the toggled note is on screen
-    if (this.currentNote && this.currentNote.id == note.id && this.isViewerOpen()) {
+    if (this.currentNote && this.currentNote.id === note.id && this.isViewerOpen()) {
       this.displayNote(note);
     }
 
@@ -8241,7 +8258,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     this.updateActionButtonStates(noteId);
 
     // Only update the specific folder if note is in a folder, otherwise update main list
-    if (note.folderId && note.folderId !== 'default') {
+    if (note.folderId) {
       this.updateSpecificFolder(note.folderId);
     } else {
       this.updateNotesList();
@@ -8267,10 +8284,10 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   deleteSelectedFolder() {
     if (!this.selectedFolderId) return;
 
-    const folder = this.folders.find((f) => f.id == this.selectedFolderId);
+    const folder = this.folders.find((f) => f.id === this.selectedFolderId);
     if (!folder) return;
 
-    // Count notes that truly belong to this folder. Treat falsy or 'default' folderIds as folderless.
+    // Count notes that truly belong to this folder. Folderless notes have a null folderId.
     const notesInFolder = this.notes.filter(
       (note) => note.folderId && String(note.folderId) === String(this.selectedFolderId)
     );
@@ -8298,7 +8315,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       );
 
       // Delete the folder
-      this.folders = this.folders.filter((f) => f.id != folderIdToDelete);
+      this.folders = this.folders.filter((f) => f.id !== folderIdToDelete);
 
       this.removeNoteReferences(notesToRemove);
 
@@ -8310,7 +8327,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       if (this.currentFilter === 'favorites') this.updateNotesList();
 
       // Clear selection if current note was in deleted folder
-      if (this.currentNote && this.currentNote.folderId == folderIdToDelete) {
+      if (this.currentNote && this.currentNote.folderId === folderIdToDelete) {
         this.currentNote = null;
         this.showWelcome();
       }
@@ -8327,7 +8344,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
   openFolderColorModal() {
     if (!this.selectedFolderId) return;
-    const folder = this.folders.find((f) => f.id == this.selectedFolderId);
+    const folder = this.folders.find((f) => f.id === this.selectedFolderId);
     if (!folder) return;
     // Prefill modal input with current folder color
     if (this.folderColorInput) this.folderColorInput.value = folder.color || '#3B82F6';
@@ -8339,7 +8356,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   applySelectedFolderColor(color) {
     const folderId = this.colorModalFolderId || this.selectedFolderId;
     if (!folderId) return;
-    const folder = this.folders.find((f) => f.id == folderId);
+    const folder = this.folders.find((f) => f.id === folderId);
     if (!folder) return;
     folder.color = color;
     // Persist the color change
