@@ -12,7 +12,7 @@ export default [
   },
   {
     // Main and preload processes run as CommonJS in Node
-    files: ['src/main.js', 'src/preload.js'],
+    files: ['src/main.js', 'src/preload.js', 'src/main/**/*.js'],
     languageOptions: {
       sourceType: 'commonjs',
       globals: globals.node,
