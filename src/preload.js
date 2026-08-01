@@ -19,6 +19,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   maximize: () => ipcRenderer.send('maximize-window'),
   close: () => ipcRenderer.send('close-window'),
 
+  // App data persisted by the main process (one JSON file per collection)
+  storage: {
+    load: () => ipcRenderer.invoke('storage:load'),
+    save: (key, value) => ipcRenderer.invoke('storage:save', key, value),
+  },
   // Save a file dropped from the OS into the app uploads folder. Pass the source path (from DataTransfer.files)
   saveDroppedFile: (srcPath) => ipcRenderer.invoke('save-dropped-file', srcPath),
   // Export a note body to PDF (main process shows the save dialog)

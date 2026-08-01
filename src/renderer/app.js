@@ -67,6 +67,7 @@ class CapnoteApp {
       await window.i18n.ready;
     }
 
+    await this.initStorage();
     await this.loadNotes();
     await this.loadReminders();
     await this.loadNotifications();
@@ -2280,13 +2281,6 @@ class CapnoteApp {
       this.reminders = [];
       this.notifications = [];
 
-      // Remove stored data keys
-      try {
-        localStorage.removeItem('capnote-notes');
-      } catch (e) {}
-      try {
-        localStorage.removeItem('capnote-folders');
-      } catch (e) {}
       try {
         localStorage.removeItem('last-viewed-note');
       } catch (e) {}
@@ -2569,8 +2563,7 @@ class CapnoteApp {
 
   async loadNotes() {
     try {
-      const savedNotes = localStorage.getItem('capnote-notes');
-      this.notes = savedNotes ? JSON.parse(savedNotes) : [];
+      this.notes = Array.isArray(this.storedData.notes) ? this.storedData.notes : [];
 
       // Eski notlarda eksik property'leri ekle
       this.notes.forEach((note) => {
@@ -2614,8 +2607,7 @@ class CapnoteApp {
 
   async loadFolders() {
     try {
-      const savedFolders = localStorage.getItem('capnote-folders');
-      this.folders = savedFolders ? JSON.parse(savedFolders) : [];
+      this.folders = Array.isArray(this.storedData.folders) ? this.storedData.folders : [];
       // Ensure older saved folders get a default expanded flag (true)
       this.folders = this.folders.map((f) => ({
         expanded: f.expanded !== undefined ? f.expanded : true,
@@ -2625,6 +2617,46 @@ class CapnoteApp {
     } catch (error) {
       console.error('Klasörler yüklenirken hata:', error);
       this.folders = [];
+    }
+  }
+
+  // Data is stored by the main process; older versions kept it in localStorage
+  static LEGACY_STORAGE_KEYS = {
+    notes: 'capnote-notes',
+    folders: 'capnote-folders',
+    reminders: 'capnote-reminders',
+    notifications: 'capnote-notifications',
+    todos: 'capnote-todo-sections',
+  };
+
+  async initStorage() {
+    const { initialized, data } = await window.electronAPI.storage.load();
+    this.storedData = data || {};
+    if (initialized) return;
+
+    // First launch with file storage: move existing localStorage data over, then drop it
+    const legacy = Object.entries(CapnoteApp.LEGACY_STORAGE_KEYS);
+    for (const [key, legacyKey] of legacy) {
+      const raw = localStorage.getItem(legacyKey);
+      if (raw === null) continue;
+      try {
+        this.storedData[key] = JSON.parse(raw);
+        await window.electronAPI.storage.save(key, this.storedData[key]);
+      } catch (err) {
+        console.error(`Could not migrate ${legacyKey}:`, err);
+        return; // keep localStorage untouched so nothing is lost
+      }
+    }
+    legacy.forEach(([, legacyKey]) => localStorage.removeItem(legacyKey));
+  }
+
+  // Persist one collection; failures are reported instead of silently losing data
+  async persist(key, value, errorKey) {
+    try {
+      await window.electronAPI.storage.save(key, value);
+    } catch (error) {
+      console.error(`Saving ${key} failed:`, error);
+      if (errorKey && this.notification) this.showNotification(window.i18n.t(errorKey), 'error');
     }
   }
 
@@ -2667,31 +2699,18 @@ class CapnoteApp {
   }
 
   async saveNotes() {
-    try {
-      localStorage.setItem('capnote-notes', JSON.stringify(this.serializeNotes()));
-      // Ensure overview stats reflect the latest notes immediately
-      try {
-        this.updateStats();
-      } catch (e) {}
-    } catch (error) {
-      console.error('Notlar kaydedilirken hata:', error);
-      this.showNotification(window.i18n.t('messages.notesSaveError'), 'error');
-    }
+    // Ensure overview stats reflect the latest notes immediately
+    this.updateStats();
+    await this.persist('notes', this.serializeNotes(), 'messages.notesSaveError');
   }
 
   async saveFolders() {
-    try {
-      localStorage.setItem('capnote-folders', JSON.stringify(this.folders));
-    } catch (error) {
-      console.error('Klasörler kaydedilirken hata:', error);
-      this.showNotification(window.i18n.t('messages.foldersSaveError'), 'error');
-    }
+    await this.persist('folders', this.folders, 'messages.foldersSaveError');
   }
 
   async loadReminders() {
     try {
-      const savedReminders = localStorage.getItem('capnote-reminders');
-      this.reminders = savedReminders ? JSON.parse(savedReminders) : [];
+      this.reminders = Array.isArray(this.storedData.reminders) ? this.storedData.reminders : [];
       // Normalize reminders: ensure recurrence field exists
       this.reminders = this.reminders.map((r) => ({
         ...r,
@@ -2802,18 +2821,15 @@ class CapnoteApp {
   }
 
   async saveReminders() {
-    try {
-      localStorage.setItem('capnote-reminders', JSON.stringify(this.reminders));
-    } catch (error) {
-      console.error('Hatırlatmalar kaydedilirken hata:', error);
-      this.showNotification(window.i18n.t('messages.remindersSaveError'), 'error');
-    }
+    await this.persist('reminders', this.reminders, 'messages.remindersSaveError');
   }
 
   async loadNotifications() {
     try {
-      const savedNotifications = localStorage.getItem('capnote-notifications');
-      this.notifications = (savedNotifications ? JSON.parse(savedNotifications) : []).map((n) => ({
+      const savedNotifications = Array.isArray(this.storedData.notifications)
+        ? this.storedData.notifications
+        : [];
+      this.notifications = savedNotifications.map((n) => ({
         ...n,
         id: String(n.id),
         noteId: this.toId(n.noteId),
@@ -2827,11 +2843,7 @@ class CapnoteApp {
   }
 
   async saveNotifications() {
-    try {
-      localStorage.setItem('capnote-notifications', JSON.stringify(this.notifications));
-    } catch (error) {
-      console.error('Bildirimler kaydedilirken hata:', error);
-    }
+    await this.persist('notifications', this.notifications);
   }
 
   // ============================================
@@ -2840,8 +2852,8 @@ class CapnoteApp {
 
   async loadTodos() {
     try {
-      const savedSections = localStorage.getItem('capnote-todo-sections');
-      this.todoSections = (savedSections ? JSON.parse(savedSections) : []).map((section) => ({
+      const savedSections = Array.isArray(this.storedData.todos) ? this.storedData.todos : [];
+      this.todoSections = savedSections.map((section) => ({
         ...section,
         id: String(section.id),
         todos: (section.todos || []).map((todo) => ({ ...todo, id: String(todo.id) })),
@@ -2853,11 +2865,7 @@ class CapnoteApp {
   }
 
   async saveTodos() {
-    try {
-      localStorage.setItem('capnote-todo-sections', JSON.stringify(this.todoSections));
-    } catch (error) {
-      console.error('Yapılacaklar kaydedilirken hata:', error);
-    }
+    await this.persist('todos', this.todoSections);
   }
 
   showTodosScreen() {

@@ -18,6 +18,7 @@ const path = require('path');
 const fs = require('fs');
 const { pathToFileURL, fileURLToPath } = require('url');
 const Store = require('electron-store');
+const { JsonStore } = require('./main/storage');
 
 // Enable hot reload in development using electron-reloader
 try {
@@ -35,6 +36,13 @@ try {
 
 // Veri deposu başlatma
 const store = new Store();
+
+// Notes, folders, reminders, notifications and todos live in JSON files under userData
+let dataStore = null;
+function getDataStore() {
+  if (!dataStore) dataStore = new JsonStore(app.getPath('userData'));
+  return dataStore;
+}
 
 let mainWindow;
 let tray = null;
@@ -560,4 +568,15 @@ ipcMain.on('set-language', (event, lang) => {
   if (!TRAY_LABELS[lang]) return;
   trayLanguage = lang;
   updateTrayMenu();
+});
+
+ipcMain.handle('storage:load', () => {
+  const storage = getDataStore();
+  return { initialized: storage.isInitialized(), data: storage.readAll() };
+});
+
+ipcMain.handle('storage:save', (event, key, value) => {
+  if (value === undefined) throw new Error('Refusing to store undefined');
+  getDataStore().write(key, value);
+  return true;
 });
