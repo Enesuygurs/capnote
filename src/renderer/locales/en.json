@@ -351,7 +351,8 @@
     "noteMovedToFolder": "\"{title}\" moved to {folder}",
     "unknownFolder": "Unknown folder",
     "testNotificationTitle": "🔔 Test notification",
-    "testNotificationBody": "This is a test notification."
+    "testNotificationBody": "This is a test notification.",
+    "backupTooNew": "This backup was made by a newer version of Capnote. Please update the app to import it."
   },
   "templates": {
     "listItem1": "First item",
