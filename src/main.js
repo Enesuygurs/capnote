@@ -17,7 +17,6 @@ const {
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL, fileURLToPath } = require('url');
-const Store = require('electron-store');
 const { JsonStore } = require('./main/storage');
 
 // Enable hot reload in development using electron-reloader
@@ -34,14 +33,27 @@ try {
   // If electron-reloader isn't installed, ignore silently in production or CI
 }
 
-// Veri deposu başlatma
-const store = new Store();
-
 // Notes, folders, reminders, notifications and todos live in JSON files under userData
 let dataStore = null;
 function getDataStore() {
   if (!dataStore) dataStore = new JsonStore(app.getPath('userData'));
   return dataStore;
+}
+
+// The close-to-tray preference lives in the renderer's settings; versions before the file storage
+// kept it in electron-store's config.json, which is read once as a fallback.
+function readCloseToTrayPreference() {
+  const settings = getDataStore().read('settings');
+  if (settings && typeof settings.closeToTray === 'boolean') return settings.closeToTray;
+  try {
+    const legacy = JSON.parse(
+      fs.readFileSync(path.join(app.getPath('userData'), 'config.json'), 'utf8')
+    );
+    if (legacy && legacy.settings && typeof legacy.settings.closeToTray === 'boolean') {
+      return legacy.settings.closeToTray;
+    }
+  } catch {}
+  return true;
 }
 
 let mainWindow;
@@ -70,7 +82,7 @@ const TRAY_LABELS = {
 };
 // Close-to-tray is a Windows-only feature (the setting is only shown there)
 const supportsCloseToTray = process.platform === 'win32';
-let closeToTrayEnabled = supportsCloseToTray; // persisted in store
+let closeToTrayEnabled = supportsCloseToTray; // read from the settings file on startup
 
 // Ensure the app name is set so native notifications and system UI show 'Capnote'
 try {
@@ -324,7 +336,7 @@ function createTray() {
 // Uygulama hazır olduğunda pencereyi oluştur
 app.whenReady().then(() => {
   try {
-    closeToTrayEnabled = supportsCloseToTray && store.get('settings.closeToTray', true);
+    closeToTrayEnabled = supportsCloseToTray && readCloseToTrayPreference();
   } catch {}
   createWindow();
   createTray();
@@ -507,10 +519,10 @@ ipcMain.handle('set-start-at-login', (event, enabled) => {
   }
 });
 
-// Close-to-tray preference (persist in store)
+// Close-to-tray preference
 ipcMain.handle('get-close-to-tray', () => {
   try {
-    closeToTrayEnabled = supportsCloseToTray && store.get('settings.closeToTray', true);
+    closeToTrayEnabled = supportsCloseToTray && readCloseToTrayPreference();
   } catch {}
   return { enabled: !!closeToTrayEnabled };
 });
@@ -518,10 +530,8 @@ ipcMain.handle('get-close-to-tray', () => {
 ipcMain.handle('set-close-to-tray', (event, enabled) => {
   if (!supportsCloseToTray)
     return { ok: false, error: 'Close to tray is only supported on Windows' };
+  // Persisted by the renderer together with the other settings
   closeToTrayEnabled = !!enabled;
-  try {
-    store.set('settings.closeToTray', closeToTrayEnabled);
-  } catch {}
   return { ok: true };
 });
 

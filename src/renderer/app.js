@@ -68,6 +68,7 @@ class CapnoteApp {
     }
 
     await this.initStorage();
+    window.i18n.setLanguage(this.settings.language);
     await this.loadNotes();
     await this.loadReminders();
     await this.loadNotifications();
@@ -361,6 +362,7 @@ class CapnoteApp {
         const lang = e.target.value;
         if (window.i18n) {
           window.i18n.setLanguage(lang);
+          this.setSetting('language', lang);
           window.electronAPI?.setLanguage?.(lang);
           this.showNotification(window.i18n.t('messages.languageChanged'), 'success');
           // Update dynamic content that may not have data-i18n attributes
@@ -387,7 +389,7 @@ class CapnoteApp {
     );
     this.syncFolderAccentToggle?.addEventListener('change', (e) => {
       const enabled = e.currentTarget.checked;
-      localStorage.setItem('syncFolderAccent', enabled ? '1' : '0');
+      this.setSetting('syncFolderAccent', enabled);
       this.applyFolderAccentSync(enabled);
       this.updateFoldersList();
     });
@@ -395,7 +397,7 @@ class CapnoteApp {
     // Native/system notifications toggle
     this.toggleNativeNotifications?.addEventListener('change', (e) => {
       const enabled = e.currentTarget.checked;
-      localStorage.setItem('settings.nativeNotifications', enabled ? '1' : '0');
+      this.setSetting('nativeNotifications', enabled);
       this.showNotification(
         enabled
           ? window.i18n.t('messages.systemNotificationsEnabled')
@@ -438,6 +440,7 @@ class CapnoteApp {
             const enabled = !!e.currentTarget.checked;
             if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
               const res = await window.electronAPI.setCloseToTray(enabled);
+              this.setSetting('closeToTray', enabled);
               if (!res || res.ok !== true)
                 throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
               this.showNotification(
@@ -1043,12 +1046,7 @@ class CapnoteApp {
 
     // Fire native notification if preference enabled
     try {
-      const nativePref = this.toggleNativeNotifications
-        ? this.toggleNativeNotifications.checked
-        : localStorage.getItem('settings.nativeNotifications') === null
-          ? true
-          : localStorage.getItem('settings.nativeNotifications') === '1' ||
-            localStorage.getItem('settings.nativeNotifications') === 'true';
+      const nativePref = this.settings.nativeNotifications;
       if (
         nativePref &&
         window &&
@@ -2233,9 +2231,7 @@ class CapnoteApp {
       await this.saveNotes();
       this.removeNoteReferences(removedNoteIds);
       // Clear last viewed note
-      try {
-        localStorage.removeItem('last-viewed-note');
-      } catch (e) {}
+      this.setSetting('lastViewedNoteId', null);
       this.updateNotesList();
       this.updateFoldersList();
       this.updateStats();
@@ -2281,29 +2277,9 @@ class CapnoteApp {
       this.reminders = [];
       this.notifications = [];
 
-      try {
-        localStorage.removeItem('last-viewed-note');
-      } catch (e) {}
-
-      // Reset settings to defaults by removing known keys
-      try {
-        localStorage.removeItem('capnote-settings');
-      } catch (e) {}
-      try {
-        localStorage.removeItem('accentColor');
-      } catch (e) {}
-      try {
-        localStorage.removeItem('darkMode');
-      } catch (e) {}
-      try {
-        localStorage.removeItem('maxPinnedNotes');
-      } catch (e) {}
-      try {
-        localStorage.removeItem('syncFolderAccent');
-      } catch (e) {}
-      try {
-        localStorage.removeItem('folderColorsBackup');
-      } catch (e) {}
+      // Reset settings to defaults, keeping the UI language
+      this.settings = { ...CapnoteApp.DEFAULT_SETTINGS, language: this.settings.language };
+      await this.persist('settings', this.settings);
 
       // Persist empty notes/folders
       await this.saveNotes();
@@ -2330,24 +2306,8 @@ class CapnoteApp {
       this.applyTheme(false);
       if (this.darkModeToggle) this.darkModeToggle.checked = false;
 
-      // Reset max pinned to default (3)
-      try {
-        localStorage.setItem('maxPinnedNotes', '3');
-      } catch (e) {}
-      if (this.maxPinnedSelect) this.maxPinnedSelect.value = '3';
-
-      // Disable folder-accent sync
-      try {
-        localStorage.setItem('syncFolderAccent', '0');
-      } catch (e) {}
-      if (this.syncFolderAccentToggle) this.syncFolderAccentToggle.checked = false;
-      // Restore folder accents from backup removal (ensure folders list is empty anyway)
-      try {
-        localStorage.removeItem('folderColorsBackup');
-      } catch (e) {}
-
-      // Persist settings that the UI expects to exist
-      this.saveSettings();
+      // Reflect the default settings in the settings screen
+      this.loadSettings();
 
       // Refresh UI
       this.updateNotesList();
@@ -2515,8 +2475,7 @@ class CapnoteApp {
 
     this.scheduleAutoSave = () => {
       // Check if auto-save is enabled
-      const autoSaveEnabled = localStorage.getItem('settings.autoSave') !== 'false';
-      if (!autoSaveEnabled) return;
+      if (!this.settings.autoSave) return;
 
       clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
@@ -2620,6 +2579,95 @@ class CapnoteApp {
     }
   }
 
+  static DEFAULT_SETTINGS = {
+    language: 'tr',
+    darkMode: false,
+    accentColor: null,
+    syncFolderAccent: false,
+    folderColorsBackup: null,
+    maxPinnedNotes: 3,
+    autoSave: true,
+    confirmDelete: true,
+    onNoteDelete: 'lastNote',
+    nativeNotifications: true,
+    editorSidebarVisible: true,
+    closeToTray: true,
+    lastViewedNoteId: null,
+  };
+
+  // Settings that are not portable between installations and stay out of backups
+  static LOCAL_ONLY_SETTINGS = ['folderColorsBackup', 'lastViewedNoteId'];
+
+  // Older versions kept every setting in its own localStorage key with mixed formats
+  static LEGACY_SETTING_KEYS = [
+    'app-language',
+    'darkMode',
+    'accentColor',
+    'syncFolderAccent',
+    'folderColorsBackup',
+    'maxPinnedNotes',
+    'settings.autoSave',
+    'settings.confirmDelete',
+    'settings.onNoteDelete',
+    'settings.nativeNotifications',
+    'editorSidebarVisible',
+    'last-viewed-note',
+    'capnote-settings',
+  ];
+
+  readLegacySettings() {
+    const get = (key) => localStorage.getItem(key);
+    const bool = (value) => (value === null ? undefined : value === 'true' || value === '1');
+    let folderColorsBackup;
+    try {
+      folderColorsBackup = get('folderColorsBackup')
+        ? JSON.parse(get('folderColorsBackup'))
+        : undefined;
+    } catch {
+      folderColorsBackup = undefined;
+    }
+    const legacy = {
+      language: get('app-language') || undefined,
+      darkMode: bool(get('darkMode')),
+      accentColor: get('accentColor') || undefined,
+      syncFolderAccent: bool(get('syncFolderAccent')),
+      folderColorsBackup,
+      maxPinnedNotes: parseInt(get('maxPinnedNotes'), 10) || undefined,
+      autoSave: bool(get('settings.autoSave')),
+      confirmDelete: bool(get('settings.confirmDelete')),
+      onNoteDelete: get('settings.onNoteDelete') || undefined,
+      nativeNotifications: bool(get('settings.nativeNotifications')),
+      editorSidebarVisible: bool(get('editorSidebarVisible')),
+      lastViewedNoteId: get('last-viewed-note') || undefined,
+    };
+    Object.keys(legacy).forEach((key) => legacy[key] === undefined && delete legacy[key]);
+    return legacy;
+  }
+
+  async loadSettingsData() {
+    const stored = this.storedData.settings;
+    if (stored && typeof stored === 'object') {
+      this.settings = { ...CapnoteApp.DEFAULT_SETTINGS, ...stored };
+      return;
+    }
+    // First launch with settings in the file storage: take over the old values
+    const closeToTray = await window.electronAPI.getCloseToTray().catch(() => null);
+    this.settings = {
+      ...CapnoteApp.DEFAULT_SETTINGS,
+      ...this.readLegacySettings(),
+      ...(closeToTray && typeof closeToTray.enabled === 'boolean'
+        ? { closeToTray: closeToTray.enabled }
+        : {}),
+    };
+    await this.persist('settings', this.settings);
+    CapnoteApp.LEGACY_SETTING_KEYS.forEach((key) => localStorage.removeItem(key));
+  }
+
+  setSetting(key, value) {
+    this.settings[key] = value;
+    this.persist('settings', this.settings);
+  }
+
   // Data is stored by the main process; older versions kept it in localStorage
   static LEGACY_STORAGE_KEYS = {
     notes: 'capnote-notes',
@@ -2632,7 +2680,10 @@ class CapnoteApp {
   async initStorage() {
     const { initialized, data } = await window.electronAPI.storage.load();
     this.storedData = data || {};
-    if (initialized) return;
+    if (initialized) {
+      await this.loadSettingsData();
+      return;
+    }
 
     // First launch with file storage: move existing localStorage data over, then drop it
     const legacy = Object.entries(CapnoteApp.LEGACY_STORAGE_KEYS);
@@ -2644,10 +2695,13 @@ class CapnoteApp {
         await window.electronAPI.storage.save(key, this.storedData[key]);
       } catch (err) {
         console.error(`Could not migrate ${legacyKey}:`, err);
-        return; // keep localStorage untouched so nothing is lost
+        // Keep localStorage untouched (and the file storage uninitialized) so the move is retried
+        this.settings = { ...CapnoteApp.DEFAULT_SETTINGS, ...this.readLegacySettings() };
+        return;
       }
     }
     legacy.forEach(([, legacyKey]) => localStorage.removeItem(legacyKey));
+    await this.loadSettingsData();
   }
 
   // Persist one collection; failures are reported instead of silently losing data
@@ -3159,20 +3213,11 @@ class CapnoteApp {
   // ============================================
 
   saveLastViewedNote(noteId) {
-    try {
-      localStorage.setItem('last-viewed-note', noteId);
-    } catch (error) {
-      console.error('Son görüntülenen not kaydedilirken hata:', error);
-    }
+    if (this.settings.lastViewedNoteId !== noteId) this.setSetting('lastViewedNoteId', noteId);
   }
 
   getLastViewedNote() {
-    try {
-      return localStorage.getItem('last-viewed-note');
-    } catch (error) {
-      console.error('Son görüntülenen not yüklenirken hata:', error);
-      return null;
-    }
+    return this.settings.lastViewedNoteId;
   }
 
   loadLastViewedNote() {
@@ -3607,12 +3652,7 @@ class CapnoteApp {
 
       // Also trigger a native OS notification via the preload bridge if the user enabled it
       try {
-        const nativePref = this.toggleNativeNotifications
-          ? this.toggleNativeNotifications.checked
-          : localStorage.getItem('settings.nativeNotifications') === null
-            ? true
-            : localStorage.getItem('settings.nativeNotifications') === '1' ||
-              localStorage.getItem('settings.nativeNotifications') === 'true';
+        const nativePref = this.settings.nativeNotifications;
         if (
           nativePref &&
           window &&
@@ -6359,8 +6399,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
 
-    const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
-    if (!confirmDelete) {
+    if (!this.settings.confirmDelete) {
       this.performNoteDeletion(note);
       return;
     }
@@ -6382,8 +6421,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // If the deleted note was open, follow the "on note delete" setting
     if (this.currentNote && this.currentNote.id === note.id) {
       this.currentNote = null;
-      const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-      if (onNoteDelete !== 'home' && this.notes.length > 0) {
+      if (this.settings.onNoteDelete !== 'home' && this.notes.length > 0) {
         this.openNote(this.notes[0]);
       } else {
         this.showWelcome();
@@ -6588,53 +6626,25 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   }
 
   loadSettings() {
-    // Load language preference
-    if (this.languageSelect) {
-      const savedLang = localStorage.getItem('app-language') || 'tr';
-      this.languageSelect.value = savedLang;
-    }
+    const settings = this.settings;
+    if (this.languageSelect) this.languageSelect.value = settings.language;
 
-    // Load dark mode preference
-    const isDarkMode = localStorage.getItem('darkMode') === 'true';
-    this.darkModeToggle.checked = isDarkMode;
-    this.applyTheme(isDarkMode);
-    // Load accent color
-    const accent = localStorage.getItem('accentColor') || null;
-    if (accent) this.setAccentColor(accent, { persist: false });
+    this.darkModeToggle.checked = settings.darkMode;
+    this.applyTheme(settings.darkMode);
+    if (settings.accentColor) this.setAccentColor(settings.accentColor, { persist: false });
 
-    // Load sync-folder-accent preference
-    const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
-    if (this.syncFolderAccentToggle) this.syncFolderAccentToggle.checked = syncFolders;
+    if (this.syncFolderAccentToggle)
+      this.syncFolderAccentToggle.checked = settings.syncFolderAccent;
     // Ensure we apply or restore folder colors based on the stored preference.
-    this.applyFolderAccentSync(syncFolders);
+    this.applyFolderAccentSync(settings.syncFolderAccent);
 
-    // Load native/system notifications preference (default true)
-    const nativeNotif = localStorage.getItem('settings.nativeNotifications');
-    const nativeEnabled =
-      nativeNotif === null ? true : nativeNotif === '1' || nativeNotif === 'true';
-    if (this.toggleNativeNotifications) this.toggleNativeNotifications.checked = nativeEnabled;
-
-    // Load max pinned notes preference (default 3)
-    const maxPinned = parseInt(localStorage.getItem('maxPinnedNotes'), 10) || 3;
-    if (this.maxPinnedSelect) this.maxPinnedSelect.value = String(maxPinned);
-
-    // Load general settings - on note delete behavior (default: 'lastNote')
-    const onNoteDelete = localStorage.getItem('settings.onNoteDelete') || 'lastNote';
-    if (this.onNoteDeleteSelect) {
-      this.onNoteDeleteSelect.value = onNoteDelete;
-    }
-
-    // Load confirm delete preference (default true)
-    const confirmDelete = localStorage.getItem('settings.confirmDelete') !== 'false';
-    if (this.confirmDeleteToggle) {
-      this.confirmDeleteToggle.checked = confirmDelete;
-    }
-
-    // Load auto save preference (default true)
-    const autoSave = localStorage.getItem('settings.autoSave') !== 'false';
-    if (this.autoSaveToggle) {
-      this.autoSaveToggle.checked = autoSave;
-    }
+    if (this.toggleNativeNotifications)
+      this.toggleNativeNotifications.checked = settings.nativeNotifications;
+    if (this.maxPinnedSelect) this.maxPinnedSelect.value = String(settings.maxPinnedNotes);
+    if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
+    if (this.confirmDeleteToggle) this.confirmDeleteToggle.checked = settings.confirmDelete;
+    if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
+    if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
 
     // Query start-at-login from main (async, best-effort)
     try {
@@ -6653,22 +6663,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       }
     } catch {}
 
-    // Query close-to-tray preference from main/store
-    try {
-      if (
-        this.closeToTrayToggle &&
-        window.electronAPI &&
-        typeof window.electronAPI.getCloseToTray === 'function'
-      ) {
-        window.electronAPI
-          .getCloseToTray()
-          .then((res) => {
-            if (res && typeof res.enabled === 'boolean')
-              this.closeToTrayToggle.checked = !!res.enabled;
-          })
-          .catch(() => {});
-      }
-    } catch {}
+    // Keep the main process in sync with the stored close-to-tray preference
+    window.electronAPI?.setCloseToTray?.(settings.closeToTray);
   }
 
   setupSettingsEventListeners() {
@@ -6700,7 +6696,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       this.maxPinnedSelect.addEventListener('change', (e) => {
         const v = parseInt(e.target.value, 10);
         if (!isNaN(v) && v >= 3 && v <= 10) {
-          localStorage.setItem('maxPinnedNotes', String(v));
+          this.setSetting('maxPinnedNotes', v);
           this.showNotification(window.i18n.t('messages.pinnedLimitUpdated'), 'success');
         }
       });
@@ -6709,49 +6705,27 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // On note delete behavior change
     if (this.onNoteDeleteSelect) {
       this.onNoteDeleteSelect.addEventListener('change', (e) => {
-        localStorage.setItem('settings.onNoteDelete', e.target.value);
+        this.setSetting('onNoteDelete', e.target.value);
       });
     }
 
     // Confirm delete toggle
     if (this.confirmDeleteToggle) {
       this.confirmDeleteToggle.addEventListener('change', (e) => {
-        localStorage.setItem('settings.confirmDelete', e.target.checked ? 'true' : 'false');
+        this.setSetting('confirmDelete', e.target.checked);
       });
     }
 
     // Auto save toggle
     if (this.autoSaveToggle) {
       this.autoSaveToggle.addEventListener('change', (e) => {
-        localStorage.setItem('settings.autoSave', e.target.checked ? 'true' : 'false');
+        this.setSetting('autoSave', e.target.checked);
         const message = e.target.checked
           ? window.i18n.t('messages.autoSaveEnabled')
           : window.i18n.t('messages.autoSaveDisabled');
         this.showNotification(message, 'success');
       });
     }
-  }
-
-  saveSettings() {
-    // Save dark mode preference
-    localStorage.setItem('darkMode', this.darkModeToggle.checked);
-    // Save sync-folder-accent preference
-    if (this.syncFolderAccentToggle)
-      localStorage.setItem('syncFolderAccent', this.syncFolderAccentToggle.checked ? '1' : '0');
-    // Save native/system notifications preference
-    if (this.toggleNativeNotifications)
-      localStorage.setItem(
-        'settings.nativeNotifications',
-        this.toggleNativeNotifications.checked ? '1' : '0'
-      );
-    // Save general settings
-    if (this.onNoteDeleteSelect)
-      localStorage.setItem('settings.onNoteDelete', this.onNoteDeleteSelect.value);
-    if (this.confirmDeleteToggle)
-      localStorage.setItem(
-        'settings.confirmDelete',
-        this.confirmDeleteToggle.checked ? 'true' : 'false'
-      );
   }
 
   setAccentColor(hex, options = { persist: true }) {
@@ -6807,10 +6781,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       `rgba(${r}, ${g}, ${b}, 0.12)`
     );
 
-    if (options.persist !== false) localStorage.setItem('accentColor', color);
+    if (options.persist !== false) this.setSetting('accentColor', color);
     // If sync option enabled, apply accent color to all folder icons
-    const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
-    if (syncFolders) this.applyFolderAccentSync(true);
+    if (this.settings.syncFolderAccent) this.applyFolderAccentSync(true);
 
     // update active state on swatch buttons so the selected one appears larger
     try {
@@ -6834,38 +6807,26 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     if (!this.folders) return;
     if (enabled) {
       // Save backup of original colors if not already saved
-      const existingBackup = localStorage.getItem('folderColorsBackup');
-      if (!existingBackup) {
+      if (!this.settings.folderColorsBackup) {
         const backup = {};
         this.folders.forEach((f) => {
           backup[f.id] = f.color;
         });
-        try {
-          localStorage.setItem('folderColorsBackup', JSON.stringify(backup));
-        } catch (e) {
-          console.warn('Could not save folder color backup', e);
-        }
+        this.setSetting('folderColorsBackup', backup);
       }
 
       const accent =
-        localStorage.getItem('accentColor') ||
+        this.settings.accentColor ||
         getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() ||
         '#f59e0b';
       this.folders = this.folders.map((f) => ({ ...f, color: accent }));
     } else {
       // Restore from backup if available
-      const backupStr = localStorage.getItem('folderColorsBackup');
-      if (backupStr) {
-        try {
-          const backup = JSON.parse(backupStr || '{}');
-          this.folders = this.folders.map((f) => ({ ...f, color: backup[f.id] || f.color }));
-        } catch (e) {
-          console.warn('Failed to parse folder color backup', e);
-        }
+      const backup = this.settings.folderColorsBackup;
+      if (backup) {
+        this.folders = this.folders.map((f) => ({ ...f, color: backup[f.id] || f.color }));
         // Remove backup after restore
-        try {
-          localStorage.removeItem('folderColorsBackup');
-        } catch (e) {}
+        this.setSetting('folderColorsBackup', null);
       }
     }
 
@@ -6878,7 +6839,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
   toggleDarkMode(enabled) {
     this.applyTheme(enabled);
-    this.saveSettings();
+    this.setSetting('darkMode', enabled);
     this.showNotification(
       enabled
         ? window.i18n.t('messages.darkModeEnabled')
@@ -6907,15 +6868,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
       settings: {},
     };
 
-    // Collect a set of known localStorage settings
-    const keys = ['accentColor', 'darkMode', 'maxPinnedNotes', 'syncFolderAccent'];
-    keys.forEach((k) => {
-      try {
-        const v = localStorage.getItem(k);
-        if (v !== null) exportData.settings[k] = v;
-      } catch (e) {
-        console.warn('Failed to read setting', k, e);
-      }
+    // Portable settings only (no folder colour backup or last opened note)
+    Object.entries(this.settings).forEach(([key, value]) => {
+      if (!CapnoteApp.LOCAL_ONLY_SETTINGS.includes(key)) exportData.settings[key] = value;
     });
 
     const dataStr = JSON.stringify(exportData, null, 2);
@@ -7095,15 +7050,25 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
         // Import settings (merge by default)
         if (importOptions.settings && data.settings && typeof data.settings === 'object') {
-          Object.entries(data.settings).forEach(([k, v]) => {
-            try {
-              // Do not import folderColorsBackup from foreign sources
-              if (k === 'folderColorsBackup') return;
-              localStorage.setItem(k, String(v));
-            } catch (e) {
-              console.warn('Could not persist imported setting', k, e);
-            }
+          // Accept known settings with the expected type; older backups stored strings
+          const defaults = CapnoteApp.DEFAULT_SETTINGS;
+          const legacyNames = {
+            syncFolderAccent: 'syncFolderAccent',
+            darkMode: 'darkMode',
+            accentColor: 'accentColor',
+            maxPinnedNotes: 'maxPinnedNotes',
+          };
+          Object.entries(data.settings).forEach(([key, value]) => {
+            const name = legacyNames[key] || key;
+            if (!(name in defaults) || CapnoteApp.LOCAL_ONLY_SETTINGS.includes(name)) return;
+            const expected = typeof defaults[name];
+            if (expected === 'boolean' && typeof value === 'string')
+              value = value === 'true' || value === '1';
+            if (expected === 'number' && typeof value === 'string') value = parseInt(value, 10);
+            if (defaults[name] !== null && typeof value !== expected) return;
+            this.settings[name] = value;
           });
+          await this.persist('settings', this.settings);
         }
 
         // Encrypt locked notes coming from old backups that still carry a plain password
@@ -7309,25 +7274,13 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     }
 
     // Save preference
-    localStorage.setItem('editorSidebarVisible', this.isSidebarVisible);
+    this.setSetting('editorSidebarVisible', this.isSidebarVisible);
   }
 
   loadSidebarPreference() {
-    const savedPreference = localStorage.getItem('editorSidebarVisible');
-    if (savedPreference !== null) {
-      this.isSidebarVisible = savedPreference === 'true';
-
-      if (this.isSidebarVisible) {
-        this.editorSidebar.classList.remove('hidden');
-        this.toggleSidebarBtn.classList.add('active');
-      } else {
-        this.editorSidebar.classList.add('hidden');
-        this.toggleSidebarBtn.classList.remove('active');
-      }
-    } else {
-      // Default state - sidebar visible
-      this.toggleSidebarBtn.classList.add('active');
-    }
+    this.isSidebarVisible = this.settings.editorSidebarVisible;
+    this.editorSidebar.classList.toggle('hidden', !this.isSidebarVisible);
+    this.toggleSidebarBtn.classList.toggle('active', this.isSidebarVisible);
   }
 
   initializeHamburgerIcon() {
@@ -7438,10 +7391,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
   getRandomFolderColor() {
     // If sync-to-accent is enabled, return the accent color
-    const syncFolders = localStorage.getItem('syncFolderAccent') === '1';
-    if (syncFolders) {
+    if (this.settings.syncFolderAccent) {
       return (
-        localStorage.getItem('accentColor') ||
+        this.settings.accentColor ||
         getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() ||
         '#f59e0b'
       );
@@ -8183,7 +8135,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     // If trying to pin and already 3 notes are pinned, block and notify
     if (!note.isPinned) {
       const pinnedCount = this.notes.filter((n) => n.isPinned).length;
-      const maxPinned = parseInt(localStorage.getItem('maxPinnedNotes'), 10) || 3;
+      const maxPinned = this.settings.maxPinnedNotes;
       if (pinnedCount >= maxPinned) {
         this.showNotification(
           window.i18n.t('messages.maxPinnedNotes').replace('{count}', maxPinned),
