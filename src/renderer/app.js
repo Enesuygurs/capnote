@@ -2579,6 +2579,9 @@ class CapnoteApp {
     }
   }
 
+  // Version of the stored data layout; backups record it so newer files are not misread
+  static SCHEMA_VERSION = 2;
+
   static DEFAULT_SETTINGS = {
     language: 'tr',
     darkMode: false,
@@ -6860,11 +6863,12 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   exportAllData() {
     const exportData = {
       exportDate: new Date().toISOString(),
-      version: '1.0.0',
+      version: CapnoteApp.SCHEMA_VERSION,
       notes: this.serializeNotes(),
       folders: this.folders || [],
       reminders: this.reminders || [],
       notifications: this.notifications || [],
+      todos: this.todoSections || [],
       settings: {},
     };
 
@@ -6929,11 +6933,17 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           data = { notes: [data] };
         }
 
+        // Backups from a newer version may use a layout this version does not understand
+        if (typeof data.version === 'number' && data.version > CapnoteApp.SCHEMA_VERSION) {
+          throw new Error(window.i18n.t('messages.backupTooNew'));
+        }
+
         // Count items
         const notesCount = Array.isArray(data.notes) ? data.notes.length : 0;
         const foldersCount = Array.isArray(data.folders) ? data.folders.length : 0;
         const remindersCount = Array.isArray(data.reminders) ? data.reminders.length : 0;
         const notifsCount = Array.isArray(data.notifications) ? data.notifications.length : 0;
+        const todosCount = Array.isArray(data.todos) ? data.todos.length : 0;
 
         // Ask user which types to import and whether to merge or replace
         const importOptions = await this.showImportOptionsDialog({
@@ -6941,6 +6951,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           folders: foldersCount > 0,
           reminders: remindersCount > 0,
           notifications: notifsCount > 0,
+          todos: todosCount > 0,
           settings: !!data.settings,
         });
 
@@ -6957,6 +6968,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           if (importOptions.folders) this.folders = [];
           if (importOptions.reminders) this.reminders = [];
           if (importOptions.notifications) this.notifications = [];
+          if (importOptions.todos) this.todoSections = [];
         }
 
         // Remap folder IDs to avoid collisions when merging
@@ -7071,6 +7083,24 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           await this.persist('settings', this.settings);
         }
 
+        // Todo sections are merged by name, skipping tasks that already exist, so re-importing
+        // a backup does not duplicate them; imported records get fresh ids
+        if (Array.isArray(data.todos) && importOptions.todos) {
+          data.todos.forEach((section) => {
+            const name = String(section.name || '');
+            let target = this.todoSections.find((existing) => existing.name === name);
+            if (!target) {
+              target = { id: this.newId(), name, todos: [] };
+              this.todoSections.push(target);
+            }
+            (Array.isArray(section.todos) ? section.todos : []).forEach((todo) => {
+              const text = String(todo.text || '');
+              if (target.todos.some((existing) => existing.text === text)) return;
+              target.todos.push({ ...todo, id: this.newId(), text, completed: !!todo.completed });
+            });
+          });
+        }
+
         // Encrypt locked notes coming from old backups that still carry a plain password
         await this.migrateLegacyLockedNotes();
 
@@ -7095,6 +7125,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         } catch (e) {
           console.warn(e);
         }
+        await this.saveTodos();
 
         // Reload UI/state
         this.loadSettings();
@@ -7114,6 +7145,8 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         try {
           this.updateActiveNotificationsCount();
         } catch (e) {}
+        this.renderTodosSections();
+        this.updateTodosCount();
 
         this.updateStats();
 
@@ -7168,7 +7201,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
       const form = document.createElement('div');
       form.className = 'form-block';
-      const types = ['notes', 'folders', 'reminders', 'notifications', 'settings'];
+      const types = ['notes', 'folders', 'reminders', 'notifications', 'todos', 'settings'];
       const inputs = {};
       types.forEach((t) => {
         if (!available[t]) return;
@@ -7188,6 +7221,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
             folders: 'modals.folders',
             reminders: 'nav.reminders',
             notifications: 'nav.notifications',
+            todos: 'nav.todos',
             settings: 'nav.settings',
           }[t]
         );
@@ -7250,6 +7284,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
           folders: !!(inputs.folders && inputs.folders.checked),
           reminders: !!(inputs.reminders && inputs.reminders.checked),
           notifications: !!(inputs.notifications && inputs.notifications.checked),
+          todos: !!(inputs.todos && inputs.todos.checked),
           settings: !!(inputs.settings && inputs.settings.checked),
         };
         cleanup();
