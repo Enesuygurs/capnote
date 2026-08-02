@@ -8,12 +8,7 @@ class I18n {
   }
 
   async init() {
-    // Load saved language preference
-    const savedLang = localStorage.getItem('app-language');
-    if (savedLang) {
-      this.currentLanguage = savedLang;
-    }
-
+    // The app applies the saved language once its settings are loaded
     // Load translation files
     await this.loadTranslations();
 
@@ -60,7 +55,6 @@ class I18n {
   setLanguage(lang) {
     if (this.translations[lang]) {
       this.currentLanguage = lang;
-      localStorage.setItem('app-language', lang);
       this.applyTranslations();
       this.notifyObservers();
     } else {
