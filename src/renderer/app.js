@@ -2499,6 +2499,7 @@ class CapnoteApp {
       // Eski notlarda eksik property'leri ekle
       this.notes.forEach((note) => {
         note.id = String(note.id);
+        if (!note.isLocked) note.content = this.toPortableUploadUrls(note.content);
         note.folderId = this.toId(note.folderId);
         if (note.isLocked === undefined) {
           note.isLocked = false;
@@ -2723,7 +2724,7 @@ class CapnoteApp {
   async decryptNote(note, password) {
     if (!note.encrypted) return null;
     try {
-      return await window.NoteCrypto.decrypt(note.encrypted, password);
+      return this.toPortableUploadUrls(await window.NoteCrypto.decrypt(note.encrypted, password));
     } catch {
       return null;
     }
@@ -5253,7 +5254,24 @@ class CapnoteApp {
       ADD_ATTR: ['contenteditable', 'target', 'checked'],
       FORBID_TAGS: ['style', 'form'],
       ALLOWED_URI_REGEXP:
-        /^(?:(?:https?|mailto|tel|file|blob):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+        /^(?:(?:https?|mailto|tel|file|blob|capnote-file):|[^a-z]|[a-z+.-]+(?:[^a-z+.\-:]|$))/i,
+    });
+  }
+
+  // Older versions referenced uploads by absolute file URL (sometimes malformed, e.g. file://C:\...).
+  // Rewrite those to the portable capnote-file://upload/<name> form.
+  toPortableUploadUrls(html) {
+    if (!html || !html.includes('file:')) return html;
+    return html.replace(/(src|href)="(file:[^"]*)"/gi, (match, attr, url) => {
+      let pathPart = url.replace(/^file:\/*/i, '').replace(/\\/g, '/');
+      try {
+        pathPart = decodeURIComponent(pathPart);
+      } catch {
+        // keep the raw value when it is not valid percent-encoding
+      }
+      const found = pathPart.match(/\/uploads\/([^/]+)$/);
+      if (!found) return match;
+      return `${attr}="capnote-file://upload/${encodeURIComponent(found[1])}"`;
     });
   }
 

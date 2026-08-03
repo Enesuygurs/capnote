@@ -13,11 +13,38 @@ const {
   nativeImage,
   dialog,
   shell,
+  protocol,
+  net,
 } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { pathToFileURL, fileURLToPath } = require('url');
 const { JsonStore } = require('./main/storage');
+
+// Files dropped into notes are referenced as capnote-file://upload/<name>, which keeps note content
+// independent of where the user data folder lives (so backups work on another machine).
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'capnote-file',
+    privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true },
+  },
+]);
+
+function uploadsDir() {
+  return path.join(app.getPath('userData'), 'uploads');
+}
+
+// Resolve a capnote-file URL to a path inside the uploads folder (never outside of it)
+function uploadPathFromUrl(url) {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'capnote-file:' || parsed.hostname !== 'upload') return null;
+    const name = path.basename(decodeURIComponent(parsed.pathname));
+    return name ? path.join(uploadsDir(), name) : null;
+  } catch {
+    return null;
+  }
+}
 
 // Enable hot reload in development using electron-reloader
 try {
@@ -106,10 +133,14 @@ function openExternalLink(url) {
       shell.openExternal(url);
       return;
     }
+    if (/^capnote-file:/i.test(url)) {
+      const filePath = uploadPathFromUrl(url);
+      if (filePath) shell.openPath(filePath);
+      return;
+    }
     if (/^file:/i.test(url)) {
       const filePath = fileURLToPath(url);
-      const uploadsDir = path.join(app.getPath('userData'), 'uploads') + path.sep;
-      if (filePath.startsWith(uploadsDir)) shell.openPath(filePath);
+      if (filePath.startsWith(uploadsDir() + path.sep)) shell.openPath(filePath);
     }
   } catch (err) {
     console.warn('Could not open link:', url, err);
@@ -335,6 +366,12 @@ function createTray() {
 
 // Uygulama hazır olduğunda pencereyi oluştur
 app.whenReady().then(() => {
+  protocol.handle('capnote-file', (request) => {
+    const filePath = uploadPathFromUrl(request.url);
+    if (!filePath || !fs.existsSync(filePath)) return new Response('Not found', { status: 404 });
+    return net.fetch(pathToFileURL(filePath).href);
+  });
+
   try {
     closeToTrayEnabled = supportsCloseToTray && readCloseToTrayPreference();
   } catch {}
@@ -388,7 +425,7 @@ ipcMain.on('close-window', () => {
 // Largest file accepted into the uploads folder
 const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
 
-// Copy a file dropped from the OS into app data/uploads and return a file:// URL for the renderer.
+// Copy a file dropped from the OS into app data/uploads and return its capnote-file URL.
 // The path comes from the renderer, so only existing regular files of a sane size are accepted.
 ipcMain.handle('save-dropped-file', (event, srcPath) => {
   try {
@@ -396,13 +433,11 @@ ipcMain.handle('save-dropped-file', (event, srcPath) => {
     const stat = fs.statSync(srcPath);
     if (!stat.isFile() || stat.size > MAX_UPLOAD_BYTES) return null;
 
-    const uploadsDir = path.join(app.getPath('userData'), 'uploads');
-    fs.mkdirSync(uploadsDir, { recursive: true });
+    fs.mkdirSync(uploadsDir(), { recursive: true });
     // Prefix with a timestamp and a random part to avoid collisions
     const targetName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${path.basename(srcPath)}`;
-    const destPath = path.join(uploadsDir, targetName);
-    fs.copyFileSync(srcPath, destPath);
-    return pathToFileURL(destPath).href;
+    fs.copyFileSync(srcPath, path.join(uploadsDir(), targetName));
+    return `capnote-file://upload/${encodeURIComponent(targetName)}`;
   } catch (err) {
     console.error('Failed to save dropped file:', err);
     return null;
