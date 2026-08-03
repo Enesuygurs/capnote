@@ -2270,70 +2270,42 @@ class CapnoteApp {
 
   async clearAllContent() {
     try {
-      // Reset application data
+      // Every collection, including todos, goes back to empty
       this.notes = [];
       this.folders = [];
-      // Clear reminders and notifications as part of full reset
       this.reminders = [];
       this.notifications = [];
+      this.todoSections = [];
+      this.currentNote = null;
+      this.unlockedNotes.clear();
 
-      // Reset settings to defaults, keeping the UI language
+      // Settings go back to defaults, keeping the UI language
       this.settings = { ...CapnoteApp.DEFAULT_SETTINGS, language: this.settings.language };
-      await this.persist('settings', this.settings);
 
-      // Persist empty notes/folders
-      await this.saveNotes();
-      await this.saveFolders();
-      // Persist clearing reminders/notifications
-      try {
-        await this.saveReminders();
-      } catch (e) {
-        console.warn(e);
-      }
-      try {
-        await this.saveNotifications();
-      } catch (e) {
-        console.warn(e);
-      }
+      await Promise.all([
+        this.saveNotes(),
+        this.saveFolders(),
+        this.saveReminders(),
+        this.saveNotifications(),
+        this.saveTodos(),
+        this.persist('settings', this.settings),
+      ]);
 
-      // Reset in-memory settings/state to defaults
-      // Default accent used elsewhere in the app
-      const defaultAccent = '#f59e0b';
-      // Apply default accent visually (do not persist since we removed storage)
-      this.setAccentColor(defaultAccent, { persist: false });
-
-      // Reset theme to light/default
-      this.applyTheme(false);
-      if (this.darkModeToggle) this.darkModeToggle.checked = false;
-
-      // Reflect the default settings in the settings screen
+      // Undo the inline accent colour, then reflect the defaults everywhere
+      this.setAccentColor(CapnoteApp.DEFAULT_ACCENT, { persist: false });
       this.loadSettings();
+      this.loadSidebarPreference();
 
-      // Refresh UI
       this.updateNotesList();
       this.updateFoldersList();
-      this.updateFolderNotes();
       this.updateRemindersView();
       this.updateNotificationsView();
-      try {
-        this.updateActiveRemindersCount();
-      } catch (e) {}
-      try {
-        this.updateActiveNotificationsCount();
-      } catch (e) {}
+      this.renderTodosSections();
+      this.updateTodosCount();
+      this.updateActiveRemindersCount();
+      this.updateActiveNotificationsCount();
       this.updateStats();
-
-      // Ensure no note remains open after reset
-      try {
-        this.currentNote = null;
-        this.currentNoteContent = '';
-        this.lastSavedContent = '';
-      } catch (e) {}
-
-      // Show welcome/home screen instead of any note
-      try {
-        this.showWelcome();
-      } catch (e) {}
+      this.showWelcome();
 
       this.showNotification(window.i18n.t('messages.appReset'), 'success');
     } catch (err) {
@@ -2578,6 +2550,8 @@ class CapnoteApp {
       this.folders = [];
     }
   }
+
+  static DEFAULT_ACCENT = '#f59e0b';
 
   // Version of the stored data layout; backups record it so newer files are not misread
   static SCHEMA_VERSION = 2;
