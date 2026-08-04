@@ -3973,6 +3973,12 @@ class CapnoteApp {
     const isMarkdownMode = this.markdownEditor && !this.markdownEditor.classList.contains('hidden');
     const content = isMarkdownMode ? this.markdownEditor.value : this.richEditor.innerHTML;
 
+    // Saved notes get a history entry when their title or text actually changed
+    const isStored = this.notes.includes(this.currentNote);
+    if (isStored && (this.currentNote.title !== title || this.currentNote.content !== content)) {
+      this.recordHistory(this.currentNote);
+    }
+
     this.currentNote.title = title;
     this.currentNote.content = content;
     this.currentNote.attachments = this.extractUploadNames(content);
@@ -4709,6 +4715,27 @@ class CapnoteApp {
     });
   }
 
+  // Edits within a few minutes of each other (autosave) collapse into one entry
+  static HISTORY_MERGE_MS = 10 * 60 * 1000;
+  static HISTORY_LIMIT = 100;
+
+  recordHistory(note) {
+    const now = new Date();
+    note.history = Array.isArray(note.history) ? note.history : [];
+    const last = note.history[note.history.length - 1];
+    if (last && last.type === 'updated' && now - new Date(last.ts) < CapnoteApp.HISTORY_MERGE_MS) {
+      last.ts = now.toISOString();
+    } else {
+      note.history.push({ type: 'updated', ts: now.toISOString() });
+    }
+    // Keep the creation entry and the most recent updates
+    const created = note.history.filter((h) => h.type === 'created');
+    const updates = note.history
+      .filter((h) => h.type !== 'created')
+      .slice(-CapnoteApp.HISTORY_LIMIT);
+    note.history = [...created, ...updates];
+  }
+
   openNoteHistory() {
     if (!this.currentNote || this.isNoteLockedForView(this.currentNote)) return;
     const hist = this.currentNote.history || [];
@@ -4725,7 +4752,7 @@ class CapnoteApp {
     }
 
     // Render only non-created history entries (created is shown above)
-    const updates = hist.filter((h) => h.type !== 'created');
+    const updates = hist.filter((h) => h.type !== 'created').reverse();
     if (updates.length > 0) {
       const list = document.createElement('div');
       list.className = 'history-list';
@@ -4740,7 +4767,7 @@ class CapnoteApp {
     } else {
       const empty = document.createElement('div');
       empty.className = 'history-empty';
-      empty.textContent = window.i18n.t('stats.noReminder');
+      empty.textContent = window.i18n.t('viewer.noHistory');
       this.historyBody.appendChild(empty);
     }
 
