@@ -24,6 +24,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     load: () => ipcRenderer.invoke('storage:load'),
     save: (key, value) => ipcRenderer.invoke('storage:save', key, value),
   },
+  // Files in the uploads folder: read/write for backups, cleanup of files no note uses
+  uploads: {
+    read: (names) => ipcRenderer.invoke('uploads:read', names),
+    write: (files) => ipcRenderer.invoke('uploads:write', files),
+    cleanup: (keepNames) => ipcRenderer.invoke('uploads:cleanup', keepNames),
+  },
   // Save a file dropped from the OS into the app uploads folder. Pass the source path (from DataTransfer.files)
   saveDroppedFile: (srcPath) => ipcRenderer.invoke('save-dropped-file', srcPath),
   // Export a note body to PDF (main process shows the save dialog)

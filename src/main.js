@@ -625,3 +625,58 @@ ipcMain.handle('storage:save', (event, key, value) => {
   getDataStore().write(key, value);
   return true;
 });
+
+// Only plain file names inside the uploads folder are accepted from the renderer
+function safeUploadName(name) {
+  if (typeof name !== 'string') return null;
+  const base = path.basename(name);
+  return base && base === name && base !== '.' && base !== '..' ? base : null;
+}
+
+// Read upload files for a backup: { name: base64 }
+ipcMain.handle('uploads:read', (event, names) => {
+  const files = {};
+  (Array.isArray(names) ? names : []).forEach((name) => {
+    const safe = safeUploadName(name);
+    const file = safe && path.join(uploadsDir(), safe);
+    if (file && fs.existsSync(file)) files[safe] = fs.readFileSync(file).toString('base64');
+  });
+  return files;
+});
+
+// Restore upload files from a backup; existing files are left untouched
+ipcMain.handle('uploads:write', (event, files) => {
+  let written = 0;
+  fs.mkdirSync(uploadsDir(), { recursive: true });
+  Object.entries(files && typeof files === 'object' ? files : {}).forEach(([name, data]) => {
+    const safe = safeUploadName(name);
+    if (!safe || typeof data !== 'string') return;
+    const file = path.join(uploadsDir(), safe);
+    if (fs.existsSync(file)) return;
+    const buffer = Buffer.from(data, 'base64');
+    if (buffer.length > MAX_UPLOAD_BYTES) return;
+    fs.writeFileSync(file, buffer);
+    written++;
+  });
+  return written;
+});
+
+// Delete uploads that no note references. Recent files are kept because they may belong
+// to a note that has not been saved yet.
+const ORPHAN_MIN_AGE_MS = 24 * 60 * 60 * 1000;
+ipcMain.handle('uploads:cleanup', (event, keepNames) => {
+  const keep = new Set(Array.isArray(keepNames) ? keepNames : []);
+  const dir = uploadsDir();
+  if (!fs.existsSync(dir)) return 0;
+  let removed = 0;
+  fs.readdirSync(dir).forEach((name) => {
+    if (keep.has(name)) return;
+    const file = path.join(dir, name);
+    const stat = fs.statSync(file);
+    if (stat.isFile() && Date.now() - stat.mtimeMs > ORPHAN_MIN_AGE_MS) {
+      fs.rmSync(file, { force: true });
+      removed++;
+    }
+  });
+  return removed;
+});

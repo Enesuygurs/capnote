@@ -85,6 +85,7 @@ class CapnoteApp {
     this.updateStats();
     this.updateTodosCount();
     this.startReminderChecker();
+    this.cleanupUploads();
 
     // Make sure the current filter (default: 'all') is applied so
     // the corresponding nav item appears active on startup
@@ -2499,7 +2500,10 @@ class CapnoteApp {
       // Eski notlarda eksik property'leri ekle
       this.notes.forEach((note) => {
         note.id = String(note.id);
-        if (!note.isLocked) note.content = this.toPortableUploadUrls(note.content);
+        if (!note.isLocked) {
+          note.content = this.toPortableUploadUrls(note.content);
+          note.attachments = this.extractUploadNames(note.content);
+        }
         note.folderId = this.toId(note.folderId);
         if (note.isLocked === undefined) {
           note.isLocked = false;
@@ -2701,6 +2705,7 @@ class CapnoteApp {
   async migrateLegacyLockedNotes() {
     const legacy = this.notes.filter((note) => note.isLocked && typeof note.password === 'string');
     for (const note of legacy) {
+      note.attachments = this.extractUploadNames(note.content);
       note.encrypted = await window.NoteCrypto.encrypt(note.content || '', note.password);
       note.content = '';
       delete note.password;
@@ -3970,6 +3975,7 @@ class CapnoteApp {
 
     this.currentNote.title = title;
     this.currentNote.content = content;
+    this.currentNote.attachments = this.extractUploadNames(content);
     this.currentNote.isMarkdown = !!isMarkdownMode;
     const nowIso = new Date().toISOString();
     this.currentNote.updatedAt = nowIso;
@@ -5273,6 +5279,32 @@ class CapnoteApp {
       if (!found) return match;
       return `${attr}="capnote-file://upload/${encodeURIComponent(found[1])}"`;
     });
+  }
+
+  // Names of the upload files a note's HTML refers to
+  extractUploadNames(html) {
+    const names = new Set();
+    for (const match of String(html || '').matchAll(/capnote-file:\/\/upload\/([^"'\s)<>]+)/g)) {
+      try {
+        names.add(decodeURIComponent(match[1]));
+      } catch {
+        // ignore malformed references
+      }
+    }
+    return [...names];
+  }
+
+  // Delete upload files that no note uses. Locked notes keep their list of attachments in plain
+  // text; if an older locked note has no list yet its files are unknown, so nothing is deleted.
+  async cleanupUploads() {
+    if (this.notes.some((note) => note.isLocked && !Array.isArray(note.attachments))) return;
+    const keep = new Set();
+    this.notes.forEach((note) => (note.attachments || []).forEach((name) => keep.add(name)));
+    try {
+      await window.electronAPI.uploads.cleanup([...keep]);
+    } catch (err) {
+      console.warn('Upload cleanup failed:', err);
+    }
   }
 
   // Parse HTML into a detached document that never loads resources or runs handlers
@@ -6852,7 +6884,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   }
 
   // New: export ALL data (notes, folders, reminders, notifications, settings)
-  exportAllData() {
+  async exportAllData() {
     const exportData = {
       exportDate: new Date().toISOString(),
       version: CapnoteApp.SCHEMA_VERSION,
@@ -6868,6 +6900,15 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     Object.entries(this.settings).forEach(([key, value]) => {
       if (!CapnoteApp.LOCAL_ONLY_SETTINGS.includes(key)) exportData.settings[key] = value;
     });
+
+    // Embed the uploaded files the notes use so images survive a move to another machine
+    const attachmentNames = new Set();
+    exportData.notes.forEach((note) =>
+      (note.attachments || []).forEach((name) => attachmentNames.add(name))
+    );
+    if (attachmentNames.size > 0) {
+      exportData.attachments = await window.electronAPI.uploads.read([...attachmentNames]);
+    }
 
     const dataStr = JSON.stringify(exportData, null, 2);
     const blob = new Blob([dataStr], { type: 'application/json' });
@@ -7091,6 +7132,11 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
               target.todos.push({ ...todo, id: this.newId(), text, completed: !!todo.completed });
             });
           });
+        }
+
+        // Restore the files referenced by the imported notes
+        if (importOptions.notes && data.attachments && typeof data.attachments === 'object') {
+          await window.electronAPI.uploads.write(data.attachments);
         }
 
         // Encrypt locked notes coming from old backups that still carry a plain password
@@ -8226,6 +8272,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         this.showViewer();
       }
 
+      note.attachments = this.extractUploadNames(note.content);
       note.encrypted = await window.NoteCrypto.encrypt(note.content || '', password);
       note.content = '';
       note.isLocked = true;
