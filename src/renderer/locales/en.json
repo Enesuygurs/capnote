@@ -249,7 +249,8 @@
     "created": "Created:",
     "updated": "Updated",
     "createdLabel": "Created:",
-    "updatedLabel": "Updated:"
+    "updatedLabel": "Updated:",
+    "noHistory": "No edits yet"
   },
   "messages": {
     "noteSaved": "Note saved!",

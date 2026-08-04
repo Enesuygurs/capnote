@@ -249,7 +249,8 @@
     "created": "Oluşturuldu:",
     "updated": "Güncellendi",
     "createdLabel": "Oluşturulma:",
-    "updatedLabel": "Güncelleme:"
+    "updatedLabel": "Güncelleme:",
+    "noHistory": "Henüz düzenleme yok"
   },
   "messages": {
     "noteSaved": "Not kaydedildi!",
