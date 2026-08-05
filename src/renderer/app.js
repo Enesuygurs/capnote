@@ -2503,6 +2503,9 @@ class CapnoteApp {
         if (!note.isLocked) {
           note.content = this.toPortableUploadUrls(note.content);
           note.attachments = this.extractUploadNames(note.content);
+          const counts = this.countWordsAndCharsFromHtml(note.content || '');
+          note.wordCount = counts.words;
+          note.charCount = counts.chars;
         }
         note.folderId = this.toId(note.folderId);
         if (note.isLocked === undefined) {
@@ -2761,6 +2764,11 @@ class CapnoteApp {
             : [],
         dismissed: r.dismissed || false,
       }));
+      // Older reminders stored the raw datetime-local value; store ISO timestamps only
+      this.reminders.forEach((r) => {
+        const date = new Date(r.datetime);
+        if (!isNaN(date)) r.datetime = date.toISOString();
+      });
       // Drop dismissed reminders only; overdue ones are reported by checkDueReminders
       this.reminders = this.reminders.filter((r) => !r.dismissed);
       await this.saveReminders(); // Clean up storage
@@ -3423,7 +3431,7 @@ class CapnoteApp {
       .map(
         (r) => `
         <div class="reminder-card" data-reminder-id="${r.id}">
-          <div class="reminder-note-title">${this.escapeHtml(r.noteTitle)}</div>
+          <div class="reminder-note-title">${this.escapeHtml(this.titleForNote(r.noteId, r.noteTitle))}</div>
           <div class="reminder-datetime">
             <i class="fas fa-clock"></i>
             ${new Date(r.datetime).toLocaleString(this.getLocale(), {
@@ -3491,7 +3499,7 @@ class CapnoteApp {
       id: this.newId(),
       noteId: this.currentNote.id,
       noteTitle: this.currentNote.title || window.i18n.t('messages.untitledNote'),
-      datetime: datetime,
+      datetime: reminderDate.toISOString(),
       recurrence:
         this.reminderRecurrence && this.reminderRecurrence.value
           ? this.reminderRecurrence.value
@@ -3624,14 +3632,13 @@ class CapnoteApp {
       const locale = this.getLocale();
       const when = new Date(reminder.datetime).toLocaleString(locale);
       const body = `${window.i18n.t(missed ? 'messages.reminderMissed' : 'messages.reminderDue')} ${when}`;
+      const noteTitle = this.titleForNote(reminder.noteId, reminder.noteTitle);
 
       // Add to notifications list and show a toast that references the notification id
-      const nid = this.addNotification(reminder.noteId, reminder.noteTitle, body);
-      this.showNotification(
-        `${window.i18n.t('messages.reminderPrefix')} ${reminder.noteTitle}`,
-        'info',
-        { notificationId: nid }
-      );
+      const nid = this.addNotification(reminder.noteId, noteTitle, body);
+      this.showNotification(`${window.i18n.t('messages.reminderPrefix')} ${noteTitle}`, 'info', {
+        notificationId: nid,
+      });
 
       // Also trigger a native OS notification via the preload bridge if the user enabled it
       try {
@@ -3644,7 +3651,7 @@ class CapnoteApp {
         ) {
           window.electronAPI
             .showNativeNotification({
-              title: `${window.i18n.t('messages.reminderNotification')} ${reminder.noteTitle}`,
+              title: `${window.i18n.t('messages.reminderNotification')} ${noteTitle}`,
               body,
               silent: false,
               notificationId: nid,
@@ -3697,6 +3704,13 @@ class CapnoteApp {
     }
   }
 
+  // Reminders and notifications show the note's current title; the stored copy is a fallback
+  // for notes that no longer exist
+  titleForNote(noteId, storedTitle) {
+    const note = noteId ? this.notes.find((n) => n.id === noteId) : null;
+    return note ? note.title : storedTitle;
+  }
+
   addNotification(noteId, noteTitle, message) {
     const notification = {
       id: this.newId(),
@@ -3729,7 +3743,7 @@ class CapnoteApp {
         (n) => `
       <div class="notification-card ${n.read ? '' : 'unread'}" data-notification-id="${n.id}">
         <div class="notification-header">
-          <div class="notification-note-title">${this.escapeHtml(n.noteTitle)}</div>
+          <div class="notification-note-title">${this.escapeHtml(this.titleForNote(n.noteId, n.noteTitle))}</div>
           <div class="notification-time">
             <i class="fas fa-clock"></i>
             ${new Date(n.time).toLocaleString(this.getLocale(), {
