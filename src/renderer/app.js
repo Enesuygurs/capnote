@@ -5000,9 +5000,31 @@ class CapnoteApp {
 
   // Normalize strings for search (lowercase, trim)
   normalizeForSearch(text) {
+    // Locale-aware so Turkish I/İ fold correctly
     return String(text || '')
-      .toLowerCase()
+      .toLocaleLowerCase(this.getLocale())
       .trim();
+  }
+
+  // Visible text of a note (no HTML markup), cached until the content changes
+  searchableText(note) {
+    if (!this.searchTextCache) this.searchTextCache = new WeakMap();
+    const cached = this.searchTextCache.get(note);
+    if (cached && cached.content === note.content) return cached.text;
+    const raw = note.isMarkdown ? note.content : this.getPlainText(note.content);
+    const text = this.normalizeForSearch(raw);
+    this.searchTextCache.set(note, { content: note.content, text });
+    return text;
+  }
+
+  // Words describing a mood/weather emoji: its label in the UI language plus English keywords
+  emojiSearchWords(emoji) {
+    const button = [...this.moodBtns, ...this.weatherBtns].find(
+      (btn) => (btn.dataset.mood || btn.dataset.weather) === emoji
+    );
+    if (!this._emojiKeywordMap) this._emojiKeywordMap = this._buildEnglishEmojiKeywordMap();
+    const words = [button ? button.title : '', ...(this._emojiKeywordMap[emoji] || [])];
+    return words.map((word) => this.normalizeForSearch(word)).filter(Boolean);
   }
 
   // Map emoji to localized keywords to support text search for moods/weather
@@ -5085,34 +5107,20 @@ class CapnoteApp {
 
   // Decide if a note matches searchTerm, including mood/weather keyword mapping
   noteMatchesSearch(note, searchTerm) {
-    const title = this.normalizeForSearch(note.title || '');
-    const content = this.normalizeForSearch(note.content || '');
-    const tags = (note.tags || []).map((t) => this.normalizeForSearch(t));
+    if (this.normalizeForSearch(note.title).includes(searchTerm)) return true;
+    if (this.searchableText(note).includes(searchTerm)) return true;
+    if ((note.tags || []).some((tag) => this.normalizeForSearch(tag).includes(searchTerm)))
+      return true;
 
-    if (title.includes(searchTerm) || content.includes(searchTerm)) return true;
-    if (tags.some((t) => t.includes(searchTerm))) return true;
-
-    // mood and weather exact emoji match
-    const mood = note.mood ? String(note.mood) : '';
-    const weather = note.weather ? String(note.weather) : '';
-    if (mood && mood.includes(searchTerm)) return true;
-    if (weather && weather.includes(searchTerm)) return true;
-
-    // check emoji keyword map (english-only) for mood/weather matches
-    if (!this._emojiKeywordMap) this._emojiKeywordMap = this._buildEnglishEmojiKeywordMap();
-    const ekm = this._emojiKeywordMap || {};
-    for (const [emoji, keywords] of Object.entries(ekm)) {
-      if (!Array.isArray(keywords)) continue;
-      for (let i = 0; i < keywords.length; i++) {
-        const kw = this.normalizeForSearch(String(keywords[i] || ''));
-        if (!kw) continue;
-        if (kw.indexOf(searchTerm) !== -1 || searchTerm.indexOf(kw) !== -1) {
-          if (note.mood === emoji || note.weather === emoji) return true;
-        }
-      }
-    }
-
-    return false;
+    // Mood and weather match by the emoji itself or a word that starts with the search term
+    return [note.mood, note.weather]
+      .filter(Boolean)
+      .some(
+        (emoji) =>
+          emoji.includes(searchTerm) ||
+          (searchTerm.length >= 2 &&
+            this.emojiSearchWords(emoji).some((word) => word.startsWith(searchTerm)))
+      );
   }
 
   getSortedNotes(notes) {
@@ -8213,12 +8221,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     const rawSearchLocal = this.searchInput ? String(this.searchInput.value) : '';
     const searchTermLocal = this.normalizeForSearch(rawSearchLocal);
     if (searchTermLocal) {
-      folderNotes = folderNotes.filter(
-        (note) =>
-          this.normalizeForSearch(note.title || '').includes(searchTermLocal) ||
-          this.normalizeForSearch(note.content || '').includes(searchTermLocal) ||
-          (note.tags || []).some((tag) => this.normalizeForSearch(tag).includes(searchTermLocal))
-      );
+      folderNotes = folderNotes.filter((note) => this.noteMatchesSearch(note, searchTermLocal));
     }
 
     const sortedFolderNotes = this.getSortedNotes(folderNotes);
