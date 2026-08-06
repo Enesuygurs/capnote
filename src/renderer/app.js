@@ -6311,25 +6311,11 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   }
 
   syncCheckboxStates() {
-    // Update HTML attributes to match current checked states
-    const checkboxes = this.richEditor.querySelectorAll('input[type="checkbox"]');
-
-    checkboxes.forEach((checkbox) => {
-      // Create a new checkbox with correct attributes
-      let outerHTML = checkbox.outerHTML;
-
-      if (checkbox.checked) {
-        // Add checked attribute if not present
-        if (!outerHTML.includes('checked=')) {
-          outerHTML = outerHTML.replace('<input ', '<input checked="checked" ');
-        }
-      } else {
-        // Remove checked attribute if present
-        outerHTML = outerHTML.replace(/\s*checked="checked"/g, '').replace(/\s*checked/g, '');
-      }
-
-      // Replace the checkbox in the DOM
-      checkbox.outerHTML = outerHTML;
+    // Mirror each live checked state into the attribute so it is part of the saved HTML.
+    // Toggling the attribute keeps the elements (and the caret) in place, unlike rebuilding them.
+    this.richEditor.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
+      if (checkbox.checked) checkbox.setAttribute('checked', 'checked');
+      else checkbox.removeAttribute('checked');
     });
   }
 
