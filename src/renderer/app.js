@@ -1404,6 +1404,13 @@ class CapnoteApp {
 
       // Re-enable smooth scrolling after resize
       document.documentElement.style.scrollBehavior = '';
+
+      // Catch up on list updates that were skipped while resizing (e.g. a reminder fired)
+      if (this.renderPendingAfterResize) {
+        this.renderPendingAfterResize = false;
+        this.updateNotesList();
+        this.updateFoldersList();
+      }
     };
 
     // Use passive event listener for better performance
@@ -4788,12 +4795,20 @@ class CapnoteApp {
     this.showModal(this.noteHistoryModal);
   }
 
+  // Note option menus are moved to <body> when opened; drop them when their lists are rebuilt
+  // (an item re-attaches its menu the next time it is opened)
+  discardDetachedMenus() {
+    document.querySelectorAll('body > .note-options-menu').forEach((menu) => menu.remove());
+  }
+
   updateNotesList() {
-    // Skip rendering during window resize for better performance
+    // Skip rendering during window resize for better performance; redone when resizing ends
     if (this.isResizing) {
+      this.renderPendingAfterResize = true;
       return;
     }
 
+    this.discardDetachedMenus();
     this.notesList.innerHTML = '';
 
     const filteredNotes = this.getFilteredNotes();
@@ -4885,10 +4900,13 @@ class CapnoteApp {
   }
 
   updateFolderNotes() {
-    // Skip rendering during window resize for better performance
+    // Skip rendering during window resize for better performance; redone when resizing ends
     if (this.isResizing) {
+      this.renderPendingAfterResize = true;
       return;
     }
+
+    this.discardDetachedMenus();
 
     // Update custom folder notes
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
@@ -7532,8 +7550,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
   updateFoldersList() {
     if (!this.foldersList) return;
 
-    // Skip rendering during window resize for better performance
+    // Skip rendering during window resize for better performance; redone when resizing ends
     if (this.isResizing) {
+      this.renderPendingAfterResize = true;
       return;
     }
 
@@ -8189,6 +8208,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     );
     if (!folderContainer) return;
 
+    this.discardDetachedMenus();
     folderContainer.innerHTML = '';
     let folderNotes = this.notes.filter((note) => note.folderId === folderId);
 
