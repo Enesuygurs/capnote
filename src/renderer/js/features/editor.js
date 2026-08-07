@@ -1,5 +1,7 @@
 // Editor state: loading a note, change tracking, autosave, mood/weather and tags
 
+import { i18n } from '../i18n.js';
+
 export class EditorFeature {
   clearEditor() {
     this.noteTitle.value = '';
@@ -68,21 +70,21 @@ export class EditorFeature {
     const chars = text.length;
 
     if (this.wordCount) {
-      this.wordCount.textContent = `${words} ${window.i18n.t('stats.words')}`;
+      this.wordCount.textContent = `${words} ${i18n.t('stats.words')}`;
     }
     if (this.charCount) {
-      this.charCount.textContent = `${chars} ${window.i18n.t('stats.characters')}`;
+      this.charCount.textContent = `${chars} ${i18n.t('stats.characters')}`;
     }
 
     // Editor-side reading time estimate (baseline 200 WPM)
     const WPM = 200;
     const seconds = words ? Math.ceil((words / WPM) * 60) : 0;
     if (this.editorReadingTime) {
-      if (!seconds) this.editorReadingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
+      if (!seconds) this.editorReadingTime.textContent = `0 ${i18n.t('stats.readingTime')}`;
       else if (seconds < 60)
-        this.editorReadingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
+        this.editorReadingTime.textContent = `~${seconds} ${i18n.t('stats.readingTimeSeconds')}`;
       else
-        this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} ${window.i18n.t('stats.readingTime')}`;
+        this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} ${i18n.t('stats.readingTime')}`;
     }
 
     if (this.currentNote) {
@@ -343,7 +345,7 @@ export class EditorFeature {
 
     // Maksimum 5 etiket kontrolü
     if (this.tags.length >= 5) {
-      this.showNotification(window.i18n.t('messages.maxTags'), 'warning');
+      this.showNotification(i18n.t('messages.maxTags'), 'warning');
       return;
     }
 

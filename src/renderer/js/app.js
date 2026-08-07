@@ -22,6 +22,7 @@ import { UiFeature } from './features/ui.js';
 import { ExportFeature } from './features/export.js';
 import { BackupFeature } from './features/backup.js';
 import { AttachmentsFeature } from './features/attachments.js';
+import { i18n } from './i18n.js';
 
 export class CapnoteApp {
   constructor() {
@@ -60,12 +61,12 @@ export class CapnoteApp {
     }
 
     // Wait for i18n to be ready (resolves even when translations failed to load)
-    if (window.i18n && window.i18n.ready) {
-      await window.i18n.ready;
+    if (i18n && i18n.ready) {
+      await i18n.ready;
     }
 
     await this.initStorage();
-    window.i18n.setLanguage(this.settings.language);
+    i18n.setLanguage(this.settings.language);
     await this.loadNotes();
     await this.loadReminders();
     await this.loadNotifications();
@@ -75,7 +76,7 @@ export class CapnoteApp {
     this.setupSettingsEventListeners();
     this.setupResizeOptimization();
     this.loadSettings();
-    window.electronAPI?.setLanguage?.(window.i18n.getLanguage());
+    window.electronAPI?.setLanguage?.(i18n.getLanguage());
     this.loadSidebarPreference();
     this.initializeHamburgerIcon();
     this.updateUI();
@@ -358,11 +359,11 @@ export class CapnoteApp {
     if (this.languageSelect) {
       this.languageSelect.addEventListener('change', (e) => {
         const lang = e.target.value;
-        if (window.i18n) {
-          window.i18n.setLanguage(lang);
+        if (i18n) {
+          i18n.setLanguage(lang);
           this.setSetting('language', lang);
           window.electronAPI?.setLanguage?.(lang);
-          this.showNotification(window.i18n.t('messages.languageChanged'), 'success');
+          this.showNotification(i18n.t('messages.languageChanged'), 'success');
           // Update dynamic content that may not have data-i18n attributes
           this.updateDynamicTranslations();
         }
@@ -398,8 +399,8 @@ export class CapnoteApp {
       this.setSetting('nativeNotifications', enabled);
       this.showNotification(
         enabled
-          ? window.i18n.t('messages.systemNotificationsEnabled')
-          : window.i18n.t('messages.systemNotificationsDisabled'),
+          ? i18n.t('messages.systemNotificationsEnabled')
+          : i18n.t('messages.systemNotificationsDisabled'),
         'success'
       );
     });
@@ -413,8 +414,8 @@ export class CapnoteApp {
             throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
           this.showNotification(
             enabled
-              ? window.i18n.t('messages.launchOnStartupEnabled')
-              : window.i18n.t('messages.launchOnStartupDisabled'),
+              ? i18n.t('messages.launchOnStartupEnabled')
+              : i18n.t('messages.launchOnStartupDisabled'),
             'success'
           );
         }
@@ -423,7 +424,7 @@ export class CapnoteApp {
         // revert checkbox
         if (this.startAtLoginToggle)
           this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
-        this.showNotification(window.i18n.t('messages.launchOnStartupError'), 'error');
+        this.showNotification(i18n.t('messages.launchOnStartupError'), 'error');
       }
     });
     // Close to tray toggle: only wire on Windows (hide on macOS/Linux)
@@ -443,8 +444,8 @@ export class CapnoteApp {
                 throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
               this.showNotification(
                 enabled
-                  ? window.i18n.t('messages.minimizeToTrayEnabled')
-                  : window.i18n.t('messages.minimizeToTrayDisabled'),
+                  ? i18n.t('messages.minimizeToTrayEnabled')
+                  : i18n.t('messages.minimizeToTrayDisabled'),
                 'success'
               );
             }
@@ -452,7 +453,7 @@ export class CapnoteApp {
             console.warn('setCloseToTray failed:', err);
             if (this.closeToTrayToggle)
               this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
-            this.showNotification(window.i18n.t('messages.minimizeToTrayError'), 'error');
+            this.showNotification(i18n.t('messages.minimizeToTrayError'), 'error');
           }
         });
       } else {
@@ -1091,7 +1092,7 @@ export class CapnoteApp {
 
   // Date/number locale matching the UI language
   getLocale() {
-    return window.i18n && window.i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
+    return i18n && i18n.currentLanguage === 'en' ? 'en-US' : 'tr-TR';
   }
 
   isEditorOpen() {

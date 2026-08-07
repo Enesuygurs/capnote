@@ -1,5 +1,7 @@
 // Reminders: scheduling, recurrence and firing
 
+import { i18n } from '../i18n.js';
+
 export class RemindersFeature {
   _computeNextRecurrence(datetimeIso, recurrence) {
     try {
@@ -71,11 +73,11 @@ export class RemindersFeature {
   _recurrenceLabel(code) {
     switch (code) {
       case 'daily':
-        return window.i18n.t('reminder.daily');
+        return i18n.t('reminder.daily');
       case 'weekly':
-        return window.i18n.t('reminder.weekly');
+        return i18n.t('reminder.weekly');
       case 'monthly':
-        return window.i18n.t('reminder.monthly');
+        return i18n.t('reminder.monthly');
       default:
         return '';
     }
@@ -85,7 +87,7 @@ export class RemindersFeature {
     const keys = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     const idx = parseInt(n);
     if (isNaN(idx) || idx < 0 || idx > 6) return '';
-    return window.i18n.t(`reminder.${keys[idx]}`);
+    return i18n.t(`reminder.${keys[idx]}`);
   }
 
   updateRemindersView() {
@@ -96,7 +98,7 @@ export class RemindersFeature {
     );
 
     if (activeReminders.length === 0) {
-      this.remindersList.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">${window.i18n.t('messages.noActiveReminders')}</div>`;
+      this.remindersList.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">${i18n.t('messages.noActiveReminders')}</div>`;
       return;
     }
 
@@ -119,10 +121,10 @@ export class RemindersFeature {
           </div>
           <div class="reminder-actions">
             <button class="reminder-action-btn view-note-btn" data-note-id="${r.noteId}">
-              <i class="fas fa-eye"></i> ${window.i18n.t('messages.viewNote')}
+              <i class="fas fa-eye"></i> ${i18n.t('messages.viewNote')}
             </button>
             <button class="reminder-action-btn dismiss-btn" data-reminder-id="${r.id}">
-              <i class="fas fa-check"></i> ${window.i18n.t('messages.completed')}
+              <i class="fas fa-check"></i> ${i18n.t('messages.completed')}
             </button>
           </div>
         </div>
@@ -149,14 +151,14 @@ export class RemindersFeature {
 
   async addReminder() {
     if (!this.currentNote || !this.reminderDatetime?.value) {
-      this.showNotification(window.i18n.t('messages.selectDateTime'), 'error');
+      this.showNotification(i18n.t('messages.selectDateTime'), 'error');
       return;
     }
 
     // Check if note is saved (exists in notes array)
     const notExists = this.notes.some((n) => n.id === this.currentNote.id);
     if (!notExists) {
-      this.showNotification(window.i18n.t('messages.saveNoteFirst'), 'warning');
+      this.showNotification(i18n.t('messages.saveNoteFirst'), 'warning');
       return;
     }
 
@@ -165,14 +167,14 @@ export class RemindersFeature {
     const now = new Date();
 
     if (reminderDate <= now) {
-      this.showNotification(window.i18n.t('messages.futureDateRequired'), 'error');
+      this.showNotification(i18n.t('messages.futureDateRequired'), 'error');
       return;
     }
 
     const reminder = {
       id: this.newId(),
       noteId: this.currentNote.id,
-      noteTitle: this.currentNote.title || window.i18n.t('messages.untitledNote'),
+      noteTitle: this.currentNote.title || i18n.t('messages.untitledNote'),
       datetime: reminderDate.toISOString(),
       recurrence:
         this.reminderRecurrence && this.reminderRecurrence.value
@@ -209,7 +211,7 @@ export class RemindersFeature {
     this.reminderDatetime.value = '';
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
-    this.showNotification(window.i18n.t('messages.reminderAdded'), 'success');
+    this.showNotification(i18n.t('messages.reminderAdded'), 'success');
   }
 
   async dismissReminder(reminderId) {
@@ -220,7 +222,7 @@ export class RemindersFeature {
       this.updateRemindersView();
       this.updateNoteRemindersDisplay();
       this.updateActiveRemindersCount();
-      this.showNotification(window.i18n.t('messages.reminderCompleted'), 'success');
+      this.showNotification(i18n.t('messages.reminderCompleted'), 'success');
     }
   }
 
@@ -232,7 +234,7 @@ export class RemindersFeature {
     );
 
     if (noteReminders.length === 0) {
-      this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${window.i18n.t('stats.noReminder')}</div>`;
+      this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${i18n.t('stats.noReminder')}</div>`;
       return;
     }
 
@@ -251,7 +253,7 @@ export class RemindersFeature {
               })}
               ${r.recurrence && r.recurrence !== 'none' ? ` <span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? ': ' + r.recurrenceDays.map((d) => this._weekdayShort(d)).join(', ') : ''}</span>` : ''}
           </div>
-          <button class="note-reminder-remove" data-reminder-id="${r.id}" title="${window.i18n.t('buttons.delete')}">
+          <button class="note-reminder-remove" data-reminder-id="${r.id}" title="${i18n.t('buttons.delete')}">
             <i class="fas fa-times"></i>
           </button>
         </div>
@@ -273,7 +275,7 @@ export class RemindersFeature {
     await this.saveReminders();
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
-    this.showNotification(window.i18n.t('messages.reminderDeleted'), 'info');
+    this.showNotification(i18n.t('messages.reminderDeleted'), 'info');
   }
 
   updateActiveRemindersCount() {
@@ -305,12 +307,12 @@ export class RemindersFeature {
       const missed = now - new Date(reminder.datetime) > 2 * 60000;
       const locale = this.getLocale();
       const when = new Date(reminder.datetime).toLocaleString(locale);
-      const body = `${window.i18n.t(missed ? 'messages.reminderMissed' : 'messages.reminderDue')} ${when}`;
+      const body = `${i18n.t(missed ? 'messages.reminderMissed' : 'messages.reminderDue')} ${when}`;
       const noteTitle = this.titleForNote(reminder.noteId, reminder.noteTitle);
 
       // Add to notifications list and show a toast that references the notification id
       const nid = this.addNotification(reminder.noteId, noteTitle, body);
-      this.showNotification(`${window.i18n.t('messages.reminderPrefix')} ${noteTitle}`, 'info', {
+      this.showNotification(`${i18n.t('messages.reminderPrefix')} ${noteTitle}`, 'info', {
         notificationId: nid,
       });
 
@@ -325,7 +327,7 @@ export class RemindersFeature {
         ) {
           window.electronAPI
             .showNativeNotification({
-              title: `${window.i18n.t('messages.reminderNotification')} ${noteTitle}`,
+              title: `${i18n.t('messages.reminderNotification')} ${noteTitle}`,
               body,
               silent: false,
               notificationId: nid,

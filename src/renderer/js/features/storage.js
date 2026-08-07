@@ -1,6 +1,7 @@
 // Loading and saving collections through the main-process file storage
 
 import { DEFAULT_SETTINGS, LEGACY_STORAGE_KEYS } from '../constants.js';
+import { i18n } from '../i18n.js';
 
 export class StorageFeature {
   async initStorage() {
@@ -36,7 +37,7 @@ export class StorageFeature {
       await window.electronAPI.storage.save(key, value);
     } catch (error) {
       console.error(`Saving ${key} failed:`, error);
-      if (errorKey && this.notification) this.showNotification(window.i18n.t(errorKey), 'error');
+      if (errorKey && this.notification) this.showNotification(i18n.t(errorKey), 'error');
     }
   }
 

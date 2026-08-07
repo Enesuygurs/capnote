@@ -1,12 +1,15 @@
 // Locked notes: encryption, unlocking and the password dialog
 
+import { i18n } from '../i18n.js';
+import { encrypt, decrypt } from '../note-crypto.js';
+
 export class LockFeature {
   // Older versions stored the lock password in plain text next to plaintext content
   async migrateLegacyLockedNotes() {
     const legacy = this.notes.filter((note) => note.isLocked && typeof note.password === 'string');
     for (const note of legacy) {
       note.attachments = this.extractUploadNames(note.content);
-      note.encrypted = await window.NoteCrypto.encrypt(note.content || '', note.password);
+      note.encrypted = await encrypt(note.content || '', note.password);
       note.content = '';
       delete note.password;
     }
@@ -19,7 +22,7 @@ export class LockFeature {
     if (!note.isLocked || !password) return;
     const request = {};
     this.sealRequests.set(note, request);
-    const encrypted = await window.NoteCrypto.encrypt(note.content || '', password);
+    const encrypted = await encrypt(note.content || '', password);
     if (this.sealRequests.get(note) !== request) return;
     note.encrypted = encrypted;
     this.saveNotes();
@@ -29,7 +32,7 @@ export class LockFeature {
   async decryptNote(note, password) {
     if (!note.encrypted) return null;
     try {
-      return this.toPortableUploadUrls(await window.NoteCrypto.decrypt(note.encrypted, password));
+      return this.toPortableUploadUrls(await decrypt(note.encrypted, password));
     } catch {
       return null;
     }
@@ -55,7 +58,7 @@ export class LockFeature {
   }
 
   async unlockNoteForViewing(note) {
-    const password = await this.showPasswordModal(window.i18n.t('messages.noteIsLocked'));
+    const password = await this.showPasswordModal(i18n.t('messages.noteIsLocked'));
     const plain = password === null ? null : await this.decryptNote(note, password);
     if (plain !== null) {
       // Temporarily unlock the note for viewing (session only)
@@ -78,12 +81,12 @@ export class LockFeature {
       this.displayNote(note);
       this.setActiveNoteInList(this.currentNote.id);
 
-      this.showNotification(window.i18n.t('messages.noteTemporarilyUnlocked'), 'info');
+      this.showNotification(i18n.t('messages.noteTemporarilyUnlocked'), 'info');
       return true;
     }
     if (password !== null) {
       // null means cancelled
-      this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
+      this.showNotification(i18n.t('messages.wrongPassword'), 'error');
     }
     return false;
   }
@@ -94,11 +97,11 @@ export class LockFeature {
 
     if (note.isLocked) {
       // Unlock note - ask for password
-      const password = await this.showPasswordModal(window.i18n.t('messages.enterPasswordToOpen'));
+      const password = await this.showPasswordModal(i18n.t('messages.enterPasswordToOpen'));
       if (password === null) return;
       const plain = await this.decryptNote(note, password);
       if (plain === null) {
-        this.showNotification(window.i18n.t('messages.wrongPassword'), 'error');
+        this.showNotification(i18n.t('messages.wrongPassword'), 'error');
         return;
       }
 
@@ -106,10 +109,10 @@ export class LockFeature {
       note.isLocked = false;
       delete note.encrypted;
       this.unlockedNotes.delete(String(note.id));
-      this.showNotification(window.i18n.t('messages.noteUnlocked'), 'success');
+      this.showNotification(i18n.t('messages.noteUnlocked'), 'success');
     } else {
       // Lock note - ask for password
-      const password = await this.showPasswordModal(window.i18n.t('messages.setPasswordForNote'));
+      const password = await this.showPasswordModal(i18n.t('messages.setPasswordForNote'));
       if (!password) return;
 
       // Persist pending editor changes of this note before its content is encrypted
@@ -119,11 +122,11 @@ export class LockFeature {
       }
 
       note.attachments = this.extractUploadNames(note.content);
-      note.encrypted = await window.NoteCrypto.encrypt(note.content || '', password);
+      note.encrypted = await encrypt(note.content || '', password);
       note.content = '';
       note.isLocked = true;
       this.unlockedNotes.delete(String(note.id));
-      this.showNotification(window.i18n.t('messages.noteLocked'), 'success');
+      this.showNotification(i18n.t('messages.noteLocked'), 'success');
     }
 
     // Refresh the viewer if the toggled note is on screen
@@ -186,7 +189,7 @@ export class LockFeature {
   handlePasswordConfirm() {
     const password = this.passwordInput.value;
     if (password === '') {
-      this.showNotification(window.i18n.t('messages.enterPassword'), 'warning');
+      this.showNotification(i18n.t('messages.enterPassword'), 'warning');
       return;
     }
 

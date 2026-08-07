@@ -1,5 +1,7 @@
 // Folders: create, rename, color, reorder, delete and moving notes between them
 
+import { i18n } from '../i18n.js';
+
 export class FoldersFeature {
   showFolderModal() {
     this._renamingFolderId = null;
@@ -7,11 +9,11 @@ export class FoldersFeature {
     const titleEl = this.folderModal.querySelector('.modal-title h3');
     const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
-    if (titleEl) titleEl.textContent = window.i18n.t('messages.newFolder');
+    if (titleEl) titleEl.textContent = i18n.t('messages.newFolder');
     if (iconEl) {
       iconEl.className = 'fas fa-folder-plus';
     }
-    if (createBtn) createBtn.textContent = window.i18n.t('buttons.create');
+    if (createBtn) createBtn.textContent = i18n.t('buttons.create');
     this.folderNameInput.value = '';
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
@@ -32,11 +34,11 @@ export class FoldersFeature {
     const titleEl = this.folderModal.querySelector('.modal-title h3');
     const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
-    if (titleEl) titleEl.textContent = window.i18n.t('messages.renameFolder');
+    if (titleEl) titleEl.textContent = i18n.t('messages.renameFolder');
     if (iconEl) {
       iconEl.className = 'fas fa-edit';
     }
-    if (createBtn) createBtn.textContent = window.i18n.t('buttons.save');
+    if (createBtn) createBtn.textContent = i18n.t('buttons.save');
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
   }
@@ -45,18 +47,18 @@ export class FoldersFeature {
     const name = this.folderNameInput.value.trim();
 
     if (!name) {
-      this.showNotification(window.i18n.t('messages.folderNameEmpty'), 'warning');
+      this.showNotification(i18n.t('messages.folderNameEmpty'), 'warning');
       return;
     }
 
     if (name.length > 50) {
-      this.showNotification(window.i18n.t('messages.folderNameTooLong'), 'warning');
+      this.showNotification(i18n.t('messages.folderNameTooLong'), 'warning');
       return;
     }
 
     // Check if folder name exists
     if (this.folders.some((folder) => folder.name.toLowerCase() === name.toLowerCase())) {
-      this.showNotification(window.i18n.t('messages.folderNameExists'), 'warning');
+      this.showNotification(i18n.t('messages.folderNameExists'), 'warning');
       return;
     }
 
@@ -68,7 +70,7 @@ export class FoldersFeature {
         await this.saveFolders();
         this.updateFoldersList();
         this.hideFolderModal();
-        this.showNotification(window.i18n.t('messages.folderRenamed', { name }), 'success');
+        this.showNotification(i18n.t('messages.folderRenamed', { name }), 'success');
       }
       this._renamingFolderId = null;
       return;
@@ -86,7 +88,7 @@ export class FoldersFeature {
     await this.saveFolders();
     this.updateFoldersList();
     this.hideFolderModal();
-    this.showNotification(window.i18n.t('messages.folderCreated', { name }), 'success');
+    this.showNotification(i18n.t('messages.folderCreated', { name }), 'success');
     if (this.currentFilter === 'favorites') this.updateNotesList();
   }
 
@@ -479,36 +481,36 @@ export class FoldersFeature {
       div.classList.add('active');
     }
 
-    const title = note.title || window.i18n.t('messages.untitledNote');
+    const title = note.title || i18n.t('messages.untitledNote');
     const truncatedTitle = title.length > 30 ? title.substring(0, 30) + '...' : title;
 
     div.innerHTML = `
             <i class="fas fa-file-alt nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(truncatedTitle)}</span>
             <div class="note-options-container">
-                <button class="more-options-btn" title="${window.i18n.t('titles.options')}">
+                <button class="more-options-btn" title="${i18n.t('titles.options')}">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <div class="note-options-menu hidden" data-note-id="${note.id}">
                     <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
                             data-note-id="${note.id}">
                         <i class="fas fa-heart"></i>
-                        <span>${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}</span>
+                        <span>${note.isFavorite ? i18n.t('messages.removeFromFavorites') : i18n.t('messages.addToFavorites')}</span>
                     </button>
                     <button class="note-action-menu-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
                             data-note-id="${note.id}">
                         <i class="fas fa-thumbtack"></i>
-                        <span>${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}</span>
+                        <span>${note.isPinned ? i18n.t('messages.unpinNote') : i18n.t('messages.pinNote')}</span>
                     </button>
                     <button class="note-action-menu-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
                             data-note-id="${note.id}">
                         <i class="fas fa-lock"></i>
-                        <span>${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}</span>
+                        <span>${note.isLocked ? i18n.t('messages.unlockNote') : i18n.t('messages.lockNote')}</span>
                     </button>
                     <button class="note-action-menu-btn delete-btn" 
                             data-note-id="${note.id}">
                         <i class="fas fa-trash"></i>
-                        <span>${window.i18n.t('messages.deleteNote')}</span>
+                        <span>${i18n.t('messages.deleteNote')}</span>
                     </button>
                 </div>
             </div>
@@ -694,12 +696,11 @@ export class FoldersFeature {
     }
 
     const folderName = !folderId
-      ? window.i18n.t('nav.notes')
-      : this.folders.find((f) => f.id === folderId)?.name ||
-        window.i18n.t('messages.unknownFolder');
-    const noteTitle = note.title || window.i18n.t('messages.untitledNote');
+      ? i18n.t('nav.notes')
+      : this.folders.find((f) => f.id === folderId)?.name || i18n.t('messages.unknownFolder');
+    const noteTitle = note.title || i18n.t('messages.untitledNote');
     this.showNotification(
-      window.i18n.t('messages.noteMovedToFolder', { title: noteTitle, folder: folderName }),
+      i18n.t('messages.noteMovedToFolder', { title: noteTitle, folder: folderName }),
       'success'
     );
   }
@@ -782,8 +783,8 @@ export class FoldersFeature {
 
     const message =
       noteCount > 0
-        ? `"${folder.name}" ${window.i18n.t('messages.confirmDeleteFolderWithNotes').replace('{count}', noteCount)}`
-        : `"${folder.name}" ${window.i18n.t('messages.confirmDeleteFolder')}`;
+        ? `"${folder.name}" ${i18n.t('messages.confirmDeleteFolderWithNotes').replace('{count}', noteCount)}`
+        : `"${folder.name}" ${i18n.t('messages.confirmDeleteFolder')}`;
 
     this.confirmMessage.textContent = message;
 
@@ -819,10 +820,7 @@ export class FoldersFeature {
         this.showWelcome();
       }
 
-      this.showNotification(
-        window.i18n.t('messages.folderDeleted', { name: folder.name }),
-        'success'
-      );
+      this.showNotification(i18n.t('messages.folderDeleted', { name: folder.name }), 'success');
     };
 
     this.hideContextMenu();
@@ -850,7 +848,7 @@ export class FoldersFeature {
     this.saveFolders();
     // Update only the folder header icon in the DOM to avoid re-rendering the entire notes list
     this.updateFolderColorInDOM(folderId, color);
-    this.showNotification(window.i18n.t('messages.folderColorUpdated'), 'success');
+    this.showNotification(i18n.t('messages.folderColorUpdated'), 'success');
     this.colorModalFolderId = null;
   }
 

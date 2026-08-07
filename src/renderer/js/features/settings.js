@@ -1,6 +1,7 @@
 // Settings model, settings dialog, theme/accent and data reset actions
 
 import { DEFAULT_ACCENT, DEFAULT_SETTINGS, LEGACY_SETTING_KEYS } from '../constants.js';
+import { i18n } from '../i18n.js';
 
 export class SettingsFeature {
   readLegacySettings() {
@@ -132,7 +133,7 @@ export class SettingsFeature {
         const v = parseInt(e.target.value, 10);
         if (!isNaN(v) && v >= 3 && v <= 10) {
           this.setSetting('maxPinnedNotes', v);
-          this.showNotification(window.i18n.t('messages.pinnedLimitUpdated'), 'success');
+          this.showNotification(i18n.t('messages.pinnedLimitUpdated'), 'success');
         }
       });
     }
@@ -156,8 +157,8 @@ export class SettingsFeature {
       this.autoSaveToggle.addEventListener('change', (e) => {
         this.setSetting('autoSave', e.target.checked);
         const message = e.target.checked
-          ? window.i18n.t('messages.autoSaveEnabled')
-          : window.i18n.t('messages.autoSaveDisabled');
+          ? i18n.t('messages.autoSaveEnabled')
+          : i18n.t('messages.autoSaveDisabled');
         this.showNotification(message, 'success');
       });
     }
@@ -276,9 +277,7 @@ export class SettingsFeature {
     this.applyTheme(enabled);
     this.setSetting('darkMode', enabled);
     this.showNotification(
-      enabled
-        ? window.i18n.t('messages.darkModeEnabled')
-        : window.i18n.t('messages.lightModeEnabled'),
+      enabled ? i18n.t('messages.darkModeEnabled') : i18n.t('messages.lightModeEnabled'),
       'info'
     );
   }
@@ -293,8 +292,8 @@ export class SettingsFeature {
 
   testNativeNotification() {
     // Simple in-app notification + store
-    const title = window.i18n.t('messages.testNotificationTitle');
-    const body = window.i18n.t('messages.testNotificationBody');
+    const title = i18n.t('messages.testNotificationTitle');
+    const body = i18n.t('messages.testNotificationBody');
     const nid = this.addNotification(null, title, body);
     this.showNotification(title, 'info', { notificationId: nid });
 
@@ -339,19 +338,19 @@ export class SettingsFeature {
   }
 
   confirmClearAllNotes() {
-    this.showConfirm(window.i18n.t('messages.confirmDeleteAllNotes'), async () => {
+    this.showConfirm(i18n.t('messages.confirmDeleteAllNotes'), async () => {
       await this.clearAllNotes();
     });
   }
 
   confirmClearAllFolders() {
-    this.showConfirm(window.i18n.t('messages.confirmDeleteAllFolders'), async () => {
+    this.showConfirm(i18n.t('messages.confirmDeleteAllFolders'), async () => {
       await this.clearAllFolders();
     });
   }
 
   confirmClearAllContent() {
-    this.showConfirm(window.i18n.t('messages.confirmResetApp'), async () => {
+    this.showConfirm(i18n.t('messages.confirmResetApp'), async () => {
       await this.clearAllContent();
     });
   }
@@ -371,10 +370,10 @@ export class SettingsFeature {
       this.updateFoldersList();
       this.updateStats();
       this.showWelcome();
-      this.showNotification(window.i18n.t('messages.allNotesDeleted'), 'success');
+      this.showNotification(i18n.t('messages.allNotesDeleted'), 'success');
     } catch (err) {
       console.error('Tüm notlar silinirken hata:', err);
-      this.showNotification(window.i18n.t('messages.notesDeleteError'), 'error');
+      this.showNotification(i18n.t('messages.notesDeleteError'), 'error');
     }
   }
 
@@ -396,10 +395,10 @@ export class SettingsFeature {
       this.updateNotesList();
       this.updateFoldersList();
       this.updateStats();
-      this.showNotification(window.i18n.t('messages.allFoldersDeleted'), 'success');
+      this.showNotification(i18n.t('messages.allFoldersDeleted'), 'success');
     } catch (err) {
       console.error('Tüm klasörler silinirken hata:', err);
-      this.showNotification(window.i18n.t('messages.foldersDeleteError'), 'error');
+      this.showNotification(i18n.t('messages.foldersDeleteError'), 'error');
     }
   }
 
@@ -442,10 +441,10 @@ export class SettingsFeature {
       this.updateStats();
       this.showWelcome();
 
-      this.showNotification(window.i18n.t('messages.appReset'), 'success');
+      this.showNotification(i18n.t('messages.appReset'), 'success');
     } catch (err) {
       console.error('Tüm içerik silinirken hata:', err);
-      this.showNotification(window.i18n.t('messages.resetError'), 'error');
+      this.showNotification(i18n.t('messages.resetError'), 'error');
     }
   }
 }

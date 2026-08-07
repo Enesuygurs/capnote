@@ -1,5 +1,7 @@
 // To-do sections and tasks
 
+import { i18n } from '../i18n.js';
+
 export class TodosFeature {
   renderTodosSections() {
     if (!this.todosSectionsContainer) return;
@@ -8,7 +10,7 @@ export class TodosFeature {
       this.todosSectionsContainer.innerHTML = `
         <div class="todos-empty">
           <i class="fas fa-folder-open"></i>
-          <p>${window.i18n.t('todos.noTodos')}</p>
+          <p>${i18n.t('todos.noTodos')}</p>
         </div>
       `;
       return;
@@ -19,7 +21,7 @@ export class TodosFeature {
         const activeTodos = section.todos.filter((t) => !t.completed).length;
         const todosHtml =
           section.todos.length === 0
-            ? `<div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 13px;">${window.i18n.t('todos.noTodosInSection')}</div>`
+            ? `<div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 13px;">${i18n.t('todos.noTodosInSection')}</div>`
             : section.todos
                 .map(
                   (todo) => `
@@ -28,10 +30,10 @@ export class TodosFeature {
             <span class="todo-text" data-todo-id="${todo.id}">${this.escapeHtml(todo.text)}</span>
             <input type="text" class="todo-edit-input hidden" value="${this.escapeHtml(todo.text)}" data-todo-id="${todo.id}" data-section-id="${section.id}">
             <div class="todo-actions">
-              <button class="todo-action-btn edit-todo" data-action="edit" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${window.i18n.t('actions.edit')}">
+              <button class="todo-action-btn edit-todo" data-action="edit" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${i18n.t('actions.edit')}">
                 <i class="fas fa-edit"></i>
               </button>
-              <button class="todo-action-btn delete-todo" data-action="delete" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${window.i18n.t('actions.delete')}">
+              <button class="todo-action-btn delete-todo" data-action="delete" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${i18n.t('actions.delete')}">
                 <i class="fas fa-trash"></i>
               </button>
             </div>
@@ -45,18 +47,18 @@ export class TodosFeature {
           <div class="todo-section-header">
             <div class="todo-section-title">
               <h3>${this.escapeHtml(section.name)}</h3>
-              <span class="todo-section-count">${window.i18n.t('todos.taskCount', { count: activeTodos })}</span>
+              <span class="todo-section-count">${i18n.t('todos.taskCount', { count: activeTodos })}</span>
             </div>
             <div class="todo-section-actions">
-              <button class="section-action-btn delete-section" data-action="delete-section" data-section-id="${section.id}" title="${window.i18n.t('actions.delete')}">
+              <button class="section-action-btn delete-section" data-action="delete-section" data-section-id="${section.id}" title="${i18n.t('actions.delete')}">
                 <i class="fas fa-trash"></i>
               </button>
             </div>
           </div>
           <div class="todos-input-section">
-            <input type="text" class="todo-input" placeholder="${window.i18n.t('placeholders.newTodo')}" data-section-id="${section.id}">
+            <input type="text" class="todo-input" placeholder="${i18n.t('placeholders.newTodo')}" data-section-id="${section.id}">
             <button class="btn-primary add-todo-btn" data-section-id="${section.id}">
-              <i class="fas fa-plus"></i> ${window.i18n.t('buttons.add')}
+              <i class="fas fa-plus"></i> ${i18n.t('buttons.add')}
             </button>
           </div>
           <div class="todos-list">
@@ -149,7 +151,7 @@ export class TodosFeature {
     this.saveTodos();
     this.todoSectionInput.value = '';
     this.renderTodosSections();
-    this.showNotification(window.i18n.t('todos.sectionAdded'), 'success');
+    this.showNotification(i18n.t('todos.sectionAdded'), 'success');
   }
 
   deleteTodoSection(sectionId) {
@@ -157,7 +159,7 @@ export class TodosFeature {
     this.saveTodos();
     this.renderTodosSections();
     this.updateTodosCount();
-    this.showNotification(window.i18n.t('todos.sectionDeleted'), 'success');
+    this.showNotification(i18n.t('todos.sectionDeleted'), 'success');
   }
 
   addTodoToSection(sectionId, text) {
@@ -178,7 +180,7 @@ export class TodosFeature {
     this.saveTodos();
     this.renderTodosSections();
     this.updateTodosCount();
-    this.showNotification(window.i18n.t('todos.todoAdded'), 'success');
+    this.showNotification(i18n.t('todos.todoAdded'), 'success');
   }
 
   toggleTodoComplete(sectionId, todoId) {
@@ -194,7 +196,7 @@ export class TodosFeature {
     this.updateTodosCount();
 
     if (todo.completed) {
-      this.showNotification(window.i18n.t('todos.todoCompleted'), 'success');
+      this.showNotification(i18n.t('todos.todoCompleted'), 'success');
     }
   }
 
@@ -234,7 +236,7 @@ export class TodosFeature {
     todo.text = text;
     this.saveTodos();
     this.renderTodosSections();
-    this.showNotification(window.i18n.t('todos.todoUpdated'), 'success');
+    this.showNotification(i18n.t('todos.todoUpdated'), 'success');
   }
 
   deleteTodo(sectionId, todoId) {
@@ -245,7 +247,7 @@ export class TodosFeature {
     this.saveTodos();
     this.renderTodosSections();
     this.updateTodosCount();
-    this.showNotification(window.i18n.t('todos.todoDeleted'), 'success');
+    this.showNotification(i18n.t('todos.todoDeleted'), 'success');
   }
 
   updateTodosCount() {

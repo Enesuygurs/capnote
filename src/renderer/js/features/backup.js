@@ -1,6 +1,7 @@
 // Full data backup export and import
 
 import { SCHEMA_VERSION, DEFAULT_SETTINGS, LOCAL_ONLY_SETTINGS } from '../constants.js';
+import { i18n } from '../i18n.js';
 
 export class BackupFeature {
   // New: export ALL data (notes, folders, reminders, notifications, settings)
@@ -40,7 +41,7 @@ export class BackupFeature {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    this.showNotification(window.i18n.t('messages.dataExported'), 'success');
+    this.showNotification(i18n.t('messages.dataExported'), 'success');
     // Refresh reminder/notification UI and counters in case data changed
     try {
       this.updateRemindersView();
@@ -72,7 +73,7 @@ export class BackupFeature {
 
         // Validate structure
         if (!data || typeof data !== 'object')
-          throw new Error(window.i18n.t('messages.invalidFileFormat'));
+          throw new Error(i18n.t('messages.invalidFileFormat'));
 
         // Normalize common single-note or array exports into { notes: [...] }
         // Support: a single note object (exported via exportNote json) or an array of notes
@@ -88,7 +89,7 @@ export class BackupFeature {
 
         // Backups from a newer version may use a layout this version does not understand
         if (typeof data.version === 'number' && data.version > SCHEMA_VERSION) {
-          throw new Error(window.i18n.t('messages.backupTooNew'));
+          throw new Error(i18n.t('messages.backupTooNew'));
         }
 
         // Count items
@@ -109,7 +110,7 @@ export class BackupFeature {
         });
 
         if (!importOptions) {
-          this.showNotification(window.i18n.t('messages.importCancelled'), 'warning');
+          this.showNotification(i18n.t('messages.importCancelled'), 'warning');
           return;
         }
 
@@ -310,13 +311,13 @@ export class BackupFeature {
 
         if (skippedDuplicates > 0)
           console.info(`Import skipped ${skippedDuplicates} duplicate note(s)`);
-        this.showNotification(window.i18n.t('messages.dataImported'), 'success');
+        this.showNotification(i18n.t('messages.dataImported'), 'success');
         this.settingsModal.classList.remove('show');
         this.settingsModal.classList.add('hidden');
       } catch (err) {
         console.error('Import all data error', err);
         this.showNotification(
-          `${window.i18n.t('messages.dataImportError')} ${err.message || err}`,
+          `${i18n.t('messages.dataImportError')} ${err.message || err}`,
           'error'
         );
       }
@@ -343,7 +344,7 @@ export class BackupFeature {
       const titleWrap = document.createElement('div');
       titleWrap.className = 'modal-title';
       const h3 = document.createElement('h3');
-      h3.textContent = window.i18n.t('modals.importOptions');
+      h3.textContent = i18n.t('modals.importOptions');
       titleWrap.appendChild(h3);
       header.appendChild(titleWrap);
 
@@ -373,7 +374,7 @@ export class BackupFeature {
         inputs[t] = cb;
         const lbl = document.createElement('label');
         lbl.setAttribute('for', cb.id);
-        lbl.textContent = window.i18n.t(
+        lbl.textContent = i18n.t(
           {
             notes: 'nav.notes',
             folders: 'modals.folders',
@@ -397,7 +398,7 @@ export class BackupFeature {
       mergeToggle.className = 'form-checkbox';
       const mergeLabel = document.createElement('label');
       mergeLabel.setAttribute('for', mergeToggle.id);
-      mergeLabel.textContent = window.i18n.t('modals.mergeWithExisting');
+      mergeLabel.textContent = i18n.t('modals.mergeWithExisting');
       mergeRow.appendChild(mergeToggle);
       mergeRow.appendChild(mergeLabel);
 
@@ -410,10 +411,10 @@ export class BackupFeature {
       footer.className = 'modal-footer';
       const cancelBtn = document.createElement('button');
       cancelBtn.className = 'btn btn-secondary';
-      cancelBtn.textContent = window.i18n.t('buttons.cancel');
+      cancelBtn.textContent = i18n.t('buttons.cancel');
       const okBtn = document.createElement('button');
       okBtn.className = 'btn btn-primary';
-      okBtn.textContent = window.i18n.t('buttons.import');
+      okBtn.textContent = i18n.t('buttons.import');
       footer.appendChild(cancelBtn);
       footer.appendChild(okBtn);
       content.appendChild(footer);

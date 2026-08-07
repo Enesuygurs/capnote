@@ -1,5 +1,7 @@
 // Notification history (fired reminders)
 
+import { i18n } from '../i18n.js';
+
 export class NotificationsFeature {
   addNotification(noteId, noteTitle, message) {
     const notification = {
@@ -23,7 +25,7 @@ export class NotificationsFeature {
     if (this.notifications.length === 0) {
       this.notificationsList.innerHTML =
         '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">' +
-        window.i18n.t('messages.noNotifications') +
+        i18n.t('messages.noNotifications') +
         '</div>';
       return;
     }
@@ -48,19 +50,19 @@ export class NotificationsFeature {
         <div class="notification-message">${this.escapeHtml(n.message)}</div>
         <div class="notification-actions">
           <button class="notification-action-btn view-notification-note-btn" data-note-id="${n.noteId}">
-            <i class="fas fa-eye"></i> ${window.i18n.t('messages.view')}
+            <i class="fas fa-eye"></i> ${i18n.t('messages.view')}
           </button>
           ${
             !n.read
               ? `
             <button class="notification-action-btn mark-read-btn" data-notification-id="${n.id}">
-              <i class="fas fa-check"></i> ${window.i18n.t('messages.markAsRead')}
+              <i class="fas fa-check"></i> ${i18n.t('messages.markAsRead')}
             </button>
           `
               : ''
           }
           <button class="notification-action-btn delete-notification-btn" data-notification-id="${n.id}">
-            <i class="fas fa-trash"></i> ${window.i18n.t('messages.deleteNotification')}
+            <i class="fas fa-trash"></i> ${i18n.t('messages.deleteNotification')}
           </button>
         </div>
       </div>
