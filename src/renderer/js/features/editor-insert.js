@@ -1,5 +1,7 @@
 // Inserting content into the editor: images, code blocks, lists, tables, dates and pasted text
 
+import { i18n } from '../i18n.js';
+
 export class EditorInsertFeature {
   insertImageAtSelection(src, name) {
     if (!this.richEditor) return;
@@ -398,7 +400,7 @@ export class EditorInsertFeature {
     if (hasHeader) {
       html += '<thead><tr>';
       for (let c = 0; c < cols; c++)
-        html += `<th style="padding:6px;text-align:left">${window.i18n.t('templates.tableHeader', { n: c + 1 })}</th>`;
+        html += `<th style="padding:6px;text-align:left">${i18n.t('templates.tableHeader', { n: c + 1 })}</th>`;
       html += '</tr></thead>';
     }
     html += '<tbody>';
@@ -428,7 +430,7 @@ export class EditorInsertFeature {
     this.restoreEditorSelection();
     this.richEditor.focus();
     const items = ['templates.listItem1', 'templates.listItem2', 'templates.listItem3']
-      .map((key) => `<li>${this.escapeHtml(window.i18n.t(key))}</li>`)
+      .map((key) => `<li>${this.escapeHtml(i18n.t(key))}</li>`)
       .join('');
     const listHtml = `<${type}>${items}</${type}><p><br></p>`;
 
@@ -441,7 +443,7 @@ export class EditorInsertFeature {
     this.restoreEditorSelection();
     this.richEditor.focus();
     const uniqueId = 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    const checklistHtml = `<div class="checklist"><div class="checklist-item"><input type="checkbox" id="${uniqueId}"><label for="${uniqueId}">${this.escapeHtml(window.i18n.t('templates.task'))}</label></div></div><p><br></p>`;
+    const checklistHtml = `<div class="checklist"><div class="checklist-item"><input type="checkbox" id="${uniqueId}"><label for="${uniqueId}">${this.escapeHtml(i18n.t('templates.task'))}</label></div></div><p><br></p>`;
 
     document.execCommand('insertHTML', false, checklistHtml);
     this.trackContentChanges();

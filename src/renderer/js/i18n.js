@@ -117,14 +117,14 @@ class I18n {
   }
 }
 
-// Create global i18n instance
-window.i18n = new I18n();
+// Shared instance used by every module
+export const i18n = new I18n();
 
 // Initialize on DOM loaded. `ready` always resolves, even if loading the translations failed,
 // so the app can start with keys as a fallback instead of waiting forever.
-window.i18n.ready = new Promise((resolve) => {
+i18n.ready = new Promise((resolve) => {
   const start = () =>
-    window.i18n
+    i18n
       .init()
       .catch((err) => console.error('i18n init failed:', err))
       .then(resolve);

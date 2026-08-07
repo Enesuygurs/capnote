@@ -1,5 +1,7 @@
 // Sidebar note list: rendering, filtering, sorting and search
 
+import { i18n } from '../i18n.js';
+
 export class NoteListFeature {
   // Note option menus are moved to <body> when opened; drop them when their lists are rebuilt
   // (an item re-attaches its menu the next time it is opened)
@@ -315,29 +317,29 @@ export class NoteListFeature {
             <i class="fas fa-file-alt nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(note.title)}</span>
             <div class="note-options-container">
-                <button class="more-options-btn" title="${window.i18n.t('titles.options')}">
+                <button class="more-options-btn" title="${i18n.t('titles.options')}">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <div class="note-options-menu hidden" data-note-id="${note.id}">
                     <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
                             data-note-id="${note.id}">
                         <i class="fas fa-heart"></i>
-                        <span>${note.isFavorite ? window.i18n.t('messages.removeFromFavorites') : window.i18n.t('messages.addToFavorites')}</span>
+                        <span>${note.isFavorite ? i18n.t('messages.removeFromFavorites') : i18n.t('messages.addToFavorites')}</span>
                     </button>
                     <button class="note-action-menu-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
                             data-note-id="${note.id}">
                         <i class="fas fa-thumbtack"></i>
-                        <span>${note.isPinned ? window.i18n.t('messages.unpinNote') : window.i18n.t('messages.pinNote')}</span>
+                        <span>${note.isPinned ? i18n.t('messages.unpinNote') : i18n.t('messages.pinNote')}</span>
                     </button>
                     <button class="note-action-menu-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
                             data-note-id="${note.id}">
                         <i class="fas fa-lock"></i>
-                        <span>${note.isLocked ? window.i18n.t('messages.unlockNote') : window.i18n.t('messages.lockNote')}</span>
+                        <span>${note.isLocked ? i18n.t('messages.unlockNote') : i18n.t('messages.lockNote')}</span>
                     </button>
                     <button class="note-action-menu-btn delete-btn" 
                             data-note-id="${note.id}">
                         <i class="fas fa-trash"></i>
-                        <span>${window.i18n.t('messages.deleteNote')}</span>
+                        <span>${i18n.t('messages.deleteNote')}</span>
                     </button>
                 </div>
             </div>

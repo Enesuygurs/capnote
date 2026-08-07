@@ -1,5 +1,7 @@
 // Read-only note view, its checkboxes, code copy buttons and the history dialog
 
+import { i18n } from '../i18n.js';
+
 export class ViewerFeature {
   displayNote(note) {
     this.viewerTitle.textContent = note.title;
@@ -9,8 +11,8 @@ export class ViewerFeature {
       this.viewerText.innerHTML = `
                 <div style="text-align: center; padding: 40px; color: var(--text-muted);">
                     <i class="fas fa-lock" style="font-size: 48px; margin-bottom: 20px;"></i>
-                    <h3>${window.i18n.t('messages.noteIsLocked')}</h3>
-                    <p>${window.i18n.t('messages.unlockFromList')}</p>
+                    <h3>${i18n.t('messages.noteIsLocked')}</h3>
+                    <p>${i18n.t('messages.unlockFromList')}</p>
                 </div>
             `;
     } else {
@@ -68,20 +70,20 @@ export class ViewerFeature {
       note.charCount = counts.chars;
     }
     if (this.viewerWordCount)
-      this.viewerWordCount.textContent = `${counts.words} ${window.i18n.t('stats.words')}`;
+      this.viewerWordCount.textContent = `${counts.words} ${i18n.t('stats.words')}`;
     if (this.viewerCharCount)
-      this.viewerCharCount.textContent = `${counts.chars} ${window.i18n.t('stats.characters')}`;
+      this.viewerCharCount.textContent = `${counts.chars} ${i18n.t('stats.characters')}`;
     // Reading time calculation (baseline 200 words per minute)
     const WPM = 200;
     if (!counts.words) {
-      this.readingTime.textContent = `0 ${window.i18n.t('stats.readingTime')}`;
+      this.readingTime.textContent = `0 ${i18n.t('stats.readingTime')}`;
     } else {
       const seconds = Math.ceil((counts.words / WPM) * 60);
       if (seconds < 60) {
-        this.readingTime.textContent = `~${seconds} ${window.i18n.t('stats.readingTimeSeconds')}`;
+        this.readingTime.textContent = `~${seconds} ${i18n.t('stats.readingTimeSeconds')}`;
       } else {
         const minutes = Math.round(seconds / 60);
-        this.readingTime.textContent = `~${minutes} ${window.i18n.t('stats.readingTime')}`;
+        this.readingTime.textContent = `~${minutes} ${i18n.t('stats.readingTime')}`;
       }
     }
     // Show date + time for last modified (e.g. 12.10.2025 14:35)
@@ -118,7 +120,7 @@ export class ViewerFeature {
     if (created) {
       const el = document.createElement('div');
       el.className = 'history-entry created';
-      el.innerHTML = `<strong>${window.i18n.t('viewer.created')}</strong> ${created.toLocaleString(locale)}`;
+      el.innerHTML = `<strong>${i18n.t('viewer.created')}</strong> ${created.toLocaleString(locale)}`;
       this.historyBody.appendChild(el);
     }
 
@@ -131,14 +133,14 @@ export class ViewerFeature {
         const d = new Date(h.ts);
         const item = document.createElement('div');
         item.className = 'history-item';
-        item.innerHTML = `<span class="history-type">${window.i18n.t('viewer.updated')}</span> <span class="history-ts">${d.toLocaleString(locale)}</span>`;
+        item.innerHTML = `<span class="history-type">${i18n.t('viewer.updated')}</span> <span class="history-ts">${d.toLocaleString(locale)}</span>`;
         list.appendChild(item);
       });
       this.historyBody.appendChild(list);
     } else {
       const empty = document.createElement('div');
       empty.className = 'history-empty';
-      empty.textContent = window.i18n.t('viewer.noHistory');
+      empty.textContent = i18n.t('viewer.noHistory');
       this.historyBody.appendChild(empty);
     }
 
@@ -156,7 +158,7 @@ export class ViewerFeature {
       const btn = document.createElement('button');
       btn.className = 'code-copy-btn';
       btn.type = 'button';
-      btn.title = window.i18n.t('messages.copyCode');
+      btn.title = i18n.t('messages.copyCode');
       btn.innerHTML = '<i class="fas fa-copy"></i>';
 
       btn.addEventListener('click', async (e) => {
@@ -165,13 +167,13 @@ export class ViewerFeature {
         try {
           await navigator.clipboard.writeText(text);
           btn.classList.add('copied');
-          btn.title = window.i18n.t('messages.copied');
+          btn.title = i18n.t('messages.copied');
           // show toast
           if (this.showNotification)
-            this.showNotification(window.i18n.t('messages.codeCopied'), 'success');
+            this.showNotification(i18n.t('messages.codeCopied'), 'success');
           setTimeout(() => {
             btn.classList.remove('copied');
-            btn.title = window.i18n.t('messages.copyCode');
+            btn.title = i18n.t('messages.copyCode');
           }, 1200);
         } catch (err) {
           // fallback: select and execCommand
@@ -185,12 +187,12 @@ export class ViewerFeature {
             sel.removeAllRanges();
             btn.classList.add('copied');
             if (this.showNotification)
-              this.showNotification(window.i18n.t('messages.codeCopied'), 'success');
+              this.showNotification(i18n.t('messages.codeCopied'), 'success');
             setTimeout(() => btn.classList.remove('copied'), 1200);
           } catch (e) {
             console.error('copy failed', e);
             if (this.showNotification)
-              this.showNotification(window.i18n.t('messages.copyFailed'), 'error');
+              this.showNotification(i18n.t('messages.copyFailed'), 'error');
           }
         }
       });

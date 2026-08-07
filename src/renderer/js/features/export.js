@@ -1,5 +1,7 @@
 // Exporting a single note (text, HTML, JSON, PDF)
 
+import { i18n } from '../i18n.js';
+
 export class ExportFeature {
   // Export methods
   showExportModal() {
@@ -34,12 +36,12 @@ export class ExportFeature {
     }
 
     this.downloadFile(content, filename, mimeType);
-    this.showNotification(window.i18n.t('messages.noteExported'), 'success');
+    this.showNotification(i18n.t('messages.noteExported'), 'success');
   }
 
   generateHTMLExport(note) {
     return `<!DOCTYPE html>
-<html lang="${window.i18n.currentLanguage}">
+<html lang="${i18n.currentLanguage}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -86,15 +88,15 @@ ${this.buildExportBody(note)}
       .map((tag) => `<span class="export-tag">${this.escapeHtml(tag)}</span>`)
       .join('');
     const mood = note.mood
-      ? `<p class="export-meta">${window.i18n.t('sections.mood')}: ${this.escapeHtml(note.mood)}</p>`
+      ? `<p class="export-meta">${i18n.t('sections.mood')}: ${this.escapeHtml(note.mood)}</p>`
       : '';
     const weather = note.weather
-      ? `<p class="export-meta">${window.i18n.t('sections.weather')}: ${this.escapeHtml(note.weather)}</p>`
+      ? `<p class="export-meta">${i18n.t('sections.weather')}: ${this.escapeHtml(note.weather)}</p>`
       : '';
     return `<div class="export-header">
   <h1>${this.escapeHtml(note.title || '')}</h1>
-  <p class="export-meta">${window.i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(locale)}</p>
-  <p class="export-meta">${window.i18n.t('viewer.updatedLabel')} ${new Date(note.updatedAt).toLocaleString(locale)}</p>
+  <p class="export-meta">${i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(locale)}</p>
+  <p class="export-meta">${i18n.t('viewer.updatedLabel')} ${new Date(note.updatedAt).toLocaleString(locale)}</p>
   ${mood}${weather}
 </div>
 <div class="export-content">${content.innerHTML}</div>
@@ -103,7 +105,7 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
   async exportToPDF() {
     const note = this.currentNote;
-    if (!note) return this.showNotification(window.i18n.t('messages.noNoteSelected'), 'warning');
+    if (!note) return this.showNotification(i18n.t('messages.noNoteSelected'), 'warning');
 
     try {
       const safeName = (note.title || 'note').replace(/[\\/:*?"<>|]+/g, '_').trim() || 'note';
@@ -113,13 +115,13 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
         fileName: `${safeName}.pdf`,
       });
       if (result && result.ok) {
-        this.showNotification(window.i18n.t('messages.pdfCreated'), 'success');
+        this.showNotification(i18n.t('messages.pdfCreated'), 'success');
       } else if (!result || !result.canceled) {
-        this.showNotification(window.i18n.t('messages.pdfError'), 'error');
+        this.showNotification(i18n.t('messages.pdfError'), 'error');
       }
     } catch (err) {
       console.error('exportToPDF error', err);
-      this.showNotification(window.i18n.t('messages.pdfExportError'), 'error');
+      this.showNotification(i18n.t('messages.pdfExportError'), 'error');
     }
   }
 }

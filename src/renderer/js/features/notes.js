@@ -1,6 +1,7 @@
 // Note lifecycle: create, open, save, duplicate, delete, favorite, pin and history
 
 import { HISTORY_MERGE_MS, HISTORY_LIMIT } from '../constants.js';
+import { i18n } from '../i18n.js';
 
 export class NotesFeature {
   saveLastViewedNote(noteId) {
@@ -124,7 +125,7 @@ export class NotesFeature {
     // Sync checkbox states before saving
     this.syncCheckboxStates();
 
-    const title = this.noteTitle.value.trim() || window.i18n.t('messages.untitledNote');
+    const title = this.noteTitle.value.trim() || i18n.t('messages.untitledNote');
     // If markdown editor is visible, save raw markdown; otherwise save HTML from rich editor
     // If the markdown editor is visible (editing markdown), save raw markdown; otherwise save HTML from rich editor
     const isMarkdownMode = this.markdownEditor && !this.markdownEditor.classList.contains('hidden');
@@ -174,7 +175,7 @@ export class NotesFeature {
     this.updateFavoriteButtons();
 
     if (!silent) {
-      this.showNotification(window.i18n.t('messages.noteSaved'), 'success');
+      this.showNotification(i18n.t('messages.noteSaved'), 'success');
       this.showViewer();
       this.displayNote(this.currentNote);
     }
@@ -243,7 +244,7 @@ export class NotesFeature {
     const duplicate = {
       ...this.currentNote,
       id: this.newId(),
-      title: this.currentNote.title + window.i18n.t('messages.noteCopySuffix'),
+      title: this.currentNote.title + i18n.t('messages.noteCopySuffix'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       isPinned: false, // Kopyalanan not sabitlenmiş olmasın
@@ -256,7 +257,7 @@ export class NotesFeature {
     this.saveNotes();
     this.updateNotesList();
     this.updateStats();
-    this.showNotification(window.i18n.t('messages.noteCopied'), 'success');
+    this.showNotification(i18n.t('messages.noteCopied'), 'success');
 
     this.selectNote(duplicate);
   }
@@ -301,8 +302,8 @@ export class NotesFeature {
     }
 
     const message = this.currentNote.isFavorite
-      ? window.i18n.t('messages.addedToFavorites')
-      : window.i18n.t('messages.removedFromFavorites');
+      ? i18n.t('messages.addedToFavorites')
+      : i18n.t('messages.removedFromFavorites');
     this.showNotification(message, 'success');
   }
 
@@ -358,7 +359,7 @@ export class NotesFeature {
       this.performNoteDeletion(note);
       return;
     }
-    this.showConfirm(`"${note.title}" ${window.i18n.t('messages.confirmDelete')}`, () =>
+    this.showConfirm(`"${note.title}" ${i18n.t('messages.confirmDelete')}`, () =>
       this.performNoteDeletion(note)
     );
   }
@@ -383,7 +384,7 @@ export class NotesFeature {
       }
     }
 
-    this.showNotification(window.i18n.t('messages.noteDeleted'), 'success');
+    this.showNotification(i18n.t('messages.noteDeleted'), 'success');
   }
 
   // Remove reminders and notifications that point at deleted notes
@@ -427,8 +428,8 @@ export class NotesFeature {
     // Keep the current filter selected after toggling metadata
 
     const message = note.isFavorite
-      ? window.i18n.t('messages.addedToFavorites')
-      : window.i18n.t('messages.removedFromFavorites');
+      ? i18n.t('messages.addedToFavorites')
+      : i18n.t('messages.removedFromFavorites');
     this.showNotification(message, 'success');
   }
 
@@ -442,7 +443,7 @@ export class NotesFeature {
       const maxPinned = this.settings.maxPinnedNotes;
       if (pinnedCount >= maxPinned) {
         this.showNotification(
-          window.i18n.t('messages.maxPinnedNotes').replace('{count}', maxPinned),
+          i18n.t('messages.maxPinnedNotes').replace('{count}', maxPinned),
           'error'
         );
         return;
@@ -467,9 +468,7 @@ export class NotesFeature {
     // If viewing favorites, refresh it to reflect pin changes where applicable
     if (this.currentFilter === 'favorites') this.updateNotesList();
 
-    const message = note.isPinned
-      ? window.i18n.t('messages.notePinned')
-      : window.i18n.t('messages.noteUnpinned');
+    const message = note.isPinned ? i18n.t('messages.notePinned') : i18n.t('messages.noteUnpinned');
     this.showNotification(message, 'success');
   }
 
