@@ -19,7 +19,7 @@ export default [
     },
   },
   {
-    // Renderer scripts are classic browser scripts loaded by index.html
+    // Classic renderer scripts loaded directly by index.html
     files: ['src/renderer/**/*.js'],
     languageOptions: {
       sourceType: 'script',
@@ -28,6 +28,11 @@ export default [
         marked: 'readonly',
       },
     },
+  },
+  {
+    // The application itself is made of ES modules
+    files: ['src/renderer/js/**/*.js'],
+    languageOptions: { sourceType: 'module' },
   },
   // Formatting is Prettier's job; turn off stylistic rules that would conflict with it
   prettier,
