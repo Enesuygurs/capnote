@@ -27,7 +27,7 @@ export class NoteListFeature {
     if (navCountEl) navCountEl.textContent = `(${this.getVisibleNotesCount()})`;
 
     sortedNotes.forEach((note) => {
-      const noteElement = this.createNoteElement(note);
+      const noteElement = this.createNoteItem(note);
       this.notesList.appendChild(noteElement);
     });
 
@@ -149,7 +149,7 @@ export class NoteListFeature {
 
       const sortedFolderNotes = this.getSortedNotes(folderNotes);
       sortedFolderNotes.forEach((note) => {
-        const noteElement = this.createFolderNoteElement(note);
+        const noteElement = this.createNoteItem(note, true);
         container.appendChild(noteElement);
       });
 
@@ -297,47 +297,42 @@ export class NoteListFeature {
     });
   }
 
-  createNoteElement(note) {
+  // One sidebar entry for a note, used by the root list and inside folders
+  createNoteItem(note, inFolder = false) {
     const div = document.createElement('div');
-    div.className = 'note-item fade-in';
+    div.className = inFolder
+      ? 'nav-subitem folder-note-item note-item fade-in'
+      : 'note-item fade-in';
     div.draggable = true;
     div.setAttribute('data-note-id', note.id);
+    div.classList.toggle('active', !!this.currentNote && this.currentNote.id === note.id);
+    div.classList.toggle('pinned', !!note.isPinned);
+    div.classList.toggle('locked', !!note.isLocked);
 
-    if (this.currentNote && this.currentNote.id === note.id) {
-      div.classList.add('active');
-    }
-    if (note.isPinned) {
-      div.classList.add('pinned');
-    }
-    if (note.isLocked) {
-      div.classList.add('locked');
-    }
+    const title = note.title || i18n.t('messages.untitledNote');
+    const shownTitle = inFolder && title.length > 30 ? title.substring(0, 30) + '...' : title;
 
     div.innerHTML = `
             <i class="fas fa-file-alt nav-icon"></i>
-            <span class="nav-text note-item-title">${this.escapeHtml(note.title)}</span>
+            <span class="nav-text note-item-title">${this.escapeHtml(shownTitle)}</span>
             <div class="note-options-container">
                 <button class="more-options-btn" title="${i18n.t('titles.options')}">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
                 <div class="note-options-menu hidden" data-note-id="${note.id}">
-                    <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
-                            data-note-id="${note.id}">
+                    <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" data-note-id="${note.id}">
                         <i class="fas fa-heart"></i>
                         <span>${note.isFavorite ? i18n.t('messages.removeFromFavorites') : i18n.t('messages.addToFavorites')}</span>
                     </button>
-                    <button class="note-action-menu-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
-                            data-note-id="${note.id}">
+                    <button class="note-action-menu-btn pin-btn ${note.isPinned ? 'pinned' : ''}" data-note-id="${note.id}">
                         <i class="fas fa-thumbtack"></i>
                         <span>${note.isPinned ? i18n.t('messages.unpinNote') : i18n.t('messages.pinNote')}</span>
                     </button>
-                    <button class="note-action-menu-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
-                            data-note-id="${note.id}">
+                    <button class="note-action-menu-btn lock-btn ${note.isLocked ? 'locked' : ''}" data-note-id="${note.id}">
                         <i class="fas fa-lock"></i>
                         <span>${note.isLocked ? i18n.t('messages.unlockNote') : i18n.t('messages.lockNote')}</span>
                     </button>
-                    <button class="note-action-menu-btn delete-btn" 
-                            data-note-id="${note.id}">
+                    <button class="note-action-menu-btn delete-btn" data-note-id="${note.id}">
                         <i class="fas fa-trash"></i>
                         <span>${i18n.t('messages.deleteNote')}</span>
                     </button>
@@ -345,102 +340,76 @@ export class NoteListFeature {
             </div>
         `;
 
-    // Add event listener for note selection (not for action buttons)
+    // Selecting the note, unless the click was inside the options menu
     div.addEventListener('click', (e) => {
-      // Only select note if it's not an action button or options container
-      if (!e.target.closest('.note-options-container')) {
-        this.selectNote(note);
-      }
+      if (!e.target.closest('.note-options-container')) this.selectNote(note);
     });
 
-    // Add event listener for more options button
     const moreOptionsBtn = div.querySelector('.more-options-btn');
     const optionsMenu = div.querySelector('.note-options-menu');
     const optionsContainer = div.querySelector('.note-options-container');
-    if (moreOptionsBtn && optionsMenu) {
-      moreOptionsBtn.addEventListener('click', (e) => {
+    moreOptionsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleNoteMenu(moreOptionsBtn, optionsMenu, optionsContainer);
+    });
+
+    const actions = {
+      '.favorite-btn': () => this.toggleFavorite(note.id),
+      '.pin-btn': () => this.togglePin(note.id),
+      '.lock-btn': () => this.toggleLock(note.id),
+      '.delete-btn': () => this.deleteNoteById(note.id),
+    };
+    Object.entries(actions).forEach(([selector, action]) => {
+      div.querySelector(selector).addEventListener('click', (e) => {
         e.stopPropagation();
-        const isHidden = optionsMenu.classList.contains('hidden');
-
-        // Close all other menus
-        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach((menu) => {
-          menu.classList.add('hidden');
-          menu.style.display = 'none';
-        });
-        document.querySelectorAll('.note-options-container.menu-open').forEach((container) => {
-          container.classList.remove('menu-open');
-        });
-
-        if (isHidden) {
-          // Move to body to prevent clipping/stacking issues
-          if (optionsMenu.parentNode !== document.body) {
-            document.body.appendChild(optionsMenu);
-          }
-
-          // Calculate position for fixed menu
-          const rect = moreOptionsBtn.getBoundingClientRect();
-          optionsMenu.style.top = `${rect.bottom + 5}px`;
-          optionsMenu.style.left = 'auto';
-          optionsMenu.style.right = `${window.innerWidth - rect.right}px`;
-          optionsMenu.style.display = 'flex';
-
-          optionsMenu.classList.remove('hidden');
-          optionsContainer.classList.add('menu-open');
-        }
+        action();
       });
-    }
-
-    // Add action button event listeners
-    const favoriteBtn = div.querySelector('.favorite-btn');
-    const pinBtn = div.querySelector('.pin-btn');
-    const lockBtn = div.querySelector('.lock-btn');
-    const deleteBtn = div.querySelector('.delete-btn');
-
-    favoriteBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.toggleFavorite(note.id);
     });
 
-    pinBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.togglePin(note.id);
-    });
-
-    lockBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.toggleLock(note.id);
-    });
-
-    deleteBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.deleteNoteById(note.id);
-    });
-
-    // Add hover event listeners for title truncation
+    // The title is shortened while hovering to make room for the options button
     const titleElement = div.querySelector('.note-item-title');
-    const originalTitle = note.title;
-    const truncatedTitle =
-      note.title.length > 18 ? note.title.substring(0, 18) + '...' : note.title;
-
+    const hoverLength = inFolder ? 12 : 18;
+    const hoverTitle = title.length > hoverLength ? title.substring(0, hoverLength) + '...' : title;
     div.addEventListener('mouseenter', () => {
-      titleElement.textContent = truncatedTitle;
+      titleElement.textContent = hoverTitle;
     });
-
     div.addEventListener('mouseleave', () => {
-      titleElement.textContent = originalTitle;
+      titleElement.textContent = shownTitle;
     });
 
-    // Add drag event listeners
     div.addEventListener('dragstart', (e) => {
       e.dataTransfer.setData('text/plain', note.id);
       div.classList.add('dragging');
     });
-
     div.addEventListener('dragend', () => {
       div.classList.remove('dragging');
     });
 
     return div;
+  }
+
+  // Open a note's option menu (closing any other) or close it if it is open.
+  // The menu moves to <body> so the sidebar cannot clip it.
+  toggleNoteMenu(button, menu, container) {
+    const wasHidden = menu.classList.contains('hidden');
+
+    document.querySelectorAll('.note-options-menu:not(.hidden)').forEach((open) => {
+      open.classList.add('hidden');
+      open.style.display = 'none';
+    });
+    document.querySelectorAll('.note-options-container.menu-open').forEach((open) => {
+      open.classList.remove('menu-open');
+    });
+    if (!wasHidden) return;
+
+    if (menu.parentNode !== document.body) document.body.appendChild(menu);
+    const rect = button.getBoundingClientRect();
+    menu.style.top = `${rect.bottom + 5}px`;
+    menu.style.left = 'auto';
+    menu.style.right = `${window.innerWidth - rect.right}px`;
+    menu.style.display = 'flex';
+    menu.classList.remove('hidden');
+    container.classList.add('menu-open');
   }
 
   searchNotes() {

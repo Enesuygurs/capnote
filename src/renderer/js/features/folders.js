@@ -465,153 +465,6 @@ export class FoldersFeature {
     return container;
   }
 
-  createFolderNoteElement(note) {
-    const div = document.createElement('div');
-    // Keep folder-note-item but also include note-item so styles and actions match main list
-    div.className = 'nav-subitem folder-note-item note-item fade-in';
-    div.draggable = true;
-    div.setAttribute('data-note-id', note.id);
-
-    // Reflect pinned/locked state on the container so CSS selectors like
-    // .folder-note-item.pinned and .folder-note-item.locked apply correctly.
-    if (note.isPinned) div.classList.add('pinned');
-    if (note.isLocked) div.classList.add('locked');
-
-    if (this.currentNote && this.currentNote.id === note.id) {
-      div.classList.add('active');
-    }
-
-    const title = note.title || i18n.t('messages.untitledNote');
-    const truncatedTitle = title.length > 30 ? title.substring(0, 30) + '...' : title;
-
-    div.innerHTML = `
-            <i class="fas fa-file-alt nav-icon"></i>
-            <span class="nav-text note-item-title">${this.escapeHtml(truncatedTitle)}</span>
-            <div class="note-options-container">
-                <button class="more-options-btn" title="${i18n.t('titles.options')}">
-                    <i class="fas fa-ellipsis-h"></i>
-                </button>
-                <div class="note-options-menu hidden" data-note-id="${note.id}">
-                    <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" 
-                            data-note-id="${note.id}">
-                        <i class="fas fa-heart"></i>
-                        <span>${note.isFavorite ? i18n.t('messages.removeFromFavorites') : i18n.t('messages.addToFavorites')}</span>
-                    </button>
-                    <button class="note-action-menu-btn pin-btn ${note.isPinned ? 'pinned' : ''}" 
-                            data-note-id="${note.id}">
-                        <i class="fas fa-thumbtack"></i>
-                        <span>${note.isPinned ? i18n.t('messages.unpinNote') : i18n.t('messages.pinNote')}</span>
-                    </button>
-                    <button class="note-action-menu-btn lock-btn ${note.isLocked ? 'locked' : ''}" 
-                            data-note-id="${note.id}">
-                        <i class="fas fa-lock"></i>
-                        <span>${note.isLocked ? i18n.t('messages.unlockNote') : i18n.t('messages.lockNote')}</span>
-                    </button>
-                    <button class="note-action-menu-btn delete-btn" 
-                            data-note-id="${note.id}">
-                        <i class="fas fa-trash"></i>
-                        <span>${i18n.t('messages.deleteNote')}</span>
-                    </button>
-                </div>
-            </div>
-        `;
-
-    // Click selects note unless an action button was clicked
-    div.addEventListener('click', (e) => {
-      if (!e.target.closest('.note-options-container')) {
-        this.selectNote(note);
-      }
-    });
-
-    // Add event listener for more options button
-    const moreOptionsBtn = div.querySelector('.more-options-btn');
-    const optionsMenu = div.querySelector('.note-options-menu');
-    const optionsContainer = div.querySelector('.note-options-container');
-    if (moreOptionsBtn && optionsMenu) {
-      moreOptionsBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isHidden = optionsMenu.classList.contains('hidden');
-
-        // Close all other menus
-        document.querySelectorAll('.note-options-menu:not(.hidden)').forEach((menu) => {
-          menu.classList.add('hidden');
-          menu.style.display = 'none';
-        });
-        document.querySelectorAll('.note-options-container.menu-open').forEach((container) => {
-          container.classList.remove('menu-open');
-        });
-
-        if (isHidden) {
-          // Move to body to prevent clipping/stacking issues
-          if (optionsMenu.parentNode !== document.body) {
-            document.body.appendChild(optionsMenu);
-          }
-
-          // Calculate position for fixed menu
-          const rect = moreOptionsBtn.getBoundingClientRect();
-          optionsMenu.style.top = `${rect.bottom + 5}px`;
-          optionsMenu.style.left = 'auto';
-          optionsMenu.style.right = `${window.innerWidth - rect.right}px`;
-          optionsMenu.style.display = 'flex';
-
-          optionsMenu.classList.remove('hidden');
-          optionsContainer.classList.add('menu-open');
-        }
-      });
-    }
-
-    // Wire action buttons
-    const favoriteBtn = div.querySelector('.favorite-btn');
-    const pinBtn = div.querySelector('.pin-btn');
-    const lockBtn = div.querySelector('.lock-btn');
-    const deleteBtn = div.querySelector('.delete-btn');
-
-    favoriteBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.toggleFavorite(note.id);
-    });
-
-    pinBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.togglePin(note.id);
-    });
-
-    lockBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.toggleLock(note.id);
-    });
-
-    deleteBtn?.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.deleteNoteById(note.id);
-    });
-
-    // Drag events
-    div.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', note.id);
-      div.classList.add('dragging');
-    });
-
-    div.addEventListener('dragend', () => {
-      div.classList.remove('dragging');
-    });
-
-    // Hover title truncation behavior
-    const titleElement = div.querySelector('.note-item-title');
-    const originalTitle = title;
-    const hoverTruncated = title.length > 12 ? title.substring(0, 12) + '...' : title;
-
-    div.addEventListener('mouseenter', () => {
-      if (titleElement) titleElement.textContent = hoverTruncated;
-    });
-
-    div.addEventListener('mouseleave', () => {
-      if (titleElement) titleElement.textContent = originalTitle;
-    });
-
-    return div;
-  }
-
   async moveNoteToFolder(noteId, folderId) {
     const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
@@ -659,7 +512,7 @@ export class FoldersFeature {
           if (searchTerm) visible = visible && this.noteMatchesSearch(note, searchTerm);
 
           if (visible) {
-            const newEl = this.createFolderNoteElement(note);
+            const newEl = this.createNoteItem(note, true);
             folderContainer.appendChild(newEl);
           }
         }
@@ -677,7 +530,7 @@ export class FoldersFeature {
         if (searchTerm) visible = visible && this.noteMatchesSearch(note, searchTerm);
 
         if (visible && this.notesList) {
-          const newEl = this.createNoteElement(note);
+          const newEl = this.createNoteItem(note);
           // Prepend to keep recent ordering without rebuilding entire list
           this.notesList.insertBefore(newEl, this.notesList.firstChild);
         }
@@ -735,7 +588,7 @@ export class FoldersFeature {
 
     const sortedFolderNotes = this.getSortedNotes(folderNotes);
     sortedFolderNotes.forEach((note) => {
-      const noteElement = this.createFolderNoteElement(note);
+      const noteElement = this.createNoteItem(note, true);
       folderContainer.appendChild(noteElement);
     });
 
