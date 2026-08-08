@@ -1,27 +1,35 @@
 // Switching between the main screens
 
 export class ScreensFeature {
-  showEditor() {
-    // Hide emoji panel when switching views
-    try {
-      this.hideEmojiPanel();
-    } catch (e) {}
-    this.welcomeScreen.classList.add('hidden');
-    this.noteViewer.classList.add('hidden');
-    this.noteEditor.classList.remove('hidden');
-    this.remindersScreen?.classList.add('hidden');
-    this.notificationsScreen?.classList.add('hidden');
-    this.todosScreen?.classList.add('hidden');
+  // Show exactly one of the main screens and highlight its sidebar entry (if it has one)
+  showScreen(name) {
+    this.hideEmojiPanel();
 
-    // Remove active from reminders and notifications
-    this.remindersNav?.classList.remove('active');
-    this.notificationsNav?.classList.remove('active');
-    this.todosNav?.classList.remove('active');
+    const screens = {
+      welcome: this.welcomeScreen,
+      editor: this.noteEditor,
+      viewer: this.noteViewer,
+      reminders: this.remindersScreen,
+      notifications: this.notificationsScreen,
+      todos: this.todosScreen,
+    };
+    Object.entries(screens).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
+
+    const navItems = {
+      reminders: this.remindersNav,
+      notifications: this.notificationsNav,
+      todos: this.todosNav,
+    };
+    Object.entries(navItems).forEach(([key, el]) => el?.classList.toggle('active', key === name));
+  }
+
+  showEditor() {
+    this.showScreen('editor');
 
     // Reset form
     this.resetFormState();
     // Ensure any previews are hidden when entering editor
-    if (this.markdownPreview) this.hideMarkdownPreview();
+    this.hideMarkdownPreview();
     if (this.htmlPreview) {
       this.hideHtmlPreview();
       // clear iframe content if exists
@@ -32,104 +40,28 @@ export class ScreensFeature {
   }
 
   showViewer() {
-    // Hide emoji panel when switching views
-    try {
-      this.hideEmojiPanel();
-    } catch (e) {}
-    this.welcomeScreen.classList.add('hidden');
-    this.noteEditor.classList.add('hidden');
-    this.noteViewer.classList.remove('hidden');
-    this.remindersScreen?.classList.add('hidden');
-    this.notificationsScreen?.classList.add('hidden');
-    this.todosScreen?.classList.add('hidden');
-
-    // Remove active from reminders and notifications
-    this.remindersNav?.classList.remove('active');
-    this.notificationsNav?.classList.remove('active');
-    this.todosNav?.classList.remove('active');
-
+    this.showScreen('viewer');
     this.clearSavedSelection();
   }
 
   showWelcome() {
-    // Hide emoji panel when switching views
-    try {
-      this.hideEmojiPanel();
-    } catch (e) {}
-    this.noteEditor.classList.add('hidden');
-    this.noteViewer.classList.add('hidden');
-    this.welcomeScreen.classList.remove('hidden');
-    this.remindersScreen?.classList.add('hidden');
-    this.notificationsScreen?.classList.add('hidden');
-    this.todosScreen?.classList.add('hidden');
-
-    // Remove active from reminders and notifications
-    this.remindersNav?.classList.remove('active');
-    this.notificationsNav?.classList.remove('active');
-    this.todosNav?.classList.remove('active');
-
+    this.showScreen('welcome');
     this.clearSavedSelection();
   }
 
   showRemindersScreen() {
-    // Hide emoji panel when switching views
-    try {
-      this.hideEmojiPanel();
-    } catch (e) {}
-    this.noteEditor.classList.add('hidden');
-    this.noteViewer.classList.add('hidden');
-    this.welcomeScreen.classList.add('hidden');
-    this.notificationsScreen?.classList.add('hidden');
-    this.todosScreen?.classList.add('hidden');
-    this.remindersScreen?.classList.remove('hidden');
-
-    // Update active states for reminders/notifications group only
-    this.remindersNav?.classList.add('active');
-    this.notificationsNav?.classList.remove('active');
-    this.todosNav?.classList.remove('active');
-
+    this.showScreen('reminders');
     this.updateRemindersView();
   }
 
   showNotificationsScreen() {
-    // Hide emoji panel when switching views
-    try {
-      this.hideEmojiPanel();
-    } catch (e) {}
-    this.noteEditor.classList.add('hidden');
-    this.noteViewer.classList.add('hidden');
-    this.welcomeScreen.classList.add('hidden');
-    this.remindersScreen?.classList.add('hidden');
-    this.todosScreen?.classList.add('hidden');
-    this.notificationsScreen?.classList.remove('hidden');
-
-    // Update active states for reminders/notifications group only
-    this.notificationsNav?.classList.add('active');
-    this.remindersNav?.classList.remove('active');
-    this.todosNav?.classList.remove('active');
-
+    this.showScreen('notifications');
     this.updateNotificationsView();
   }
 
   showTodosScreen() {
     this.hideAllModals();
-    try {
-      this.hideEmojiPanel();
-    } catch (e) {}
-
-    // Hide all screens
-    this.noteEditor.classList.add('hidden');
-    this.noteViewer.classList.add('hidden');
-    this.welcomeScreen.classList.add('hidden');
-    this.notificationsScreen?.classList.add('hidden');
-    this.remindersScreen?.classList.add('hidden');
-    this.todosScreen?.classList.remove('hidden');
-
-    // Update active states - only for todos/reminders/notifications group
-    this.todosNav?.classList.add('active');
-    this.remindersNav?.classList.remove('active');
-    this.notificationsNav?.classList.remove('active');
-
+    this.showScreen('todos');
     this.renderTodosSections();
   }
 }
