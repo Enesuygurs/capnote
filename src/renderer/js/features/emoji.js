@@ -61,9 +61,7 @@ export class EmojiFeature {
         this.emojiPanel.style.top = '';
       }
       // clear any saved selection when the panel is closed explicitly
-      try {
-        this.clearSavedSelection();
-      } catch (e) {}
+      this.clearSavedSelection();
     }, 200);
     if (this.openEmojiBtn) this.openEmojiBtn.classList.remove('active');
   }
@@ -130,17 +128,13 @@ export class EmojiFeature {
           // ignore restore errors
         }
         // make sure editor has focus before insertion
-        try {
-          this.richEditor && this.richEditor.focus();
-        } catch (e) {}
+        this.richEditor && this.richEditor.focus();
 
         this.insertTextAtCursor(emoji);
         this.trackContentChanges();
 
         // update savedSelection to the new caret position after insertion so subsequent clicks insert at the updated spot
-        try {
-          this.captureEditorSelection();
-        } catch (e) {}
+        this.captureEditorSelection();
 
         // NOTE: Do NOT hide the panel here. The panel should only close when the user presses the close button.
       });
@@ -214,9 +208,7 @@ export class EmojiFeature {
         this.populateEmojiGrid();
         // refocus search input
         setTimeout(() => {
-          try {
-            this.emojiSearchInput && this.emojiSearchInput.focus();
-          } catch (e) {}
+          this.emojiSearchInput && this.emojiSearchInput.focus();
         }, 50);
       });
     });

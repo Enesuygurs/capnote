@@ -43,18 +43,10 @@ export class BackupFeature {
     URL.revokeObjectURL(url);
     this.showNotification(i18n.t('messages.dataExported'), 'success');
     // Refresh reminder/notification UI and counters in case data changed
-    try {
-      this.updateRemindersView();
-    } catch (e) {}
-    try {
-      this.updateNotificationsView();
-    } catch (e) {}
-    try {
-      this.updateActiveRemindersCount();
-    } catch (e) {}
-    try {
-      this.updateActiveNotificationsCount();
-    } catch (e) {}
+    this.updateRemindersView();
+    this.updateNotificationsView();
+    this.updateActiveRemindersCount();
+    this.updateActiveNotificationsCount();
   }
 
   // New: import ALL data and offer merge/replace behaviour
@@ -264,26 +256,11 @@ export class BackupFeature {
         await this.migrateLegacyLockedNotes();
 
         // Persist everything
-        try {
-          await this.saveFolders();
-        } catch (e) {
-          console.warn(e);
-        }
-        try {
-          await this.saveNotes();
-        } catch (e) {
-          console.warn(e);
-        }
-        try {
-          await this.saveReminders();
-        } catch (e) {
-          console.warn(e);
-        }
-        try {
-          await this.saveNotifications();
-        } catch (e) {
-          console.warn(e);
-        }
+        // Each save reports its own failures
+        await this.saveFolders();
+        await this.saveNotes();
+        await this.saveReminders();
+        await this.saveNotifications();
         await this.saveTodos();
 
         // Reload UI/state
@@ -292,18 +269,10 @@ export class BackupFeature {
         this.updateNotesList();
         this.updateFolderNotes();
         // Refresh reminders/notifications UI and counters
-        try {
-          this.updateRemindersView();
-        } catch (e) {}
-        try {
-          this.updateNotificationsView();
-        } catch (e) {}
-        try {
-          this.updateActiveRemindersCount();
-        } catch (e) {}
-        try {
-          this.updateActiveNotificationsCount();
-        } catch (e) {}
+        this.updateRemindersView();
+        this.updateNotificationsView();
+        this.updateActiveRemindersCount();
+        this.updateActiveNotificationsCount();
         this.renderTodosSections();
         this.updateTodosCount();
 
