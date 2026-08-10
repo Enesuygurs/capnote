@@ -386,4 +386,26 @@ export class RemindersFeature {
     const note = noteId ? this.notes.find((n) => n.id === noteId) : null;
     return note ? note.title : storedTitle;
   }
+
+  // Weekday picker for weekly reminders
+  setupReminderEvents() {
+    // Show/hide weekday selector when recurrence changes
+    if (this.reminderRecurrence) {
+      this.reminderRecurrence.addEventListener('change', (e) => {
+        try {
+          const val = e.currentTarget.value;
+          const wk = document.getElementById('reminderWeekdays');
+          if (wk) {
+            if (val === 'weekly') {
+              wk.classList.remove('hidden');
+              wk.setAttribute('aria-hidden', 'false');
+            } else {
+              wk.classList.add('hidden');
+              wk.setAttribute('aria-hidden', 'true');
+            }
+          }
+        } catch (err) {}
+      });
+    }
+  }
 }

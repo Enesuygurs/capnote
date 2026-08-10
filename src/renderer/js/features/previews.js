@@ -183,4 +183,23 @@ export class PreviewsFeature {
   hideRichEditor() {
     if (this.richEditor) this.richEditor.classList.add('hidden');
   }
+
+  // Markdown/HTML preview toggles and the markdown editor
+  setupPreviewEvents() {
+    // Markdown toggle and preview
+    if (this.toggleMarkdownBtn)
+      this.toggleMarkdownBtn.addEventListener('click', () => this.toggleMarkdownMode());
+
+    if (this.toggleHtmlBtn)
+      this.toggleHtmlBtn.addEventListener('click', () => this.toggleHtmlMode());
+
+    if (this.markdownEditor)
+      this.markdownEditor.addEventListener('input', () => {
+        // If preview is visible, live-update it (debounced would be better, but keep simple)
+        if (this.markdownPreview && !this.markdownPreview.classList.contains('hidden')) {
+          this.renderMarkdownPreview(this.markdownEditor.value);
+        }
+        this.trackContentChanges();
+      });
+  }
 }

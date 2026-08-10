@@ -406,4 +406,89 @@ export class NoteListFeature {
       this.sortBtn.classList.remove('active');
     }
   }
+
+  // Search, sort, filters and closing open menus/dropdowns
+  setupNoteListEvents() {
+    // Close note option menus when clicking outside or scrolling
+    const closeMenus = () => {
+      document.querySelectorAll('.note-options-menu:not(.hidden)').forEach((menu) => {
+        menu.classList.add('hidden');
+        menu.style.display = 'none';
+      });
+      document.querySelectorAll('.note-options-container.menu-open').forEach((container) => {
+        container.classList.remove('menu-open');
+      });
+    };
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.note-options-container')) {
+        closeMenus();
+      }
+    });
+
+    // Arama ve filtreler
+    this.searchInput.addEventListener('input', (e) => this.searchNotes(e.target.value));
+
+    // New control buttons
+    this.searchBtn?.addEventListener('click', () => this.toggleSearch());
+
+    this.sortBtn?.addEventListener('click', () => this.toggleSort());
+
+    // Sort dropdown options
+    document.querySelectorAll('.sort-option').forEach((option) => {
+      option.addEventListener('click', (e) => {
+        // Remove active from all options
+        document.querySelectorAll('.sort-option').forEach((opt) => opt.classList.remove('active'));
+        // Add active to clicked option
+        e.currentTarget.classList.add('active');
+        // Apply sort
+        this.setSortOrder(e.currentTarget.dataset.value);
+        // Close dropdown
+        this.sortDropdown.classList.add('hidden');
+        this.sortBtn.classList.remove('active');
+      });
+    });
+
+    // Navigation items - modern sidebar
+    document.querySelectorAll('.nav-item[data-filter]').forEach((item) => {
+      item.addEventListener('click', (e) => {
+        const clickedFilter = e.currentTarget.dataset.filter;
+
+        // Toggle functionality: if clicking the same filter, deactivate it
+        if (this.currentFilter === clickedFilter) {
+          // Remove active from filter-group items only (keep reminders/notifications state)
+          document
+            .querySelectorAll('.nav-item[data-filter]')
+            .forEach((nav) => nav.classList.remove('active'));
+          // Reset to "all" filter
+          this.changeFilter('all');
+          // Make "all" filter active
+          document.querySelector('[data-filter="all"]').classList.add('active');
+        } else {
+          // Remove active from other filter-group items only
+          document
+            .querySelectorAll('.nav-item[data-filter]')
+            .forEach((nav) => nav.classList.remove('active'));
+          // Add active to clicked filter item
+          e.currentTarget.classList.add('active');
+          // Apply filter
+          this.changeFilter(clickedFilter);
+        }
+      });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (
+        !e.target.closest('.nav-section-controls') &&
+        !e.target.closest('.search-container') &&
+        !e.target.closest('.sort-dropdown')
+      ) {
+        this.searchContainer?.classList.add('hidden');
+        this.sortDropdown?.classList.add('hidden');
+        this.searchBtn?.classList.remove('active');
+        this.sortBtn?.classList.remove('active');
+      }
+    });
+  }
 }

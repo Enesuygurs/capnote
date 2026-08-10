@@ -449,4 +449,280 @@ export class EditorInsertFeature {
     this.trackContentChanges();
     this.captureEditorSelection();
   }
+
+  // Enter inside code blocks and checklists, pasting and dropping files
+  setupInsertEvents() {
+    if (this.insertCodeBlockBtn)
+      this.insertCodeBlockBtn.addEventListener('click', () => this.insertCodeBlock());
+
+    // Allow Enter inside <code> blocks in rich editor to create newlines instead of splitting nodes
+    this.richEditor.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const sel = window.getSelection();
+        if (!sel || !sel.rangeCount) return;
+        const range = sel.getRangeAt(0);
+        const codeAncestor =
+          range.startContainer.nodeType === Node.ELEMENT_NODE
+            ? range.startContainer.closest && range.startContainer.closest('code')
+            : range.startContainer.parentElement &&
+              range.startContainer.parentElement.closest('code');
+        // also detect a containing <pre> in case selection sits directly inside <pre>
+        const preAncestor =
+          range.startContainer.nodeType === Node.ELEMENT_NODE
+            ? range.startContainer.closest && range.startContainer.closest('pre')
+            : range.startContainer.parentElement &&
+              range.startContainer.parentElement.closest('pre');
+        if (codeAncestor || preAncestor) {
+          // inside a <code> node. Allow exiting the code block via Ctrl/Cmd+Enter or
+          // by pressing Enter on an empty line at the end of the code block.
+          // If exit is requested, create a paragraph after the containing <pre> and move caret there.
+          const isExitShortcut = e.ctrlKey || e.metaKey;
+          // determine the text node and its content length
+          let node = range.startContainer;
+          let offset = range.startOffset;
+          // If the user pressed Ctrl/Cmd+Enter, immediately exit the nearest <pre> by
+          // inserting a paragraph after it. This avoids edge cases where selection
+          // nodes are in unusual spots and makes the shortcut reliable.
+          if (isExitShortcut) {
+            e.preventDefault();
+            try {
+              // find a <pre> ancestor starting from the startContainer
+              let findNode = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+              while (
+                findNode &&
+                findNode !== this.richEditor &&
+                findNode.tagName &&
+                findNode.tagName.toLowerCase() !== 'pre'
+              ) {
+                findNode = findNode.parentElement;
+              }
+              const resolvedPre =
+                findNode && findNode.tagName && findNode.tagName.toLowerCase() === 'pre'
+                  ? findNode
+                  : null;
+              const para = document.createElement('p');
+              para.innerHTML = '<br>';
+              if (resolvedPre && resolvedPre.parentNode) {
+                if (resolvedPre.nextSibling)
+                  resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
+                else resolvedPre.parentNode.appendChild(para);
+              } else {
+                // fallback: append to editor
+                this.richEditor.appendChild(para);
+              }
+              const newSel = window.getSelection();
+              const newRange = document.createRange();
+              newRange.setStart(para, 0);
+              newRange.collapse(true);
+              newSel.removeAllRanges();
+              newSel.addRange(newRange);
+              this.richEditor.focus();
+              this.trackContentChanges();
+            } catch (err) {
+              // ignore; allow other logic to try
+            }
+            return;
+          }
+          if (node.nodeType !== Node.TEXT_NODE) {
+            if (node.childNodes[offset] && node.childNodes[offset].nodeType === Node.TEXT_NODE) {
+              node = node.childNodes[offset];
+              offset = 0;
+            }
+          }
+          // otherwise we're inside a <code> node: insert a newline at the caret.
+          // Only Ctrl/Cmd+Enter above exits the code block; plain Enter should reliably add a newline.
+          e.preventDefault();
+          try {
+            // Ensure we operate on a text node if possible
+            if (node.nodeType !== Node.TEXT_NODE) {
+              // prefer a text child at the offset
+              if (
+                node.childNodes &&
+                node.childNodes[offset] &&
+                node.childNodes[offset].nodeType === Node.TEXT_NODE
+              ) {
+                node = node.childNodes[offset];
+                offset = 0;
+              } else {
+                // try previous sibling text node
+                let prev =
+                  node.childNodes && node.childNodes[offset - 1]
+                    ? node.childNodes[offset - 1]
+                    : null;
+                while (prev && prev.nodeType !== Node.TEXT_NODE)
+                  prev = prev && prev.previousSibling ? prev.previousSibling : null;
+                if (prev && prev.nodeType === Node.TEXT_NODE) {
+                  node = prev;
+                  offset = node.nodeValue ? node.nodeValue.length : 0;
+                }
+              }
+            }
+
+            // If we found or coerced to a text node, insert into it
+            if (node && node.nodeType === Node.TEXT_NODE) {
+              const text = node.nodeValue || '';
+              const before = text.substring(0, offset);
+              let after = text.substring(offset);
+              // if the text after caret already begins with a ZWSP, avoid adding another
+              const ZW = '\u200B';
+              let insertMarker = ZW;
+              if (after && after.startsWith(ZW)) insertMarker = '';
+              node.nodeValue = before + '\n' + insertMarker + after;
+              // place caret after the inserted newline (before the marker)
+              const newRange = document.createRange();
+              newRange.setStart(node, before.length + 1);
+              newRange.collapse(true);
+              sel.removeAllRanges();
+              sel.addRange(newRange);
+              this.trackContentChanges();
+            } else {
+              // fallback: append a text node with newline to the deepest codeAncestor and place caret after it
+              const textNode = document.createTextNode('\n');
+              // find a sensible insertion point: prefer range.insertNode if possible
+              try {
+                // if inserting a new line node, include a ZWSP so caret has a visible spot
+                const ZW = '\u200B';
+                if (!textNode.nodeValue || !textNode.nodeValue.startsWith('\n'))
+                  textNode.nodeValue = '\n' + ZW;
+                range.insertNode(textNode);
+                // move caret after inserted node (position will be after the newline)
+                range.setStartAfter(textNode);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+              } catch (innerErr) {
+                try {
+                  // fallback to appending to codeAncestor
+                  (codeAncestor || this.richEditor).appendChild(textNode);
+                  const newRange2 = document.createRange();
+                  newRange2.setStartAfter(textNode);
+                  newRange2.collapse(true);
+                  sel.removeAllRanges();
+                  sel.addRange(newRange2);
+                } catch (finalErr) {
+                  // as a last resort, insert a paragraph after the pre (exit behavior)
+                  try {
+                    const para = document.createElement('p');
+                    para.innerHTML = '<br>';
+                    const resolvedPre =
+                      preAncestor ||
+                      (codeAncestor &&
+                        (codeAncestor.closest
+                          ? codeAncestor.closest('pre')
+                          : codeAncestor.parentElement));
+                    if (resolvedPre && resolvedPre.parentNode) {
+                      if (resolvedPre.nextSibling)
+                        resolvedPre.parentNode.insertBefore(para, resolvedPre.nextSibling);
+                      else resolvedPre.parentNode.appendChild(para);
+                    } else {
+                      this.richEditor.appendChild(para);
+                    }
+                    const newSel = window.getSelection();
+                    const newRange3 = document.createRange();
+                    newRange3.setStart(para, 0);
+                    newRange3.collapse(true);
+                    newSel.removeAllRanges();
+                    newSel.addRange(newRange3);
+                  } catch (err) {}
+                }
+              }
+              this.trackContentChanges();
+            }
+          } catch (err) {
+            // ignore insertion failures and allow normal behavior as a fallback
+          }
+        }
+      }
+    });
+
+    this.richEditor.addEventListener('paste', (e) => this.handlePaste(e));
+
+    // Drag & drop support: accept files/images dropped into the rich editor
+    this.richEditor.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'copy';
+      this.richEditor.classList.add('drag-over');
+    });
+
+    this.richEditor.addEventListener('dragleave', (e) => {
+      this.richEditor.classList.remove('drag-over');
+    });
+
+    this.richEditor.addEventListener('drop', async (e) => {
+      e.preventDefault();
+      this.richEditor.classList.remove('drag-over');
+      const dt = e.dataTransfer;
+      if (!dt || !dt.files || dt.files.length === 0) return;
+      for (let i = 0; i < dt.files.length; i++) {
+        const f = dt.files[i];
+        try {
+          // ask main process to copy file into app uploads and return a file:// URL
+          const saved = await window.electronAPI.saveDroppedFile(f.path);
+          if (!saved) continue;
+          // decide how to insert: if image mime type, insert <img>, otherwise insert link
+          const lower = (f.type || '').toLowerCase();
+          if (lower.startsWith('image/') || /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(f.name)) {
+            this.insertImageAtSelection(saved, f.name);
+          } else {
+            const a = document.createElement('a');
+            a.href = saved;
+            a.textContent = f.name;
+            a.target = '_blank';
+            try {
+              const sel = window.getSelection();
+              if (sel && sel.rangeCount) {
+                const range = sel.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(a);
+                range.setStartAfter(a);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+              } else {
+                this.richEditor.appendChild(a);
+              }
+            } catch (err) {
+              this.richEditor.appendChild(a);
+            }
+          }
+          this.trackContentChanges();
+        } catch (err) {
+          console.error('Drop handling failed for', f, err);
+        }
+      }
+    });
+
+    // Handle Enter key in checklist items
+    this.richEditor.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          const checklistItem = range.startContainer.closest
+            ? range.startContainer.closest('.checklist-item')
+            : range.startContainer.parentElement?.closest('.checklist-item');
+
+          if (checklistItem) {
+            e.preventDefault();
+
+            // Create a new paragraph after the checklist
+            const newParagraph = document.createElement('p');
+            newParagraph.innerHTML = '<br>';
+
+            const checklist = checklistItem.closest('.checklist');
+            checklist.parentNode.insertBefore(newParagraph, checklist.nextSibling);
+
+            // Move cursor to the new paragraph
+            const newRange = document.createRange();
+            newRange.setStart(newParagraph, 0);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+
+            this.trackContentChanges();
+          }
+        }
+      }
+    });
+  }
 }
