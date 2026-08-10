@@ -419,4 +419,51 @@ export class EditorFeature {
     if (!this.richEditor || !node) return false;
     return this.richEditor.contains(node);
   }
+
+  // Typing, selection tracking, the title field and tags
+  setupEditorEvents() {
+    // Rich editor events
+    this.richEditor.addEventListener('input', () => {
+      this.updateWordCount();
+      this.trackContentChanges();
+    });
+
+    // Track selection for formatter usage
+    this.richEditor.addEventListener('mouseup', () => this.captureEditorSelection());
+
+    this.richEditor.addEventListener('keyup', () => this.captureEditorSelection());
+
+    this.richEditor.addEventListener('mouseup', () => this.updateFormatPanelFromSelection());
+
+    this.richEditor.addEventListener('keyup', () => this.updateFormatPanelFromSelection());
+
+    // Selection change for the entire document
+    document.addEventListener('selectionchange', () => {
+      if (document.activeElement === this.richEditor) {
+        this.captureEditorSelection();
+        this.updateFormatPanelFromSelection();
+      }
+    });
+
+    // Title input
+    this.noteTitle.addEventListener('input', () => {
+      this.updateCurrentDate();
+      this.trackContentChanges();
+    });
+
+    this.noteTitle.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        this.richEditor.focus();
+      }
+    });
+
+    // Tags
+    this.tagInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        this.addTag(e.target.value.trim());
+        e.target.value = '';
+      }
+    });
+  }
 }

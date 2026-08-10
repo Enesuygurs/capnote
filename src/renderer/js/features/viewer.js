@@ -262,4 +262,17 @@ export class ViewerFeature {
       if (this.currentNote.isLocked) this.resealNote(this.currentNote);
     });
   }
+
+  // Note history dialog
+  setupViewerEvents() {
+    // History button opens history modal (instead of clicking date)
+    this.historyBtn = document.getElementById('historyBtn');
+
+    this.historyBtn?.addEventListener('click', () => this.openNoteHistory());
+
+    // History modal close handlers
+    this.closeHistoryModal?.addEventListener('click', () => this.hideModal(this.noteHistoryModal));
+
+    this.historyCloseBtn?.addEventListener('click', () => this.hideModal(this.noteHistoryModal));
+  }
 }

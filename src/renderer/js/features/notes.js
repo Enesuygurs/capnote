@@ -512,4 +512,21 @@ export class NotesFeature {
       }
     });
   }
+
+  // Save/cancel in the editor and the action buttons of the viewer
+  setupNoteActionEvents() {
+    this.saveNoteBtn.addEventListener('click', () => this.saveNote());
+
+    this.cancelNoteBtn.addEventListener('click', () => this.cancelEdit());
+
+    this.editNoteBtn.addEventListener('click', () => this.editCurrentNote());
+
+    this.deleteNoteBtn.addEventListener('click', () => this.deleteCurrentNote());
+
+    this.favoriteViewBtn.addEventListener('click', () => this.toggleFavoriteView());
+
+    this.duplicateNoteBtn.addEventListener('click', () => this.duplicateNote());
+
+    this.exportNoteBtn.addEventListener('click', () => this.showExportModal());
+  }
 }

@@ -447,4 +447,132 @@ export class SettingsFeature {
       this.showNotification(i18n.t('messages.resetError'), 'error');
     }
   }
+
+  // Controls in the settings dialog that apply immediately
+  setupSettingsControls() {
+    // Language selector
+    if (this.languageSelect) {
+      this.languageSelect.addEventListener('change', (e) => {
+        const lang = e.target.value;
+        if (i18n) {
+          i18n.setLanguage(lang);
+          this.setSetting('language', lang);
+          window.electronAPI?.setLanguage?.(lang);
+          this.showNotification(i18n.t('messages.languageChanged'), 'success');
+          // Update dynamic content that may not have data-i18n attributes
+          this.updateDynamicTranslations();
+        }
+      });
+    }
+
+    // Accent swatches
+    this.accentYellowBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#f59e0b')
+    );
+
+    this.accentCherryBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#e11d48')
+    );
+
+    this.accentAppleBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#22c55e')
+    );
+
+    this.accentPurpleBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#8b5cf6')
+    );
+
+    this.accentBlueBtn?.addEventListener('click', (e) =>
+      this.setAccentColor(e.currentTarget.dataset.color || '#3b82f6')
+    );
+
+    this.syncFolderAccentToggle?.addEventListener('change', (e) => {
+      const enabled = e.currentTarget.checked;
+      this.setSetting('syncFolderAccent', enabled);
+      this.applyFolderAccentSync(enabled);
+      this.updateFoldersList();
+    });
+
+    // Native/system notifications toggle
+    this.toggleNativeNotifications?.addEventListener('change', (e) => {
+      const enabled = e.currentTarget.checked;
+      this.setSetting('nativeNotifications', enabled);
+      this.showNotification(
+        enabled
+          ? i18n.t('messages.systemNotificationsEnabled')
+          : i18n.t('messages.systemNotificationsDisabled'),
+        'success'
+      );
+    });
+
+    // Start at login toggle
+    this.startAtLoginToggle?.addEventListener('change', async (e) => {
+      try {
+        const enabled = !!e.currentTarget.checked;
+        if (window.electronAPI && typeof window.electronAPI.setStartAtLogin === 'function') {
+          const res = await window.electronAPI.setStartAtLogin(enabled);
+          if (!res || res.ok !== true)
+            throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
+          this.showNotification(
+            enabled
+              ? i18n.t('messages.launchOnStartupEnabled')
+              : i18n.t('messages.launchOnStartupDisabled'),
+            'success'
+          );
+        }
+      } catch (err) {
+        console.warn('setStartAtLogin failed:', err);
+        // revert checkbox
+        if (this.startAtLoginToggle)
+          this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
+        this.showNotification(i18n.t('messages.launchOnStartupError'), 'error');
+      }
+    });
+
+    // Close to tray toggle: only wire on Windows (hide on macOS/Linux)
+    try {
+      const plat =
+        window.electronAPI && window.electronAPI.platform
+          ? window.electronAPI.platform
+          : (navigator.platform || '').toLowerCase();
+      if (plat === 'win32' && this.closeToTrayToggle) {
+        this.closeToTrayToggle.addEventListener('change', async (e) => {
+          try {
+            const enabled = !!e.currentTarget.checked;
+            if (window.electronAPI && typeof window.electronAPI.setCloseToTray === 'function') {
+              const res = await window.electronAPI.setCloseToTray(enabled);
+              this.setSetting('closeToTray', enabled);
+              if (!res || res.ok !== true)
+                throw new Error(res && res.error ? res.error : 'Bilinmeyen hata');
+              this.showNotification(
+                enabled
+                  ? i18n.t('messages.minimizeToTrayEnabled')
+                  : i18n.t('messages.minimizeToTrayDisabled'),
+                'success'
+              );
+            }
+          } catch (err) {
+            console.warn('setCloseToTray failed:', err);
+            if (this.closeToTrayToggle)
+              this.closeToTrayToggle.checked = !this.closeToTrayToggle.checked;
+            this.showNotification(i18n.t('messages.minimizeToTrayError'), 'error');
+          }
+        });
+      } else {
+        // hide the close-to-tray UI on non-Windows: find nearest .setting-item container
+        try {
+          if (this.closeToTrayToggle) {
+            let el = this.closeToTrayToggle;
+            while (el && !el.classList.contains('setting-item')) el = el.parentElement;
+            if (el) el.style.display = 'none';
+          }
+        } catch (hideErr) {}
+      }
+    } catch (err) {
+      // ignore
+    }
+
+    // Test notification button (with cooldown)
+    this.testNativeNotifBtn?.addEventListener('click', () => this.handleTestNotificationClick());
+  }
 }

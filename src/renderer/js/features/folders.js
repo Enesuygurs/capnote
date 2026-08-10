@@ -662,4 +662,89 @@ export class FoldersFeature {
       this.updateFolderNotes();
     }
   }
+
+  // Folder dialogs, the folder context menu and dropping notes back to the root list
+  setupFolderEvents() {
+    // Folder control buttons
+    this.addFolderBtn?.addEventListener('click', () => this.showFolderModal());
+
+    this.createFolderBtn?.addEventListener('click', () => this.createFolder());
+
+    this.cancelFolderBtn?.addEventListener('click', () => this.hideFolderModal());
+
+    // Context menu
+    this.changeFolderColorMenuItem?.addEventListener('click', () => this.openFolderColorModal());
+
+    this.renameFolderMenuItem?.addEventListener('click', () => this.renameSelectedFolder());
+
+    this.deleteFolderMenuItem?.addEventListener('click', () => this.deleteSelectedFolder());
+
+    // Folder color modal handlers
+    this.saveFolderColorBtn?.addEventListener('click', () => {
+      const color = this.folderColorInput.value;
+      this.applySelectedFolderColor(color);
+      this.hideModal(this.folderColorModal);
+    });
+
+    this.cancelFolderColorBtn?.addEventListener('click', () => {
+      this.hideModal(this.folderColorModal);
+    });
+
+    this.closeFolderColorModal?.addEventListener('click', () => {
+      this.hideModal(this.folderColorModal);
+    });
+
+    // Hide context menu when clicking elsewhere
+    document.addEventListener('click', () => this.hideContextMenu());
+
+    // Notes list container drag-drop (for moving notes out of folders)
+    const notesListContainer = document.getElementById('notesListContainer');
+
+    if (notesListContainer) {
+      notesListContainer.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        // If the active drag is a folder, ignore: folders should not be dropped into the "no-folder" area
+        const types =
+          e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
+        let isFolderDrag = false;
+        try {
+          isFolderDrag =
+            types.includes('text/folder-id') ||
+            Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
+        } catch (err) {
+          isFolderDrag = types.includes('text/folder-id');
+        }
+        if (isFolderDrag) {
+          // do not show drop target for folders
+          return;
+        }
+
+        notesListContainer.classList.add('drag-over');
+      });
+
+      notesListContainer.addEventListener('dragleave', (e) => {
+        // Only remove drag-over if leaving the container entirely
+        if (!notesListContainer.contains(e.relatedTarget)) {
+          notesListContainer.classList.remove('drag-over');
+        }
+      });
+
+      notesListContainer.addEventListener('drop', (e) => {
+        e.preventDefault();
+        notesListContainer.classList.remove('drag-over');
+        // If a folder is being dragged, ignore the drop here
+        try {
+          const folderId = e.dataTransfer.getData('text/folder-id');
+          if (folderId) {
+            return;
+          }
+        } catch (err) {
+          // ignore getData errors and continue
+        }
+
+        const noteId = e.dataTransfer.getData('text/plain');
+        this.moveNoteToFolder(noteId, null);
+      });
+    }
+  }
 }
