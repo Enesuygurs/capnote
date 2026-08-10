@@ -110,9 +110,7 @@ export class EditorFeature {
       // Copy buttons are viewer UI and must not end up in edited content
       this.richEditor.querySelectorAll('.code-copy-btn').forEach((btn) => btn.remove());
       // ensure any images in loaded content are wrapped and wired for resizing
-      try {
-        this.upgradeImagesInEditor();
-      } catch (e) {}
+      this.upgradeImagesInEditor();
       if (this.markdownEditor) this.markdownEditor.value = '';
     }
     this.setEditorFormatting(note.formatting || this.getDefaultFormatting());
@@ -294,9 +292,7 @@ export class EditorFeature {
     if (this.emojiSearchInput)
       this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
     // initialize tabs then populate grid
-    try {
-      this.initEmojiTabs();
-    } catch (e) {}
+    this.initEmojiTabs();
     this.populateEmojiGrid();
   }
 

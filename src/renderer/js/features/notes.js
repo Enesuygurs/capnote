@@ -52,9 +52,7 @@ export class NotesFeature {
     this.autoLockCurrentNote();
 
     // Ensure emoji panel is closed when leaving the current note
-    try {
-      this.hideEmojiPanel();
-    } catch (e) {}
+    this.hideEmojiPanel();
     // Remember where we came from so cancelling the new note can go back there
     this.noteBeforeNew =
       this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;

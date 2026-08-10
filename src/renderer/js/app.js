@@ -362,26 +362,10 @@ export class CapnoteApp {
 
     this.helpSupport.addEventListener('click', () => this.showSettingsModal());
 
-    // Tray context menu -> open notifications
-    try {
-      if (window.electronAPI && typeof window.electronAPI.onOpenNotifications === 'function') {
-        window.electronAPI.onOpenNotifications(() => this.showNotificationsScreen());
-      }
-    } catch {}
-
-    // Tray context menu -> new note
-    try {
-      if (window.electronAPI && typeof window.electronAPI.onNewNote === 'function') {
-        window.electronAPI.onNewNote(() => this.createNewNote());
-      }
-    } catch {}
-
-    // Tray context menu -> settings
-    try {
-      if (window.electronAPI && typeof window.electronAPI.onOpenSettings === 'function') {
-        window.electronAPI.onOpenSettings(() => this.showSettingsModal());
-      }
-    } catch {}
+    // Tray context menu entries
+    window.electronAPI.onOpenNotifications(() => this.showNotificationsScreen());
+    window.electronAPI.onNewNote(() => this.createNewNote());
+    window.electronAPI.onOpenSettings(() => this.showSettingsModal());
 
     this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
 

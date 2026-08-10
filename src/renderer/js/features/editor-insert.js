@@ -256,9 +256,7 @@ export class EditorInsertFeature {
       newRange.setStart(textNode, 1);
       newRange.collapse(true);
       sel.addRange(newRange);
-      try {
-        this.richEditor.focus();
-      } catch (e) {}
+      this.richEditor.focus();
     } catch (e) {
       // fallback: append
       const pre = document.createElement('pre');
@@ -382,9 +380,7 @@ export class EditorInsertFeature {
       }
     } catch (e) {
       // As a last resort, append to editor
-      try {
-        this.richEditor.insertAdjacentHTML('beforeend', html);
-      } catch (e2) {}
+      this.richEditor.insertAdjacentHTML('beforeend', html);
     }
   }
 
@@ -415,12 +411,8 @@ export class EditorInsertFeature {
     this.insertHtmlAtSavedSelection(html);
 
     // Update word/char counts and mark note dirty
-    try {
-      this.captureEditorSelection();
-    } catch (e) {}
-    try {
-      this.updateWordCount();
-    } catch (e) {}
+    this.captureEditorSelection();
+    this.updateWordCount();
     // Close modal
     this.hideModal(this.tableModal);
   }
