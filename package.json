@@ -2,7 +2,7 @@
   "name": "capnote",
   "version": "1.0.0",
   "description": "Capnote - a modern desktop notes and journal app",
-  "main": "src/main.js",
+  "main": "src/main/index.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
