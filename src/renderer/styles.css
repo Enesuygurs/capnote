@@ -94,6 +94,10 @@ body.resizing .welcome-screen {
   --transition-normal: 250ms ease;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --bg-hover: #eef2f6;
+  --border-color: #e5e7eb;
+  --primary-light: var(--accent-color-rgba-12);
+  --text-on-primary: #ffffff;
+  --radius-full: 999px;
 }
 body {
   font-family: var(--font-sans);
@@ -846,6 +850,11 @@ body.dark .code-copy-btn {
   background: var(--primary-light);
   color: var(--primary-color);
   font-weight: 500;
+}
+
+/* Filters (all/today/favorites) mark the list state, not the open screen: accent text only */
+.nav-item[data-filter].active {
+  background: transparent;
 }
 
 /* Yeni Not Butonu - Aydınlık Tema */
@@ -2995,6 +3004,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   --text-muted: #888888;
   --text-light: #ffffff;
   --bg-hover: rgba(255, 255, 255, 0.04);
+  --border-color: rgba(255, 255, 255, 0.08);
 }
 
 /* Dark theme: outline button colors only */
@@ -3517,10 +3527,6 @@ input[type='color'].color-picker::-moz-color-swatch {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-[data-theme='dark'] .viewer-content {
-  background: var(--viewer-bg);
-}
-
 [data-theme='dark'] .export-options {
   background: var(--export-options-bg);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -3864,7 +3870,7 @@ input:checked + .toggle-slider:before {
 #passwordModal .form-input:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+  box-shadow: 0 0 0 3px var(--accent-color-rgba-10);
 }
 
 #passwordModal .form-message {
