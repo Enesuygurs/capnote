@@ -98,6 +98,11 @@ body.resizing .welcome-screen {
   --primary-light: var(--accent-color-rgba-12);
   --text-on-primary: #ffffff;
   --radius-full: 999px;
+  /* Note content: neutral code blocks and links derived from the accent, readable for any accent */
+  --code-bg: #f6f8fa;
+  --code-text: #1f2328;
+  --code-inline-bg: rgba(27, 31, 35, 0.06);
+  --link-color: color-mix(in srgb, var(--accent-color) 65%, black);
 }
 body {
   font-family: var(--font-sans);
@@ -538,13 +543,12 @@ body.platform-linux .titlebar-buttons {
   color: var(--text-secondary);
 }
 
-.markdown-preview a {
-  color: var(--accent-color);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-.markdown-preview a:hover {
+.markdown-preview a,
+.formatted-content a,
+.rich-editor a {
+  color: var(--link-color);
   text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .markdown-preview blockquote {
@@ -563,59 +567,42 @@ body.platform-linux .titlebar-buttons {
   margin: 0.25em 0;
 }
 
-.markdown-preview pre {
-  /* Boxed code block for preview - use a slightly darker accent mix as background */
-  background: color-mix(in srgb, var(--primary-color) 60%, black 40%);
-  color: var(--text-on-primary, #ffffff);
-  padding: 14px 16px;
-  border-radius: 8px;
-  overflow: auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
-  font-size: 13px;
-  line-height: 1.5;
-  margin: 0.9em 0;
-  border: 1px solid color-mix(in srgb, var(--primary-color) 50%, black 50%);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary-color) 20%, black 80%);
-}
-.markdown-preview code {
-  background: rgba(27, 31, 35, 0.05);
-  padding: 0.2em 0.4em;
-  border-radius: 6px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
-  font-size: 13px;
-}
-.markdown-preview pre code {
-  background: transparent;
-  padding: 0;
-}
-
-/* Ensure code blocks inside the editor/viewer get the same boxed treatment */
+/* Code in the editor, viewer and markdown preview */
+.markdown-preview pre,
+.markdown-preview code,
 .note-content pre,
 .note-content code,
-.note-content pre code,
 .formatted-content pre,
 .formatted-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+  font-size: 13px;
 }
+.markdown-preview pre,
 .note-content pre,
 .formatted-content pre {
-  /* Editor/viewer code block uses accent color but slightly muted for readability */
-  background: color-mix(in srgb, var(--primary-color) 65%, black 35%);
-  color: var(--text-on-primary, #ffffff);
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--border-color);
   padding: 12px 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: auto;
-  font-size: 13px;
   line-height: 1.5;
   margin: 0.8em 0;
+}
+.markdown-preview :not(pre) > code,
+.note-content :not(pre) > code,
+.formatted-content :not(pre) > code {
+  background: var(--code-inline-bg);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
 }
 .code-copy-btn {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-hover);
   border: none;
-  color: var(--text-on-primary, #fff);
+  color: var(--text-secondary);
   padding: 6px;
   border-radius: 6px;
   cursor: pointer;
@@ -630,7 +617,8 @@ body.platform-linux .titlebar-buttons {
 }
 .code-copy-btn:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-primary);
+  background: var(--border-color);
 }
 .code-copy-btn.copied {
   background: var(--primary-color);
@@ -638,25 +626,6 @@ body.platform-linux .titlebar-buttons {
   transform: scale(0.98);
 }
 
-/* Dark theme variant for copy button background */
-body.dark .code-copy-btn {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-/* Dark theme adjustments for code blocks */
-[data-theme='dark'] .markdown-preview pre {
-  /* Dark theme: use a darker mix so bright accent colors (eg. red) don't appear too light */
-  background: color-mix(in srgb, var(--primary-color) 40%, black 60%);
-  color: var(--text-on-primary, #ffffff);
-  border: 1px solid color-mix(in srgb, var(--primary-color) 30%, black 70%);
-  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary-color) 6%, black 94%);
-}
-[data-theme='dark'] .note-content pre,
-[data-theme='dark'] .formatted-content pre {
-  /* Dark theme for editor/viewer code blocks: mix with more black for stronger darkening */
-  background: color-mix(in srgb, var(--primary-color) 30%, black 70%);
-  color: var(--text-on-primary, #ffffff);
-}
 
 .markdown-preview table {
   width: 100%;
@@ -3005,6 +2974,10 @@ input[type='color'].color-picker::-moz-color-swatch {
   --text-light: #ffffff;
   --bg-hover: rgba(255, 255, 255, 0.04);
   --border-color: rgba(255, 255, 255, 0.08);
+  --code-bg: #111214;
+  --code-text: #e6e6e6;
+  --code-inline-bg: rgba(255, 255, 255, 0.08);
+  --link-color: color-mix(in srgb, var(--accent-color) 75%, white);
 }
 
 /* Dark theme: outline button colors only */
