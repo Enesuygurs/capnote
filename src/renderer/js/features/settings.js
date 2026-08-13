@@ -168,74 +168,18 @@ export class SettingsFeature {
     if (!hex) return;
     // normalize hex to lowercase
     const color = hex.toLowerCase();
-    // apply primary-ish variable and accent variable
+    // The stylesheet derives the transparent accent tints from these
     document.documentElement.style.setProperty('--primary-color', color);
     document.documentElement.style.setProperty('--accent-color', color);
-
-    // derive some rgba variants for existing rules that expect alpha variants
-    // naive conversion for the common yellow used previously (245,158,11)
-    // we'll generate rgba using a small helper to convert hex -> r,g,b
-    function hexToRgb(h) {
-      const hex = h.replace('#', '');
-      const bigint = parseInt(
-        hex.length === 3
-          ? hex
-              .split('')
-              .map((c) => c + c)
-              .join('')
-          : hex,
-        16
-      );
-      const r = (bigint >> 16) & 255;
-      const g = (bigint >> 8) & 255;
-      const b = bigint & 255;
-      return [r, g, b];
-    }
-    const [r, g, b] = hexToRgb(color);
-    document.documentElement.style.setProperty(
-      '--accent-color-rgba-15',
-      `rgba(${r}, ${g}, ${b}, 0.15)`
-    );
-    document.documentElement.style.setProperty(
-      '--accent-color-rgba-20',
-      `rgba(${r}, ${g}, ${b}, 0.2)`
-    );
-    document.documentElement.style.setProperty(
-      '--accent-color-rgba-30',
-      `rgba(${r}, ${g}, ${b}, 0.3)`
-    );
-    document.documentElement.style.setProperty(
-      '--accent-color-rgba-18',
-      `rgba(${r}, ${g}, ${b}, 0.18)`
-    );
-    document.documentElement.style.setProperty(
-      '--accent-color-rgba-10',
-      `rgba(${r}, ${g}, ${b}, 0.10)`
-    );
-    document.documentElement.style.setProperty(
-      '--accent-color-rgba-12',
-      `rgba(${r}, ${g}, ${b}, 0.12)`
-    );
 
     if (options.persist !== false) this.setSetting('accentColor', color);
     // If sync option enabled, apply accent color to all folder icons
     if (this.settings.syncFolderAccent) this.applyFolderAccentSync(true);
 
-    // update active state on swatch buttons so the selected one appears larger
-    try {
-      const allSwatches = Array.from(document.querySelectorAll('.swatch-btn'));
-      allSwatches.forEach((btn) => {
-        try {
-          const btnColor = (btn.dataset.color || '').toLowerCase();
-          if (btnColor && btnColor === color) btn.classList.add('active');
-          else btn.classList.remove('active');
-        } catch (e) {
-          /* noop for individual button */
-        }
-      });
-    } catch (e) {
-      // non-fatal
-    }
+    // Highlight the swatch of the selected color
+    document.querySelectorAll('.swatch-btn').forEach((btn) => {
+      btn.classList.toggle('active', (btn.dataset.color || '').toLowerCase() === color);
+    });
   }
 
   applyFolderAccentSync(enabled) {

@@ -60,12 +60,13 @@ body.resizing .welcome-screen {
   --primary-color: #f59e0b;
   /* Accent used for active highlights (default yellow) */
   --accent-color: #f59e0b;
-  --accent-color-rgba-10: rgba(245, 158, 11, 0.1);
-  --accent-color-rgba-12: rgba(245, 158, 11, 0.12);
-  --accent-color-rgba-15: rgba(245, 158, 11, 0.15);
-  --accent-color-rgba-20: rgba(245, 158, 11, 0.2);
-  --accent-color-rgba-30: rgba(245, 158, 11, 0.3);
-  --accent-color-rgba-18: rgba(245, 158, 11, 0.18);
+  /* Transparent tints follow whatever accent is set on the root element */
+  --accent-color-rgba-10: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  --accent-color-rgba-12: color-mix(in srgb, var(--accent-color) 12%, transparent);
+  --accent-color-rgba-15: color-mix(in srgb, var(--accent-color) 15%, transparent);
+  --accent-color-rgba-18: color-mix(in srgb, var(--accent-color) 18%, transparent);
+  --accent-color-rgba-20: color-mix(in srgb, var(--accent-color) 20%, transparent);
+  --accent-color-rgba-30: color-mix(in srgb, var(--accent-color) 30%, transparent);
   --bg-primary: #ffffff;
   --bg-secondary: #fdfdfd;
   --bg-tertiary: #f1f5f9;
