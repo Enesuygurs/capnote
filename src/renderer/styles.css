@@ -2913,38 +2913,21 @@ input[type='color'].color-picker::-moz-color-swatch {
   --bg-dark: #0d0d0d;
 
   /* Her div için özel arka plan değişkenleri */
-  --titlebar-div-bg: #1a1a1a;
   --titlebar-title-bg: transparent;
   --titlebar-controls-bg: transparent;
   --titlebar-buttons-bg: transparent;
-  --search-input-bg: #202020;
-
-  --main-content-bg: #1a1a1a;
-  --welcome-screen-bg: #1a1a1a;
   --welcome-content-bg: transparent;
   --quick-stats-bg: transparent;
-  --stat-item-bg: #1b1b1b;
-  --editor-header-bg: #1a1a1a;
   --title-section-bg: transparent;
   --note-title-input-bg: transparent;
   --note-meta-bg: transparent;
   --editor-actions-bg: transparent;
   --format-btn-bg: transparent;
   --editor-content-bg: transparent;
-
-  --editor-sidebar-bg: #1e1e1e;
-  --mood-btn-bg: #232323;
-  --tag-input-bg: #202020;
-  --viewer-header-bg: #1a1a1a;
-  --viewer-content-bg: #1a1a1a;
-  --viewer-stats-bg: #1a1a1a;
   --modal-content-bg: #222222;
   --modal-footer-bg: transparent;
 
-  --dropdown-menu-bg: #252525;
-
   --export-options-bg: #222222;
-  --export-option-bg: #232323;
 
   --text-primary: #e8e8e8;
   --text-secondary: #c0c0c0;
@@ -3352,10 +3335,6 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 [data-theme='dark'] .search-container input {
   color: var(--text-primary);
-}
-
-[data-theme='dark'] .format-btn:hover {
-  /* ensure dark theme formatting buttons use a neutral bg on hover (no accent) */
 }
 
 [data-theme='dark'] .tag-remove:hover {
