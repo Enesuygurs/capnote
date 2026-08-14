@@ -2567,7 +2567,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 .select-selected:hover {
   border-color: var(--primary-color);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+  box-shadow: 0 2px 8px var(--accent-color-rgba-12);
   background: var(--bg-primary);
 }
 
@@ -2584,7 +2584,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   z-index: 99;
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.12);
+  box-shadow: 0 4px 12px var(--accent-color-rgba-12);
   overflow: hidden;
   max-height: 150px;
   overflow-y: auto;
@@ -3038,8 +3038,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 [data-theme='dark'] .note-item.active {
   background: var(--accent-color-rgba-20);
   color: var(--text-light);
-  border-color: rgba(245, 158, 11, 0.4);
-  /*box-shadow: 0 2px 12px rgba(245, 158, 11, 0.15);*/
+  border-color: color-mix(in srgb, var(--accent-color) 40%, transparent);
 }
 
 /* Make active note's text, icons and action buttons yellow in dark theme (match light theme) */
@@ -3141,7 +3140,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 [data-theme='dark'] .select-small:focus {
-  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.12);
+  box-shadow: 0 6px 20px var(--accent-color-rgba-12);
   border-color: var(--accent-color);
   outline: none;
 }
