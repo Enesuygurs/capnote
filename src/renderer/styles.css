@@ -99,6 +99,17 @@ body.resizing .welcome-screen {
   --primary-light: var(--accent-color-rgba-12);
   --text-on-primary: #ffffff;
   --radius-full: 999px;
+  --fs-5xl: 32px;
+  --fs-4xl: 28px;
+  --fs-3xl: 24px;
+  --fs-2xl: 20px;
+  --fs-xl: 18px;
+  --fs-lg: 16px;
+  --fs-base: 14px;
+  --fs-md: 13px;
+  --fs-sm: 12px;
+  --fs-xs: 11px;
+  /* Type scale */
   /* Surfaces by role */
   --surface: #fdfdfd;
   --surface-sidebar: #ffffff;
@@ -137,7 +148,7 @@ body {
   height: 100vh;
   overflow: hidden;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: var(--fs-base);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -166,7 +177,7 @@ body {
   height: 100%;
 }
 .titlebar-title {
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   color: var(--text-primary);
   text-align: center;
@@ -200,7 +211,7 @@ body.platform-darwin .titlebar {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   transition: var(--transition-fast);
   background: transparent;
   color: var(--text-secondary);
@@ -225,7 +236,7 @@ body.platform-darwin .titlebar {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: var(--fs-base);
   transition: var(--transition-fast);
   border-radius: var(--radius-sm);
   -webkit-app-region: no-drag;
@@ -256,7 +267,7 @@ body.platform-linux .titlebar-buttons {
 /* Close buton ikonunu kalınlaştır */
 .titlebar-button.close i {
   font-weight: 900 !important;
-  font-size: 14px !important;
+  font-size: var(--fs-base) !important;
   transform: scale(1.1);
 }
 
@@ -283,7 +294,7 @@ body.platform-linux .titlebar-buttons {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   transition: var(--transition-fast);
   border-radius: var(--radius-sm);
   -webkit-app-region: no-drag;
@@ -337,7 +348,7 @@ body.platform-linux .titlebar-buttons {
   border-collapse: collapse;
   margin: 16px 0;
   background: var(--surface-sidebar);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
@@ -352,7 +363,7 @@ body.platform-linux .titlebar-buttons {
   text-align: left;
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .rich-editor table td,
@@ -363,7 +374,7 @@ body.platform-linux .titlebar-buttons {
   padding: 10px 16px;
   vertical-align: top;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .rich-editor table tr:hover td,
@@ -403,7 +414,7 @@ body.platform-linux .titlebar-buttons {
   width: 100%;
   padding: 6px 8px;
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
 }
 
 /* Table modal tweaks */
@@ -421,7 +432,7 @@ body.platform-linux .titlebar-buttons {
 #tableModal .modal-content .form-group label {
   display: block;
   margin-bottom: 6px;
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text-secondary);
 }
 
@@ -430,7 +441,7 @@ body.platform-linux .titlebar-buttons {
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 500;
   color: var(--text-primary);
 }
@@ -440,7 +451,7 @@ body.platform-linux .titlebar-buttons {
   height: 16px;
   cursor: pointer;
   accent-color: var(--accent-color);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 .user-profile {
@@ -448,7 +459,7 @@ body.platform-linux .titlebar-buttons {
   align-items: center;
   gap: 12px;
   padding: 6px 10px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   transition: var(--transition-fast);
   cursor: pointer;
   width: 100%;
@@ -468,20 +479,20 @@ body.platform-linux .titlebar-buttons {
 .user-avatar {
   width: 32px;
   height: 32px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--primary-color);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: 600;
-  font-size: 12px;
+  font-size: var(--fs-sm);
 }
 
 .user-name {
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 /* Sidebar Content - Single Scroll Container */
@@ -519,7 +530,7 @@ body.platform-linux .titlebar-buttons {
     Roboto,
     'Helvetica Neue',
     Arial;
-  font-size: 14px;
+  font-size: var(--fs-base);
   line-height: 1.6;
   padding: 18px 20px;
   overflow: auto;
@@ -544,22 +555,22 @@ body.platform-linux .titlebar-buttons {
   color: var(--text-primary);
 }
 .markdown-preview h1 {
-  font-size: 1.75rem;
+  font-size: var(--fs-4xl);
 }
 .markdown-preview h2 {
-  font-size: 1.5rem;
+  font-size: var(--fs-3xl);
 }
 .markdown-preview h3 {
-  font-size: 1.25rem;
+  font-size: var(--fs-2xl);
 }
 .markdown-preview h4 {
-  font-size: 1.05rem;
+  font-size: var(--fs-lg);
 }
 .markdown-preview h5 {
-  font-size: 0.95rem;
+  font-size: var(--fs-lg);
 }
 .markdown-preview h6 {
-  font-size: 0.85rem;
+  font-size: var(--fs-base);
 }
 
 .markdown-preview p {
@@ -599,7 +610,7 @@ body.platform-linux .titlebar-buttons {
 .formatted-content pre,
 .formatted-content code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
-  font-size: 13px;
+  font-size: var(--fs-md);
 }
 .markdown-preview pre,
 .note-content pre,
@@ -628,12 +639,12 @@ body.platform-linux .titlebar-buttons {
   border: none;
   color: var(--text-secondary);
   padding: 6px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   transition:
     transform 0.12s ease,
     background 0.12s ease;
@@ -654,7 +665,7 @@ body.platform-linux .titlebar-buttons {
   width: 100%;
   border-collapse: collapse;
   margin: 0.8em 0;
-  font-size: 13px;
+  font-size: var(--fs-md);
 }
 .markdown-preview table th,
 .markdown-preview table td {
@@ -668,7 +679,7 @@ body.platform-linux .titlebar-buttons {
 
 .markdown-preview img {
   max-width: 100%;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   display: block;
   margin: 0.6em 0;
 }
@@ -694,7 +705,7 @@ body.platform-linux .titlebar-buttons {
   padding: 18px 20px;
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: var(--fs-base);
   line-height: 1.6;
   overflow: auto;
   position: absolute;
@@ -709,7 +720,7 @@ body.platform-linux .titlebar-buttons {
   background: #0b1220;
   color: #e6edf3;
   padding: 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   overflow: auto;
 }
 
@@ -736,7 +747,7 @@ body.platform-linux .titlebar-buttons {
 }
 
 .nav-section-title {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -745,7 +756,7 @@ body.platform-linux .titlebar-buttons {
 .nav-count {
   color: var(--text-muted);
   font-weight: 600;
-  font-size: 12px;
+  font-size: var(--fs-sm);
 }
 
 .nav-unread-badge {
@@ -770,11 +781,11 @@ body.platform-linux .titlebar-buttons {
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   transition: var(--transition-fast);
 }
 
@@ -791,7 +802,7 @@ body.platform-linux .titlebar-buttons {
 .sort-dropdown {
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   margin: 0;
   padding: 6px 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -802,7 +813,7 @@ body.platform-linux .titlebar-buttons {
 
 .sort-option {
   padding: 6px 14px;
-  font-size: 13px;
+  font-size: var(--fs-md);
   cursor: pointer;
   transition: var(--transition-fast);
   color: var(--text-secondary);
@@ -824,10 +835,10 @@ body.platform-linux .titlebar-buttons {
   align-items: center;
   gap: 12px;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
-  font-size: 14px;
+  font-size: var(--fs-base);
   color: var(--text-secondary);
   margin-bottom: 2px;
   position: relative;
@@ -856,7 +867,7 @@ div#newNoteNav {
 
 .nav-icon {
   width: 16px;
-  font-size: 14px;
+  font-size: var(--fs-base);
   text-align: center;
   opacity: 0.8;
 }
@@ -866,7 +877,7 @@ div#newNoteNav {
 }
 
 .nav-expand {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   opacity: 0.6;
   transition: transform var(--transition-fast);
 }
@@ -883,10 +894,10 @@ div#newNoteNav {
 
 .nav-subitem {
   padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text-muted);
   margin-bottom: 2px;
 }
@@ -925,7 +936,7 @@ div#newNoteNav {
 }
 
 .sidebar-section h4 {
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 12px;
@@ -949,7 +960,7 @@ div#newNoteNav {
   background: var(--surface-raised);
   border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 18px;
+  font-size: var(--fs-xl);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1034,7 +1045,7 @@ div#newNoteNav {
   background: var(--surface-raised);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-popover);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   padding: 8px;
   transition:
     transform 0.12s ease,
@@ -1057,7 +1068,7 @@ div#newNoteNav {
   flex: 1 1 auto;
   padding: 8px 14px;
   /* pill styling to match emoji tab shell */
-  border-radius: 50px;
+  border-radius: var(--radius-full);
   border: 1px solid var(--border-color);
   background: var(--surface-sunken);
   outline: none;
@@ -1134,7 +1145,7 @@ div#newNoteNav {
 }
 .emoji-tabs-shell {
   background: rgba(0, 0, 0, 0.03);
-  border-radius: 999px;
+  border-radius: var(--radius-full);
   /* reduce shell padding so the pill feels tighter */
   padding: 2px 6px;
   display: flex;
@@ -1165,7 +1176,7 @@ div#newNoteNav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: rgba(0, 0, 0, 0.02);
   border: 1px solid var(--border-color);
   cursor: pointer;
@@ -1195,14 +1206,14 @@ div#newNoteNav {
 .emoji-grid-btn {
   width: 34px;
   height: 34px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--tint-subtle);
   border: 1px solid transparent;
   cursor: pointer;
-  font-size: 18px;
+  font-size: var(--fs-xl);
   transition: all 0.12s ease;
 }
 
@@ -1226,7 +1237,7 @@ div#newNoteNav {
   padding: 8px 12px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   outline: none;
   margin-bottom: 8px;
 }
@@ -1239,7 +1250,7 @@ div#newNoteNav {
 .emoji-tab i {
   display: inline-block;
   line-height: 1;
-  font-size: 13px; /* compact icon size for tabs */
+  font-size: var(--fs-md); /* compact icon size for tabs */
   vertical-align: middle;
   /* tiny vertical nudge to visually center FontAwesome icons with emoji glyphs */
   transform: translateY(0.5px);
@@ -1264,7 +1275,7 @@ div#newNoteNav {
   background: var(--primary-color);
   color: white;
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -1276,7 +1287,7 @@ div#newNoteNav {
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   padding: 0;
   width: 14px;
   height: 14px;
@@ -1316,7 +1327,7 @@ div#newNoteNav {
   position: absolute;
   left: 12px;
   color: var(--text-muted);
-  font-size: 14px;
+  font-size: var(--fs-base);
   z-index: 1;
 }
 
@@ -1324,10 +1335,10 @@ div#newNoteNav {
   width: 100%;
   padding: 8px 12px 8px 36px;
   border: 1px solid rgb(229 229 229 / 79%);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: var(--surface-sunken);
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: var(--fs-base);
   transition: var(--transition-fast);
 }
 
@@ -1371,9 +1382,9 @@ div#newNoteNav {
   align-items: center;
   gap: 6px;
   padding: 4px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   transition: var(--transition-fast);
 }
 
@@ -1388,7 +1399,7 @@ div#newNoteNav {
   right: 0;
   background: var(--surface-sidebar);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-popover);
   z-index: var(--z-dropdown);
   min-width: 200px;
@@ -1403,7 +1414,7 @@ div#newNoteNav {
 .select-item {
   padding: 8px 12px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text-secondary);
   transition: var(--transition-fast);
 }
@@ -1458,10 +1469,10 @@ div#newNoteNav {
   align-items: center;
   gap: 8px;
   padding: 6px 12px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text-secondary);
   margin-bottom: 2px;
   position: relative;
@@ -1498,7 +1509,7 @@ div#newNoteNav {
 
 .note-item .nav-icon {
   width: 16px;
-  font-size: 13px;
+  font-size: var(--fs-md);
   text-align: center;
   opacity: 0.8;
   transition: opacity var(--transition-fast);
@@ -1518,7 +1529,7 @@ div#newNoteNav {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50px;
+  border-radius: var(--radius-full);
   background: transparent;
   border: none;
   cursor: pointer;
@@ -1529,7 +1540,7 @@ div#newNoteNav {
   padding: 0 6px;
 }
 .emoji-tab i {
-  font-size: 13px;
+  font-size: var(--fs-md);
   display: block;
   margin: 0;
 }
@@ -1573,13 +1584,13 @@ div#newNoteNav {
   opacity: 0.8;
 }
 .welcome-content h2 {
-  font-size: 32px;
+  font-size: var(--fs-5xl);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 16px;
 }
 .welcome-content p {
-  font-size: 16px;
+  font-size: var(--fs-lg);
   color: var(--text-secondary);
   margin-bottom: 32px;
   line-height: 1.6;
@@ -1602,18 +1613,18 @@ div#newNoteNav {
   min-width: 120px;
 }
 .stat-item i {
-  font-size: 24px;
+  font-size: var(--fs-3xl);
   color: var(--primary-color);
   margin-bottom: 8px;
 }
 .stat-item span {
-  font-size: 24px;
+  font-size: var(--fs-3xl);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 4px;
 }
 .stat-item small {
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: var(--text-secondary);
   font-weight: 500;
 }
@@ -1637,7 +1648,7 @@ div#newNoteNav {
 }
 .note-title-input {
   width: 100%;
-  font-size: 24px;
+  font-size: var(--fs-3xl);
   font-weight: 700;
   border: none;
   outline: none;
@@ -1652,7 +1663,7 @@ div#newNoteNav {
 .note-meta {
   display: flex;
   gap: 16px;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: var(--text-secondary);
 }
 .editor-actions {
@@ -1677,7 +1688,7 @@ div#newNoteNav {
   align-items: center;
   padding: 2px;
   background: var(--bg-primary);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
 }
 .format-btn {
@@ -1685,7 +1696,7 @@ div#newNoteNav {
   height: 28px;
   border: none;
   background: transparent;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1723,7 +1734,7 @@ div#newNoteNav {
   width: 28px;
   height: 28px;
   border: none;
-  border-radius: 8px; /* slightly rounded */
+  border-radius: var(--radius-md); /* slightly rounded */
   cursor: pointer;
   padding: 2px;
   box-shadow: none;
@@ -1751,7 +1762,7 @@ div#newNoteNav {
   padding: 6px 10px;
   padding-right: 34px; /* space for arrow */
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: var(--fs-base);
   color: var(--text-primary);
   min-width: 64px;
   cursor: pointer;
@@ -1786,15 +1797,15 @@ input[type='color'].color-picker {
 /* WebKit/Blink: round the swatch wrapper and swatch */
 input[type='color'].color-picker::-webkit-color-swatch-wrapper {
   padding: 0;
-  border-radius: 999px;
+  border-radius: var(--radius-full);
 }
 input[type='color'].color-picker::-webkit-color-swatch {
-  border-radius: 999px;
+  border-radius: var(--radius-full);
 }
 
 /* Firefox: round the swatch */
 input[type='color'].color-picker::-moz-color-swatch {
-  border-radius: 999px;
+  border-radius: var(--radius-full);
 }
 .editor-content {
   flex: 1;
@@ -1812,7 +1823,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   min-height: 100%;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: var(--fs-lg);
   line-height: 1.8;
   color: var(--text-primary);
   font-family: var(--font-sans);
@@ -1836,7 +1847,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   margin-bottom: 24px;
 }
 .sidebar-section h4 {
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 12px;
@@ -1858,7 +1869,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   background: var(--surface-raised);
   border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 18px;
+  font-size: var(--fs-xl);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1883,7 +1894,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   padding: 8px 12px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   outline: none;
   margin-bottom: 8px;
 }
@@ -1900,7 +1911,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   background: var(--primary-color);
   color: white;
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -1911,7 +1922,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   border: none;
   color: white;
   cursor: pointer;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   padding: 0;
   width: 14px;
   height: 14px;
@@ -1944,7 +1955,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .viewer-header h2 {
-  font-size: 28px;
+  font-size: var(--fs-4xl);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: 12px;
@@ -1956,7 +1967,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text-secondary);
   margin-bottom: 8px;
 }
@@ -1971,7 +1982,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   padding: 3px 8px;
   background: var(--bg-tertiary);
   border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   color: var(--text-secondary);
 }
@@ -1991,7 +2002,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .formatted-content {
-  font-size: 16px;
+  font-size: var(--fs-lg);
   line-height: 1.8;
   color: var(--text-primary);
   word-break: break-word;
@@ -2019,7 +2030,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   background: var(--surface);
   display: flex;
   gap: 24px;
-  font-size: 12px;
+  font-size: var(--fs-sm);
 }
 
 .stat {
@@ -2044,7 +2055,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   border: none;
   padding: 12px 20px;
   border-radius: var(--radius-lg);
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -2066,7 +2077,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 .btn-large {
   padding: 16px 32px;
-  font-size: 16px;
+  font-size: var(--fs-lg);
   border-radius: var(--radius-xl);
 }
 
@@ -2076,7 +2087,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   border: 1px solid var(--border-color);
   padding: 12px 20px;
   border-radius: var(--radius-lg);
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -2098,7 +2109,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   border: none;
   padding: 12px 20px;
   border-radius: var(--radius-lg);
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 600;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -2125,7 +2136,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .btn-icon:hover {
@@ -2221,7 +2232,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .modal-header h3 {
-  font-size: 18px;
+  font-size: var(--fs-xl);
   font-weight: 600;
   color: var(--text-primary);
   flex: 1;
@@ -2264,14 +2275,14 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 #folderColorModal .modal-title h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--fs-2xl);
   font-weight: 600;
   color: var(--text-primary);
 }
 
 #folderColorModal .modal-title i {
   color: var(--primary-color);
-  font-size: 22px;
+  font-size: var(--fs-2xl);
 }
 
 .modal-close {
@@ -2280,7 +2291,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   border: none;
   background: var(--bg-tertiary);
   color: var(--text-secondary);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -2290,7 +2301,7 @@ input[type='color'].color-picker::-moz-color-swatch {
     background 150ms ease,
     color 150ms ease;
   flex-shrink: 0;
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .modal-close:hover {
@@ -2324,13 +2335,13 @@ input[type='color'].color-picker::-moz-color-swatch {
   align-items: center;
   justify-content: center;
   margin: 0 auto 24px;
-  font-size: 24px;
+  font-size: var(--fs-3xl);
   color: white;
   box-shadow: 0 8px 25px var(--accent-color-rgba-30);
 }
 
 .confirm-text h3 {
-  font-size: 20px;
+  font-size: var(--fs-2xl);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 8px;
@@ -2360,7 +2371,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   border: 1px solid rgb(161 161 161 / 10%);
   padding: 12px 24px;
   border-radius: var(--radius-lg);
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -2399,7 +2410,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .export-btn i {
-  font-size: 24px;
+  font-size: var(--fs-3xl);
   color: var(--primary-color);
 }
 
@@ -2485,7 +2496,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -2528,7 +2539,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 .select-selected {
   padding: 10px 35px 10px 12px;
   border: 1px solid var(--border-color);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   background: var(--surface-sidebar);
@@ -2603,7 +2614,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 .select-item {
   padding: 8px 12px;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   color: var(--text-primary);
   cursor: pointer;
@@ -2636,10 +2647,10 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 .format-custom-select .select-selected {
   padding: 6px 25px 6px 8px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
   border-radius: var(--radius-sm);
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: var(--surface-sunken);
   box-shadow: none;
 }
@@ -2665,7 +2676,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 .format-custom-select .select-item {
   padding: 6px 8px;
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 
 .format-custom-select .select-item:hover {
@@ -2729,7 +2740,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   color: var(--text-primary);
   margin: 0;
   padding: 0;
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .checklist-item input[type='checkbox']:checked + label {
@@ -2827,7 +2838,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   color: var(--text-secondary);
   border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -2836,7 +2847,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .note-action-menu-btn i {
-  font-size: 14px;
+  font-size: var(--fs-base);
   width: 16px;
   text-align: center;
 }
@@ -3114,7 +3125,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   border: none;
   background: transparent;
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 500;
   text-align: left;
   cursor: pointer;
@@ -3123,7 +3134,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .settings-tab i {
-  font-size: 16px;
+  font-size: var(--fs-lg);
   width: 18px;
   text-align: center;
 }
@@ -3164,7 +3175,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 .settings-content::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
 }
 
 [data-theme='dark'] .settings-content::-webkit-scrollbar-thumb {
@@ -3193,7 +3204,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .settings-tab-content h4 {
-  font-size: 18px;
+  font-size: var(--fs-xl);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 20px;
@@ -3218,7 +3229,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .settings-subsection h5 {
-  font-size: 15px;
+  font-size: var(--fs-base);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 16px;
@@ -3228,7 +3239,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .settings-subsection h5 i {
-  font-size: 14px;
+  font-size: var(--fs-base);
   opacity: 0.7;
 }
 
@@ -3396,7 +3407,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 .setting-info small {
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: var(--text-secondary);
 }
 
@@ -3469,7 +3480,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   bottom: 0;
   background-color: #ccc;
   transition: 0.4s;
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
 }
 
 .toggle-slider:before {
@@ -3494,7 +3505,7 @@ input:checked + .toggle-slider:before {
 
 .btn-small {
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   font-weight: 500;
 }
 
@@ -3505,7 +3516,7 @@ input:checked + .toggle-slider:before {
 }
 
 .note-item-title {
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 500;
 }
 
@@ -3544,7 +3555,7 @@ input:checked + .toggle-slider:before {
   width: 90%;
   margin: 0;
   background: var(--bg-primary);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   /* moderate shadow for password modal (light theme) */
   box-shadow: var(--shadow-modal);
   border: 1px solid var(--border-color);
@@ -3562,7 +3573,7 @@ input:checked + .toggle-slider:before {
 
 #passwordModal .modal-header h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--fs-xl);
   font-weight: 600;
   color: var(--text-primary);
   display: flex;
@@ -3572,7 +3583,7 @@ input:checked + .toggle-slider:before {
 
 #passwordModal .modal-header h3::before {
   content: '🔒';
-  font-size: 20px;
+  font-size: var(--fs-2xl);
 }
 
 /* Per-modal emoji overrides */
@@ -3612,17 +3623,17 @@ input:checked + .toggle-slider:before {
   font-weight: 500;
   color: var(--text-primary);
   margin-bottom: 8px;
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 #passwordModal .form-input {
   width: 100%;
   padding: 12px 16px;
   border: 2px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background: var(--surface-sunken);
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-family: inherit;
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -3636,7 +3647,7 @@ input:checked + .toggle-slider:before {
 
 #passwordModal .form-message {
   margin-bottom: 16px;
-  font-size: 14px;
+  font-size: var(--fs-base);
   color: var(--text-secondary);
   text-align: center;
   line-height: 1.4;
@@ -3652,8 +3663,8 @@ input:checked + .toggle-slider:before {
 
 #passwordModal .btn {
   padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-base);
   font-weight: 500;
   border: none;
   cursor: pointer;
@@ -3692,7 +3703,7 @@ input:checked + .toggle-slider:before {
   /* Use base .modal-close styles; keep slightly smaller sizing for password modal */
   width: 34px;
   height: 34px;
-  font-size: 16px;
+  font-size: var(--fs-lg);
 }
 
 #passwordModal .modal-close:hover {
@@ -3754,7 +3765,7 @@ input:checked + .toggle-slider:before {
   width: 90%;
   margin: 0;
   background: var(--surface-raised);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   /* moderate shadow for folder modal (light theme) */
   box-shadow: var(--shadow-modal);
   border: 1px solid var(--border-color);
@@ -3778,14 +3789,14 @@ input:checked + .toggle-slider:before {
 
 #folderModal .modal-title h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--fs-2xl);
   font-weight: 600;
   color: var(--text-primary);
 }
 
 #folderModal .modal-title i {
   color: var(--primary-color);
-  font-size: 22px;
+  font-size: var(--fs-2xl);
 }
 
 #folderModal .modal-body {
@@ -3801,15 +3812,15 @@ input:checked + .toggle-slider:before {
   margin-bottom: 12px;
   font-weight: 500;
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: var(--fs-base);
 }
 
 #folderModal .form-input {
   width: 100%;
   padding: 14px 16px;
   border: 2px solid var(--border-color);
-  border-radius: 10px;
-  font-size: 15px;
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-base);
   background: var(--surface-sunken);
   color: var(--text-primary);
   transition: all 0.2s ease;
@@ -3837,8 +3848,8 @@ input:checked + .toggle-slider:before {
 
 #folderModal .btn {
   padding: 12px 24px;
-  border-radius: 10px;
-  font-size: 15px;
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-base);
   font-weight: 500;
   border: none;
   cursor: pointer;
@@ -3879,8 +3890,8 @@ input:checked + .toggle-slider:before {
   /* Inherit base .modal-close visual style; small tweaks for folder modal */
   width: 36px;
   height: 36px;
-  font-size: 14px;
-  border-radius: 10px;
+  font-size: var(--fs-base);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3910,7 +3921,7 @@ input:checked + .toggle-slider:before {
   width: 90%;
   margin: 0;
   background: var(--bg-primary);
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-modal);
   border: 1px solid var(--border-color);
   animation: modalSlideIn 0.3s ease-out;
@@ -3933,14 +3944,14 @@ input:checked + .toggle-slider:before {
 
 #tableModal .modal-title h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: var(--fs-2xl);
   font-weight: 600;
   color: var(--text-primary);
 }
 
 #tableModal .modal-title i {
   color: var(--primary-color);
-  font-size: 22px;
+  font-size: var(--fs-2xl);
 }
 
 #tableModal .modal-body {
@@ -3956,15 +3967,15 @@ input:checked + .toggle-slider:before {
   margin-bottom: 12px;
   font-weight: 500;
   color: var(--text-primary);
-  font-size: 15px;
+  font-size: var(--fs-base);
 }
 
 #tableModal .form-input {
   width: 100%;
   padding: 14px 16px;
   border: 2px solid var(--border-color);
-  border-radius: 10px;
-  font-size: 15px;
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-base);
   background: var(--surface-sunken);
   color: var(--text-primary);
   transition: all 0.2s ease;
@@ -3992,8 +4003,8 @@ input:checked + .toggle-slider:before {
 
 #tableModal .btn {
   padding: 12px 24px;
-  border-radius: 10px;
-  font-size: 15px;
+  border-radius: var(--radius-lg);
+  font-size: var(--fs-base);
   font-weight: 500;
   border: none;
   cursor: pointer;
@@ -4031,8 +4042,8 @@ input:checked + .toggle-slider:before {
 #tableModal .modal-close {
   width: 36px;
   height: 36px;
-  font-size: 14px;
-  border-radius: 10px;
+  font-size: var(--fs-base);
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4091,7 +4102,7 @@ input:checked + .toggle-slider:before {
 
 .folder-color-modal label {
   display: block;
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text-secondary);
   margin-bottom: 6px;
 }
@@ -4237,7 +4248,7 @@ input:checked + .toggle-slider:before {
 
 #noteHistoryModal .modal-title h3 {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--fs-xl);
 }
 
 /* Folder count styling */
@@ -4245,8 +4256,8 @@ input:checked + .toggle-slider:before {
   background: var(--bg-tertiary);
   color: var(--text-secondary);
   padding: 2px 6px;
-  border-radius: 6px;
-  font-size: 11px;
+  border-radius: var(--radius-md);
+  font-size: var(--fs-xs);
   font-weight: 500;
   margin-left: auto;
 }
@@ -4266,7 +4277,7 @@ input:checked + .toggle-slider:before {
 .default-folder.drag-over:not(.insert-before):not(.insert-after) {
   background: var(--bg-hover);
   border: 2px dashed var(--primary-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   transform: scale(1.02);
 }
 
@@ -4329,7 +4340,7 @@ body.dark .default-folder.insert-after::after {
 .notes-list-container.drag-over {
   background: rgba(99, 102, 241, 0.1);
   border: 2px dashed var(--primary-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   position: relative;
 }
 
@@ -4340,13 +4351,13 @@ body.dark .default-folder.insert-after::after {
   left: 50%;
   transform: translate(-50%, -50%);
   color: var(--primary-color);
-  font-size: 14px;
+  font-size: var(--fs-base);
   font-weight: 500;
   pointer-events: none;
   z-index: 10;
   background: var(--bg-primary);
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -4367,8 +4378,8 @@ body.dark .default-folder.insert-after::after {
   gap: 8px;
   padding: 6px 12px;
   margin-bottom: 2px;
-  border-radius: 4px;
-  font-size: 13px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-md);
   transition: var(--transition-fast);
   position: relative;
 }
@@ -4391,7 +4402,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .folder-note-item .nav-icon {
-  font-size: 13px;
+  font-size: var(--fs-md);
   opacity: 0.8;
 }
 
@@ -4413,7 +4424,7 @@ body.dark .default-folder.insert-after::after {
   position: fixed;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-popover);
   z-index: var(--z-popover);
   min-width: 150px;
@@ -4426,10 +4437,10 @@ body.dark .default-folder.insert-after::after {
   gap: 12px;
   padding: 6px 10px;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   transition: all 0.2s ease;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .context-menu-item:hover {
@@ -4446,7 +4457,7 @@ body.dark .default-folder.insert-after::after {
 .nav-expand {
   margin-left: auto;
   transition: transform 0.2s ease;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: var(--text-secondary);
 }
 
@@ -4468,7 +4479,7 @@ body.dark .default-folder.insert-after::after {
   backdrop-filter: blur(6px) saturate(120%);
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow-popover);
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   padding: 8px;
   transform-origin: top center;
   opacity: 0;
@@ -4497,11 +4508,11 @@ body.dark .default-folder.insert-after::after {
 .emoji-panel-header input[type='text'] {
   flex: 1 1 auto;
   padding: 8px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
   background: var(--surface-sunken);
   outline: none;
-  font-size: 13px;
+  font-size: var(--fs-md);
 }
 
 .emoji-grid {
@@ -4516,14 +4527,14 @@ body.dark .default-folder.insert-after::after {
 .emoji-grid-btn {
   width: 28px;
   height: 28px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--tint-subtle);
   border: 1px solid var(--border-color);
   cursor: pointer;
-  font-size: 15px;
+  font-size: var(--fs-base);
   transition:
     transform 100ms ease,
     box-shadow 100ms ease;
@@ -4551,7 +4562,7 @@ body.dark .default-folder.insert-after::after {
 }
 .emoji-grid::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.08);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 [data-theme='dark'] .emoji-grid::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.06);
@@ -4584,7 +4595,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .todos-header h2 {
-  font-size: 28px;
+  font-size: var(--fs-4xl);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 8px;
@@ -4595,7 +4606,7 @@ body.dark .default-folder.insert-after::after {
 
 .todos-subtitle {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .todos-input-section {
@@ -4611,7 +4622,7 @@ body.dark .default-folder.insert-after::after {
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: var(--fs-md);
   font-family: var(--font-sans);
   transition: var(--transition-fast);
 }
@@ -4634,7 +4645,7 @@ body.dark .default-folder.insert-after::after {
   color: white;
   border: none;
   padding: 8px 14px;
-  font-size: 13px;
+  font-size: var(--fs-md);
   font-weight: 600;
   border-radius: var(--radius-md);
   gap: 6px;
@@ -4651,7 +4662,7 @@ body.dark .default-folder.insert-after::after {
 
 .todos-input-section .btn-primary {
   padding: 8px 14px;
-  font-size: 13px;
+  font-size: var(--fs-md);
   border-radius: var(--radius-md);
   gap: 6px;
 }
@@ -4662,7 +4673,7 @@ body.dark .default-folder.insert-after::after {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  font-size: 13px;
+  font-size: var(--fs-md);
   font-family: var(--font-sans);
   transition: var(--transition-fast);
 }
@@ -4701,14 +4712,14 @@ body.dark .default-folder.insert-after::after {
 }
 
 .todo-section-title h3 {
-  font-size: 15px;
+  font-size: var(--fs-base);
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
 }
 
 .todo-section-count {
-  font-size: 11px;
+  font-size: var(--fs-xs);
   color: var(--text-muted);
   background: var(--bg-tertiary);
   padding: 2px 8px;
@@ -4732,7 +4743,7 @@ body.dark .default-folder.insert-after::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: var(--fs-md);
 }
 
 .section-action-btn:hover {
@@ -4785,7 +4796,7 @@ body.dark .default-folder.insert-after::after {
 
 .todo-text {
   flex: 1;
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text-primary);
   word-break: break-word;
   line-height: 1.4;
@@ -4800,7 +4811,7 @@ body.dark .default-folder.insert-after::after {
   padding: 4px 8px;
   border: 1px solid var(--accent-color);
   border-radius: var(--radius-sm);
-  font-size: 13px;
+  font-size: var(--fs-md);
   font-family: var(--font-sans);
 }
 
@@ -4826,7 +4837,7 @@ body.dark .default-folder.insert-after::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: var(--fs-md);
 }
 
 .todo-action-btn:hover {
@@ -4871,7 +4882,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .notifications-header h2 {
-  font-size: 28px;
+  font-size: var(--fs-4xl);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 8px;
@@ -4882,7 +4893,7 @@ body.dark .default-folder.insert-after::after {
 
 .notifications-subtitle {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .notifications-list {
@@ -4915,25 +4926,25 @@ body.dark .default-folder.insert-after::after {
 
 .notification-note-title {
   font-weight: 600;
-  font-size: 16px;
+  font-size: var(--fs-lg);
   color: var(--text-primary);
 }
 
 .notification-time {
   color: var(--text-secondary);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .notification-time i {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 
 .notification-message {
   color: var(--text-secondary);
-  font-size: 13px;
+  font-size: var(--fs-md);
   line-height: 1.5;
   margin-top: 8px;
 }
@@ -4949,7 +4960,7 @@ body.dark .default-folder.insert-after::after {
   padding: 7px 14px;
   border: none;
   border-radius: var(--radius-md);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -4961,7 +4972,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .notification-action-btn i {
-  font-size: 12px;
+  font-size: var(--fs-sm);
 }
 
 .view-notification-note-btn {
@@ -5016,7 +5027,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .reminders-header h2 {
-  font-size: 28px;
+  font-size: var(--fs-4xl);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 8px;
@@ -5027,7 +5038,7 @@ body.dark .default-folder.insert-after::after {
 
 .reminders-subtitle {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: var(--fs-base);
 }
 
 .reminders-list {
@@ -5049,14 +5060,14 @@ body.dark .default-folder.insert-after::after {
 }
 
 .reminder-note-title {
-  font-size: 16px;
+  font-size: var(--fs-lg);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 4px;
 }
 
 .reminder-datetime {
-  font-size: 14px;
+  font-size: var(--fs-base);
   color: var(--text-secondary);
   display: flex;
   align-items: center;
@@ -5065,11 +5076,11 @@ body.dark .default-folder.insert-after::after {
 
 .reminder-recurrence {
   margin-left: 8px;
-  font-size: 12px;
+  font-size: var(--fs-sm);
   color: var(--text-strong);
   background: var(--bg-hover);
   padding: 0 8px;
-  border-radius: 10px;
+  border-radius: var(--radius-lg);
   border: 1px solid var(--border-color);
   color: var(--text-strong);
 }
@@ -5084,7 +5095,7 @@ body.dark .default-folder.insert-after::after {
   padding: 7px 14px;
   border: none;
   border-radius: var(--radius-md);
-  font-size: 12px;
+  font-size: var(--fs-sm);
   font-weight: 500;
   cursor: pointer;
   transition: var(--transition-fast);
@@ -5096,7 +5107,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .reminder-action-btn i {
-  font-size: 12px;
+  font-size: var(--fs-sm);
 }
 
 .view-note-btn {
@@ -5139,7 +5150,7 @@ body.dark .default-folder.insert-after::after {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text-primary);
   background: var(--surface-sidebar);
   width: 100%;
@@ -5175,9 +5186,9 @@ body.dark .default-folder.insert-after::after {
   align-items: center;
   gap: 6px;
   padding: 6px 8px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   background: rgba(0, 0, 0, 0.03);
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text-primary);
 }
 .reminder-weekdays input[type='checkbox'] {
@@ -5198,7 +5209,7 @@ body.dark .default-folder.insert-after::after {
   padding: 10px;
   background: var(--surface-sunken);
   border-radius: var(--radius-sm);
-  font-size: 12px;
+  font-size: var(--fs-sm);
 }
 
 .note-reminder-time {
@@ -5210,7 +5221,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .note-reminder-time i {
-  font-size: 11px;
+  font-size: var(--fs-xs);
 }
 
 .note-no-reminder {
@@ -5246,7 +5257,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .note-reminder-remove i {
-  font-size: 12px;
+  font-size: var(--fs-sm);
 }
 
 /* Dark theme support */
