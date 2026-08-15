@@ -108,6 +108,13 @@ body.resizing .welcome-screen {
   --tint-hover: rgba(0, 0, 0, 0.05);
   --tint-subtle: rgba(0, 0, 0, 0.03);
   /* Text on hover/emphasis and elevation shadows */
+  /* Stacking layers, bottom to top */
+  --z-sidebar: 100;
+  --z-dropdown: 900;
+  --z-titlebar: 1000;
+  --z-popover: 1500;
+  --z-modal: 2000;
+  --z-toast: 3000;
   --text-strong: var(--text-primary);
   --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.15);
   --shadow-modal: 0 10px 28px rgba(0, 0, 0, 0.18);
@@ -149,7 +156,7 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: var(--z-titlebar);
   -webkit-app-region: drag;
 }
 .titlebar-drag {
@@ -303,7 +310,7 @@ body.platform-linux .titlebar-buttons {
   overflow: hidden;
   transition: var(--transition-normal);
   transform: translateX(0);
-  z-index: 100;
+  z-index: var(--z-sidebar);
   position: relative;
 }
 
@@ -789,7 +796,7 @@ body.platform-linux .titlebar-buttons {
   padding: 6px 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   position: absolute;
-  z-index: 1000;
+  z-index: var(--z-dropdown);
   min-width: 180px;
 }
 
@@ -1019,7 +1026,7 @@ div#newNoteNav {
      (getBoundingClientRect). This avoids issues when ancestor containers are
      positioned or scrolled. */
   position: fixed;
-  z-index: 9999;
+  z-index: var(--z-popover);
   left: auto;
   top: auto;
   width: 320px;
@@ -1383,7 +1390,7 @@ div#newNoteNav {
   border: 1px solid var(--border-color);
   border-radius: 6px;
   box-shadow: var(--shadow-popover);
-  z-index: 99;
+  z-index: var(--z-dropdown);
   min-width: 200px;
   max-height: 200px;
   overflow-y: auto;
@@ -2173,7 +2180,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: var(--z-modal);
   opacity: 0;
   visibility: hidden;
   transition: var(--transition-normal);
@@ -2411,7 +2418,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   box-shadow: var(--shadow-lg);
   padding: 16px 20px;
   max-width: 400px;
-  z-index: 3000;
+  z-index: var(--z-toast);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -2574,7 +2581,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   top: 100%;
   left: 0;
   right: 0;
-  z-index: 99;
+  z-index: var(--z-dropdown);
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   box-shadow: var(--shadow-popover);
@@ -2772,7 +2779,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 .folder-note-item:hover .note-options-container,
 .note-options-container.menu-open {
   opacity: 1;
-  z-index: 999999;
+  z-index: 10;
 }
 
 .more-options-btn {
@@ -2802,7 +2809,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   padding: 6px;
   box-shadow: var(--shadow-popover);
   border: 1px solid var(--border-color);
-  z-index: 999999;
+  z-index: var(--z-popover);
   visibility: visible !important;
   opacity: 1 !important;
   min-width: 160px;
@@ -3739,7 +3746,7 @@ input:checked + .toggle-slider:before {
 /* ============================== */
 
 #folderModal {
-  z-index: 1000;
+  z-index: var(--z-modal);
 }
 
 #folderModal .modal-content {
@@ -3895,7 +3902,7 @@ input:checked + .toggle-slider:before {
 /* ============================== */
 
 #tableModal {
-  z-index: 1000;
+  z-index: var(--z-modal);
 }
 
 #tableModal .modal-content {
@@ -4408,7 +4415,7 @@ body.dark .default-folder.insert-after::after {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   box-shadow: var(--shadow-popover);
-  z-index: 10000;
+  z-index: var(--z-popover);
   min-width: 150px;
   padding: 4px;
 }
@@ -4452,7 +4459,7 @@ body.dark .default-folder.insert-after::after {
 
 .emoji-panel {
   position: fixed; /* fixed relative to viewport so positioning is reliable */
-  z-index: 100000; /* topmost so it doesn't get covered */
+  z-index: var(--z-popover); /* topmost so it doesn't get covered */
   left: auto;
   top: auto;
   width: 220px;
