@@ -251,19 +251,10 @@ export class TodosFeature {
   }
 
   updateTodosCount() {
-    if (!this.todosCount) return;
-
-    let activeCount = 0;
-    this.todoSections.forEach((section) => {
-      activeCount += section.todos.filter((t) => !t.completed).length;
-    });
-
-    this.todosCount.textContent = activeCount;
-
-    if (activeCount > 0) {
-      this.todosCount.classList.remove('hidden');
-    } else {
-      this.todosCount.classList.add('hidden');
-    }
+    const open = this.todoSections.reduce(
+      (sum, section) => sum + section.todos.filter((t) => !t.completed).length,
+      0
+    );
+    this.setCount(this.todosCount, open);
   }
 }

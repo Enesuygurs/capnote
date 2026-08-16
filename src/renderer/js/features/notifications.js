@@ -112,18 +112,8 @@ export class NotificationsFeature {
   }
 
   updateActiveNotificationsCount() {
-    if (!this.activeNotificationsCount) return;
-    const count = this.notifications.filter((n) => !n.read).length;
-    this.activeNotificationsCount.textContent = `(${count})`;
-
-    // Show/hide unread badge
-    if (this.notificationsUnreadBadge) {
-      if (count > 0) {
-        this.notificationsUnreadBadge.style.display = 'inline-block';
-      } else {
-        this.notificationsUnreadBadge.style.display = 'none';
-      }
-    }
+    const unread = this.notifications.filter((n) => !n.read).length;
+    this.setCount(this.activeNotificationsCount, unread, { emphasize: true });
   }
 
   markAllNotificationsRead() {
