@@ -283,7 +283,7 @@ export class RemindersFeature {
     const count = this.reminders.filter(
       (r) => !r.dismissed && new Date(r.datetime) > new Date()
     ).length;
-    this.activeRemindersCount.textContent = `(${count})`;
+    this.setCount(this.activeRemindersCount, count);
   }
 
   startReminderChecker() {

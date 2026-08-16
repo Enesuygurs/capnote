@@ -79,22 +79,17 @@
               <div class="nav-item" id="notificationsNav">
                 <i class="fas fa-inbox nav-icon"></i>
                 <span class="nav-text" data-i18n="nav.notifications">Bildirimler</span>
-                <span
-                  class="nav-unread-badge"
-                  id="notificationsUnreadBadge"
-                  style="display: none"
-                ></span>
-                <span class="nav-count" id="activeNotificationsCount">(0)</span>
+                <span class="nav-count hidden" id="activeNotificationsCount">0</span>
               </div>
               <div class="nav-item" id="remindersNav">
                 <i class="fas fa-bell nav-icon"></i>
                 <span class="nav-text" data-i18n="nav.reminders">Hatırlatmalar</span>
-                <span class="nav-count" id="activeRemindersCount">(0)</span>
+                <span class="nav-count hidden" id="activeRemindersCount">0</span>
               </div>
               <div class="nav-item" id="todosNav">
                 <i class="fas fa-tasks nav-icon"></i>
                 <span class="nav-text" data-i18n="nav.todos">Yapılacaklar</span>
-                <span class="nav-count" id="todosCount">(0)</span>
+                <span class="nav-count hidden" id="todosCount">0</span>
               </div>
               <div class="nav-item" data-filter="all">
                 <i class="fas fa-sticky-note nav-icon"></i>
@@ -114,7 +109,7 @@
               <div class="nav-section-header">
                 <div class="nav-section-title">
                   <span data-i18n="nav.notes">Notlar</span>
-                  <span class="nav-count" id="navNotesCount">(0)</span>
+                  <span class="nav-count" id="navNotesCount">0</span>
                 </div>
                 <div class="nav-section-controls">
                   <button

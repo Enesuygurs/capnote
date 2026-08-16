@@ -173,7 +173,6 @@ export class CapnoteApp {
     this.notificationsNav = document.getElementById('notificationsNav');
     this.notificationsList = document.getElementById('notificationsList');
     this.activeNotificationsCount = document.getElementById('activeNotificationsCount');
-    this.notificationsUnreadBadge = document.getElementById('notificationsUnreadBadge');
     this.markAllReadBtn = document.getElementById('markAllReadBtn');
 
     this.viewerCharCount = document.getElementById('viewerCharCount');
@@ -447,6 +446,14 @@ export class CapnoteApp {
     return value === null || value === undefined || value === '' || value === 'default'
       ? null
       : String(value);
+  }
+
+  // Sidebar count badges: hidden at zero unless they should always show
+  setCount(el, count, { alwaysShow = false, emphasize = false } = {}) {
+    if (!el) return;
+    el.textContent = String(count);
+    el.classList.toggle('hidden', !alwaysShow && count === 0);
+    el.classList.toggle('is-emphasized', emphasize && count > 0);
   }
 
   // Date/number locale matching the UI language

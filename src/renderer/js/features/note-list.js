@@ -24,7 +24,7 @@ export class NoteListFeature {
 
     // Update nav count for visible notes (include folder-contained notes)
     const navCountEl = document.getElementById('navNotesCount');
-    if (navCountEl) navCountEl.textContent = `(${this.getVisibleNotesCount()})`;
+    this.setCount(navCountEl, this.getVisibleNotesCount(), { alwaysShow: true });
 
     sortedNotes.forEach((note) => {
       const noteElement = this.createNoteItem(note);
