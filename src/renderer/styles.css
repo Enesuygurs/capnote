@@ -99,17 +99,17 @@ body.resizing .welcome-screen {
   --primary-light: var(--accent-color-rgba-12);
   --text-on-primary: #ffffff;
   --radius-full: 999px;
-  --fs-5xl: 32px;
-  --fs-4xl: 28px;
-  --fs-3xl: 24px;
-  --fs-2xl: 20px;
-  --fs-xl: 18px;
-  --fs-lg: 16px;
-  --fs-base: 14px;
-  --fs-md: 13px;
-  --fs-sm: 12px;
-  --fs-xs: 11px;
   /* Type scale */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-base: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 18px;
+  --fs-2xl: 20px;
+  --fs-3xl: 24px;
+  --fs-4xl: 28px;
+  --fs-5xl: 32px;
   /* Surfaces by role */
   --surface: #fdfdfd;
   --surface-sidebar: #ffffff;
@@ -2048,80 +2048,106 @@ input[type='color'].color-picker::-moz-color-swatch {
    BUTTONS
    ============================================ */
 
-.btn-primary {
-  /* Use the accent color as the primary action color (no gradient) */
-  background: var(--accent-color);
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: var(--radius-lg);
-  font-size: var(--fs-base);
-  font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
+/* ============ Buttons ============
+   .btn (or a variant class alone) + one variant: .btn-primary, .btn-secondary, .btn-outline, .btn-danger
+   Sizes: .btn-small, .btn-large. .btn-outline.btn-danger is the quiet destructive button. */
+
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-outline,
+.btn-danger {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: var(--shadow-sm);
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--fs-base);
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: var(--text-on-primary);
+  font-weight: 600;
 }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
   filter: brightness(0.95);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-}
-
-.btn-large {
-  padding: 16px 32px;
-  font-size: var(--fs-lg);
-  border-radius: var(--radius-xl);
+  box-shadow: 0 4px 12px var(--accent-color-rgba-18);
 }
 
 .btn-secondary {
   background: var(--bg-tertiary);
   color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-  padding: 12px 20px;
-  border-radius: var(--radius-lg);
-  font-size: var(--fs-base);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  border-color: var(--border-color);
 }
 
 .btn-secondary:hover {
-  background: var(--bg-secondary);
-  color: var(--text-primary);
-  border-color: var(--primary-color);
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-secondary);
+  border-color: var(--border-color);
+}
+
+.btn-outline:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
 }
 
 .btn-danger {
   background: var(--error-color);
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: var(--radius-lg);
-  font-size: var(--fs-base);
+  color: #ffffff;
   font-weight: 600;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: var(--shadow-sm);
 }
 
 .btn-danger:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
+  filter: brightness(0.95);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--error-color) 25%, transparent);
+}
+
+.btn-outline.btn-danger {
+  background: transparent;
+  color: var(--error-color);
+  border-color: color-mix(in srgb, var(--error-color) 40%, transparent);
+}
+
+.btn-outline.btn-danger:hover {
+  background: color-mix(in srgb, var(--error-color) 10%, transparent);
+  box-shadow: none;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: var(--fs-sm);
+}
+
+.btn-large {
+  padding: 14px 28px;
+  font-size: var(--fs-lg);
+  border-radius: var(--radius-lg);
+}
+
+.btn:disabled,
+.btn-primary:disabled,
+.btn-primary.disabled,
+.btn-secondary:disabled,
+.btn-outline:disabled,
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+  box-shadow: none;
 }
 
 .btn-icon {
@@ -2363,24 +2389,6 @@ input[type='color'].color-picker::-moz-color-swatch {
   position: absolute;
   top: 16px;
   right: 16px;
-}
-
-.btn-outline {
-  background: var(--surface-sunken);
-  color: var(--text-secondary);
-  border: 1px solid rgb(161 161 161 / 10%);
-  padding: 12px 24px;
-  border-radius: var(--radius-lg);
-  font-size: var(--fs-base);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.btn-outline:hover {
-  background: var(--tint-hover);
-  color: var(--text-strong);
-  border-color: rgb(167 167 167 / 20%);
 }
 
 .export-options {
@@ -2700,18 +2708,6 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 /* Save button disabled state */
-.btn-primary.disabled,
-.btn-primary:disabled {
-  opacity: 0.5 !important;
-  cursor: not-allowed !important;
-  transform: none !important;
-}
-
-.btn-primary.disabled:hover,
-.btn-primary:disabled:hover {
-  transform: none !important;
-  box-shadow: var(--shadow-sm) !important;
-}
 
 /* Checklist styles */
 .checklist {
@@ -2963,15 +2959,6 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 /* Dark theme: outline button colors only */
-[data-theme='dark'] .btn-outline {
-  color: var(--text-muted);
-  border: 1px solid rgb(91 91 91 / 6%);
-  border-radius: var(--radius-lg);
-}
-
-[data-theme='dark'] .btn-outline:hover {
-  border-color: rgba(255, 255, 255, 0.12);
-}
 
 [data-theme='dark'] .titlebar-title {
   background: var(--titlebar-title-bg);
@@ -3328,20 +3315,6 @@ input[type='color'].color-picker::-moz-color-swatch {
   background: transparent;
 }
 
-[data-theme='dark'] .btn-primary {
-  /* Keep primary actions using the current accent color in dark theme */
-  background: var(--accent-color);
-  border-color: var(--accent-color);
-}
-
-[data-theme='dark'] .btn-secondary {
-  color: var(--text-primary);
-}
-
-[data-theme='dark'] .btn-secondary:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-}
-
 [data-theme='dark'] .export-options {
   background: var(--export-options-bg);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -3503,12 +3476,6 @@ input:checked + .toggle-slider:before {
   transform: translateX(26px);
 }
 
-.btn-small {
-  padding: 10px 12px;
-  font-size: var(--fs-sm);
-  font-weight: 500;
-}
-
 /* Locked Note Styles */
 .note-item.locked {
   opacity: 0.7;
@@ -3661,44 +3628,6 @@ input:checked + .toggle-slider:before {
   justify-content: flex-end;
 }
 
-#passwordModal .btn {
-  padding: 10px 20px;
-  border-radius: var(--radius-md);
-  font-size: var(--fs-base);
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#passwordModal .btn-secondary {
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
-
-#passwordModal .btn-secondary:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-#passwordModal .btn-primary {
-  background: var(--accent-color);
-  color: var(--text-light);
-}
-
-#passwordModal .btn-primary:hover {
-  /* Use a slightly stronger accent tone on hover and an accent-based shadow */
-  background: var(--accent-color);
-  filter: brightness(1.06);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px var(--accent-color-rgba-30);
-}
-
 #passwordModal .modal-close {
   /* Use base .modal-close styles; keep slightly smaller sizing for password modal */
   width: 34px;
@@ -3846,46 +3775,6 @@ input:checked + .toggle-slider:before {
   margin-top: 8px;
 }
 
-#folderModal .btn {
-  padding: 12px 24px;
-  border-radius: var(--radius-lg);
-  font-size: var(--fs-base);
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: inherit;
-}
-
-#folderModal .btn-secondary {
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
-
-#folderModal .btn-secondary:hover {
-  /* Keep the same background and only slightly adjust border/text to avoid full transparency */
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border-color: var(--border-color);
-}
-
-#folderModal .btn-primary {
-  background: var(--primary-color);
-  color: white;
-}
-
-#folderModal .btn-primary:hover {
-  /* Use accent hover color and shadow so hover matches selected accent */
-  background: var(--accent-color);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px var(--accent-color-rgba-18);
-}
-
 #folderModal .modal-close {
   /* Inherit base .modal-close visual style; small tweaks for folder modal */
   width: 36px;
@@ -3999,44 +3888,6 @@ input:checked + .toggle-slider:before {
   justify-content: flex-end;
   border-top: 1px solid var(--border-color);
   margin-top: 8px;
-}
-
-#tableModal .btn {
-  padding: 12px 24px;
-  border-radius: var(--radius-lg);
-  font-size: var(--fs-base);
-  font-weight: 500;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-width: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: inherit;
-}
-
-#tableModal .btn-secondary {
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
-
-#tableModal .btn-secondary:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border-color: var(--border-color);
-}
-
-#tableModal .btn-primary {
-  background: var(--primary-color);
-  color: white;
-}
-
-#tableModal .btn-primary:hover {
-  background: var(--accent-color);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px var(--accent-color-rgba-18);
 }
 
 #tableModal .modal-close {
@@ -4153,18 +4004,7 @@ input:checked + .toggle-slider:before {
   border-top: none;
 }
 
-.folder-color-modal .modal-footer .btn-primary {
-  background: var(--accent-color);
-  color: white;
-  box-shadow: 0 6px 16px var(--accent-color-rgba-18);
-}
-
 /* Make sure Cancel button is subdued */
-.folder-color-modal .modal-footer .btn-secondary {
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
 
 #noteHistoryModal .modal-body {
   padding: 18px 20px;
@@ -4211,17 +4051,7 @@ input:checked + .toggle-slider:before {
 }
 
 #noteHistoryModal .modal-footer .btn {
-  margin: 0 auto !important;
-  /* Match folder modal cancel button */
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
-
-#noteHistoryModal .modal-footer .btn:hover {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border-color: var(--border-color);
+  margin: 0 auto;
 }
 
 #noteHistoryModal .modal-header {
@@ -4638,33 +4468,6 @@ body.dark .default-folder.insert-after::after {
   gap: 8px;
   margin-bottom: 16px;
   align-items: stretch;
-}
-
-.todos-section-input .btn-secondary {
-  background: var(--accent-color);
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  font-size: var(--fs-md);
-  font-weight: 600;
-  border-radius: var(--radius-md);
-  gap: 6px;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: center;
-}
-
-.todos-section-input .btn-secondary:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-  filter: brightness(0.95);
-}
-
-.todos-input-section .btn-primary {
-  padding: 8px 14px;
-  font-size: var(--fs-md);
-  border-radius: var(--radius-md);
-  gap: 6px;
 }
 
 .todo-section-input {
@@ -5338,11 +5141,5 @@ body.dark .default-folder.insert-after::after {
 }
 
 /* Dark theme todos section button fix */
-[data-theme='dark'] .todos-section-input .btn-secondary:hover {
-  background: var(--accent-color);
-  border: none;
-  transform: translateY(-1px);
-  filter: brightness(0.95);
-}
 
 /* Dark theme todo input fix */
