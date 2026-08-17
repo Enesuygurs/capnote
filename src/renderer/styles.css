@@ -162,7 +162,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 20px 0 0;
   position: fixed;
   top: 0;
   left: 0;
@@ -246,12 +246,6 @@ body.platform-darwin .titlebar {
 .hamburger-btn:hover {
   background: var(--tint-hover);
   color: var(--text-strong);
-}
-
-/* macOS ve Linux için sol ikonları sağa kaydır (trafik ışıkları için) */
-body.platform-darwin .hamburger-btn,
-body.platform-linux .hamburger-btn {
-  margin-left: 140px;
 }
 
 /* Minimize buton ikonunu aşağı kaydır */
@@ -2868,11 +2862,6 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 .welcome-content .btn-large {
   align-self: center;
-}
-
-/* Titlebar padding override */
-.titlebar {
-  padding-left: 0 !important;
 }
 
 /* Welcome screen soft background */
