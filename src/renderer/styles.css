@@ -776,6 +776,9 @@ body.platform-darwin .titlebar {
 }
 
 .sort-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 6px 14px;
   font-size: var(--fs-md);
   cursor: pointer;
@@ -786,6 +789,11 @@ body.platform-darwin .titlebar {
 .sort-option:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
+}
+
+.sort-option i {
+  width: 14px;
+  text-align: center;
 }
 
 .sort-option.active {

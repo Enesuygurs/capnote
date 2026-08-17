@@ -108,11 +108,11 @@
     "noReminder": "Bu not için hatırlatma yok"
   },
   "sort": {
-    "dateDesc": "📅 Tarih (Yeni → Eski)",
-    "dateAsc": "📅 Tarih (Eski → Yeni)",
-    "updatedDesc": "🔄 Son Güncellenen",
-    "titleAsc": "🔤 Başlık (A → Z)",
-    "titleDesc": "🔤 Başlık (Z → A)"
+    "dateDesc": "Tarih (Yeni → Eski)",
+    "dateAsc": "Tarih (Eski → Yeni)",
+    "updatedDesc": "Son Güncellenen",
+    "titleAsc": "Başlık (A → Z)",
+    "titleDesc": "Başlık (Z → A)"
   },
   "sections": {
     "mood": "Ruh Hali",
