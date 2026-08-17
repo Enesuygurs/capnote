@@ -8,7 +8,7 @@ export class TodosFeature {
 
     if (this.todoSections.length === 0) {
       this.todosSectionsContainer.innerHTML = `
-        <div class="todos-empty">
+        <div class="empty-state empty-state-large">
           <i class="fas fa-folder-open"></i>
           <p>${i18n.t('todos.noTodos')}</p>
         </div>
@@ -21,7 +21,7 @@ export class TodosFeature {
         const activeTodos = section.todos.filter((t) => !t.completed).length;
         const todosHtml =
           section.todos.length === 0
-            ? `<div style="text-align: center; padding: 1rem; color: var(--text-muted); font-size: 13px;">${i18n.t('todos.noTodosInSection')}</div>`
+            ? `<div class="empty-state">${i18n.t('todos.noTodosInSection')}</div>`
             : section.todos
                 .map(
                   (todo) => `

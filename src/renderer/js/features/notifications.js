@@ -23,10 +23,7 @@ export class NotificationsFeature {
     if (!this.notificationsList) return;
 
     if (this.notifications.length === 0) {
-      this.notificationsList.innerHTML =
-        '<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">' +
-        i18n.t('messages.noNotifications') +
-        '</div>';
+      this.notificationsList.innerHTML = `<div class="empty-state empty-state-large">${i18n.t('messages.noNotifications')}</div>`;
       return;
     }
 
