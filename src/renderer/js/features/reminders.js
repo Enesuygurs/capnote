@@ -98,7 +98,7 @@ export class RemindersFeature {
     );
 
     if (activeReminders.length === 0) {
-      this.remindersList.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-secondary);">${i18n.t('messages.noActiveReminders')}</div>`;
+      this.remindersList.innerHTML = `<div class="empty-state empty-state-large">${i18n.t('messages.noActiveReminders')}</div>`;
       return;
     }
 

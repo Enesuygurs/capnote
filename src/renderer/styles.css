@@ -4654,13 +4654,18 @@ body.dark .default-folder.insert-after::after {
   color: var(--error-color);
 }
 
-.todos-empty {
+/* Placeholder shown when a list has nothing to show (add .empty-state-large for full screens) */
+.empty-state {
   text-align: center;
-  padding: 60px 20px;
+  padding: 24px 16px;
   color: var(--text-muted);
+  font-size: var(--fs-md);
 }
-
-.todos-empty i {
+.empty-state-large {
+  padding: 60px 20px;
+}
+.empty-state i {
+  display: block;
   font-size: 48px;
   margin-bottom: 16px;
   opacity: 0.3;
