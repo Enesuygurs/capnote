@@ -108,11 +108,11 @@
     "noReminder": "No reminder for this note"
   },
   "sort": {
-    "dateDesc": "📅 Date (Newest → Oldest)",
-    "dateAsc": "📅 Date (Oldest → Newest)",
-    "updatedDesc": "🔄 Recently Updated",
-    "titleAsc": "🔤 Title (A → Z)",
-    "titleDesc": "🔤 Title (Z → A)"
+    "dateDesc": "Date (Newest → Oldest)",
+    "dateAsc": "Date (Oldest → Newest)",
+    "updatedDesc": "Recently Updated",
+    "titleAsc": "Title (A → Z)",
+    "titleDesc": "Title (Z → A)"
   },
   "sections": {
     "mood": "Mood",
