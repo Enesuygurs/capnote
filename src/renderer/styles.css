@@ -3493,6 +3493,12 @@ input:checked + .toggle-slider:before {
   font-weight: 500;
 }
 
+/* Long titles end with an ellipsis; while the options button is visible it gets room on the right */
+.note-item:hover .note-item-title,
+.note-item:has(.menu-open) .note-item-title {
+  padding-right: 24px;
+}
+
 .note-item.locked .note-item-title {
   opacity: 0.6;
 }

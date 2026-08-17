@@ -235,11 +235,12 @@ export class NoteListFeature {
     div.classList.toggle('locked', !!note.isLocked);
 
     const title = note.title || i18n.t('messages.untitledNote');
-    const shownTitle = inFolder && title.length > 30 ? title.substring(0, 30) + '...' : title;
+    // Long titles are shortened by CSS; the full title shows as a tooltip
+    div.title = title;
 
     div.innerHTML = `
             <i class="fas fa-file-alt nav-icon"></i>
-            <span class="nav-text note-item-title">${this.escapeHtml(shownTitle)}</span>
+            <span class="nav-text note-item-title">${this.escapeHtml(title)}</span>
             <div class="note-options-container">
                 <button class="more-options-btn" title="${i18n.t('titles.options')}">
                     <i class="fas fa-ellipsis-h"></i>
@@ -289,17 +290,6 @@ export class NoteListFeature {
         e.stopPropagation();
         action();
       });
-    });
-
-    // The title is shortened while hovering to make room for the options button
-    const titleElement = div.querySelector('.note-item-title');
-    const hoverLength = inFolder ? 12 : 18;
-    const hoverTitle = title.length > hoverLength ? title.substring(0, hoverLength) + '...' : title;
-    div.addEventListener('mouseenter', () => {
-      titleElement.textContent = hoverTitle;
-    });
-    div.addEventListener('mouseleave', () => {
-      titleElement.textContent = shownTitle;
     });
 
     div.addEventListener('dragstart', (e) => {
