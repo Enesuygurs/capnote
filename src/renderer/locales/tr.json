@@ -33,9 +33,7 @@
     "testNotifications": "Bildirimleri test et"
   },
   "titles": {
-    "settings": "Ayarlar",
     "home": "Ana Sayfa",
-    "newNote": "Yeni Not",
     "addFolder": "Klasör Ekle",
     "search": "Ara",
     "sort": "Sırala",

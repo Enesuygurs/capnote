@@ -33,9 +33,7 @@
     "testNotifications": "Test notifications"
   },
   "titles": {
-    "settings": "Settings",
     "home": "Home",
-    "newNote": "New Note",
     "addFolder": "Add Folder",
     "search": "Search",
     "sort": "Sort",

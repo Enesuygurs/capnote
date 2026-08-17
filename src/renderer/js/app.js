@@ -102,7 +102,6 @@ export class CapnoteApp {
 
     // Butonlar
     this.homeBtn = document.getElementById('homeBtn');
-    this.newNoteBtn = document.getElementById('newNoteBtn');
     this.startFirstNoteBtn = document.getElementById('startFirstNote');
     this.saveNoteBtn = document.getElementById('saveNoteBtn');
     this.cancelNoteBtn = document.getElementById('cancelNoteBtn');
@@ -204,8 +203,7 @@ export class CapnoteApp {
     this.settingsModal = document.getElementById('settingsModal');
 
     // Settings elements
-    this.settingsBtn = document.getElementById('settingsBtn');
-    this.helpSupport = document.getElementById('helpSupport');
+    this.settingsNav = document.getElementById('settingsNav');
     this.toggleNativeNotifications = document.getElementById('toggleNativeNotifications');
     this.testNativeNotifBtn = document.getElementById('testNativeNotifBtn');
     this.clearAllNotesBtn = document.getElementById('clearAllNotesBtn');
@@ -355,11 +353,7 @@ export class CapnoteApp {
     // Ana butonlar
     this.homeBtn.addEventListener('click', () => this.showWelcome());
 
-    this.newNoteBtn.addEventListener('click', () => this.createNewNote());
-
-    this.settingsBtn.addEventListener('click', () => this.showSettingsModal());
-
-    this.helpSupport.addEventListener('click', () => this.showSettingsModal());
+    this.settingsNav.addEventListener('click', () => this.showSettingsModal());
 
     // Tray context menu entries
     window.electronAPI.onOpenNotifications(() => this.showNotificationsScreen());

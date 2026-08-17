@@ -254,11 +254,6 @@ body.platform-linux .hamburger-btn {
   margin-left: 140px;
 }
 
-body.platform-darwin .titlebar-buttons,
-body.platform-linux .titlebar-buttons {
-  margin-left: 8px;
-}
-
 /* Minimize buton ikonunu aşağı kaydır */
 .titlebar-button.minimize i {
   transform: translateY(2px);
@@ -274,36 +269,6 @@ body.platform-linux .titlebar-buttons {
 /* Maximize buton ikonunu küçült */
 .titlebar-button.maximize i {
   transform: scale(0.9);
-}
-
-/* Titlebar action buttons */
-.titlebar-buttons {
-  display: flex;
-  gap: 2px;
-  align-items: center;
-  -webkit-app-region: no-drag;
-}
-
-.titlebar-action-btn {
-  width: 28px;
-  height: 24px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--fs-sm);
-  transition: var(--transition-fast);
-  border-radius: var(--radius-sm);
-  -webkit-app-region: no-drag;
-}
-
-.titlebar-action-btn:hover {
-  background: var(--tint-hover);
-  color: var(--text-strong);
-  transform: scale(1.05);
 }
 
 /* ============================================   LAYOUT   ============================================ */
@@ -454,42 +419,41 @@ body.platform-linux .titlebar-buttons {
   border-radius: var(--radius-sm);
 }
 
-.user-profile {
+/* Top of the sidebar: app mark on the left, quick actions on the right */
+.sidebar-top {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   padding: 6px 10px;
-  border-radius: var(--radius-md);
-  transition: var(--transition-fast);
-  cursor: pointer;
   width: 100%;
-  justify-content: space-between;
 }
 
-.user-info {
+/* The app mark doubles as the home button */
+.app-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.user-profile:hover {
-  background: var(--bg-secondary);
-}
-
-.user-avatar {
-  width: 32px;
-  height: 32px;
+  gap: 10px;
+  padding: 4px 6px;
+  margin-left: -6px;
+  border: none;
   border-radius: var(--radius-md);
-  background: var(--primary-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 600;
-  font-size: var(--fs-sm);
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition-fast);
 }
 
-.user-name {
+.app-brand:hover {
+  background: var(--tint-hover);
+}
+
+.app-brand-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.app-brand-name {
   font-weight: 600;
   color: var(--text-primary);
   font-size: var(--fs-base);
@@ -2926,9 +2890,6 @@ input[type='color'].color-picker::-moz-color-swatch {
   --bg-dark: #0d0d0d;
 
   /* Her div için özel arka plan değişkenleri */
-  --titlebar-title-bg: transparent;
-  --titlebar-controls-bg: transparent;
-  --titlebar-buttons-bg: transparent;
   --welcome-content-bg: transparent;
   --quick-stats-bg: transparent;
   --title-section-bg: transparent;
@@ -2965,18 +2926,6 @@ input[type='color'].color-picker::-moz-color-swatch {
 }
 
 /* Dark theme: outline button colors only */
-
-[data-theme='dark'] .titlebar-title {
-  background: var(--titlebar-title-bg);
-}
-
-[data-theme='dark'] .titlebar-controls {
-  background: var(--titlebar-controls-bg);
-}
-
-[data-theme='dark'] .titlebar-buttons {
-  background: var(--titlebar-buttons-bg);
-}
 
 [data-theme='dark'] .note-item:hover {
   border-color: var(--primary-color);
