@@ -42,28 +42,11 @@
       <div class="sidebar" id="sidebar">
         <!-- Sidebar Header -->
         <div class="sidebar-header">
-          <div class="user-profile">
-            <div class="user-info">
-              <div class="user-avatar">
-                <span>CN</span>
-              </div>
-              <span class="user-name">Anonymous</span>
-            </div>
-            <div class="titlebar-buttons">
-              <button
-                id="settingsBtn"
-                class="titlebar-action-btn"
-                data-i18n-title="titles.settings"
-              >
-                <i class="fas fa-cog"></i>
-              </button>
-              <button id="homeBtn" class="titlebar-action-btn" data-i18n-title="titles.home">
-                <i class="fas fa-home"></i>
-              </button>
-              <button id="newNoteBtn" class="titlebar-action-btn" data-i18n-title="titles.newNote">
-                <i class="fas fa-plus"></i>
-              </button>
-            </div>
+          <div class="sidebar-top">
+            <button class="app-brand" id="homeBtn" data-i18n-title="titles.home">
+              <img class="app-brand-icon" src="../../assets/icons/capnote-32.png" alt="" />
+              <span class="app-brand-name">Capnote</span>
+            </button>
           </div>
         </div>
 
@@ -178,7 +161,7 @@
 
         <!-- Sidebar Footer -->
         <div class="sidebar-footer">
-          <div class="nav-item" id="helpSupport">
+          <div class="nav-item" id="settingsNav">
             <i class="fas fa-cog nav-icon"></i>
             <span class="nav-text" data-i18n="nav.settings">Ayarlar</span>
           </div>
