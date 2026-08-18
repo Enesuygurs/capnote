@@ -10,6 +10,7 @@ const { registerUploadScheme, handleUploadProtocol, registerUploadIpc } = requir
 const {
   createMainWindow,
   getMainWindow,
+  showMainWindow,
   markQuitting,
   setCloseToTray,
   isCloseToTrayEnabled,
@@ -35,6 +36,11 @@ if (isDev) {
 // (on Windows, AppUserModelID affects which app name/icon appears in notifications)
 app.setAppUserModelId('Capnote');
 app.name = 'Capnote';
+
+// Only one Capnote runs at a time; starting it again brings the existing window forward
+const isPrimaryInstance = app.requestSingleInstanceLock();
+if (!isPrimaryInstance) app.quit();
+app.on('second-instance', () => showMainWindow());
 
 registerUploadScheme();
 
@@ -104,6 +110,7 @@ registerAutostartIpc();
 registerExportIpc();
 
 app.whenReady().then(() => {
+  if (!isPrimaryInstance) return;
   handleUploadProtocol();
   setCloseToTray(readCloseToTrayPreference());
   createMainWindow({ darkMode: readDarkModePreference(), devTools: isDev });
