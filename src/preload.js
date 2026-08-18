@@ -3,7 +3,7 @@
  * Ana süreç ile renderer süreci arasında güvenli IPC köprüsü sağlar
  */
 
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
 // Ana süreç ile renderer süreci arasında güvenli köprü
 contextBridge.exposeInMainWorld('electronAPI', {
@@ -30,8 +30,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     write: (files) => ipcRenderer.invoke('uploads:write', files),
     cleanup: (keepNames) => ipcRenderer.invoke('uploads:cleanup', keepNames),
   },
-  // Save a file dropped from the OS into the app uploads folder. Pass the source path (from DataTransfer.files)
-  saveDroppedFile: (srcPath) => ipcRenderer.invoke('save-dropped-file', srcPath),
+  // Copy a file the user dropped or picked (a DOM File) into the app uploads folder
+  saveDroppedFile: (file) => ipcRenderer.invoke('save-dropped-file', webUtils.getPathForFile(file)),
   // Export a note body to PDF (main process shows the save dialog)
   exportPdf: (payload) => ipcRenderer.invoke('export-pdf', payload),
   // Native OS notifications via main process

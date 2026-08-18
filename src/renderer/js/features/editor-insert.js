@@ -649,7 +649,7 @@ export class EditorInsertFeature {
         const f = dt.files[i];
         try {
           // ask main process to copy file into app uploads and return a file:// URL
-          const saved = await window.electronAPI.saveDroppedFile(f.path);
+          const saved = await window.electronAPI.saveDroppedFile(f);
           if (!saved) continue;
           // decide how to insert: if image mime type, insert <img>, otherwise insert link
           const lower = (f.type || '').toLowerCase();
