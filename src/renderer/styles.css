@@ -3052,7 +3052,6 @@ input[type='color'].color-picker::-moz-color-swatch {
   border-right: 1px solid var(--border-color);
   padding: 12px 0;
   overflow-y: auto;
-  scrollbar-width: thin;
 }
 
 .settings-tab {
@@ -3101,7 +3100,6 @@ input[type='color'].color-picker::-moz-color-swatch {
   overflow-y: auto;
   overflow-x: hidden;
   min-height: 0;
-  scrollbar-width: thin;
 }
 
 .settings-content::-webkit-scrollbar {

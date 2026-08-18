@@ -65,7 +65,7 @@ export class EditorFormattingFeature {
         for (let i = 0; i < files.length; i++) {
           const f = files[i];
           try {
-            const saved = await window.electronAPI.saveDroppedFile(f.path || f.name);
+            const saved = await window.electronAPI.saveDroppedFile(f);
             if (!saved) continue;
             this.insertImageAtSelection(saved, f.name);
             this.trackContentChanges();
