@@ -13,7 +13,7 @@ function linuxAutostartEntry() {
 
 function writeLinuxAutostartEntry(entry) {
   fs.mkdirSync(path.dirname(entry), { recursive: true });
-  const icon = ['capnote-32.png', 'capnote-16.png']
+  const icon = ['capnote-512.png', 'capnote-32.png']
     .map((name) => path.join(ICONS_DIR, name))
     .find((file) => fs.existsSync(file));
   const lines = [

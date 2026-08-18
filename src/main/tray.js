@@ -41,8 +41,8 @@ function resolveTrayIcon() {
   } else if (process.platform === 'darwin') {
     // macOS: status bar icon looks best around 18x18pt. Use template for auto light/dark.
     let base = null;
-    if (fs.existsSync(png16)) base = nativeImage.createFromPath(png16);
-    else if (fs.existsSync(png32)) base = nativeImage.createFromPath(png32);
+    if (fs.existsSync(png32)) base = nativeImage.createFromPath(png32);
+    else if (fs.existsSync(png16)) base = nativeImage.createFromPath(png16);
     if (base) {
       const img = base.resize({ width: 18, height: 18, quality: 'best' });
       img.setTemplateImage(true);
