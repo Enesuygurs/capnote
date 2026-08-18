@@ -32,9 +32,10 @@ if (isDev) {
   }
 }
 
-// Ensure the app name is set so native notifications and system UI show 'Capnote'
-// (on Windows, AppUserModelID affects which app name/icon appears in notifications)
-app.setAppUserModelId('Capnote');
+// On Windows, notifications belong to the AppUserModelID. The installer registers the build appId
+// on its shortcuts, so the installed app must use the same id; a source checkout has no shortcut.
+const APP_ID = 'com.valkyr.capnote'; // keep in sync with build.appId in package.json
+app.setAppUserModelId(app.isPackaged ? APP_ID : 'Capnote');
 app.name = 'Capnote';
 
 // Only one Capnote runs at a time; starting it again brings the existing window forward
