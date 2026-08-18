@@ -21,18 +21,14 @@ const { registerNotificationIpc } = require('./notifications');
 const { registerAutostartIpc } = require('./autostart');
 const { registerExportIpc } = require('./export-pdf');
 
-// Enable hot reload in development using electron-reloader
-try {
-  const isDev = process.argv.includes('--dev') || process.env.NODE_ENV !== 'production';
-  if (isDev) {
-    require('electron-reloader')(module, {
-      watchRenderer: true,
-      debug: false,
-    });
-    console.log('Electron reloader enabled (dev mode)');
+// Development mode is 'npm run dev' from a source checkout: hot reload and DevTools
+const isDev = !app.isPackaged && process.argv.includes('--dev');
+if (isDev) {
+  try {
+    require('electron-reloader')(module, { watchRenderer: true, debug: false });
+  } catch (err) {
+    console.warn('Hot reload is unavailable:', err.message);
   }
-} catch (err) {
-  // If electron-reloader isn't installed, ignore silently in production or CI
 }
 
 // Ensure the app name is set so native notifications and system UI show 'Capnote'
@@ -110,7 +106,7 @@ registerExportIpc();
 app.whenReady().then(() => {
   handleUploadProtocol();
   setCloseToTray(readCloseToTrayPreference());
-  createMainWindow({ darkMode: readDarkModePreference() });
+  createMainWindow({ darkMode: readDarkModePreference(), devTools: isDev });
   createTray();
 
   app.on('activate', () => {

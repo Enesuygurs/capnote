@@ -74,7 +74,7 @@ function lockDownNavigation(win) {
 // Window background before the page paints, matching the app's light and dark --surface colors
 const BACKGROUND = { light: '#fdfdfd', dark: '#1a1a1a' };
 
-function createMainWindow({ darkMode = false } = {}) {
+function createMainWindow({ darkMode = false, devTools = false } = {}) {
   // Determine icon path (prefer .ico on Windows if available)
   let iconPath = path.join(ICONS_DIR, 'capnote-512.png');
   if (process.platform === 'win32') {
@@ -117,9 +117,7 @@ function createMainWindow({ darkMode = false } = {}) {
     }
   });
 
-  if (process.argv.includes('--dev')) {
-    mainWindow.webContents.openDevTools();
-  }
+  if (devTools) mainWindow.webContents.openDevTools();
   return mainWindow;
 }
 
