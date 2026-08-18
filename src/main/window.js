@@ -71,7 +71,10 @@ function lockDownNavigation(win) {
   });
 }
 
-function createMainWindow() {
+// Window background before the page paints, matching the app's light and dark --surface colors
+const BACKGROUND = { light: '#fdfdfd', dark: '#1a1a1a' };
+
+function createMainWindow({ darkMode = false } = {}) {
   // Determine icon path (prefer .ico on Windows if available)
   let iconPath = path.join(ICONS_DIR, 'capnote-512.png');
   if (process.platform === 'win32') {
@@ -90,20 +93,13 @@ function createMainWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: PRELOAD_FILE,
-      enableBlinkFeatures: 'OverlayScrollbars',
-      offscreen: false,
-      hardwareAcceleration: true,
     },
     // macOS keeps its native traffic-light buttons; other platforms use the custom titlebar
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     frame: process.platform === 'darwin',
     show: false,
-    vibrancy: 'under-window',
-    transparent: false,
     icon: iconPath,
-    backgroundColor: '#ffffff',
-    // Improve resize performance
-    useContentSize: false,
+    backgroundColor: darkMode ? BACKGROUND.dark : BACKGROUND.light,
   });
 
   lockDownNavigation(mainWindow);

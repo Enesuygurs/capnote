@@ -65,6 +65,11 @@ function readCloseToTrayPreference() {
   return true;
 }
 
+function readDarkModePreference() {
+  const settings = getDataStore().read('settings');
+  return !!(settings && settings.darkMode);
+}
+
 function registerStorageIpc() {
   ipcMain.handle('storage:load', () => {
     const storage = getDataStore();
@@ -105,12 +110,12 @@ registerExportIpc();
 app.whenReady().then(() => {
   handleUploadProtocol();
   setCloseToTray(readCloseToTrayPreference());
-  createMainWindow();
+  createMainWindow({ darkMode: readDarkModePreference() });
   createTray();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      createMainWindow();
+      createMainWindow({ darkMode: readDarkModePreference() });
     } else if (getMainWindow()) {
       getMainWindow().show();
     }
