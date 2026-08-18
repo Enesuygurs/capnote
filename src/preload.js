@@ -7,10 +7,10 @@ const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
 // Ana süreç ile renderer süreci arasında güvenli köprü
 contextBridge.exposeInMainWorld('electronAPI', {
-  // Menü olayları
-  onNewNote: (callback) => ipcRenderer.on('new-note', callback),
-  onOpenNotifications: (callback) => ipcRenderer.on('open-notifications', callback),
-  onOpenSettings: (callback) => ipcRenderer.on('open-settings', callback),
+  // Tray menu actions. Callbacks get no arguments: the IPC event (and its sender) stays in the preload
+  onNewNote: (callback) => ipcRenderer.on('new-note', () => callback()),
+  onOpenNotifications: (callback) => ipcRenderer.on('open-notifications', () => callback()),
+  onOpenSettings: (callback) => ipcRenderer.on('open-settings', () => callback()),
   // Expose platform string for renderer UI decisions (darwin, win32, linux)
   platform: process.platform,
 
