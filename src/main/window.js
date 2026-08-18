@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { fileURLToPath } = require('url');
-const { BrowserWindow, ipcMain, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, screen, shell } = require('electron');
 const { ICONS_DIR, RENDERER_DIR, PRELOAD_FILE, uploadsDir } = require('./paths');
 const { uploadPathFromUrl } = require('./uploads');
 
@@ -71,6 +71,38 @@ function lockDownNavigation(win) {
   });
 }
 
+// Size, position and maximized state of the window, remembered between launches
+function windowStateFile() {
+  return path.join(app.getPath('userData'), 'window-state.json');
+}
+
+function loadWindowState() {
+  try {
+    const state = JSON.parse(fs.readFileSync(windowStateFile(), 'utf8'));
+    const { x, y, width, height } = state;
+    if (![x, y, width, height].every(Number.isFinite)) return null;
+    // Ignore a position on a display that is no longer connected
+    const area = screen.getDisplayMatching({ x, y, width, height }).workArea;
+    const visible =
+      x < area.x + area.width &&
+      x + width > area.x &&
+      y < area.y + area.height &&
+      y + height > area.y;
+    return visible ? { x, y, width, height, maximized: !!state.maximized } : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveWindowState(win) {
+  try {
+    const state = { ...win.getNormalBounds(), maximized: win.isMaximized() };
+    fs.writeFileSync(windowStateFile(), JSON.stringify(state));
+  } catch (err) {
+    console.warn('Could not save the window state:', err);
+  }
+}
+
 // Window background before the page paints, matching the app's light and dark --surface colors
 const BACKGROUND = { light: '#fdfdfd', dark: '#1a1a1a' };
 
@@ -84,9 +116,11 @@ function createMainWindow({ darkMode = false, devTools = false } = {}) {
     }
   }
 
+  const state = loadWindowState();
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 700,
+    ...(state && { x: state.x, y: state.y, width: state.width, height: state.height }),
     minWidth: 800,
     minHeight: 600,
     webPreferences: {
@@ -106,11 +140,13 @@ function createMainWindow({ darkMode = false, devTools = false } = {}) {
   mainWindow.loadFile(path.join(RENDERER_DIR, 'index.html'));
 
   mainWindow.once('ready-to-show', () => {
+    if (state && state.maximized) mainWindow.maximize();
     mainWindow.show();
   });
 
   // Intercept close to support close-to-tray behavior
   mainWindow.on('close', (e) => {
+    saveWindowState(mainWindow);
     if (!isQuitting && closeToTrayEnabled) {
       e.preventDefault();
       mainWindow.hide();
