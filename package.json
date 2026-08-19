@@ -32,7 +32,7 @@
   "devDependencies": {
     "@eslint/js": "^9.37.0",
     "electron": "^45.0.0",
-    "electron-builder": "^24.6.4",
+    "electron-builder": "^26.18.0",
     "electron-reloader": "^1.2.0",
     "eslint": "^9.37.0",
     "eslint-config-prettier": "^10.1.8",
