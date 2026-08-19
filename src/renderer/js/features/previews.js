@@ -143,10 +143,22 @@ export class PreviewsFeature {
         this.htmlPreview.appendChild(iframe);
       }
 
-      // Build srcdoc that ensures minimal reset so content renders correctly inside iframe
+      // Nothing is inherited across the iframe boundary, so pass the app's text style and theme in
+      const style = getComputedStyle(this.htmlPreview);
+      const scheme =
+        document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+      const linkColor = getComputedStyle(document.documentElement)
+        .getPropertyValue('--link-color')
+        .trim();
       const doc =
         `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">` +
-        `<style>html,body{margin:0;padding:0;box-sizing:border-box;font-family:inherit;color:inherit;} img{max-width:100%;height:auto;}</style></head><body>${htmlToShow}</body></html>`;
+        `<style>html{color-scheme:${scheme};} html,body{margin:0;padding:0;box-sizing:border-box;}` +
+        ` body{font-family:${style.fontFamily};font-size:${style.fontSize};line-height:${style.lineHeight};color:${style.color};}` +
+        ` a{color:${linkColor || 'inherit'};} img{max-width:100%;height:auto;}` +
+        ` ::-webkit-scrollbar{width:8px;height:8px;} ::-webkit-scrollbar-thumb{background:rgba(128,128,128,0.35);border-radius:4px;}` +
+        `</style></head><body>${htmlToShow}</body></html>`;
+      // The frame element needs the same color scheme, or Chromium paints an opaque backdrop behind it
+      iframe.style.colorScheme = scheme;
       iframe.srcdoc = doc;
     } catch (e) {
       this.htmlPreview.textContent = sourceHtml;
