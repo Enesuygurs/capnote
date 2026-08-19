@@ -50,7 +50,7 @@ export class UiFeature {
     document.querySelectorAll('.modal-close').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const modal = e.target.closest('.modal');
-        // Settings modal için anında kapatma
+        // The settings dialog closes without the animation
         if (modal.id === 'settingsModal') {
           modal.classList.remove('show');
           modal.classList.add('hidden');
@@ -64,7 +64,7 @@ export class UiFeature {
     document.querySelectorAll('.modal').forEach((modal) => {
       modal.addEventListener('click', (e) => {
         if (e.target === modal) {
-          // Settings modal için anında kapatma
+          // The settings dialog closes without the animation
           if (modal.id === 'settingsModal') {
             modal.classList.remove('show');
             modal.classList.add('hidden');

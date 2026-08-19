@@ -416,7 +416,7 @@ export class NoteListFeature {
       }
     });
 
-    // Arama ve filtreler
+    // Search and filters
     this.searchInput.addEventListener('input', (e) => this.searchNotes(e.target.value));
 
     // New control buttons

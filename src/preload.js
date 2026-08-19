@@ -1,11 +1,10 @@
 /**
- * Electron Preload Scripti
- * Ana süreç ile renderer süreci arasında güvenli IPC köprüsü sağlar
+ * Preload script: the only bridge between the page and the main process
  */
 
 const { contextBridge, ipcRenderer, webUtils } = require('electron');
 
-// Ana süreç ile renderer süreci arasında güvenli köprü
+// Everything the page may call, exposed as window.electronAPI
 contextBridge.exposeInMainWorld('electronAPI', {
   // Tray menu actions. Callbacks get no arguments: the IPC event (and its sender) stays in the preload
   onNewNote: (callback) => ipcRenderer.on('new-note', () => callback()),
@@ -14,7 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Expose platform string for renderer UI decisions (darwin, win32, linux)
   platform: process.platform,
 
-  // Pencere kontrolleri
+  // Custom titlebar buttons
   minimize: () => ipcRenderer.send('minimize-window'),
   maximize: () => ipcRenderer.send('maximize-window'),
   close: () => ipcRenderer.send('close-window'),

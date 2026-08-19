@@ -285,7 +285,7 @@ export class EditorFormattingFeature {
   }
 
   updateFormatPanelFromSelection() {
-    // Editör boşsa inputları güncelleme
+    // Leave the inputs alone while the editor is empty
     if (!this.richEditor || !this.richEditor.innerText.trim()) return;
     const selection = window.getSelection();
     if (selection.rangeCount === 0) return;
@@ -373,7 +373,7 @@ export class EditorFormattingFeature {
       item.classList.remove('active');
       if (item.dataset.value === value) {
         item.classList.add('active');
-        // Font dropdown'ları için özel handling
+        // The font dropdowns need their own handling
         if (dropdownId === 'fontFamily' || dropdownId === 'fontSize') {
           selectSelected.textContent = item.textContent;
         } else {

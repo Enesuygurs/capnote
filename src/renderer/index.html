@@ -152,13 +152,13 @@
               <!-- Notes List Container (full width) -->
               <div class="notes-list-container" id="notesListContainer">
                 <div class="notes-list" id="notesList">
-                  <!-- Notlar buraya dinamik olarak eklenecek -->
+                  <!-- Notes are rendered here -->
                 </div>
               </div>
 
               <!-- Folders List (directly under categories) -->
               <div class="folders-list" id="foldersList">
-                <!-- Klasörler buraya dinamik olarak eklenecek -->
+                <!-- Folders are rendered here -->
               </div>
             </div>
           </nav>
@@ -173,9 +173,9 @@
         </div>
       </div>
 
-      <!-- Ana İçerik -->
+      <!-- Main content -->
       <div class="main-content">
-        <!-- Karşılama Ekranı -->
+        <!-- Welcome screen -->
         <div id="welcomeScreen" class="welcome-screen">
           <div class="welcome-content">
             <i class="fas fa-book-open welcome-icon"></i>
@@ -206,7 +206,7 @@
           </div>
         </div>
 
-        <!-- Bildirimler Ekranı -->
+        <!-- Notifications screen -->
         <div id="notificationsScreen" class="notifications-screen hidden">
           <div class="notifications-header">
             <h2>
@@ -231,7 +231,7 @@
           </div>
         </div>
 
-        <!-- Hatırlatmalar Ekranı -->
+        <!-- Reminders screen -->
         <div id="remindersScreen" class="reminders-screen hidden">
           <div class="reminders-header">
             <h2>
@@ -277,7 +277,7 @@
           </div>
         </div>
 
-        <!-- Not Editörü -->
+        <!-- Note editor -->
         <div id="noteEditor" class="note-editor hidden">
           <div class="editor-header">
             <div class="title-section">
@@ -717,7 +717,7 @@
           </div>
         </div>
 
-        <!-- Not Görüntüleyici -->
+        <!-- Note viewer -->
         <div id="noteViewer" class="note-viewer hidden">
           <div class="viewer-header">
             <div class="viewer-title-section">
@@ -1242,7 +1242,7 @@
       </div>
     </div>
 
-    <!-- Onay Modalı -->
+    <!-- Confirm dialog -->
     <div id="confirmModal" class="modal hidden">
       <div class="modal-content confirm-modal">
         <div class="confirm-icon">
@@ -1298,7 +1298,7 @@
       </div>
     </div>
 
-    <!-- Klasör Ekleme Modal -->
+    <!-- New folder dialog -->
     <div id="folderModal" class="modal hidden">
       <div class="modal-content folder-modal">
         <div class="modal-header">
@@ -1379,7 +1379,7 @@
       </div>
     </div>
 
-    <!-- Bildirim -->
+    <!-- Toast -->
     <div id="notification" class="notification hidden">
       <div class="notification-content">
         <i id="notificationIcon" class="fas fa-info-circle"></i>
