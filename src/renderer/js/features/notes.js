@@ -98,7 +98,7 @@ export class NotesFeature {
 
     // Update favorite button state for new unsaved note
     this.updateFavoriteButtons();
-    // Renk inputlarını sabitle
+    // Keep the color inputs in sync
     if (this.textColor) this.textColor.value = '#000000';
     if (this.bgColor) this.bgColor.value = '#ffffff';
   }
@@ -162,7 +162,7 @@ export class NotesFeature {
     this.currentNote.tags = [...this.tags];
     this.currentNote.formatting = this.getEditorFormatting();
 
-    // Var olan notu güncelle veya yeni not ekle
+    // Update the existing note or add a new one
     this.upsertCurrentNote();
 
     this.saveNotes();
@@ -245,9 +245,9 @@ export class NotesFeature {
       title: this.currentNote.title + i18n.t('messages.noteCopySuffix'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      isPinned: false, // Kopyalanan not sabitlenmiş olmasın
-      isLocked: false, // Kopyalanan not kilitli olmasın
-      isFavorite: false, // Kopyalanan not favorilerde olmasın
+      isPinned: false, // A copy starts unpinned
+      isLocked: false, // A copy starts unlocked
+      isFavorite: false, // A copy is not a favorite
     };
     delete duplicate.encrypted;
 
@@ -261,7 +261,7 @@ export class NotesFeature {
   }
 
   /**
-   * Favori butonlarını günceller
+   * Updates the favorite buttons
    */
   updateFavoriteButtons() {
     const isFavorite = this.currentNote?.isFavorite;

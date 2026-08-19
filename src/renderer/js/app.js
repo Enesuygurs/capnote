@@ -258,7 +258,7 @@ export class CapnoteApp {
     this.cancelFolderColorBtn = document.getElementById('cancelFolderColorBtn');
     this.closeFolderColorModal = document.getElementById('closeFolderColorModal');
 
-    // Bildirim
+    // Toast
     this.notification = document.getElementById('notification');
     this.notificationText = document.getElementById('notificationText');
     this.notificationIcon = document.getElementById('notificationIcon');
@@ -268,7 +268,7 @@ export class CapnoteApp {
     this.daysActive = document.getElementById('daysActive');
     this.totalWords = document.getElementById('totalWords');
 
-    // Mood ve Weather butonları
+    // Mood and weather buttons
     this.moodBtns = document.querySelectorAll('.mood-btn');
     this.weatherBtns = document.querySelectorAll('.weather-btn');
     // Emoji toolbar/panel elements

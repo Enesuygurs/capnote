@@ -50,7 +50,7 @@ export class StorageFeature {
     try {
       this.notes = Array.isArray(this.storedData.notes) ? this.storedData.notes : [];
 
-      // Eski notlarda eksik property'leri ekle
+      // Fill in fields that older notes do not have
       this.notes.forEach((note) => {
         note.id = String(note.id);
         if (!note.isLocked) {
@@ -76,7 +76,7 @@ export class StorageFeature {
         }
       });
 
-      // Notları tarih sırasına göre sırala
+      // Sort notes by date
       this.notes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } catch (error) {
       console.error('Notlar yüklenirken hata:', error);
@@ -85,7 +85,7 @@ export class StorageFeature {
 
     await this.migrateLegacyLockedNotes();
 
-    // Klasörleri yükle
+    // Load folders
     await this.loadFolders();
 
     // Notes pointing at a missing folder are shown nowhere; move them back to the root list

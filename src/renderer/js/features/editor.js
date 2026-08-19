@@ -339,7 +339,7 @@ export class EditorFeature {
   addTag(tagText) {
     if (!tagText || this.tags.includes(tagText)) return;
 
-    // Maksimum 5 etiket kontrolü
+    // At most 5 tags per note
     if (this.tags.length >= 5) {
       this.showNotification(i18n.t('messages.maxTags'), 'warning');
       return;

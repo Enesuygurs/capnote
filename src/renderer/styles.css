@@ -1,4 +1,4 @@
-/* ============================================   Capnote - Modern Stil   ============================================ */
+/* ============================================   Capnote styles   ============================================ */
 * {
   margin: 0;
   padding: 0;
@@ -248,19 +248,19 @@ body.platform-darwin .titlebar {
   color: var(--text-strong);
 }
 
-/* Minimize buton ikonunu aşağı kaydır */
+/* Nudge the minimize icon down */
 .titlebar-button.minimize i {
   transform: translateY(2px);
 }
 
-/* Close buton ikonunu kalınlaştır */
+/* Make the close icon bolder */
 .titlebar-button.close i {
   font-weight: 900 !important;
   font-size: var(--fs-base) !important;
   transform: scale(1.1);
 }
 
-/* Maximize buton ikonunu küçült */
+/* Make the maximize icon smaller */
 .titlebar-button.maximize i {
   transform: scale(0.9);
 }
@@ -832,7 +832,7 @@ body.platform-darwin .titlebar {
   background: transparent;
 }
 
-/* Yeni Not Butonu - Aydınlık Tema */
+/* New note button - light theme */
 div#newNoteNav {
   background: #e7e7e736;
 }
@@ -1431,7 +1431,7 @@ div#newNoteNav {
   border: 1px solid rgb(47 47 47 / 79%);
 }
 
-/* Yeni Not Butonu - Karanlık Tema */
+/* New note button - dark theme */
 [data-theme='dark'] div#newNoteNav {
   background: #5d5d5d14;
 }
@@ -2148,7 +2148,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   color: white;
 }
 
-/* Favori buton için özel stil */
+/* Favorite button */
 .btn-icon.favorited {
   color: #e91e63;
   background: rgba(233, 30, 99, 0.1);
@@ -2500,7 +2500,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   animation: fadeIn 0.3s ease;
 }
 
-/* Titlebar iyileştirmeleri */
+/* Titlebar */
 .titlebar-title {
   position: absolute !important;
   left: 50% !important;
@@ -2508,7 +2508,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   flex: none !important;
 }
 
-/* Sort options iyileştirmeleri */
+/* Sort options */
 
 /* Custom Select Dropdown */
 .custom-select {
@@ -2669,7 +2669,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 /* Format select improvements */
 
-/* Header content düzenlemesi */
+/* Header content */
 
 /* Note content area background fix */
 .note-content {
@@ -2848,7 +2848,7 @@ input[type='color'].color-picker::-moz-color-swatch {
 
 /* Note item layout improvements */
 
-/* Titlebar buton özel hover efektleri */
+/* Titlebar button hover effects */
 .titlebar-button.minimize:hover {
   background: var(--primary-color) !important;
   color: white !important;
@@ -2859,7 +2859,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   color: white !important;
 }
 
-/* Welcome screen buton merkezleme */
+/* Center the welcome screen button */
 .welcome-content {
   max-width: 600px;
   display: flex;
@@ -2886,7 +2886,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   --bg-tertiary: #2e2e2e;
   --bg-dark: #0d0d0d;
 
-  /* Her div için özel arka plan değişkenleri */
+  /* Background variables for each area */
   --welcome-content-bg: transparent;
   --quick-stats-bg: transparent;
   --title-section-bg: transparent;
@@ -4749,7 +4749,7 @@ body.dark .default-folder.insert-after::after {
   transform: translateY(-1px);
 }
 
-/* Specific styling for the 'Tümünü okundu işaretle' button */
+/* The 'Mark all as read' button */
 #markAllReadBtn {
   background: var(--tint-subtle); /* light gray */
   color: var(--text-primary);

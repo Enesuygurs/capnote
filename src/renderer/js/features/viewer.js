@@ -52,7 +52,7 @@ export class ViewerFeature {
       minute: '2-digit',
     });
 
-    // Mood ve weather
+    // Mood and weather
     this.viewerMood.textContent = note.mood || '';
     this.viewerWeather.textContent = note.weather || '';
 
