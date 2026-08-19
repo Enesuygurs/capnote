@@ -11,16 +11,36 @@ function linuxAutostartEntry() {
   return path.join(app.getPath('home'), '.config', 'autostart', 'capnote.desktop');
 }
 
+// Desktop entry arguments are double-quoted, with \ " ` and $ escaped
+const quoteArg = (arg) => `"${String(arg).replace(/[\\"`$]/g, '\\$&')}"`;
+
+// The command that starts this copy of Capnote: an AppImage runs from a temporary mount, so its
+// own file is used instead; a source checkout needs Electron plus the app folder.
+function launchCommand() {
+  if (process.env.APPIMAGE) return quoteArg(process.env.APPIMAGE);
+  if (!app.isPackaged) return `${quoteArg(process.execPath)} ${quoteArg(app.getAppPath())}`;
+  return quoteArg(app.getPath('exe'));
+}
+
+// The bundled icon may sit inside app.asar, which the desktop cannot read; keep a copy in userData
+function desktopIconPath() {
+  try {
+    const target = path.join(app.getPath('userData'), 'capnote.png');
+    fs.copyFileSync(path.join(ICONS_DIR, 'capnote-512.png'), target);
+    return target;
+  } catch {
+    return null;
+  }
+}
+
 function writeLinuxAutostartEntry(entry) {
   fs.mkdirSync(path.dirname(entry), { recursive: true });
-  const icon = ['capnote-512.png', 'capnote-32.png']
-    .map((name) => path.join(ICONS_DIR, name))
-    .find((file) => fs.existsSync(file));
+  const icon = desktopIconPath();
   const lines = [
     '[Desktop Entry]',
     'Type=Application',
     'Name=Capnote',
-    `Exec=${app.getPath('exe')} %U`,
+    `Exec=${launchCommand()}`,
     icon ? `Icon=${icon}` : null,
     'X-GNOME-Autostart-enabled=true',
     'NoDisplay=false',
