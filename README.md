@@ -1,42 +1,63 @@
-# Capnote — Minimal Desktop Notepad & Journal
+# Capnote
 
-Capnote is a lightweight, modern desktop app for quick notes and journaling. It focuses on a clean writing experience, local storage, and fast editing tools — optimized for daily use.
+Capnote is a desktop app for notes and journaling. Everything stays on your computer: there is no account and no cloud sync.
 
 ## Features
 
-- **Rich editor:** bold, italic, underline, alignment, lists and checklists.
-- **Formatting controls:** font family & size, text/background color, copy/duplicate notes.
-- **Organization:** tags, folders, favorites and quick search/filtering.
-- **Security:** lock notes with a password and temporarily unlock for viewing.
-- **Auto-save & status:** automatic saving with save-state tracking and undo support.
-- **Statistics:** word/character counts and estimated reading time.
-- **Themes & shortcuts:** dark/light theme and keyboard shortcuts (Ctrl/Cmd+N, Ctrl/Cmd+S, Esc, etc.).
+- **Rich text and Markdown:** headings, lists, checklists, tables, code blocks, links, images and file attachments, plus Markdown notes with a live preview and an HTML preview.
+- **Organizing:** folders with colors, tags, favorites, pinned notes, a Today view, sorting and search.
+- **Journaling:** mood and weather for each note, word and character counts, reading time and an edit history.
+- **Reminders and to-dos:** reminders with desktop notifications, and a to-do list grouped into sections.
+- **Locked notes:** a locked note is encrypted with its password (PBKDF2-SHA256 and AES-GCM). If you forget the password, the note cannot be recovered.
+- **Export and backup:** export a note as PDF, HTML, plain text or JSON, and back up or restore all data as a JSON file.
+- **Desktop integration:** tray icon, close to tray (Windows), start at login, light and dark themes, accent colors, and English and Turkish.
 
-## How to Use
+### Keyboard shortcuts
 
-Run from source (developer):
+| Shortcut         | Action                           |
+| ---------------- | -------------------------------- |
+| Ctrl/Cmd + N     | New note                         |
+| Ctrl/Cmd + S     | Save the note being edited       |
+| Ctrl/Cmd + E     | Edit the open note               |
+| Ctrl/Cmd + D     | Duplicate the open note          |
+| Ctrl/Cmd + F     | Search notes                     |
+| Ctrl/Cmd + Enter | Leave a code block in the editor |
+| Esc              | Close the open dialog or editor  |
 
-```powershell
+## Where your data lives
+
+Notes, folders, reminders, notifications, to-dos and settings are stored as JSON files in the app's data folder:
+
+- Windows: `%APPDATA%\Capnote`
+- macOS: `~/Library/Application Support/Capnote`
+- Linux: `~/.config/Capnote`
+
+Images and files added to notes are copied into the `uploads` folder there. Once a day, Capnote copies the data files into `backups/` and keeps the last 7 days. To move to another computer, use **Settings → Data Management → Export Data** and import the file on the other side.
+
+## Development
+
+Requires Node.js 22.12 or later.
+
+```sh
 npm install
-npm run dev
+npm run dev      # start with hot reload and DevTools
+npm start        # start normally
+npm run lint     # ESLint
+npm run format   # Prettier
 ```
 
-Start normally:
+The main process is in `src/main/`, the preload bridge in `src/preload.js`, and the interface in `src/renderer/` (`js/app.js` plus one module per feature in `js/features/`).
 
-```powershell
-npm start
+## Building
+
+```sh
+npm run build-win    # Windows installer (NSIS)
+npm run build-mac    # macOS disk image
+npm run build-linux  # Linux AppImage
 ```
 
-Packaging (example):
-
-```powershell
-npm run build      # all platforms (uses electron-builder)
-npm run build-win  # Windows
-```
-
-No cloud sync is enabled by default — data is stored locally. Use the app's export/import functions to move notes between machines.
+Output goes to `dist/`.
 
 ## License
 
-This project is licensed under the MIT License — see `LICENSE` for details.
-
+MIT — see [LICENSE](LICENSE).
