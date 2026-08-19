@@ -127,39 +127,8 @@ export class PreviewsFeature {
         }
       }
 
-      // Create or reuse a sandboxed iframe to isolate user HTML/CSS from the parent app
-      let iframe = this.htmlPreview.querySelector('iframe.preview-iframe');
-      if (!iframe) {
-        iframe = document.createElement('iframe');
-        iframe.className = 'preview-iframe';
-        // sandbox without allow-scripts to prevent script execution; keep it strict
-        iframe.setAttribute('sandbox', '');
-        iframe.style.width = '100%';
-        iframe.style.height = '100%';
-        iframe.style.border = '0';
-        iframe.style.display = 'block';
-        // ensure iframe occupies the container
-        this.htmlPreview.innerHTML = '';
-        this.htmlPreview.appendChild(iframe);
-      }
-
-      // Nothing is inherited across the iframe boundary, so pass the app's text style and theme in
-      const style = getComputedStyle(this.htmlPreview);
-      const scheme =
-        document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-      const linkColor = getComputedStyle(document.documentElement)
-        .getPropertyValue('--link-color')
-        .trim();
-      const doc =
-        `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">` +
-        `<style>html{color-scheme:${scheme};} html,body{margin:0;padding:0;box-sizing:border-box;}` +
-        ` body{font-family:${style.fontFamily};font-size:${style.fontSize};line-height:${style.lineHeight};color:${style.color};}` +
-        ` a{color:${linkColor || 'inherit'};} img{max-width:100%;height:auto;}` +
-        ` ::-webkit-scrollbar{width:8px;height:8px;} ::-webkit-scrollbar-thumb{background:rgba(128,128,128,0.35);border-radius:4px;}` +
-        `</style></head><body>${htmlToShow}</body></html>`;
-      // The frame element needs the same color scheme, or Chromium paints an opaque backdrop behind it
-      iframe.style.colorScheme = scheme;
-      iframe.srcdoc = doc;
+      this.htmlPreviewSource = htmlToShow;
+      this.writeHtmlPreview(htmlToShow);
     } catch (e) {
       this.htmlPreview.textContent = sourceHtml;
     }
@@ -170,6 +139,49 @@ export class PreviewsFeature {
     this.showHtmlPreview();
     // deactivate markdown button to make previews mutually exclusive
     if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.classList.remove('active');
+  }
+
+  // Writes the given HTML into the sandboxed preview frame, styled for the current theme
+  writeHtmlPreview(html) {
+    // Create or reuse a sandboxed iframe to isolate user HTML/CSS from the parent app
+    let iframe = this.htmlPreview.querySelector('iframe.preview-iframe');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.className = 'preview-iframe';
+      // sandbox without allow-scripts to prevent script execution; keep it strict
+      iframe.setAttribute('sandbox', '');
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      iframe.style.border = '0';
+      iframe.style.display = 'block';
+      // ensure iframe occupies the container
+      this.htmlPreview.innerHTML = '';
+      this.htmlPreview.appendChild(iframe);
+    }
+
+    // Nothing is inherited across the iframe boundary, so pass the app's text style and theme in
+    const style = getComputedStyle(this.htmlPreview);
+    const scheme =
+      document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const linkColor = getComputedStyle(document.documentElement)
+      .getPropertyValue('--link-color')
+      .trim();
+    const doc =
+      `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">` +
+      `<style>html{color-scheme:${scheme};} html,body{margin:0;padding:0;box-sizing:border-box;}` +
+      ` body{font-family:${style.fontFamily};font-size:${style.fontSize};line-height:${style.lineHeight};color:${style.color};}` +
+      ` a{color:${linkColor || 'inherit'};} img{max-width:100%;height:auto;}` +
+      ` ::-webkit-scrollbar{width:8px;height:8px;} ::-webkit-scrollbar-thumb{background:rgba(128,128,128,0.35);border-radius:4px;}` +
+      `</style></head><body>${html}</body></html>`;
+    // The frame element needs the same color scheme, or Chromium paints an opaque backdrop behind it
+    iframe.style.colorScheme = scheme;
+    iframe.srcdoc = doc;
+  }
+
+  // The preview frame keeps the colors it was written with; write it again when the theme changes
+  refreshHtmlPreview() {
+    if (!this.htmlPreview || this.htmlPreview.classList.contains('hidden')) return;
+    if (typeof this.htmlPreviewSource === 'string') this.writeHtmlPreview(this.htmlPreviewSource);
   }
 
   // Editor visibility helpers
