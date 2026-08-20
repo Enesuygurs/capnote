@@ -92,6 +92,18 @@ export class FoldersFeature {
     if (this.currentFilter === 'favorites') this.updateNotesList();
   }
 
+  // True while a folder (not a note) is being dragged; folder drags carry 'text/folder-id'.
+  // Reading drag data during dragover can throw, so the type list is checked first.
+  isDraggingFolder(e) {
+    const types = e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
+    if (types.includes('text/folder-id')) return true;
+    try {
+      return Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
+    } catch {
+      return false;
+    }
+  }
+
   getRandomFolderColor() {
     // If sync-to-accent is enabled, return the accent color
     if (this.settings.syncFolderAccent) {
@@ -327,17 +339,7 @@ export class FoldersFeature {
     });
     folderHeader.addEventListener('dragover', (e) => {
       e.preventDefault();
-      // detect if the active drag is a folder (we set 'text/folder-id' during dragstart)
-      const types = e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
-      let isFolderDrag = false;
-      try {
-        isFolderDrag =
-          types.includes('text/folder-id') ||
-          Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
-      } catch (err) {
-        // accessing getData during dragover can throw in some browsers; fallback to types check only
-        isFolderDrag = types.includes('text/folder-id');
-      }
+      const isFolderDrag = this.isDraggingFolder(e);
 
       // decide whether insertion would be before or after based on cursor position
       // but use the entire folder container (header + notes) so we don't allow inserting between header and its notes
@@ -428,14 +430,12 @@ export class FoldersFeature {
           const nearTop = e.clientY - containerRect.top <= edgeThreshold;
           const nearBottom = containerRect.bottom - e.clientY <= edgeThreshold;
 
-          let insertBefore = false;
-          if (nearTop) insertBefore = true;
-          else if (nearBottom) insertBefore = false;
-          else {
-            // If not near top/bottom, ignore the drop as an insertion — default to no-op
+          // A drop away from the top and bottom edges is not an insertion
+          if (!nearTop && !nearBottom) {
             folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
             return;
           }
+          const insertBefore = nearTop;
 
           // cleanup visual classes
           folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
@@ -704,17 +704,7 @@ export class FoldersFeature {
       notesListContainer.addEventListener('dragover', (e) => {
         e.preventDefault();
         // If the active drag is a folder, ignore: folders should not be dropped into the "no-folder" area
-        const types =
-          e.dataTransfer && e.dataTransfer.types ? Array.from(e.dataTransfer.types) : [];
-        let isFolderDrag = false;
-        try {
-          isFolderDrag =
-            types.includes('text/folder-id') ||
-            Boolean(e.dataTransfer.getData && e.dataTransfer.getData('text/folder-id'));
-        } catch (err) {
-          isFolderDrag = types.includes('text/folder-id');
-        }
-        if (isFolderDrag) {
+        if (this.isDraggingFolder(e)) {
           // do not show drop target for folders
           return;
         }

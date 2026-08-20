@@ -49,24 +49,11 @@ export class EditorFeature {
 
   updateWordCount() {
     // Use innerText to preserve visible line breaks from the rich editor
-    let text =
-      this.richEditor && this.richEditor.innerText
-        ? this.richEditor.innerText
-        : this.richEditor.textContent || '';
-    // Normalize non-breaking spaces and other unicode spaces to regular spaces
-    text = text.replace(/\u00A0/g, ' ');
-    // Trim and collapse multiple whitespace (including newlines)
-    const normalized = text.trim().replace(/\s+/g, ' ');
-    // Use a Unicode-aware regex to match word tokens (letters/numbers). Some runtimes
-    // may not support \p{} escapes; provide a safe fallback.
-    let words = 0;
-    try {
-      const matches = normalized.match(/[\p{L}\p{N}]+/gu);
-      words = matches ? matches.length : 0;
-    } catch (e) {
-      // Fallback: split on whitespace (best effort)
-      words = normalized ? normalized.split(' ').filter(Boolean).length : 0;
-    }
+    const text = (this.richEditor.innerText || this.richEditor.textContent || '').replace(
+      /\u00A0/g,
+      ' '
+    );
+    const words = this.countWords(text);
     const chars = text.length;
 
     if (this.wordCount) {
