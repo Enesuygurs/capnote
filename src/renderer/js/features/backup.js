@@ -2,6 +2,7 @@
 
 import { SCHEMA_VERSION, DEFAULT_SETTINGS, LOCAL_ONLY_SETTINGS } from '../constants.js';
 import { i18n } from '../i18n.js';
+import { toMoodKey, toWeatherKey } from '../data/moods.js';
 
 export class BackupFeature {
   // New: export ALL data (notes, folders, reminders, notifications, settings)
@@ -155,6 +156,8 @@ export class BackupFeature {
               ...note,
               id: newNoteId,
               folderId: mappedFolderId,
+              mood: toMoodKey(note.mood),
+              weather: toWeatherKey(note.weather),
               createdAt: note.createdAt || new Date().toISOString(),
               updatedAt: new Date().toISOString(),
             };
@@ -312,6 +315,10 @@ export class BackupFeature {
       header.className = 'modal-header';
       const titleWrap = document.createElement('div');
       titleWrap.className = 'modal-title';
+      const icon = document.createElement('i');
+      icon.className = 'fas fa-file-import';
+      icon.setAttribute('aria-hidden', 'true');
+      titleWrap.appendChild(icon);
       const h3 = document.createElement('h3');
       h3.textContent = i18n.t('modals.importOptions');
       titleWrap.appendChild(h3);

@@ -251,6 +251,7 @@
     "noHistory": "Henüz düzenleme yok"
   },
   "messages": {
+    "dropOutsideFolders": "Notu klasörden çıkarmak için buraya bırakın",
     "noteSaved": "Not kaydedildi!",
     "noteDeleted": "Not silindi!",
     "folderCreated": "\"{name}\" klasörü oluşturuldu",
@@ -282,7 +283,7 @@
     "reminderAdded": "Hatırlatma eklendi",
     "reminderCompleted": "Hatırlatma tamamlandı",
     "reminderDeleted": "Hatırlatma silindi",
-    "reminderPrefix": "⏰ Hatırlatma:",
+    "reminderPrefix": "Hatırlatma:",
     "noteCopied": "Not kopyalandı!",
     "autoSaveEnabled": "Otomatik kaydetme açıldı",
     "autoSaveDisabled": "Otomatik kaydetme kapatıldı",
@@ -327,7 +328,7 @@
     "completed": "Tamamlandı",
     "reminderDue": "Hatırlatma zamanı geldi:",
     "reminderMissed": "Kaçırılan hatırlatma:",
-    "reminderNotification": "⏰ Hatırlatma:",
+    "reminderNotification": "Hatırlatma:",
     "renameFolder": "Klasörü Yeniden Adlandır",
     "confirmDeleteFolder": "klasörü silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?",
     "confirmDeleteFolderWithNotes": "klasörü ve içindeki {count} not kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?",
@@ -349,7 +350,7 @@
     "folderRenamed": "\"{name}\" olarak yeniden adlandırıldı",
     "noteMovedToFolder": "\"{title}\" {folder} klasörüne taşındı",
     "unknownFolder": "Bilinmeyen klasör",
-    "testNotificationTitle": "🔔 Test bildirimi",
+    "testNotificationTitle": "Test bildirimi",
     "testNotificationBody": "Bu bir test bildirimidir.",
     "backupTooNew": "Bu yedek Capnote'un daha yeni bir sürümüyle alınmış. İçe aktarmak için uygulamayı güncelleyin."
   },

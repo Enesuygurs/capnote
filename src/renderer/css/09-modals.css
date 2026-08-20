@@ -63,24 +63,20 @@
   flex: 1;
 }
 
-/* Add a small emoji icon before every modal title. Override per-modal if needed. */
-.modal-header h3::before {
-  content: '📌';
-  display: inline-block;
-  margin-right: 10px;
-  transform: translateY(1px);
+/* Dialog title: an icon in the accent color next to the heading */
+.modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-/* Disable the generic pseudo-icon for the folder color modal (we have an inline palette icon) */
-#folderColorModal .modal-header h3::before {
-  content: none;
-  display: none;
+.modal-title h3 {
+  margin: 0;
 }
 
-/* Disable the generic pseudo-icon for the table modal (we have an inline table icon) */
-#tableModal .modal-header h3::before {
-  content: none;
-  display: none;
+.modal-title i,
+.modal-title-icon {
+  color: var(--primary-color);
 }
 
 /* Make the folder color modal header match the folder rename modal's spacing and layout */
@@ -90,12 +86,6 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: none;
-}
-
-#folderColorModal .modal-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 #folderColorModal .modal-title h3 {

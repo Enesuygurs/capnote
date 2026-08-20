@@ -2,6 +2,7 @@
 
 import { DEFAULT_SETTINGS, LEGACY_STORAGE_KEYS } from '../constants.js';
 import { i18n } from '../i18n.js';
+import { toMoodKey, toWeatherKey } from '../data/moods.js';
 
 export class StorageFeature {
   async initStorage() {
@@ -61,6 +62,8 @@ export class StorageFeature {
           note.charCount = counts.chars;
         }
         note.folderId = this.toId(note.folderId);
+        note.mood = toMoodKey(note.mood);
+        note.weather = toWeatherKey(note.weather);
         if (note.isLocked === undefined) {
           note.isLocked = false;
         }

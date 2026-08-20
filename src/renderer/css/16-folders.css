@@ -78,7 +78,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .notes-list-container.drag-over::before {
-  content: '📝 Notu klasörsüz alana bırak';
+  content: attr(data-drop-label);
   position: absolute;
   top: 50%;
   left: 50%;

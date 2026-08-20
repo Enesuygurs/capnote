@@ -251,6 +251,7 @@
     "noHistory": "No edits yet"
   },
   "messages": {
+    "dropOutsideFolders": "Drop here to take the note out of its folder",
     "noteSaved": "Note saved!",
     "noteDeleted": "Note deleted!",
     "folderCreated": "Folder \"{name}\" created",
@@ -282,7 +283,7 @@
     "reminderAdded": "Reminder added",
     "reminderCompleted": "Reminder completed",
     "reminderDeleted": "Reminder deleted",
-    "reminderPrefix": "⏰ Reminder:",
+    "reminderPrefix": "Reminder:",
     "noteCopied": "Note copied!",
     "autoSaveEnabled": "Auto save enabled",
     "autoSaveDisabled": "Auto save disabled",
@@ -327,7 +328,7 @@
     "completed": "Completed",
     "reminderDue": "Reminder time:",
     "reminderMissed": "Missed reminder:",
-    "reminderNotification": "⏰ Reminder:",
+    "reminderNotification": "Reminder:",
     "renameFolder": "Rename Folder",
     "confirmDeleteFolder": "folder will be deleted. This action cannot be undone. Do you want to continue?",
     "confirmDeleteFolderWithNotes": "folder and its {count} notes will be permanently deleted. This action cannot be undone. Do you want to continue?",
@@ -349,7 +350,7 @@
     "folderRenamed": "Renamed to \"{name}\"",
     "noteMovedToFolder": "\"{title}\" moved to {folder}",
     "unknownFolder": "Unknown folder",
-    "testNotificationTitle": "🔔 Test notification",
+    "testNotificationTitle": "Test notification",
     "testNotificationBody": "This is a test notification.",
     "backupTooNew": "This backup was made by a newer version of Capnote. Please update the app to import it."
   },

@@ -42,35 +42,6 @@
   gap: 8px;
 }
 
-#passwordModal .modal-header h3::before {
-  content: '🔒';
-  font-size: var(--fs-2xl);
-}
-
-/* Per-modal emoji overrides */
-#exportModal .modal-header h3::before {
-  content: '📤';
-}
-
-#confirmModal .modal-header h3::before {
-  content: '❗';
-}
-
-#settingsModal .modal-header h3::before {
-  /* Settings modal uses an explicit <i> icon in the HTML; disable the pseudo-element to avoid duplicate icons */
-  content: none;
-}
-
-#noteHistoryModal .modal-header h3::before {
-  content: '🕘';
-}
-
-/* Folder modal already uses an <i> icon in the title; disable duplicate pseudo-element */
-#folderModal .modal-header h3::before,
-#folderModal .modal-title h3::before {
-  content: none;
-}
-
 #passwordModal .modal-body {
   padding: 24px;
 }
@@ -200,12 +171,6 @@
   border-bottom: none;
 }
 
-#folderModal .modal-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
 #folderModal .modal-title h3 {
   margin: 0;
   font-size: var(--fs-2xl);
@@ -313,12 +278,6 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: none;
-}
-
-#tableModal .modal-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 
 #tableModal .modal-title h3 {

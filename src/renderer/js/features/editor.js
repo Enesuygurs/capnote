@@ -263,14 +263,14 @@ export class EditorFeature {
   setupMoodWeatherSelectors() {
     this.moodBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        this.selectMood(e.target.dataset.mood);
+        this.selectMood(e.currentTarget.dataset.mood);
         this.trackContentChanges(); // Track changes for save button
       });
     });
 
     this.weatherBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        this.selectWeather(e.target.dataset.weather);
+        this.selectWeather(e.currentTarget.dataset.weather);
         this.trackContentChanges(); // Track changes for save button
       });
     });
@@ -302,6 +302,15 @@ export class EditorFeature {
       this.selectedWeather = weather;
     }
     this.updateMoodWeatherDisplay();
+  }
+
+  // The editor button for a mood or weather key; it carries the icon and the translated name
+  findMoodButton(key) {
+    return key ? [...this.moodBtns].find((btn) => btn.dataset.mood === key) : undefined;
+  }
+
+  findWeatherButton(key) {
+    return key ? [...this.weatherBtns].find((btn) => btn.dataset.weather === key) : undefined;
   }
 
   updateMoodWeatherDisplay() {
