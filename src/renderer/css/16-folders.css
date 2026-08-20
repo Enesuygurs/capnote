@@ -1,0 +1,195 @@
+/* Drag and drop, folder containers and the context menu */
+
+/* Drag and Drop Styles */
+.note-item.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg);
+}
+
+.folder-item.drag-over:not(.insert-before):not(.insert-after),
+.default-folder.drag-over:not(.insert-before):not(.insert-after) {
+  background: var(--bg-hover);
+  border: 2px dashed var(--primary-color);
+  border-radius: var(--radius-md);
+  transform: scale(1.02);
+}
+
+.folder-item.drag-over .nav-icon,
+.default-folder.drag-over .nav-icon {
+  color: var(--primary-color) !important;
+  animation: pulse 1s infinite;
+}
+
+/* Visual insertion indicator for folder reordering: a thin line showing where the folder will be placed */
+.folder-item.insert-before::before,
+.default-folder.insert-before::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 0;
+  height: 2px;
+  background: var(--primary-color);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  transform-origin: left center;
+  z-index: 10;
+}
+
+.folder-item.insert-after::after,
+.default-folder.insert-after::after {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 0;
+  height: 2px;
+  background: var(--primary-color);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+  transform-origin: left center;
+  z-index: 10;
+}
+
+/* Dark theme adjustments: use a softer glow for the insertion line */
+body.dark .folder-item.insert-before::before,
+body.dark .default-folder.insert-before::before,
+body.dark .folder-item.insert-after::after,
+body.dark .default-folder.insert-after::after {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--primary-color) 70%, black 30%);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+/* Notes List Drop Zone */
+.notes-list-container.drag-over {
+  background: rgba(99, 102, 241, 0.1);
+  border: 2px dashed var(--primary-color);
+  border-radius: var(--radius-md);
+  position: relative;
+}
+
+.notes-list-container.drag-over::before {
+  content: '📝 Notu klasörsüz alana bırak';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--primary-color);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 10;
+  background: var(--bg-primary);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Folder Container Styles */
+.folder-container {
+  margin-bottom: 4px;
+}
+
+.folder-notes-container {
+  margin-left: 16px;
+  border-left: 1px solid var(--border-color);
+  padding-left: 8px;
+}
+
+.folder-note-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  margin-bottom: 2px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-md);
+  transition: var(--transition-fast);
+  position: relative;
+}
+
+.folder-note-item:hover {
+  background: var(--bg-hover);
+}
+
+.folder-note-item.active {
+  /* Match the main note active appearance (light theme):
+     subtle primary tint background, primary-color text */
+  background: var(--accent-color-rgba-15);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.folder-note-item.active .nav-icon,
+.folder-note-item.active .nav-text {
+  color: var(--primary-color);
+}
+
+.folder-note-item .nav-icon {
+  font-size: var(--fs-md);
+  opacity: 0.8;
+}
+
+.folder-note-item.dragging {
+  opacity: 0.5;
+  transform: rotate(3deg);
+}
+
+/* Reduce spacing between folder items */
+.folder-item {
+  margin-bottom: 2px;
+}
+
+/* ============================== */
+/* CONTEXT MENU STYLES */
+/* ============================== */
+
+.context-menu {
+  position: fixed;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-popover);
+  z-index: var(--z-popover);
+  min-width: 150px;
+  padding: 4px;
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+}
+
+.context-menu-item:hover {
+  background: var(--bg-hover);
+  color: var(--error-color);
+}
+
+.context-menu-item i {
+  width: 16px;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.nav-expand {
+  margin-left: auto;
+  transition: transform 0.2s ease;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}

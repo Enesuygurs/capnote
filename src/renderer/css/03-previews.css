@@ -1,0 +1,213 @@
+/* Markdown and HTML preview */
+
+/* =====================================================
+   GitHub-like Markdown Preview Styles (scoped)
+   These styles mimic GitHub's markdown rendering for
+   headings, code blocks, blockquotes, lists, tables, etc.
+   Applied to the .markdown-preview container only so the
+   rest of the app styles remain unchanged (backgrounds etc.).
+   ===================================================== */
+.markdown-preview {
+  /* for inline code background fallback */
+  color: var(--text-primary);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial;
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  padding: 18px 20px;
+  overflow: auto;
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  bottom: 32px;
+  left: 32px;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  font-weight: 600;
+  margin: 1.2em 0 0.6em;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+.markdown-preview h1 {
+  font-size: var(--fs-4xl);
+}
+.markdown-preview h2 {
+  font-size: var(--fs-3xl);
+}
+.markdown-preview h3 {
+  font-size: var(--fs-2xl);
+}
+.markdown-preview h4 {
+  font-size: var(--fs-lg);
+}
+.markdown-preview h5 {
+  font-size: var(--fs-lg);
+}
+.markdown-preview h6 {
+  font-size: var(--fs-base);
+}
+
+.markdown-preview p {
+  margin: 0.5em 0 1em;
+  color: var(--text-secondary);
+}
+
+.markdown-preview a,
+.formatted-content a,
+.rich-editor a {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.markdown-preview blockquote {
+  border-left: 4px solid var(--border-color);
+  padding: 0.4em 1em;
+  color: var(--text-secondary);
+  background: transparent;
+  margin: 0.6em 0;
+}
+
+.markdown-preview ul,
+.markdown-preview ol {
+  margin: 0.6em 0 0.6em 1.2em;
+}
+.markdown-preview li {
+  margin: 0.25em 0;
+}
+
+/* Code in the editor, viewer and markdown preview */
+.markdown-preview pre,
+.markdown-preview code,
+.note-content pre,
+.note-content code,
+.formatted-content pre,
+.formatted-content code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+  font-size: var(--fs-md);
+}
+.markdown-preview pre,
+.note-content pre,
+.formatted-content pre {
+  background: var(--code-bg);
+  color: var(--code-text);
+  border: 1px solid var(--border-color);
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  overflow: auto;
+  line-height: 1.5;
+  margin: 0.8em 0;
+}
+.markdown-preview :not(pre) > code,
+.note-content :not(pre) > code,
+.formatted-content :not(pre) > code {
+  background: var(--code-inline-bg);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+}
+.code-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--bg-hover);
+  border: none;
+  color: var(--text-secondary);
+  padding: 6px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-sm);
+  transition:
+    transform 0.12s ease,
+    background 0.12s ease;
+  z-index: 20;
+}
+.code-copy-btn:hover {
+  transform: translateY(-1px);
+  color: var(--text-primary);
+  background: var(--border-color);
+}
+.code-copy-btn.copied {
+  background: var(--primary-color);
+  color: var(--text-on-primary, #fff);
+  transform: scale(0.98);
+}
+
+.markdown-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.8em 0;
+  font-size: var(--fs-md);
+}
+.markdown-preview table th,
+.markdown-preview table td {
+  border: 1px solid var(--border-color);
+  padding: 8px 10px;
+}
+.markdown-preview table th {
+  background: rgba(0, 0, 0, 0.03);
+  font-weight: 600;
+}
+
+.markdown-preview img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+  display: block;
+  margin: 0.6em 0;
+}
+
+.markdown-preview hr {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 1em 0;
+}
+
+.markdown-preview .task-list-item {
+  list-style: none;
+}
+.markdown-preview input[type='checkbox'] {
+  transform: translateY(2px);
+  margin-right: 8px;
+}
+
+/* Small helpers to better match GitHub spacing */
+
+/* HTML preview container styling */
+.html-preview {
+  padding: 18px 20px;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  overflow: auto;
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  bottom: 32px;
+  left: 32px;
+  box-sizing: border-box;
+}
+
+.html-preview pre {
+  background: #0b1220;
+  color: #e6edf3;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  overflow: auto;
+}

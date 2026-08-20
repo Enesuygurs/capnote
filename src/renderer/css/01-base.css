@@ -1,0 +1,263 @@
+/* Design tokens, resets, resize performance helpers and the titlebar */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Performance optimization: Disable transitions during window resize */
+body.resizing,
+body.resizing *,
+body.resizing *::before,
+body.resizing *::after {
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  /* Prevent any interaction during resize */
+  pointer-events: none !important;
+}
+
+/* Strict layout containment during resize to prevent reflow animations */
+body.resizing .sidebar,
+body.resizing .notes-list,
+body.resizing .note-item,
+body.resizing .folders-list,
+body.resizing .folder-notes-container,
+body.resizing .folder-note-item,
+body.resizing .note-editor,
+body.resizing .note-viewer {
+  contain: layout style paint !important;
+  will-change: auto !important;
+}
+
+/* Disable expensive effects during resize */
+body.resizing .titlebar,
+body.resizing .sidebar,
+body.resizing .modal {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* GPU acceleration for better resize performance */
+.sidebar,
+.note-editor,
+.note-viewer,
+.welcome-screen {
+  transform: translateZ(0);
+  will-change: auto;
+}
+
+body.resizing .sidebar,
+body.resizing .note-editor,
+body.resizing .note-viewer,
+body.resizing .welcome-screen {
+  will-change: transform;
+}
+
+:root {
+  /* Ana Renkler */
+  --primary-color: #f59e0b;
+  /* Accent used for active highlights (default yellow) */
+  --accent-color: #f59e0b;
+  /* Transparent tints follow whatever accent is set on the root element */
+  --accent-color-rgba-10: color-mix(in srgb, var(--accent-color) 10%, transparent);
+  --accent-color-rgba-12: color-mix(in srgb, var(--accent-color) 12%, transparent);
+  --accent-color-rgba-15: color-mix(in srgb, var(--accent-color) 15%, transparent);
+  --accent-color-rgba-18: color-mix(in srgb, var(--accent-color) 18%, transparent);
+  --accent-color-rgba-20: color-mix(in srgb, var(--accent-color) 20%, transparent);
+  --accent-color-rgba-30: color-mix(in srgb, var(--accent-color) 30%, transparent);
+  --bg-primary: #ffffff;
+  --bg-secondary: #fdfdfd;
+  --bg-tertiary: #f1f5f9;
+  --bg-dark: #1e293b;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --text-light: #ffffff;
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  /* Softer dialog shadow for the dark theme */
+  --shadow-dark-lg: 0 6px 18px rgba(0, 0, 0, 0.6);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --bg-hover: #eef2f6;
+  --border-color: #e5e7eb;
+  --primary-light: var(--accent-color-rgba-12);
+  --text-on-primary: #ffffff;
+  --radius-full: 999px;
+  /* Type scale */
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-base: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 18px;
+  --fs-2xl: 20px;
+  --fs-3xl: 24px;
+  --fs-4xl: 28px;
+  --fs-5xl: 32px;
+  /* Surfaces by role */
+  --surface: #fdfdfd;
+  --surface-sidebar: #ffffff;
+  --surface-panel: #fdfdfd;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f8f9fa;
+  --tint-hover: rgba(0, 0, 0, 0.05);
+  --tint-subtle: rgba(0, 0, 0, 0.03);
+  /* Text on hover/emphasis and elevation shadows */
+  /* Stacking layers, bottom to top */
+  --z-sidebar: 100;
+  --z-dropdown: 900;
+  --z-titlebar: 1000;
+  --z-popover: 1500;
+  --z-modal: 2000;
+  --z-toast: 3000;
+  --text-strong: var(--text-primary);
+  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-modal: 0 10px 28px rgba(0, 0, 0, 0.18);
+  /* Note content: neutral code blocks and links derived from the accent, readable for any accent */
+  --code-bg: #f6f8fa;
+  --code-text: #1f2328;
+  --code-inline-bg: rgba(27, 31, 35, 0.06);
+  --link-color: color-mix(in srgb, var(--accent-color) 65%, black);
+}
+input,
+textarea,
+select {
+  color: var(--text-primary);
+}
+
+body {
+  font-family: var(--font-sans);
+  /* replaced gradient with a solid neutral background to avoid gradients */
+  background: var(--surface);
+  height: 100vh;
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.titlebar {
+  height: 40px;
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px 0 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--z-titlebar);
+  -webkit-app-region: drag;
+}
+.titlebar-drag {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+.titlebar-title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.titlebar-controls {
+  display: flex;
+  gap: 8px;
+  -webkit-app-region: no-drag;
+  position: absolute;
+  right: 10px;
+}
+
+/* macOS uses its native traffic-light buttons: hide ours and leave room for them */
+body.platform-darwin .titlebar-controls {
+  display: none;
+}
+body.platform-darwin .titlebar {
+  padding-left: 80px;
+}
+.titlebar-button {
+  width: 32px;
+  height: 24px;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-xs);
+  transition: var(--transition-fast);
+  background: transparent;
+  color: var(--text-secondary);
+}
+.titlebar-button:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+  transform: scale(1.05);
+}
+.titlebar-button.close:hover {
+  background: var(--error-color);
+  color: white;
+}
+
+.hamburger-btn {
+  width: 36px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-base);
+  transition: var(--transition-fast);
+  border-radius: var(--radius-sm);
+  -webkit-app-region: no-drag;
+  margin-left: 8px;
+}
+
+.hamburger-btn:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+/* Nudge the minimize icon down */
+.titlebar-button.minimize i {
+  transform: translateY(2px);
+}
+
+/* Make the close icon bolder */
+.titlebar-button.close i {
+  font-weight: 900 !important;
+  font-size: var(--fs-base) !important;
+  transform: scale(1.1);
+}
+
+/* Make the maximize icon smaller */
+.titlebar-button.maximize i {
+  transform: scale(0.9);
+}

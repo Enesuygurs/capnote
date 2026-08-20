@@ -1,0 +1,204 @@
+/* Sidebar navigation, the new note button and submenus */
+
+/* Navigation */
+.sidebar-nav {
+  padding: 0px 12px 12px 12px;
+  flex-shrink: 0;
+}
+
+.nav-section {
+  margin-bottom: 12px;
+}
+
+.nav-section:last-child {
+  margin-bottom: 0;
+}
+
+.nav-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 8px;
+}
+
+.nav-section-title {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+/* Count badges in the sidebar (screens, the notes header and folders share one look) */
+.nav-count,
+.folder-count {
+  min-width: 20px;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  margin-left: auto;
+}
+.nav-count.is-emphasized {
+  background: var(--accent-color);
+  color: var(--text-on-primary);
+}
+.nav-section-title .nav-count {
+  margin-left: 6px;
+}
+
+.nav-section-controls {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-control-btn {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-xs);
+  transition: var(--transition-fast);
+}
+
+.nav-control-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.nav-control-btn.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.sort-dropdown {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin: 0;
+  padding: 6px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  z-index: var(--z-dropdown);
+  min-width: 180px;
+}
+
+.sort-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  font-size: var(--fs-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  color: var(--text-secondary);
+}
+
+.sort-option:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.sort-option i {
+  width: 14px;
+  text-align: center;
+}
+
+.sort-option.active {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: var(--fs-base);
+  color: var(--text-secondary);
+  margin-bottom: 2px;
+  position: relative;
+}
+
+.nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-strong);
+}
+
+.nav-item.active {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* Filters (all/today/favorites) mark the list state, not the open screen: accent text only */
+.nav-item[data-filter].active {
+  background: transparent;
+}
+
+/* New note button - light theme */
+div#newNoteNav {
+  background: #e7e7e736;
+}
+
+.nav-icon {
+  width: 16px;
+  font-size: var(--fs-base);
+  text-align: center;
+  opacity: 0.8;
+}
+
+.nav-text {
+  flex: 1;
+}
+
+.nav-expand {
+  font-size: var(--fs-xs);
+  opacity: 0.6;
+  transition: transform var(--transition-fast);
+}
+
+.nav-expandable.expanded .nav-expand {
+  transform: rotate(0deg);
+}
+
+.nav-expandable:not(.expanded) .nav-expand {
+  transform: rotate(-90deg);
+}
+
+/* Submenu */
+
+.nav-subitem {
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.nav-subitem:hover {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+}
+
+.nav-subitem.active {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  font-weight: 500;
+}

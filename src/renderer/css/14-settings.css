@@ -1,0 +1,436 @@
+/* Settings dialog, toggles, accent swatches and locked notes */
+
+/* ============================================
+   SETTINGS MODAL
+   ============================================ */
+.settings-modal {
+  width: 750px;
+  max-width: 90vw;
+  max-height: 85vh;
+}
+
+.settings-body {
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Vertical Tabs Sidebar */
+.settings-tabs {
+  width: 200px;
+  min-width: 200px;
+  background: var(--tint-subtle);
+  border-right: 1px solid var(--border-color);
+  padding: 12px 0;
+  overflow-y: auto;
+}
+
+.settings-tab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.settings-tab i {
+  font-size: var(--fs-lg);
+  width: 18px;
+  text-align: center;
+}
+
+.settings-tab:hover {
+  background: var(--tint-hover);
+  color: var(--text-primary);
+}
+
+.settings-tab.active {
+  background: var(--accent-color-rgba-10);
+  color: var(--accent-color);
+  border-left-color: var(--accent-color);
+  font-weight: 600;
+}
+
+[data-theme='dark'] .settings-tab.active {
+  background: var(--accent-color-rgba-15);
+}
+
+/* Tab Content Area */
+.settings-content {
+  flex: 1;
+  padding: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+}
+
+.settings-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.settings-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.settings-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+[data-theme='dark'] .settings-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.settings-tab-content {
+  display: none;
+  padding: 24px 28px;
+  animation: fadeIn 0.2s ease;
+}
+
+.settings-tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.settings-tab-content h4 {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.settings-subsection {
+  margin-top: 24px;
+}
+
+.settings-subsection:first-of-type {
+  margin-top: 0;
+}
+
+.settings-subsection:not(:first-of-type) {
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.settings-subsection h5 {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-subsection h5 i {
+  font-size: var(--fs-base);
+  opacity: 0.7;
+}
+
+.settings-tab-content h4 i {
+  color: var(--accent-color);
+}
+
+/* Legacy settings-section for backward compatibility */
+
+/* Additional dark theme fixes */
+
+[data-theme='dark'] .title-section {
+  background: var(--title-section-bg);
+}
+
+[data-theme='dark'] .note-title-input {
+  background: var(--note-title-input-bg);
+}
+
+[data-theme='dark'] .note-meta {
+  background: var(--note-meta-bg);
+}
+
+[data-theme='dark'] .editor-actions {
+  background: var(--editor-actions-bg);
+}
+
+[data-theme='dark'] .format-btn {
+  background: var(--format-btn-bg);
+}
+
+[data-theme='dark'] .editor-content {
+  background: var(--editor-content-bg);
+}
+
+[data-theme='dark'] .mood-btn:hover,
+[data-theme='dark'] .weather-btn:hover {
+  border-color: var(--accent-color) !important;
+  background: var(--accent-color-rgba-12) !important;
+}
+
+/* Ensure active mood/weather buttons show the accent color in dark mode */
+[data-theme='dark'] .mood-btn.active,
+[data-theme='dark'] .weather-btn.active {
+  border-color: var(--accent-color) !important;
+  background: var(--accent-color) !important;
+  color: var(--text-light) !important;
+  box-shadow: 0 6px 18px var(--accent-color-rgba-20);
+}
+
+[data-theme='dark'] #tagInput:focus {
+  border-color: var(--primary-color);
+}
+
+[data-theme='dark'] .welcome-content {
+  background: var(--welcome-content-bg);
+}
+
+[data-theme='dark'] .quick-stats {
+  background: var(--quick-stats-bg);
+}
+
+[data-theme='dark'] .viewer-stats {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .toggle-slider {
+  background-color: #505050;
+}
+
+[data-theme='dark'] .toggle-slider:before {
+  background-color: var(--bg-primary);
+}
+
+[data-theme='dark'] .search-container {
+  background: transparent;
+}
+
+[data-theme='dark'] .tag-remove:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Additional comprehensive dark theme fixes */
+
+[data-theme='dark'] .modal-body {
+  background: transparent;
+}
+
+[data-theme='dark'] .export-options {
+  background: var(--export-options-bg);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] .export-btn:hover {
+  border-color: var(--primary-color);
+}
+
+[data-theme='dark'] .checklist-item input[type='checkbox'] {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: var(--bg-secondary);
+  accent-color: var(--primary-color);
+}
+
+.checklist-item input[type='checkbox']:checked {
+  background: var(--primary-color);
+  accent-color: var(--primary-color);
+}
+
+/* Fix specific white backgrounds */
+
+[data-theme='dark'] .viewer-stats {
+  border-top: 1px solid rgb(87 87 87 / 10%);
+}
+
+[data-theme='dark'] .select-selected {
+  border: none;
+}
+
+[data-theme='dark'] .select-item:hover {
+  background: var(--accent-color-rgba-20);
+}
+
+/* Ensure active select items keep the accent color in dark theme */
+[data-theme='dark'] .select-item.active {
+  background: var(--accent-color) !important;
+  font-weight: 600;
+}
+
+/* Fix the last remaining white background - formatting toolbar */
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.setting-item:last-child {
+  margin-bottom: 0;
+}
+
+.setting-info {
+  flex: 1;
+}
+
+.setting-info label {
+  font-weight: 500;
+  color: var(--text-primary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.setting-info small {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+/* Toggle Switch */
+
+.theme-swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.swatch-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease;
+}
+
+.swatch-btn:focus {
+  outline: none;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Make the currently-selected accent swatch slightly larger and more prominent */
+.swatch-btn.active {
+  transform: scale(1.12);
+  box-shadow: 0 0 20px var(--accent-color-rgba-30);
+  border-color: var(--accent-color);
+}
+
+#accentYellow {
+  background: #f59e0b;
+}
+#accentCherry {
+  background: #e11d48;
+}
+#accentApple {
+  background: #22c55e;
+}
+#accentPurple {
+  background: #8b5cf6;
+}
+#accentBlue {
+  background: #3b82f6;
+}
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: var(--radius-xl);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: '';
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .toggle-slider {
+  background-color: var(--primary-color);
+}
+
+input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* Locked Note Styles */
+.note-item.locked {
+  opacity: 0.7;
+  position: relative;
+}
+
+.note-item-title {
+  font-size: var(--fs-base);
+  font-weight: 500;
+}
+
+/* Long titles end with an ellipsis; while the options button is visible it gets room on the right */
+.note-item:hover .note-item-title,
+.note-item:has(.menu-open) .note-item-title {
+  padding-right: 24px;
+}
+
+.note-item.locked .note-item-title {
+  opacity: 0.6;
+}
+
+.lock-btn.locked {
+  color: var(--warning-color);
+  background: rgba(255, 193, 7, 0.1);
+}
+
+/* Dark theme adjustments */
+[data-theme='dark'] .note-item.locked {
+  opacity: 0.6;
+}
+
+[data-theme='dark'] .lock-btn.locked {
+  color: #ffc107;
+  background: rgba(255, 193, 7, 0.15);
+}

@@ -1,0 +1,206 @@
+/* App layout, sidebar header, inserted tables and the app mark */
+
+/* ============================================   LAYOUT   ============================================ */
+.app {
+  display: flex;
+  height: 100vh;
+  padding-top: 40px;
+}
+.sidebar {
+  width: 280px;
+  background: var(--surface-sidebar);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: var(--transition-normal);
+  transform: translateX(0);
+  z-index: var(--z-sidebar);
+  position: relative;
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
+  width: 0;
+  min-width: 0;
+  border-right: none;
+  opacity: 0;
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  padding: 6px 16px 6px 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Inserted table styles for editor and viewer */
+.rich-editor table,
+.rich-editor .inserted-table,
+.formatted-content table,
+.viewer-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  background: var(--surface-sidebar);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.rich-editor table th,
+.rich-editor .inserted-table th,
+.formatted-content table th,
+.viewer-content table th {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+}
+
+.rich-editor table td,
+.rich-editor .inserted-table td,
+.formatted-content table td,
+.viewer-content table td {
+  border: 1px solid whitesmoke;
+  padding: 10px 16px;
+  vertical-align: top;
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+}
+
+.rich-editor table tr:hover td,
+.rich-editor .inserted-table tr:hover td,
+.formatted-content table tr:hover td,
+.viewer-content table tr:hover td {
+  background: var(--bg-hover);
+}
+
+/* Dark theme table styles */
+[data-theme='dark'] .rich-editor table,
+[data-theme='dark'] .rich-editor .inserted-table,
+[data-theme='dark'] .formatted-content table,
+[data-theme='dark'] .viewer-content table {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .rich-editor table th,
+[data-theme='dark'] .rich-editor .inserted-table th,
+[data-theme='dark'] .formatted-content table th,
+[data-theme='dark'] .viewer-content table th {
+  background: var(--bg-dark);
+}
+
+[data-theme='dark'] .rich-editor table td,
+[data-theme='dark'] .rich-editor .inserted-table td,
+[data-theme='dark'] .formatted-content table td,
+[data-theme='dark'] .viewer-content table td {
+  border-color: #232323;
+}
+
+/* Table modal form spacing */
+.modal-content .form-group {
+  margin-bottom: 12px;
+}
+.modal-content .form-group input[type='number'] {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+}
+
+/* Table modal tweaks */
+#tableModal .modal-body {
+  padding: 16px 18px;
+}
+#tableModal .form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+#tableModal .form-row .form-group {
+  flex: 1 1 0;
+}
+#tableModal .modal-content .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+}
+
+#tableModal .form-group label:has(input[type='checkbox']) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: var(--fs-base);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+#tableModal input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+  border-radius: var(--radius-sm);
+}
+
+/* Top of the sidebar: app mark on the left, quick actions on the right */
+.sidebar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 10px;
+  width: 100%;
+}
+
+/* The app mark doubles as the home button */
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 6px;
+  margin-left: -6px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.app-brand:hover {
+  background: var(--tint-hover);
+}
+
+.app-brand-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.app-brand-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+}
+
+/* Sidebar Content - Single Scroll Container */
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-content::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar-content {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
