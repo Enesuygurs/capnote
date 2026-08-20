@@ -29,3 +29,6 @@ ehthumbs.db
 *.swp
 *.swo
 *~
+
+# Local launcher
+/Capnote.bat
