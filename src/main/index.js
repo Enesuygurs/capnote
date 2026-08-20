@@ -2,12 +2,12 @@
  * Capnote main process: app lifecycle and registration of the main-process features
  */
 
-const fs = require('fs');
-const path = require('path');
-const { app, BrowserWindow, ipcMain } = require('electron');
-const { JsonStore } = require('./storage');
-const { registerUploadScheme, handleUploadProtocol, registerUploadIpc } = require('./uploads');
-const {
+import fs from 'fs';
+import path from 'path';
+import { app, BrowserWindow, ipcMain } from 'electron';
+import { JsonStore } from './storage.js';
+import { registerUploadScheme, handleUploadProtocol, registerUploadIpc } from './uploads.js';
+import {
   createMainWindow,
   getMainWindow,
   showMainWindow,
@@ -16,21 +16,14 @@ const {
   isCloseToTrayEnabled,
   supportsCloseToTray,
   registerWindowIpc,
-} = require('./window');
-const { createTray, registerTrayIpc } = require('./tray');
-const { registerNotificationIpc } = require('./notifications');
-const { registerAutostartIpc } = require('./autostart');
-const { registerExportIpc } = require('./export-pdf');
+} from './window.js';
+import { createTray, registerTrayIpc } from './tray.js';
+import { registerNotificationIpc } from './notifications.js';
+import { registerAutostartIpc } from './autostart.js';
+import { registerExportIpc } from './export-pdf.js';
 
 // Development mode is 'npm run dev' from a source checkout: hot reload and DevTools
 const isDev = !app.isPackaged && process.argv.includes('--dev');
-if (isDev) {
-  try {
-    require('electron-reloader')(module, { watchRenderer: true, debug: false });
-  } catch (err) {
-    console.warn('Hot reload is unavailable:', err.message);
-  }
-}
 
 // On Windows, notifications belong to the AppUserModelID. The installer registers the build appId
 // on its shortcuts, so the installed app must use the same id; a source checkout has no shortcut.
@@ -136,3 +129,14 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   markQuitting();
 });
+
+// Hot reload comes last: awaiting the import lets the app become ready, and the setup above
+// (such as registering the upload scheme) has to happen before that
+if (isDev) {
+  try {
+    const reloader = await import('electron-reloader');
+    reloader.default(import.meta, { watchRenderer: true });
+  } catch (err) {
+    console.warn('Hot reload is unavailable:', err.message);
+  }
+}

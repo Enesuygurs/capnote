@@ -1,7 +1,7 @@
 // Native operating-system notifications for reminders
 
-const { ipcMain, Notification } = require('electron');
-const { showMainWindow, getMainWindow } = require('./window');
+import { ipcMain, Notification } from 'electron';
+import { showMainWindow, getMainWindow } from './window.js';
 
 function registerNotificationIpc() {
   ipcMain.handle('show-native-notification', (event, opts) => {
@@ -31,4 +31,4 @@ function registerNotificationIpc() {
   });
 }
 
-module.exports = { registerNotificationIpc };
+export { registerNotificationIpc };

@@ -1,10 +1,10 @@
 // System tray icon and its menu
 
-const fs = require('fs');
-const path = require('path');
-const { app, Tray, Menu, nativeImage, ipcMain } = require('electron');
-const { ICONS_DIR } = require('./paths');
-const { getMainWindow, showMainWindow, markQuitting } = require('./window');
+import fs from 'fs';
+import path from 'path';
+import { app, Tray, Menu, nativeImage, ipcMain } from 'electron';
+import { ICONS_DIR } from './paths.js';
+import { getMainWindow, showMainWindow, markQuitting } from './window.js';
 
 let tray = null;
 let trayLanguage = 'tr';
@@ -131,4 +131,4 @@ function registerTrayIpc() {
   });
 }
 
-module.exports = { createTray, registerTrayIpc };
+export { createTray, registerTrayIpc };

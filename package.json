@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Capnote - a modern desktop notes and journal app",
   "main": "src/main/index.js",
+  "type": "module",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
@@ -12,8 +13,8 @@
     "build-linux": "electron-builder --linux",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "format": "prettier --write \"src/**/*.{js,html,css,json}\"",
-    "format:check": "prettier --check \"src/**/*.{js,html,css,json}\""
+    "format": "prettier --write \"src/**/*.{js,cjs,html,css,json}\"",
+    "format:check": "prettier --check \"src/**/*.{js,cjs,html,css,json}\""
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,7 @@
     "@eslint/js": "^10.0.1",
     "electron": "^45.0.0",
     "electron-builder": "^26.18.0",
-    "electron-reloader": "^1.2.0",
+    "electron-reloader": "^2.0.0",
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.13.0",

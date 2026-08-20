@@ -11,8 +11,16 @@ export default [
     },
   },
   {
-    // Main and preload processes run as CommonJS in Node
-    files: ['src/preload.js', 'src/main/**/*.js'],
+    // The main process is made of ES modules running in Node
+    files: ['src/main/**/*.js'],
+    languageOptions: {
+      sourceType: 'module',
+      globals: globals.node,
+    },
+  },
+  {
+    // Sandboxed preload scripts must be CommonJS
+    files: ['src/preload.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
       globals: globals.node,

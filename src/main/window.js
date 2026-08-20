@@ -1,11 +1,11 @@
 // The main application window: creation, navigation lock-down, close-to-tray and window controls
 
-const fs = require('fs');
-const path = require('path');
-const { fileURLToPath } = require('url');
-const { app, BrowserWindow, ipcMain, screen, shell } = require('electron');
-const { ICONS_DIR, RENDERER_DIR, PRELOAD_FILE, uploadsDir } = require('./paths');
-const { uploadPathFromUrl } = require('./uploads');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { app, BrowserWindow, ipcMain, screen, shell } from 'electron';
+import { ICONS_DIR, RENDERER_DIR, PRELOAD_FILE, uploadsDir } from './paths.js';
+import { uploadPathFromUrl } from './uploads.js';
 
 let mainWindow = null;
 let isQuitting = false;
@@ -182,7 +182,7 @@ function registerWindowIpc() {
   });
 }
 
-module.exports = {
+export {
   createMainWindow,
   getMainWindow,
   showMainWindow,

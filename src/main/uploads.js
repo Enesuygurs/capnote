@@ -2,11 +2,11 @@
 // capnote-file://upload/<name>, which keeps note content independent of where the user data
 // folder lives (so backups work on another machine).
 
-const fs = require('fs');
-const path = require('path');
-const { pathToFileURL } = require('url');
-const { ipcMain, protocol, net } = require('electron');
-const { uploadsDir } = require('./paths');
+import fs from 'fs';
+import path from 'path';
+import { pathToFileURL } from 'url';
+import { ipcMain, protocol, net } from 'electron';
+import { uploadsDir } from './paths.js';
 
 // Largest file accepted into the uploads folder
 const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
@@ -119,9 +119,4 @@ function registerUploadIpc() {
   });
 }
 
-module.exports = {
-  registerUploadScheme,
-  handleUploadProtocol,
-  registerUploadIpc,
-  uploadPathFromUrl,
-};
+export { registerUploadScheme, handleUploadProtocol, registerUploadIpc, uploadPathFromUrl };
