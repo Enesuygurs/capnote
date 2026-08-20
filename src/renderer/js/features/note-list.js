@@ -1,6 +1,7 @@
 // Sidebar note list: rendering, filtering, sorting and search
 
 import { i18n } from '../i18n.js';
+import { MOOD_KEYWORDS, WEATHER_KEYWORDS } from '../data/moods.js';
 
 export class NoteListFeature {
   // Note option menus are moved to <body> when opened; drop them when their lists are rebuilt
@@ -168,14 +169,15 @@ export class NoteListFeature {
     return text;
   }
 
-  // Words describing a mood/weather emoji: its label in the UI language plus English keywords
-  emojiSearchWords(emoji) {
-    const button = [...this.moodBtns, ...this.weatherBtns].find(
-      (btn) => (btn.dataset.mood || btn.dataset.weather) === emoji
-    );
-    if (!this._emojiKeywordMap) this._emojiKeywordMap = this._buildEnglishEmojiKeywordMap();
-    const words = [button ? button.title : '', ...(this._emojiKeywordMap[emoji] || [])];
-    return words.map((word) => this.normalizeForSearch(word)).filter(Boolean);
+  // Words describing a note's mood and weather: their names in the UI language plus English keywords
+  moodWeatherSearchWords(note) {
+    const words = [
+      this.findMoodButton(note.mood)?.title,
+      this.findWeatherButton(note.weather)?.title,
+      ...(MOOD_KEYWORDS[note.mood] || []),
+      ...(WEATHER_KEYWORDS[note.weather] || []),
+    ];
+    return words.map((word) => this.normalizeForSearch(word || '')).filter(Boolean);
   }
 
   // Decide if a note matches searchTerm, including mood/weather keyword mapping
@@ -185,15 +187,11 @@ export class NoteListFeature {
     if ((note.tags || []).some((tag) => this.normalizeForSearch(tag).includes(searchTerm)))
       return true;
 
-    // Mood and weather match by the emoji itself or a word that starts with the search term
-    return [note.mood, note.weather]
-      .filter(Boolean)
-      .some(
-        (emoji) =>
-          emoji.includes(searchTerm) ||
-          (searchTerm.length >= 2 &&
-            this.emojiSearchWords(emoji).some((word) => word.startsWith(searchTerm)))
-      );
+    // Mood and weather match a word that starts with the search term
+    return (
+      searchTerm.length >= 2 &&
+      this.moodWeatherSearchWords(note).some((word) => word.startsWith(searchTerm))
+    );
   }
 
   getSortedNotes(notes) {

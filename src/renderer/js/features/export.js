@@ -87,11 +87,13 @@ ${this.buildExportBody(note)}
     const tags = (note.tags || [])
       .map((tag) => `<span class="export-tag">${this.escapeHtml(tag)}</span>`)
       .join('');
-    const mood = note.mood
-      ? `<p class="export-meta">${i18n.t('sections.mood')}: ${this.escapeHtml(note.mood)}</p>`
+    const moodName = this.findMoodButton(note.mood)?.title;
+    const weatherName = this.findWeatherButton(note.weather)?.title;
+    const mood = moodName
+      ? `<p class="export-meta">${i18n.t('sections.mood')}: ${this.escapeHtml(moodName)}</p>`
       : '';
-    const weather = note.weather
-      ? `<p class="export-meta">${i18n.t('sections.weather')}: ${this.escapeHtml(note.weather)}</p>`
+    const weather = weatherName
+      ? `<p class="export-meta">${i18n.t('sections.weather')}: ${this.escapeHtml(weatherName)}</p>`
       : '';
     return `<div class="export-header">
   <h1>${this.escapeHtml(note.title || '')}</h1>

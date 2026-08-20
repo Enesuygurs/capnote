@@ -379,6 +379,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   border-radius: var(--radius-md);
   cursor: pointer;
   font-size: var(--fs-xl);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -387,6 +388,8 @@ input[type='color'].color-picker::-moz-color-swatch {
 .mood-btn:hover,
 .weather-btn:hover {
   border-color: var(--primary-color);
+  background: var(--accent-color-rgba-15);
+  color: var(--accent-color);
   transform: scale(1.1);
 }
 .mood-btn.active,
@@ -479,6 +482,13 @@ input[type='color'].color-picker::-moz-color-swatch {
   font-size: var(--fs-md);
   color: var(--text-secondary);
   margin-bottom: 8px;
+}
+
+/* Mood and weather icons next to the date */
+#viewerMood,
+#viewerWeather {
+  color: var(--accent-color);
+  font-size: var(--fs-lg);
 }
 
 .viewer-tags {

@@ -608,18 +608,34 @@
                   <i class="fas fa-smile"></i> <span data-i18n="sections.mood">Ruh Hali</span>
                 </h4>
                 <div class="mood-selector">
-                  <button class="mood-btn" data-mood="😊" data-i18n-title="titles.happy">😊</button>
-                  <button class="mood-btn" data-mood="😢" data-i18n-title="titles.sad">😢</button>
-                  <button class="mood-btn" data-mood="😡" data-i18n-title="titles.angry">😡</button>
-                  <button class="mood-btn" data-mood="😴" data-i18n-title="titles.tired">😴</button>
-                  <button class="mood-btn" data-mood="😍" data-i18n-title="titles.inLove">
-                    😍
+                  <button class="mood-btn" data-mood="happy" data-i18n-title="titles.happy">
+                    <i class="fas fa-face-smile" aria-hidden="true"></i>
                   </button>
-                  <button class="mood-btn" data-mood="🤔" data-i18n-title="titles.thoughtful">
-                    🤔
+                  <button class="mood-btn" data-mood="sad" data-i18n-title="titles.sad">
+                    <i class="fas fa-face-sad-tear" aria-hidden="true"></i>
                   </button>
-                  <button class="mood-btn" data-mood="😎" data-i18n-title="titles.cool">😎</button>
-                  <button class="mood-btn" data-mood="🙄" data-i18n-title="titles.bored">🙄</button>
+                  <button class="mood-btn" data-mood="angry" data-i18n-title="titles.angry">
+                    <i class="fas fa-face-angry" aria-hidden="true"></i>
+                  </button>
+                  <button class="mood-btn" data-mood="tired" data-i18n-title="titles.tired">
+                    <i class="fas fa-face-tired" aria-hidden="true"></i>
+                  </button>
+                  <button class="mood-btn" data-mood="inLove" data-i18n-title="titles.inLove">
+                    <i class="fas fa-face-grin-hearts" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="mood-btn"
+                    data-mood="thoughtful"
+                    data-i18n-title="titles.thoughtful"
+                  >
+                    <i class="fas fa-face-meh" aria-hidden="true"></i>
+                  </button>
+                  <button class="mood-btn" data-mood="cool" data-i18n-title="titles.cool">
+                    <i class="fas fa-face-smile-wink" aria-hidden="true"></i>
+                  </button>
+                  <button class="mood-btn" data-mood="bored" data-i18n-title="titles.bored">
+                    <i class="fas fa-face-rolling-eyes" aria-hidden="true"></i>
+                  </button>
                 </div>
               </div>
 
@@ -629,27 +645,27 @@
                   <span data-i18n="sections.weather">Hava Durumu</span>
                 </h4>
                 <div class="weather-selector">
-                  <button class="weather-btn" data-weather="☀️" data-i18n-title="titles.sunny">
-                    ☀️
+                  <button class="weather-btn" data-weather="sunny" data-i18n-title="titles.sunny">
+                    <i class="fas fa-sun" aria-hidden="true"></i>
                   </button>
                   <button
                     class="weather-btn"
-                    data-weather="⛅"
+                    data-weather="partlyCloudy"
                     data-i18n-title="titles.partlyCloudy"
                   >
-                    ⛅
+                    <i class="fas fa-cloud-sun" aria-hidden="true"></i>
                   </button>
-                  <button class="weather-btn" data-weather="☁️" data-i18n-title="titles.cloudy">
-                    ☁️
+                  <button class="weather-btn" data-weather="cloudy" data-i18n-title="titles.cloudy">
+                    <i class="fas fa-cloud" aria-hidden="true"></i>
                   </button>
-                  <button class="weather-btn" data-weather="🌧️" data-i18n-title="titles.rainy">
-                    🌧️
+                  <button class="weather-btn" data-weather="rainy" data-i18n-title="titles.rainy">
+                    <i class="fas fa-cloud-rain" aria-hidden="true"></i>
                   </button>
-                  <button class="weather-btn" data-weather="⛈️" data-i18n-title="titles.stormy">
-                    ⛈️
+                  <button class="weather-btn" data-weather="stormy" data-i18n-title="titles.stormy">
+                    <i class="fas fa-cloud-bolt" aria-hidden="true"></i>
                   </button>
-                  <button class="weather-btn" data-weather="❄️" data-i18n-title="titles.snowy">
-                    ❄️
+                  <button class="weather-btn" data-weather="snowy" data-i18n-title="titles.snowy">
+                    <i class="fas fa-snowflake" aria-hidden="true"></i>
                   </button>
                 </div>
               </div>
@@ -802,7 +818,10 @@
     <div id="exportModal" class="modal hidden">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 data-i18n="modals.exportNote">Notu Dışa Aktar</h3>
+          <div class="modal-title">
+            <i class="fas fa-file-export" aria-hidden="true"></i>
+            <h3 data-i18n="modals.exportNote">Notu Dışa Aktar</h3>
+          </div>
           <button class="modal-close" id="closeExportModal">
             <i class="fas fa-times"></i>
           </button>
@@ -874,6 +893,7 @@
       <div class="modal-content history-modal">
         <div class="modal-header">
           <div class="modal-title">
+            <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
             <h3 data-i18n="modals.noteHistory">Not Geçmişi</h3>
           </div>
           <button class="modal-close" id="closeHistoryModal">

@@ -709,6 +709,7 @@ export class FoldersFeature {
           return;
         }
 
+        notesListContainer.dataset.dropLabel = i18n.t('messages.dropOutsideFolders');
         notesListContainer.classList.add('drag-over');
       });
 

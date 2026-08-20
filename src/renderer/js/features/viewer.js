@@ -53,8 +53,8 @@ export class ViewerFeature {
     });
 
     // Mood and weather
-    this.viewerMood.textContent = note.mood || '';
-    this.viewerWeather.textContent = note.weather || '';
+    this.showMoodWeatherIcon(this.viewerMood, this.findMoodButton(note.mood));
+    this.showMoodWeatherIcon(this.viewerWeather, this.findWeatherButton(note.weather));
 
     // Tags
     this.displayViewerTags(note.tags || []);
@@ -97,6 +97,13 @@ export class ViewerFeature {
     });
 
     this.updateFavoriteButtons();
+  }
+
+  // Shows a copy of an editor button's icon, named by its title; empty when nothing is selected
+  showMoodWeatherIcon(target, button) {
+    const icon = button?.querySelector('i');
+    target.replaceChildren(...(icon ? [icon.cloneNode()] : []));
+    target.title = icon ? button.title : '';
   }
 
   displayViewerTags(tags) {
