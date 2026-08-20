@@ -1,9 +1,9 @@
 // Starting Capnote when the user logs in (login items on Windows/macOS, a .desktop file on Linux)
 
-const fs = require('fs');
-const path = require('path');
-const { app, ipcMain } = require('electron');
-const { ICONS_DIR } = require('./paths');
+import fs from 'fs';
+import path from 'path';
+import { app, ipcMain } from 'electron';
+import { ICONS_DIR } from './paths.js';
 
 const usesLoginItems = process.platform === 'darwin' || process.platform === 'win32';
 
@@ -77,4 +77,4 @@ function registerAutostartIpc() {
   });
 }
 
-module.exports = { registerAutostartIpc };
+export { registerAutostartIpc };

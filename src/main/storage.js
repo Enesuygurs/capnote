@@ -4,8 +4,8 @@
  * and a copy of all files is taken once per day (the last 7 days are kept).
  */
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 const COLLECTIONS = ['notes', 'folders', 'reminders', 'notifications', 'todos', 'settings'];
 const DAILY_BACKUPS_TO_KEEP = 7;
@@ -89,4 +89,4 @@ class JsonStore {
   }
 }
 
-module.exports = { JsonStore, COLLECTIONS };
+export { JsonStore, COLLECTIONS };

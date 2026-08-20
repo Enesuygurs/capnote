@@ -1,11 +1,11 @@
 // Exporting a note to PDF with Chromium's own renderer (works offline, no third-party library).
 // The renderer sends the note body; the document is assembled here around the bundled export styles.
 
-const fs = require('fs');
-const path = require('path');
-const { pathToFileURL } = require('url');
-const { app, BrowserWindow, dialog, ipcMain } = require('electron');
-const { RENDERER_DIR } = require('./paths');
+import fs from 'fs';
+import path from 'path';
+import { pathToFileURL } from 'url';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { RENDERER_DIR } from './paths.js';
 
 function registerExportIpc() {
   ipcMain.handle('export-pdf', async (event, payload) => {
@@ -49,4 +49,4 @@ function registerExportIpc() {
   });
 }
 
-module.exports = { registerExportIpc };
+export { registerExportIpc };
