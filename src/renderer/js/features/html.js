@@ -35,18 +35,13 @@ export class HtmlFeature {
     // Insert a space before a '<' if it's immediately preceded by a non-space and not already separated
     safeHtml = safeHtml.replace(/([^\s>])</g, '$1 <');
     const tmp = this.parseInertHtml(safeHtml);
-    let text = tmp.textContent || '';
-    text = text.replace(/\u00A0/g, ' ');
-    const normalized = text.trim().replace(/\s+/g, ' ');
-    let words = 0;
-    try {
-      const matches = normalized.match(/[\p{L}\p{N}]+/gu);
-      words = matches ? matches.length : 0;
-    } catch (e) {
-      words = normalized ? normalized.split(' ').filter(Boolean).length : 0;
-    }
-    const chars = text.length;
-    return { words, chars, text };
+    const text = (tmp.textContent || '').replace(/\u00A0/g, ' ');
+    return { words: this.countWords(text), chars: text.length, text };
+  }
+
+  // A word is a run of letters or digits in any script
+  countWords(text) {
+    return (text.match(/[\p{L}\p{N}]+/gu) || []).length;
   }
 
   rgbToHex(rgb) {

@@ -30,11 +30,11 @@
   "author": "Valkyr",
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.37.0",
+    "@eslint/js": "^10.0.1",
     "electron": "^45.0.0",
     "electron-builder": "^26.18.0",
     "electron-reloader": "^1.2.0",
-    "eslint": "^9.37.0",
+    "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.13.0",
     "prettier": "^3.6.2"
