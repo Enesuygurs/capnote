@@ -1,0 +1,378 @@
+/* Custom selects, checklists, note indicators and titlebar details */
+
+/* Titlebar */
+.titlebar-title {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  flex: none !important;
+}
+
+/* Sort options */
+
+/* Custom Select Dropdown */
+.custom-select {
+  position: relative;
+  width: 100%;
+}
+
+.select-selected {
+  padding: 10px 35px 10px 12px;
+  border: 1px solid var(--border-color);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  background: var(--surface-sidebar);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  user-select: none;
+}
+
+.select-selected:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 14px;
+  height: 14px;
+  transform: translateY(-50%);
+  /* Use an SVG that draws with currentColor so we can tint via CSS variables */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'><path stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/></svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+  color: var(--accent-color); /* tint the arrow to the accent color */
+  transition: transform var(--transition-normal);
+}
+
+/* Dark mode: make the select arrow white for visibility */
+[data-theme='dark'] .select-selected:after {
+  color: var(--text-light) !important;
+  /* Use a white-stroked SVG for the arrow so it reliably appears white in dark mode */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'><path stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/></svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.select-selected:hover {
+  border-color: var(--primary-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--accent-color-rgba-12);
+  background: var(--tint-hover);
+}
+
+.select-selected.select-arrow-active:after {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.select-items {
+  position: absolute;
+  background: var(--surface-sidebar);
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown);
+  border-top: none;
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  box-shadow: var(--shadow-popover);
+  overflow: hidden;
+  max-height: 150px;
+  overflow-y: auto;
+  /* Scrollbar gizleme */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.select-items::-webkit-scrollbar {
+  display: none;
+}
+
+.select-hide {
+  display: none;
+}
+
+.select-item {
+  padding: 8px 12px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  border-bottom: 1px solid var(--border-color);
+  background: var(--surface-sidebar);
+}
+
+.select-item:hover {
+  background: var(--accent-color-rgba-15);
+  color: var(--text-light);
+  font-weight: 600;
+  padding-left: 16px;
+}
+
+.select-item.active {
+  background: var(--accent-color);
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.select-item:last-child {
+  border-bottom: none;
+}
+
+/* Format custom select */
+.format-custom-select {
+  min-width: 100px;
+}
+
+.format-custom-select .select-selected {
+  padding: 6px 25px 6px 8px;
+  font-size: var(--fs-xs);
+  border-radius: var(--radius-sm);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  box-shadow: none;
+}
+
+.format-custom-select .select-selected:after {
+  width: 10px;
+  height: 10px;
+  right: 6px;
+}
+
+.format-custom-select .select-items {
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  max-height: 120px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* Scrollbar gizleme */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.format-custom-select .select-items::-webkit-scrollbar {
+  display: none;
+}
+
+.format-custom-select .select-item {
+  padding: 6px 8px;
+  font-size: var(--fs-xs);
+}
+
+.format-custom-select .select-item:hover {
+  padding-left: 12px;
+  background: var(--accent-color-rgba-15);
+  color: var(--text-primary);
+}
+
+/* Styled Select with Better Options */
+
+/* Format select improvements */
+
+/* Header content */
+
+/* Note content area background fix */
+.note-content {
+  background: var(--surface-panel) !important;
+  border-radius: var(--radius-lg);
+  margin: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Save button disabled state */
+
+/* Checklist styles */
+.checklist {
+  margin: 8px 0;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  padding: 2px 0;
+}
+
+.checklist-item input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  margin: 0;
+  accent-color: var(--primary-color);
+}
+
+.checklist-item label {
+  cursor: pointer;
+  flex: 1;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  font-size: var(--fs-base);
+}
+
+.checklist-item input[type='checkbox']:checked + label {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Editor list spacing: ensure ul/ol inside the editor have comfortable left padding */
+.rich-editor ul,
+.rich-editor ol {
+  margin: 8px 0;
+  padding-left: 16px;
+}
+
+.rich-editor ul {
+  list-style-type: disc;
+}
+
+.rich-editor ol {
+  list-style-type: decimal;
+}
+
+.rich-editor ul li,
+.rich-editor ol li {
+  margin-bottom: 6px;
+}
+
+/* Pinned and locked note indicators */
+.note-item.pinned {
+  border-left: 3px solid var(--accent-color, var(--warning-color));
+  background-color: var(--tint-subtle);
+}
+
+.note-options-container {
+  position: absolute;
+  right: 8px;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.note-item:hover .note-options-container,
+.folder-note-item:hover .note-options-container,
+.note-options-container.menu-open {
+  opacity: 1;
+  z-index: 10;
+}
+
+.more-options-btn {
+  background: transparent !important;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast);
+}
+
+.more-options-btn:hover {
+  color: var(--text-primary);
+}
+
+.note-options-menu {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: var(--surface-raised);
+  border-radius: var(--radius-md);
+  padding: 6px;
+  box-shadow: var(--shadow-popover);
+  border: 1px solid var(--border-color);
+  z-index: var(--z-popover);
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-width: 160px;
+}
+
+.note-options-menu.hidden {
+  display: none !important;
+}
+
+.note-action-menu-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: var(--transition-fast);
+  text-align: left;
+}
+
+.note-action-menu-btn i {
+  font-size: var(--fs-base);
+  width: 16px;
+  text-align: center;
+}
+
+.note-action-menu-btn:hover {
+  background: var(--tint-hover);
+  color: var(--text-primary);
+}
+
+.note-action-menu-btn.pinned {
+  color: var(--accent-color);
+}
+.note-action-menu-btn.pinned:hover {
+  background: var(--accent-color-rgba-10);
+}
+
+.note-action-menu-btn.locked {
+  color: var(--error-color);
+}
+.note-action-menu-btn.locked:hover {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.note-action-menu-btn.favorited {
+  color: #e91e63;
+}
+.note-action-menu-btn.favorited:hover {
+  background: rgba(233, 30, 99, 0.1);
+}
+
+/* Note item layout improvements */
+
+/* Titlebar button hover effects */
+.titlebar-button.minimize:hover {
+  background: var(--primary-color) !important;
+  color: white !important;
+}
+
+.titlebar-button.maximize:hover {
+  background: var(--success-color) !important;
+  color: white !important;
+}
+
+/* Center the welcome screen button */
+.welcome-content {
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.welcome-content .btn-large {
+  align-self: center;
+}
+
+/* Welcome screen soft background */
+.welcome-screen {
+  background: var(--surface) !important;
+}

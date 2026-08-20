@@ -1,0 +1,389 @@
+/* Editor sidebar, emoji panel, embedded images and emoji tabs */
+
+/* Editor sidebar */
+.editor-sidebar {
+  width: 280px;
+  background: var(--surface-panel);
+  border-left: 1px solid var(--border-color);
+  padding: 20px;
+  overflow-y: auto;
+  transition: var(--transition-normal);
+}
+
+.editor-sidebar.hidden {
+  width: 0;
+  padding: 0;
+  border-left: none;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.sidebar-section {
+  margin-bottom: 24px;
+}
+
+.sidebar-section h4 {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mood-selector,
+.weather-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.mood-btn,
+.weather-btn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border-color);
+  background: var(--surface-raised);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--fs-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.mood-btn:hover,
+.weather-btn:hover {
+  border-color: var(--accent-color);
+  background: var(--accent-color-rgba-15);
+  transform: scale(1.08);
+}
+
+.mood-btn.active,
+.weather-btn.active {
+  border-color: var(--primary-color);
+  background: var(--primary-color);
+  color: white;
+}
+
+/* Emoji panel & toolbar button */
+.format-btn#openEmojiBtn,
+.format-btn.small-toolbar-btn#openEmojiBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Embedded images in editor */
+.embedded-image {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+/* Resizable image container */
+.img-wrap {
+  display: inline-block;
+  position: relative;
+  border: 1px dashed transparent;
+}
+.img-wrap.selected {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+.img-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+/* hide resize handle by default (so it doesn't show in preview) */
+.img-handle {
+  display: none;
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  right: 2px;
+  bottom: 2px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 2px;
+  cursor: se-resize;
+  z-index: 5;
+}
+
+/* show handle and selection styling only when image is inside the rich editor (editing mode) */
+#noteContentEditable .img-wrap.selected {
+  border-color: rgba(0, 0, 0, 0.15);
+}
+#noteContentEditable .img-wrap .img-handle {
+  display: block;
+}
+
+.emoji-panel {
+  /* Use fixed positioning so JS can place the panel using viewport coordinates
+     (getBoundingClientRect). This avoids issues when ancestor containers are
+     positioned or scrolled. */
+  position: fixed;
+  z-index: var(--z-popover);
+  left: auto;
+  top: auto;
+  width: 320px;
+  max-width: calc(100% - 48px);
+  background: var(--surface-raised);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-popover);
+  border-radius: var(--radius-lg);
+  padding: 8px;
+  transition:
+    transform 0.12s ease,
+    opacity 0.12s ease;
+  transform-origin: top center;
+}
+
+.emoji-panel.hidden {
+  display: none;
+}
+
+.emoji-panel-header {
+  display: flex;
+  gap: 12px; /* a bit more breathing room between search and close */
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.emoji-panel-header input[type='text'] {
+  flex: 1 1 auto;
+  padding: 8px 14px;
+  /* pill styling to match emoji tab shell */
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-color);
+  background: var(--surface-sunken);
+  outline: none;
+  min-width: 120px; /* ensure input has room */
+  box-sizing: border-box;
+  transition:
+    box-shadow 120ms ease,
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.emoji-panel-header input[type='text']:focus {
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
+  border-color: var(--accent-color);
+  background: var(--surface-raised);
+}
+
+/* Match the pill appearance to the tab shell in dark mode */
+
+[data-theme='dark'] .emoji-panel-header input[type='text']:focus {
+  border-color: var(--accent-color);
+}
+
+/* close button removed: behavior handled by clicking outside the panel */
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  max-height: 210px;
+  overflow: auto;
+  padding: 4px;
+}
+
+/* Emoji tabs */
+.emoji-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 6px 0;
+  align-items: center;
+  overflow-x: auto;
+}
+/* hide scrollbars visually but keep scrolling functional */
+.emoji-tabs::-webkit-scrollbar,
+.emoji-grid::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+.emoji-tabs {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.emoji-grid {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.emoji-tabs-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* tightened lateral padding for a more compact group */
+  padding: 2px 8px 2px 8px;
+  height: 28px;
+  margin-bottom: 8px;
+  position: relative; /* allow absolute positioning of nav arrows */
+  width: 100%;
+  justify-content: center; /* center the shell; arrows will be absolute */
+}
+
+/* Professional style: pill shell around tabs */
+.emoji-tabs-wrap.professional {
+  padding: 4px 8px;
+}
+.emoji-tabs-shell {
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: var(--radius-full);
+  /* reduce shell padding so the pill feels tighter */
+  padding: 2px 6px;
+  display: flex;
+  align-items: center;
+  /* ensure shell doesn't push outside the panel — allow room for arrows */
+  max-width: 190px;
+  margin: 0 auto; /* center inside wrapper */
+  overflow: hidden; /* clip overflowing tabs */
+  flex: none;
+}
+.emoji-tabs-shell .emoji-tabs {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  overflow-x: auto;
+  padding: 0;
+}
+.emoji-tabs-shell .emoji-tabs::-webkit-scrollbar {
+  display: none;
+}
+.emoji-tabs-shell .emoji-tabs {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.emoji-tab {
+  min-width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition:
+    transform 100ms ease,
+    box-shadow 100ms ease,
+    background 100ms ease;
+  padding: 0 4px; /* compact horizontal hit area */
+  box-sizing: content-box;
+}
+.emoji-tab:hover {
+  /* fixed translucent white background irrespective of accent */
+  background: rgb(255 255 255 / 27%);
+  /* remove border color change on hover */
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.12);
+}
+.emoji-tab:active {
+  transform: translateY(-1px) scale(0.98);
+}
+.emoji-tab.active {
+  background: var(--accent-color);
+  color: white;
+  box-shadow: 0 6px 18px var(--accent-color-rgba-20);
+}
+
+.emoji-grid-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tint-subtle);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: var(--fs-xl);
+  transition: all 0.12s ease;
+}
+
+.emoji-grid-btn:hover {
+  transform: scale(1.08);
+  background: var(--accent-color-rgba-15);
+  border-color: var(--accent-color);
+}
+
+[data-theme='dark'] .emoji-grid-btn:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tags-container {
+  margin-top: 12px;
+}
+
+#tagInput {
+  background: var(--surface-sunken);
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-sm);
+  outline: none;
+  margin-bottom: 8px;
+}
+
+#tagInput:focus {
+  border-color: var(--primary-color);
+}
+
+/* Normalize icon rendering between FontAwesome and native emoji glyphs */
+.emoji-tab i {
+  display: inline-block;
+  line-height: 1;
+  font-size: var(--fs-md); /* compact icon size for tabs */
+  vertical-align: middle;
+  /* tiny vertical nudge to visually center FontAwesome icons with emoji glyphs */
+  transform: translateY(0.5px);
+}
+
+/* Dark theme: make tab icons white for contrast */
+[data-theme='dark'] .emoji-tab i {
+  color: #fff;
+  opacity: 0.95;
+}
+
+/* If the icons still look slightly off on some OS/font renderers, tweak the translateY value above. */
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tag {
+  padding: 4px 8px;
+  background: var(--primary-color);
+  color: white;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tag-remove {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: var(--fs-xs);
+  padding: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-remove:hover {
+  background: rgba(255, 255, 255, 0.2);
+}

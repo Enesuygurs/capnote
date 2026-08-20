@@ -46,7 +46,7 @@ npm run lint     # ESLint
 npm run format   # Prettier
 ```
 
-The main process is in `src/main/`, the preload bridge in `src/preload.js`, and the interface in `src/renderer/` (`js/app.js` plus one module per feature in `js/features/`).
+The main process is in `src/main/`, the preload bridge in `src/preload.js`, and the interface in `src/renderer/`: `js/app.js` plus one module per feature in `js/features/`, and stylesheets in `css/`, loaded in the numbered order.
 
 ## Building
 

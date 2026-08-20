@@ -1,0 +1,222 @@
+/* Modal dialogs and the confirm dialog */
+
+/* ============================================
+   MODALS
+   ============================================ */
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-normal);
+}
+
+.modal:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  background: var(--surface-raised);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-modal);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+  position: relative;
+  transform: scale(0.9);
+  transition: var(--transition-normal);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal:not(.hidden) .modal-content {
+  transform: scale(1);
+}
+
+.modal-header {
+  padding: 24px 24px 0;
+  /* border-bottom removed to match design request */
+  border-bottom: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.modal-header h3 {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+/* Add a small emoji icon before every modal title. Override per-modal if needed. */
+.modal-header h3::before {
+  content: '📌';
+  display: inline-block;
+  margin-right: 10px;
+  transform: translateY(1px);
+}
+
+/* Disable the generic pseudo-icon for the folder color modal (we have an inline palette icon) */
+#folderColorModal .modal-header h3::before {
+  content: none;
+  display: none;
+}
+
+/* Disable the generic pseudo-icon for the table modal (we have an inline table icon) */
+#tableModal .modal-header h3::before {
+  content: none;
+  display: none;
+}
+
+/* Make the folder color modal header match the folder rename modal's spacing and layout */
+#folderColorModal .modal-header {
+  padding: 24px 24px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: none;
+}
+
+#folderColorModal .modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#folderColorModal .modal-title h3 {
+  margin: 0;
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+#folderColorModal .modal-title i {
+  color: var(--primary-color);
+  font-size: var(--fs-2xl);
+}
+
+.modal-close {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    transform 150ms ease,
+    background 150ms ease,
+    color 150ms ease;
+  flex-shrink: 0;
+  font-size: var(--fs-base);
+}
+
+.modal-close:hover {
+  /* Use a solid hover tone (no transparency) */
+  background: var(--tint-hover);
+  color: var(--text-strong);
+  transform: scale(1.04);
+}
+
+.modal-actions {
+  padding: 16px 24px 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+/* Modern Confirm Modal */
+.confirm-modal {
+  max-width: 420px;
+  text-align: center;
+  padding: 32px 24px 24px;
+  position: relative;
+}
+
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--warning-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  font-size: var(--fs-3xl);
+  color: white;
+  box-shadow: 0 8px 25px var(--accent-color-rgba-30);
+}
+
+.confirm-text h3 {
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.confirm-text p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.confirm-modal .modal-actions {
+  justify-content: center;
+  gap: 16px;
+  padding: 0;
+}
+
+.confirm-modal .modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.export-options {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.export-btn {
+  padding: 20px;
+  border: 2px solid var(--border-color);
+  background: var(--surface-raised);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.export-btn:hover {
+  border-color: var(--primary-color);
+  background: var(--tint-hover);
+}
+
+.export-btn i {
+  font-size: var(--fs-3xl);
+  color: var(--primary-color);
+}
