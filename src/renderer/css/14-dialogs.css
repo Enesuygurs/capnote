@@ -137,54 +137,12 @@
   position: relative;
 }
 
-#folderModal .modal-header {
-  padding: 24px 24px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: none;
-}
-
-#folderModal .modal-title h3 {
-  margin: 0;
-  font-size: var(--fs-2xl);
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-#folderModal .modal-title i {
-  color: var(--primary-color);
-  font-size: var(--fs-2xl);
-}
-
 #folderModal .modal-body {
   padding: 24px 24px 16px;
 }
 
 #folderModal .form-group {
   margin-bottom: 0;
-}
-
-#folderModal .form-group label {
-  display: block;
-  margin-bottom: 12px;
-  font-weight: 500;
-  color: var(--text-primary);
-  font-size: var(--fs-base);
-}
-
-#folderModal .form-input {
-  width: 100%;
-  padding: 14px 16px;
-  border: 2px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  font-size: var(--fs-base);
-  background: var(--surface-sunken);
-  color: var(--text-primary);
-  transition: all 0.2s ease;
-  outline: none;
-  box-sizing: border-box;
-  font-family: inherit;
 }
 
 #folderModal .form-input:focus {
@@ -246,6 +204,8 @@
   position: relative;
 }
 
+#folderColorModal .modal-header,
+#folderModal .modal-header,
 #tableModal .modal-header {
   padding: 24px 24px 0;
   display: flex;
@@ -254,6 +214,8 @@
   border-bottom: none;
 }
 
+#folderColorModal .modal-title h3,
+#folderModal .modal-title h3,
 #tableModal .modal-title h3 {
   margin: 0;
   font-size: var(--fs-2xl);
@@ -261,6 +223,8 @@
   color: var(--text-primary);
 }
 
+#folderColorModal .modal-title i,
+#folderModal .modal-title i,
 #tableModal .modal-title i {
   color: var(--primary-color);
   font-size: var(--fs-2xl);
@@ -274,6 +238,7 @@
   margin-bottom: 0;
 }
 
+#folderModal .form-group label,
 #tableModal .form-group label {
   display: block;
   margin-bottom: 12px;
@@ -282,6 +247,7 @@
   font-size: var(--fs-base);
 }
 
+#folderModal .form-input,
 #tableModal .form-input {
   width: 100%;
   padding: 14px 16px;
