@@ -82,7 +82,7 @@ export class StorageFeature {
       // Sort notes by date
       this.notes.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } catch (error) {
-      console.error('Notlar yüklenirken hata:', error);
+      console.error('Loading notes failed:', error);
       this.notes = [];
     }
 
@@ -110,7 +110,7 @@ export class StorageFeature {
         id: String(f.id),
       }));
     } catch (error) {
-      console.error('Klasörler yüklenirken hata:', error);
+      console.error('Loading folders failed:', error);
       this.folders = [];
     }
   }
@@ -150,7 +150,7 @@ export class StorageFeature {
       this.reminders = this.reminders.filter((r) => !r.dismissed);
       await this.saveReminders(); // Clean up storage
     } catch (error) {
-      console.error('Hatırlatmalar yüklenirken hata:', error);
+      console.error('Loading reminders failed:', error);
       this.reminders = [];
     }
   }
@@ -172,7 +172,7 @@ export class StorageFeature {
       // Sort by time, newest first
       this.notifications.sort((a, b) => new Date(b.time) - new Date(a.time));
     } catch (error) {
-      console.error('Bildirimler yüklenirken hata:', error);
+      console.error('Loading notifications failed:', error);
       this.notifications = [];
     }
   }
@@ -190,7 +190,7 @@ export class StorageFeature {
         todos: (section.todos || []).map((todo) => ({ ...todo, id: String(todo.id) })),
       }));
     } catch (error) {
-      console.error('Yapılacaklar yüklenirken hata:', error);
+      console.error('Loading to-dos failed:', error);
       this.todoSections = [];
     }
   }

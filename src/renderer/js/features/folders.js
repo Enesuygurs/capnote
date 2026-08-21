@@ -516,7 +516,7 @@ export class FoldersFeature {
       // If viewing a special filter that depends on membership (favorites), refresh the view
       if (this.currentFilter === 'favorites') this.updateNotesList();
     } catch (error) {
-      console.error('Hata: not taşıma sırasında', error);
+      console.error('Moving the note failed:', error);
       // Fallback: ensure consistent UI by falling back to full updates
       this.updateNotesList();
       this.updateFoldersList();
