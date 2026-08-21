@@ -573,13 +573,6 @@
   border: 1px solid var(--accent-color); /* 1px accent colored border on focus */
 }
 
-[data-theme='dark'] .reminder-datetime-input:focus,
-[data-theme='dark'] .reminder-datetime-input:active {
-  outline: none;
-  box-shadow: none;
-  border: 1px solid var(--accent-color);
-}
-
 /* Weekday selector for weekly recurrence */
 .reminder-weekdays {
   display: flex;
@@ -670,40 +663,6 @@
   font-size: var(--fs-sm);
 }
 
-/* Dark theme support */
-
-[data-theme='dark'] .notification-card.unread {
-  background: var(--accent-color-rgba-15);
-}
-
-[data-theme='dark'] .delete-notification-btn {
-  background: var(--error-color);
-}
-
-[data-theme='dark'] .delete-notification-btn:hover {
-  background: #dc2626;
-}
-
-[data-theme='dark'] .note-reminder-remove:hover {
-  background: var(--error-color);
-}
-
-[data-theme='dark'] .view-note-btn {
-  background: var(--accent-color);
-}
-
-[data-theme='dark'] .view-note-btn:hover {
-  filter: brightness(0.85);
-}
-
-[data-theme='dark'] .dismiss-btn {
-  background: #0d6f22;
-}
-
-[data-theme='dark'] .dismiss-btn:hover {
-  background: #075f1a;
-}
-
 /* Import modal specific spacing to match other modals */
 .import-modal .modal-body {
   padding: 18px 20px;
@@ -736,13 +695,4 @@
 
 .import-modal .modal-footer {
   padding: 12px 18px;
-}
-
-/* Dark theme checkbox fix */
-[data-theme='dark'] .todo-checkbox {
-  filter: invert(0.85) brightness(0.5);
-}
-
-[data-theme='dark'] .todo-checkbox:checked {
-  filter: none;
 }

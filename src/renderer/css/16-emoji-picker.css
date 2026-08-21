@@ -89,11 +89,6 @@
   transform: translateY(-1px) scale(0.98);
 }
 
-/* Dark theme tweaks */
-[data-theme='dark'] .emoji-grid-btn:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
 /* scrollbar for grid */
 .emoji-grid::-webkit-scrollbar {
   height: 8px;
@@ -102,7 +97,4 @@
 .emoji-grid::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.08);
   border-radius: var(--radius-md);
-}
-[data-theme='dark'] .emoji-grid::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.06);
 }

@@ -78,28 +78,6 @@
   background: var(--bg-hover);
 }
 
-/* Dark theme table styles */
-[data-theme='dark'] .rich-editor table,
-[data-theme='dark'] .rich-editor .inserted-table,
-[data-theme='dark'] .formatted-content table,
-[data-theme='dark'] .viewer-content table {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme='dark'] .rich-editor table th,
-[data-theme='dark'] .rich-editor .inserted-table th,
-[data-theme='dark'] .formatted-content table th,
-[data-theme='dark'] .viewer-content table th {
-  background: var(--bg-dark);
-}
-
-[data-theme='dark'] .rich-editor table td,
-[data-theme='dark'] .rich-editor .inserted-table td,
-[data-theme='dark'] .formatted-content table td,
-[data-theme='dark'] .viewer-content table td {
-  border-color: #232323;
-}
-
 /* Table modal form spacing */
 .modal-content .form-group {
   margin-bottom: 12px;

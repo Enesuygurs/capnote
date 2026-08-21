@@ -144,14 +144,6 @@
   background: var(--surface-raised);
 }
 
-/* Match the pill appearance to the tab shell in dark mode */
-
-[data-theme='dark'] .emoji-panel-header input[type='text']:focus {
-  border-color: var(--accent-color);
-}
-
-/* close button removed: behavior handled by clicking outside the panel */
-
 .emoji-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -281,10 +273,6 @@
   border-color: var(--accent-color);
 }
 
-[data-theme='dark'] .emoji-grid-btn:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
 .tags-container {
   margin-top: 12px;
 }
@@ -312,12 +300,6 @@
   vertical-align: middle;
   /* tiny vertical nudge to visually center FontAwesome icons with emoji glyphs */
   transform: translateY(0.5px);
-}
-
-/* Dark theme: make tab icons white for contrast */
-[data-theme='dark'] .emoji-tab i {
-  color: #fff;
-  opacity: 0.95;
 }
 
 /* If the icons still look slightly off on some OS/font renderers, tweak the translateY value above. */
