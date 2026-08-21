@@ -305,13 +305,12 @@ export class RemindersFeature {
 
       // Being later than a couple of check intervals means the app was not running at that time
       const missed = now - new Date(reminder.datetime) > 2 * 60000;
-      const locale = this.getLocale();
-      const when = new Date(reminder.datetime).toLocaleString(locale);
-      const body = `${i18n.t(missed ? 'messages.reminderMissed' : 'messages.reminderDue')} ${when}`;
+      const kind = missed ? 'reminderMissed' : 'reminderDue';
       const noteTitle = this.titleForNote(reminder.noteId, reminder.noteTitle);
 
       // Add to notifications list and show a toast that references the notification id
-      const nid = this.addNotification(reminder.noteId, noteTitle, body);
+      const nid = this.addNotification(reminder.noteId, noteTitle, kind, reminder.datetime);
+      const body = this.notificationMessage({ kind, at: reminder.datetime });
       this.showNotification(`${i18n.t('messages.reminderPrefix')} ${noteTitle}`, 'info', {
         notificationId: nid,
       });

@@ -241,7 +241,7 @@ export class SettingsFeature {
     // Simple in-app notification + store
     const title = i18n.t('messages.testNotificationTitle');
     const body = i18n.t('messages.testNotificationBody');
-    const nid = this.addNotification(null, title, body);
+    const nid = this.addNotification(null, title, 'test');
     this.showNotification(title, 'info', { notificationId: nid });
 
     // Fire native notification if preference enabled
