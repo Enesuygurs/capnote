@@ -11,10 +11,11 @@
     "build-win": "electron-builder --win",
     "build-mac": "electron-builder --mac",
     "build-linux": "electron-builder --linux",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
+    "lint": "eslint src scripts",
+    "lint:fix": "eslint src scripts --fix",
     "format": "prettier --write \"src/**/*.{js,cjs,html,css,json}\"",
-    "format:check": "prettier --check \"src/**/*.{js,cjs,html,css,json}\""
+    "format:check": "prettier --check \"src/**/*.{js,cjs,html,css,json}\"",
+    "icons": "electron scripts/build-icons.mjs"
   },
   "repository": {
     "type": "git",

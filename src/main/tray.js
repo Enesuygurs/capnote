@@ -39,12 +39,10 @@ function resolveTrayIcon() {
     if (fs.existsSync(png32)) return nativeImage.createFromPath(png32);
     if (fs.existsSync(png16)) return nativeImage.createFromPath(png16);
   } else if (process.platform === 'darwin') {
-    // macOS: status bar icon looks best around 18x18pt. Use template for auto light/dark.
-    let base = null;
-    if (fs.existsSync(png32)) base = nativeImage.createFromPath(png32);
-    else if (fs.existsSync(png16)) base = nativeImage.createFromPath(png16);
-    if (base) {
-      const img = base.resize({ width: 18, height: 18, quality: 'best' });
+    // macOS: a black template image that the menu bar recolors (trayTemplate@2x.png loads on Retina)
+    const template = path.join(ICONS_DIR, 'trayTemplate.png');
+    if (fs.existsSync(template)) {
+      const img = nativeImage.createFromPath(template);
       img.setTemplateImage(true);
       return img;
     }
