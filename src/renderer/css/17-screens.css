@@ -1,40 +1,7 @@
 /* Reminders, to-dos, notifications screens and empty states */
 
-/* ============================================
-   REMINDERS STYLES
-   ============================================ */
-.reminders-screen {
-  padding: 40px;
-  overflow-y: auto;
-  height: 100%;
-}
-
-/* ============================================
-   TODOS STYLES
-   ============================================ */
-.todos-screen {
-  padding: 40px;
-  overflow-y: auto;
-  height: 100%;
-}
-
 .todos-header {
   margin-bottom: 32px;
-}
-
-.todos-header h2 {
-  font-size: var(--fs-4xl);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.todos-subtitle {
-  color: var(--text-secondary);
-  font-size: var(--fs-base);
 }
 
 .todos-input-section {
@@ -55,12 +22,6 @@
   transition: var(--transition-fast);
 }
 
-.todo-input:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px var(--accent-color-rgba-10);
-}
-
 .todos-section-input {
   display: flex;
   gap: 8px;
@@ -79,15 +40,11 @@
   transition: var(--transition-fast);
 }
 
+.todo-input:focus,
 .todo-section-input:focus {
   outline: none;
   border-color: var(--accent-color);
   box-shadow: 0 0 0 3px var(--accent-color-rgba-10);
-}
-
-.todos-sections-container {
-  display: grid;
-  gap: 16px;
 }
 
 .todo-section {
@@ -145,16 +102,6 @@
   align-items: center;
   justify-content: center;
   font-size: var(--fs-md);
-}
-
-.section-action-btn:hover {
-  background: var(--accent-color-rgba-10);
-  color: var(--accent-color);
-}
-
-.section-action-btn.delete-section:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--error-color);
 }
 
 .todos-list {
@@ -241,11 +188,13 @@
   font-size: var(--fs-md);
 }
 
+.section-action-btn:hover,
 .todo-action-btn:hover {
   background: var(--accent-color-rgba-10);
   color: var(--accent-color);
 }
 
+.section-action-btn.delete-section:hover,
 .todo-action-btn.delete-todo:hover {
   background: rgba(239, 68, 68, 0.1);
   color: var(--error-color);
@@ -271,6 +220,8 @@
 /* ============================================
    NOTIFICATIONS STYLES
    ============================================ */
+.reminders-screen,
+.todos-screen,
 .notifications-screen {
   padding: 40px;
   overflow-y: auto;
@@ -285,26 +236,6 @@
   margin: 12px 0 12px 0;
   display: flex;
   justify-content: flex-start; /* keep button left under header */
-}
-
-.notifications-header h2 {
-  font-size: var(--fs-4xl);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.notifications-subtitle {
-  color: var(--text-secondary);
-  font-size: var(--fs-base);
-}
-
-.notifications-list {
-  display: grid;
-  gap: 16px;
 }
 
 .notification-card {
@@ -381,16 +312,6 @@
   font-size: var(--fs-sm);
 }
 
-.view-notification-note-btn {
-  background: var(--accent-color);
-  color: white;
-}
-
-.view-notification-note-btn:hover {
-  filter: brightness(0.9);
-  transform: translateY(-1px);
-}
-
 .mark-read-btn {
   background: var(--surface-raised);
   color: var(--text-primary);
@@ -432,6 +353,8 @@
   margin-bottom: 32px;
 }
 
+.todos-header h2,
+.notifications-header h2,
 .reminders-header h2 {
   font-size: var(--fs-4xl);
   font-weight: 600;
@@ -442,11 +365,15 @@
   gap: 12px;
 }
 
+.todos-subtitle,
+.notifications-subtitle,
 .reminders-subtitle {
   color: var(--text-secondary);
   font-size: var(--fs-base);
 }
 
+.todos-sections-container,
+.notifications-list,
 .reminders-list {
   display: grid;
   gap: 16px;
@@ -516,11 +443,13 @@
   font-size: var(--fs-sm);
 }
 
+.view-notification-note-btn,
 .view-note-btn {
   background: var(--accent-color);
   color: white;
 }
 
+.view-notification-note-btn:hover,
 .view-note-btn:hover {
   filter: brightness(0.9);
   transform: translateY(-1px);
