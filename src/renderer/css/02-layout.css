@@ -88,11 +88,6 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
 }
-
-/* Table modal tweaks */
-#tableModal .modal-body {
-  padding: 16px 18px;
-}
 #tableModal .form-row {
   display: flex;
   gap: 12px;
@@ -166,19 +161,15 @@
   font-size: var(--fs-base);
 }
 
-/* Sidebar Content - Single Scroll Container */
-.sidebar-content {
-  flex: 1;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
 .sidebar-content::-webkit-scrollbar {
   display: none;
 }
 
 .sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
   -ms-overflow-style: none;
   scrollbar-width: none;
 }

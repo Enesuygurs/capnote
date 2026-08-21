@@ -8,6 +8,9 @@
 }
 
 .emoji-panel {
+  /* Use fixed positioning so JS can place the panel using viewport coordinates
+     (getBoundingClientRect). This avoids issues when ancestor containers are
+     positioned or scrolled. */
   position: fixed; /* fixed relative to viewport so positioning is reliable */
   z-index: var(--z-popover); /* topmost so it doesn't get covered */
   left: auto;
@@ -38,6 +41,7 @@
 }
 
 .emoji-panel-header {
+  /* a bit more breathing room between search and close */
   display: flex;
   gap: 8px;
   align-items: center;
@@ -45,6 +49,13 @@
 }
 
 .emoji-panel-header input[type='text'] {
+  /* pill styling to match emoji tab shell */
+  min-width: 120px; /* ensure input has room */
+  box-sizing: border-box;
+  transition:
+    box-shadow 120ms ease,
+    background 120ms ease,
+    border-color 120ms ease;
   flex: 1 1 auto;
   padding: 8px 12px;
   border-radius: var(--radius-lg);
@@ -55,6 +66,9 @@
 }
 
 .emoji-grid {
+  padding: 4px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: 4px;

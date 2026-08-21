@@ -166,12 +166,6 @@ div#newNoteNav {
   flex: 1;
 }
 
-.nav-expand {
-  font-size: var(--fs-xs);
-  opacity: 0.6;
-  transition: transform var(--transition-fast);
-}
-
 .nav-expandable.expanded .nav-expand {
   transform: rotate(0deg);
 }

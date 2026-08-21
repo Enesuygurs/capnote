@@ -188,6 +188,7 @@ body.dark .default-folder.insert-after::after {
 }
 
 .nav-expand {
+  opacity: 0.6;
   margin-left: auto;
   transition: transform 0.2s ease;
   font-size: var(--fs-sm);
