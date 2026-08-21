@@ -50,8 +50,6 @@
   color: var(--text-muted);
 }
 
-/* Hidden class utility */
-
 /* Notes List Container */
 .notes-list-container {
   flex: 1;
@@ -149,19 +147,6 @@
 }
 
 /* Dark Theme Sidebar Adjustments */
-
-[data-theme='dark'] .search-container {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-}
-
-[data-theme='dark'] .search-input {
-  border: 1px solid rgb(47 47 47 / 79%);
-}
-
-/* New note button - dark theme */
-[data-theme='dark'] div#newNoteNav {
-  background: #5d5d5d14;
-}
 
 .note-item {
   display: flex;

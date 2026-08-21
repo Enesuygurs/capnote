@@ -115,7 +115,6 @@ body.resizing .welcome-screen {
   --surface-sunken: #f8f9fa;
   --tint-hover: rgba(0, 0, 0, 0.05);
   --tint-subtle: rgba(0, 0, 0, 0.03);
-  /* Text on hover/emphasis and elevation shadows */
   /* Stacking layers, bottom to top */
   --z-sidebar: 100;
   --z-dropdown: 900;
@@ -131,6 +130,47 @@ body.resizing .welcome-screen {
   --code-text: #1f2328;
   --code-inline-bg: rgba(27, 31, 35, 0.06);
   --link-color: color-mix(in srgb, var(--accent-color) 65%, black);
+}
+[data-theme='dark'] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #181818;
+  --bg-tertiary: #2e2e2e;
+  --bg-dark: #0d0d0d;
+
+  /* Background variables for each area */
+  --welcome-content-bg: transparent;
+  --quick-stats-bg: transparent;
+  --title-section-bg: transparent;
+  --note-title-input-bg: transparent;
+  --note-meta-bg: transparent;
+  --editor-actions-bg: transparent;
+  --format-btn-bg: transparent;
+  --editor-content-bg: transparent;
+  --modal-content-bg: #222222;
+  --modal-footer-bg: transparent;
+
+  --export-options-bg: #222222;
+
+  --text-primary: #e8e8e8;
+  --text-secondary: #c0c0c0;
+  --text-muted: #888888;
+  --text-light: #ffffff;
+  --bg-hover: rgba(255, 255, 255, 0.04);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --surface: #1a1a1a;
+  --surface-sidebar: #181818;
+  --surface-panel: #1e1e1e;
+  --surface-raised: #222222;
+  --surface-sunken: #262626;
+  --tint-hover: rgba(255, 255, 255, 0.05);
+  --tint-subtle: rgba(255, 255, 255, 0.03);
+  --text-strong: #ffffff;
+  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-modal: var(--shadow-dark-lg);
+  --code-bg: #111214;
+  --code-text: #e6e6e6;
+  --code-inline-bg: rgba(255, 255, 255, 0.08);
+  --link-color: color-mix(in srgb, var(--accent-color) 75%, white);
 }
 input,
 textarea,

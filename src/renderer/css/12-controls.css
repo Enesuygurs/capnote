@@ -8,8 +8,6 @@
   flex: none !important;
 }
 
-/* Sort options */
-
 /* Custom Select Dropdown */
 .custom-select {
   position: relative;
@@ -44,15 +42,6 @@
   background-size: contain;
   color: var(--accent-color); /* tint the arrow to the accent color */
   transition: transform var(--transition-normal);
-}
-
-/* Dark mode: make the select arrow white for visibility */
-[data-theme='dark'] .select-selected:after {
-  color: var(--text-light) !important;
-  /* Use a white-stroked SVG for the arrow so it reliably appears white in dark mode */
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24'><path stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/></svg>");
-  background-repeat: no-repeat;
-  background-size: contain;
 }
 
 .select-selected:hover {
@@ -165,12 +154,6 @@
   color: var(--text-primary);
 }
 
-/* Styled Select with Better Options */
-
-/* Format select improvements */
-
-/* Header content */
-
 /* Note content area background fix */
 .note-content {
   background: var(--surface-panel) !important;
@@ -178,8 +161,6 @@
   margin: 16px;
   box-shadow: var(--shadow-sm);
 }
-
-/* Save button disabled state */
 
 /* Checklist styles */
 .checklist {
@@ -345,8 +326,6 @@
 .note-action-menu-btn.favorited:hover {
   background: rgba(233, 30, 99, 0.1);
 }
-
-/* Note item layout improvements */
 
 /* Titlebar button hover effects */
 .titlebar-button.minimize:hover {
