@@ -319,7 +319,7 @@ export class SettingsFeature {
       this.showWelcome();
       this.showNotification(i18n.t('messages.allNotesDeleted'), 'success');
     } catch (err) {
-      console.error('Tüm notlar silinirken hata:', err);
+      console.error('Deleting all notes failed:', err);
       this.showNotification(i18n.t('messages.notesDeleteError'), 'error');
     }
   }
@@ -344,7 +344,7 @@ export class SettingsFeature {
       this.updateStats();
       this.showNotification(i18n.t('messages.allFoldersDeleted'), 'success');
     } catch (err) {
-      console.error('Tüm klasörler silinirken hata:', err);
+      console.error('Deleting all folders failed:', err);
       this.showNotification(i18n.t('messages.foldersDeleteError'), 'error');
     }
   }
@@ -390,7 +390,7 @@ export class SettingsFeature {
 
       this.showNotification(i18n.t('messages.appReset'), 'success');
     } catch (err) {
-      console.error('Tüm içerik silinirken hata:', err);
+      console.error('Resetting the app failed:', err);
       this.showNotification(i18n.t('messages.resetError'), 'error');
     }
   }
