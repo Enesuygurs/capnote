@@ -33,6 +33,8 @@
 }
 
 .emoji-tab {
+  /* compact horizontal hit area */
+  box-sizing: content-box;
   min-width: 28px;
   height: 28px; /* compact and aligned with emoji tiles */
   display: inline-flex;
@@ -49,11 +51,18 @@
   padding: 0 6px;
 }
 .emoji-tab i {
+  line-height: 1; /* compact icon size for tabs */
+  vertical-align: middle;
+  /* tiny vertical nudge to visually center FontAwesome icons with emoji glyphs */
+  transform: translateY(0.5px);
   font-size: var(--fs-md);
   display: block;
   margin: 0;
 }
 .emoji-tab:hover {
+  /* fixed translucent white background irrespective of accent */
+  /* remove border color change on hover */
+  border-color: transparent;
   background: rgba(255, 255, 255, 0.14);
   box-shadow: 0 6px 14px rgba(2, 6, 23, 0.06);
 }
@@ -74,17 +83,6 @@
   background: var(--surface);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-}
-.welcome-screen {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 40px;
-}
-.welcome-content {
-  max-width: 600px;
 }
 .welcome-icon {
   font-size: 80px;
@@ -262,7 +260,13 @@
   border-color: var(--border-color);
 }
 
-/* Small select for settings (max pinned) */
+.select-small:focus {
+  outline: none;
+  box-shadow: 0 6px 20px var(--accent-color-rgba-12);
+  border-color: var(--accent-color);
+}
+
+/* Custom arrow using SVG data-uri */
 .select-small {
   appearance: none;
   -webkit-appearance: none;
@@ -276,16 +280,6 @@
   min-width: 64px;
   cursor: pointer;
   position: relative;
-}
-
-.select-small:focus {
-  outline: none;
-  box-shadow: 0 6px 20px var(--accent-color-rgba-12);
-  border-color: var(--accent-color);
-}
-
-/* Custom arrow using SVG data-uri */
-.select-small {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'><path fill='%2364728B' d='M7 10l5 5 5-5z'/></svg>");
   background-repeat: no-repeat;
   background-position: right 8px center;
@@ -321,12 +315,6 @@ input[type='color'].color-picker::-moz-color-swatch {
   display: flex;
   overflow: hidden;
 }
-.note-content {
-  flex: 1;
-  padding: 32px;
-  overflow-y: auto;
-  position: relative;
-}
 .rich-editor {
   width: 100%;
   min-height: 100%;
@@ -346,6 +334,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   font-style: italic;
 }
 .editor-sidebar {
+  transition: var(--transition-normal);
   width: 250px;
   background: var(--surface-panel);
   border-left: 1px solid var(--border-color);
@@ -402,6 +391,7 @@ input[type='color'].color-picker::-moz-color-swatch {
   margin-top: 12px;
 }
 #tagInput {
+  background: var(--surface-sunken);
   width: 100%;
   padding: 8px 12px;
   border: 1px solid var(--border-color);

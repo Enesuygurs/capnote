@@ -2,6 +2,14 @@
 
 /* Titlebar */
 .titlebar-title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   position: absolute !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
@@ -10,11 +18,15 @@
 
 /* Custom Select Dropdown */
 .custom-select {
+  cursor: pointer;
   position: relative;
   width: 100%;
 }
 
 .select-selected {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 10px 35px 10px 12px;
   border: 1px solid var(--border-color);
   font-size: var(--fs-sm);
@@ -45,6 +57,7 @@
 }
 
 .select-selected:hover {
+  color: var(--text-primary);
   border-color: var(--primary-color);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px var(--accent-color-rgba-12);
@@ -56,6 +69,8 @@
 }
 
 .select-items {
+  border: 1px solid var(--border-color);
+  min-width: 200px;
   position: absolute;
   background: var(--surface-sidebar);
   top: 100%;
@@ -156,6 +171,10 @@
 
 /* Note content area background fix */
 .note-content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+  position: relative;
   background: var(--surface-panel) !important;
   border-radius: var(--radius-lg);
   margin: 16px;
@@ -353,5 +372,11 @@
 
 /* Welcome screen soft background */
 .welcome-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
   background: var(--surface) !important;
 }

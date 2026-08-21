@@ -27,19 +27,11 @@
   border-color: var(--accent-color);
 }
 
-[data-theme='dark'] .emoji-grid-btn:hover {
-  background: rgba(255, 255, 255, 0.04);
-}
-
 /* Dark theme: make tab icons white for contrast */
 
 [data-theme='dark'] .emoji-tab i {
   color: #fff;
   opacity: 0.95;
-}
-
-[data-theme='dark'] .search-container {
-  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
 [data-theme='dark'] .search-input {
@@ -220,10 +212,6 @@
   background: var(--quick-stats-bg);
 }
 
-[data-theme='dark'] .viewer-stats {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 [data-theme='dark'] .toggle-slider {
   background-color: #505050;
 }
@@ -233,6 +221,7 @@
 }
 
 [data-theme='dark'] .search-container {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
   background: transparent;
 }
 

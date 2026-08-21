@@ -63,72 +63,14 @@
   display: none;
 }
 
-.notes-list {
-  flex: 1;
-  overflow-y: auto;
-  max-height: 400px;
-}
-
-.custom-select {
-  position: relative;
-  cursor: pointer;
-}
-
-.select-selected {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
-  transition: var(--transition-fast);
-}
-
-.select-selected:hover {
-  background: var(--tint-hover);
-  color: var(--text-primary);
-}
-
-.select-items {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background: var(--surface-sidebar);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-popover);
-  z-index: var(--z-dropdown);
-  min-width: 200px;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
 .select-items.select-hide {
   display: none;
 }
 
-.select-item {
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  transition: var(--transition-fast);
-}
-
-.select-item:hover {
-  background: var(--accent-color-rgba-15);
-  color: var(--text-primary);
-}
-
-.select-item.active {
-  background: var(--accent-color);
-  color: var(--text-light);
-  font-weight: 600;
-}
-
 /* Notes List */
 .notes-list {
+  overflow-y: auto;
+  max-height: 400px;
   flex: 1;
   min-height: 0;
 }
