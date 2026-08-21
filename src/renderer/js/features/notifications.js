@@ -3,12 +3,15 @@
 import { i18n } from '../i18n.js';
 
 export class NotificationsFeature {
-  addNotification(noteId, noteTitle, message) {
+  // kind is 'reminderDue', 'reminderMissed' or 'test'; at is the reminder time for reminders.
+  // The text is not stored, so it follows the language the app is in when the list is shown.
+  addNotification(noteId, noteTitle, kind, at = null) {
     const notification = {
       id: this.newId(),
       noteId: noteId,
       noteTitle: noteTitle,
-      message: message,
+      kind,
+      at,
       time: new Date().toISOString(),
       read: false,
     };
@@ -17,6 +20,20 @@ export class NotificationsFeature {
     this.updateNotificationsView();
     this.updateActiveNotificationsCount();
     return notification.id;
+  }
+
+  notificationTitle(n) {
+    if (n.kind === 'test') return i18n.t('messages.testNotificationTitle');
+    return this.titleForNote(n.noteId, n.noteTitle);
+  }
+
+  // Older notifications stored their text in the language of the time; it is shown as it was
+  notificationMessage(n) {
+    if (n.kind === 'test') return i18n.t('messages.testNotificationBody');
+    if (n.kind === 'reminderDue' || n.kind === 'reminderMissed') {
+      return `${i18n.t(`messages.${n.kind}`)} ${new Date(n.at).toLocaleString(this.getLocale())}`;
+    }
+    return n.message || '';
   }
 
   updateNotificationsView() {
@@ -32,7 +49,7 @@ export class NotificationsFeature {
         (n) => `
       <div class="notification-card ${n.read ? '' : 'unread'}" data-notification-id="${n.id}">
         <div class="notification-header">
-          <div class="notification-note-title">${this.escapeHtml(this.titleForNote(n.noteId, n.noteTitle))}</div>
+          <div class="notification-note-title">${this.escapeHtml(this.notificationTitle(n))}</div>
           <div class="notification-time">
             <i class="fas fa-clock"></i>
             ${new Date(n.time).toLocaleString(this.getLocale(), {
@@ -44,7 +61,7 @@ export class NotificationsFeature {
             })}
           </div>
         </div>
-        <div class="notification-message">${this.escapeHtml(n.message)}</div>
+        <div class="notification-message">${this.escapeHtml(this.notificationMessage(n))}</div>
         <div class="notification-actions">
           <button class="notification-action-btn view-notification-note-btn" data-note-id="${n.noteId}">
             <i class="fas fa-eye"></i> ${i18n.t('messages.view')}
