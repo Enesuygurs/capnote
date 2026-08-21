@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Capnote icon for 16-32 px: the same page and ribbon with fewer, bolder shapes -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0.3" y2="1">
+      <stop offset="0" stop-color="#FBBF24" />
+      <stop offset="1" stop-color="#D97706" />
+    </linearGradient>
+  </defs>
+  <rect x="1" y="1" width="30" height="30" rx="7" fill="url(#tile)" />
+  <path d="M10 5 H19 L24 10 V25 A2 2 0 0 1 22 27 H10 A2 2 0 0 1 8 25 V7 A2 2 0 0 1 10 5 Z" fill="#FFFFFF" />
+  <path d="M19 5 V8.5 A1.5 1.5 0 0 0 20.5 10 H24 Z" fill="#FCD34D" />
+  <path d="M10.5 5 H13.5 V12 L12 10.8 L10.5 12 Z" fill="#C2410C" />
+  <rect x="11" y="15" width="10" height="2" rx="1" fill="#F59E0B" />
+  <rect x="11" y="19.5" width="10" height="2" rx="1" fill="#F59E0B" opacity="0.6" />
+</svg>

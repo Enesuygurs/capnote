@@ -44,6 +44,7 @@ npm run dev      # start with hot reload and DevTools
 npm start        # start normally
 npm run lint     # ESLint
 npm run format   # Prettier
+npm run icons    # regenerate the icons from assets/icons/source/*.svg
 ```
 
 The main process is in `src/main/`, the preload bridge in `src/preload.cjs`, and the interface in `src/renderer/`: `js/app.js` plus one module per feature in `js/features/`, and stylesheets in `css/`, loaded in the numbered order.

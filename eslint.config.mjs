@@ -11,8 +11,8 @@ export default [
     },
   },
   {
-    // The main process is made of ES modules running in Node
-    files: ['src/main/**/*.js'],
+    // The main process and the build scripts are ES modules running in Node
+    files: ['src/main/**/*.js', 'scripts/**/*.mjs'],
     languageOptions: {
       sourceType: 'module',
       globals: globals.node,
