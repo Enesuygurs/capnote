@@ -22,6 +22,7 @@ import { UiFeature } from './features/ui.js';
 import { ExportFeature } from './features/export.js';
 import { BackupFeature } from './features/backup.js';
 import { AttachmentsFeature } from './features/attachments.js';
+import { UpdatesFeature } from './features/updates.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -84,6 +85,7 @@ export class CapnoteApp {
     this.updateTodosCount();
     this.startReminderChecker();
     this.cleanupUploads();
+    this.setupUpdates();
 
     // Make sure the current filter (default: 'all') is applied so
     // the corresponding nav item appears active on startup
@@ -94,7 +96,7 @@ export class CapnoteApp {
   }
 
   initializeElements() {
-    // Ana elementler
+    // Main screens
     this.welcomeScreen = document.getElementById('welcomeScreen');
     this.noteEditor = document.getElementById('noteEditor');
     this.noteViewer = document.getElementById('noteViewer');
@@ -497,6 +499,7 @@ export class CapnoteApp {
     this.updateNotificationsView();
     this.renderTodosSections();
     this.updateTagsDisplay();
+    this.renderUpdateState();
 
     if (this.currentNote) {
       if (this.isViewerOpen()) this.displayNote(this.currentNote);
@@ -581,4 +584,5 @@ applyFeatures(CapnoteApp, [
   ExportFeature,
   BackupFeature,
   AttachmentsFeature,
+  UpdatesFeature,
 ]);

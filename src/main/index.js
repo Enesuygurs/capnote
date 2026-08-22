@@ -21,6 +21,7 @@ import { createTray, registerTrayIpc } from './tray.js';
 import { registerNotificationIpc } from './notifications.js';
 import { registerAutostartIpc } from './autostart.js';
 import { registerExportIpc } from './export-pdf.js';
+import { startUpdater, registerUpdateIpc } from './updater.js';
 
 // Development mode is 'npm run dev' from a source checkout: hot reload and DevTools
 const isDev = !app.isPackaged && process.argv.includes('--dev');
@@ -102,6 +103,7 @@ registerUploadIpc();
 registerNotificationIpc();
 registerAutostartIpc();
 registerExportIpc();
+registerUpdateIpc();
 
 app.whenReady().then(() => {
   if (!isPrimaryInstance) return;
@@ -109,6 +111,7 @@ app.whenReady().then(() => {
   setCloseToTray(readCloseToTrayPreference());
   createMainWindow({ darkMode: readDarkModePreference(), devTools: isDev });
   createTray();
+  startUpdater((state) => getMainWindow()?.webContents.send('updates:status', state));
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

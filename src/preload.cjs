@@ -41,6 +41,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Autostart (start at login)
   getStartAtLogin: () => ipcRenderer.invoke('get-start-at-login'),
   setStartAtLogin: (enabled) => ipcRenderer.invoke('set-start-at-login', enabled),
+  // App version and updates (GitHub Releases, installed Windows and Linux builds)
+  appInfo: () => ipcRenderer.invoke('app:info'),
+  updates: {
+    state: () => ipcRenderer.invoke('updates:state'),
+    check: () => ipcRenderer.invoke('updates:check'),
+    install: () => ipcRenderer.invoke('updates:install'),
+    onStatus: (callback) => ipcRenderer.on('updates:status', (event, state) => callback(state)),
+  },
   // Keep main-process UI (tray menu) in the app language
   setLanguage: (lang) => ipcRenderer.send('set-language', lang),
   // Close-to-tray preference

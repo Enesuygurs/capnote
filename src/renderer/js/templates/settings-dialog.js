@@ -356,8 +356,15 @@ export const SETTINGS_DIALOG = /* HTML */ `
             <div class="setting-item">
               <div class="setting-info">
                 <label data-i18n="settings.versionLabel">Versiyon</label>
-                <small data-i18n="app.version">Capnote v1.0.0</small>
+                <small id="appVersionLabel">Capnote</small>
               </div>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <label data-i18n="updates.title">Güncellemeler</label>
+                <small id="updateStatusText"></small>
+              </div>
+              <button id="updateActionBtn" class="btn btn-secondary btn-small"></button>
             </div>
           </div>
         </div>
