@@ -1,8 +1,7 @@
 {
   "app": {
     "welcome": "Welcome to Capnote",
-    "welcomeSubtext": "Write your thoughts, save your memories, and document your life",
-    "version": "Capnote v1.0.0"
+    "welcomeSubtext": "Write your thoughts, save your memories, and document your life"
   },
   "nav": {
     "newNote": "New Note",
@@ -360,5 +359,18 @@
     "listItem3": "Third item",
     "task": "Task",
     "tableHeader": "Header {n}"
+  },
+  "updates": {
+    "title": "Updates",
+    "unsupported": "Updates are installed automatically in the installed app on Windows and Linux",
+    "idle": "Not checked yet",
+    "checking": "Checking for updates...",
+    "none": "Capnote is up to date",
+    "downloading": "Downloading version {version}...",
+    "ready": "Version {version} is ready to install",
+    "error": "Could not check for updates",
+    "check": "Check for updates",
+    "restart": "Restart and update",
+    "readyToast": "Capnote {version} is ready. Restart from Settings → About to install it."
   }
 }

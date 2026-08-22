@@ -11,6 +11,7 @@
     "build-win": "electron-builder --win",
     "build-mac": "electron-builder --mac",
     "build-linux": "electron-builder --linux",
+    "release": "electron-builder --win --linux --publish always",
     "lint": "eslint src scripts",
     "lint:fix": "eslint src scripts --fix",
     "format": "prettier --write \"src/**/*.{js,cjs,html,css,json}\"",
@@ -47,6 +48,7 @@
     "@fontsource/roboto-mono": "^5.3.0",
     "@fortawesome/fontawesome-free": "^7.3.1",
     "dompurify": "^3.4.17",
+    "electron-updater": "^6.8.11",
     "marked": "^18.1.1"
   },
   "build": {
@@ -71,6 +73,11 @@
     "linux": {
       "target": "AppImage",
       "icon": "assets/icons/capnote-512.png"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "Enesuygurs",
+      "repo": "capnote"
     }
   }
 }

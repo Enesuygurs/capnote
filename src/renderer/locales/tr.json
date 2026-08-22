@@ -1,8 +1,7 @@
 {
   "app": {
     "welcome": "Capnote'a Hoş Geldiniz",
-    "welcomeSubtext": "Düşüncelerinizi yazın, anılarınızı kaydedin ve hayatınızı belgelendirin",
-    "version": "Capnote v1.0.0"
+    "welcomeSubtext": "Düşüncelerinizi yazın, anılarınızı kaydedin ve hayatınızı belgelendirin"
   },
   "nav": {
     "newNote": "Yeni Not",
@@ -360,5 +359,18 @@
     "listItem3": "Üçüncü madde",
     "task": "Görev",
     "tableHeader": "Başlık {n}"
+  },
+  "updates": {
+    "title": "Güncellemeler",
+    "unsupported": "Güncellemeler Windows ve Linux'ta yüklü uygulamada otomatik kurulur",
+    "idle": "Henüz denetlenmedi",
+    "checking": "Güncellemeler denetleniyor...",
+    "none": "Capnote güncel",
+    "downloading": "{version} sürümü indiriliyor...",
+    "ready": "{version} sürümü kurulmaya hazır",
+    "error": "Güncellemeler denetlenemedi",
+    "check": "Güncellemeleri denetle",
+    "restart": "Yeniden başlat ve güncelle",
+    "readyToast": "Capnote {version} hazır. Kurmak için Ayarlar → Hakkında'dan yeniden başlatın."
   }
 }

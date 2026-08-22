@@ -59,6 +59,15 @@ npm run build-linux  # Linux AppImage
 
 Output goes to `dist/`.
 
+## Releasing updates
+
+Installed copies on Windows and Linux check GitHub Releases for a newer version, download it in the background and install it on restart (Settings → About shows the status). macOS updates need a signed app, so the macOS build does not update itself.
+
+1. Raise `version` in `package.json`.
+2. Set a GitHub token with access to the repository in `GH_TOKEN`.
+3. Run `npm run release`. It builds the Windows installer and the AppImage and uploads them, with the `latest.yml` files the updater reads, to a draft release.
+4. Publish the draft release on GitHub.
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
