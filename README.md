@@ -45,9 +45,17 @@ npm start        # start normally
 npm run lint     # ESLint
 npm run format   # Prettier
 npm run icons    # regenerate the icons from assets/icons/source/*.svg
+npm test         # app tests (starts the real app per test)
+npm run test:visual  # compare screenshots of every screen
 ```
 
 The main process is in `src/main/`, the preload bridge in `src/preload.cjs`, and the interface in `src/renderer/`: `js/app.js` plus one module per feature in `js/features/`, the markup of the editor and the dialogs in `js/templates/`, and stylesheets in `css/`, loaded in the numbered order.
+
+## Tests
+
+Each file in `tests/cases` starts the real app with an empty data folder, runs a script inside the window and compares the result with the `expected` value in the same file (a regular expression or a function can stand in for values that change, such as dates). Tests that need existing data, for example data left by an older version, write it in a `seed` step first. `npm test -- search` runs only the tests whose name contains "search"; `--print` shows every result.
+
+`npm run test:visual` captures every screen and dialog in both themes and compares them pixel by pixel with the screenshots accepted earlier on the same machine (font rendering differs between machines, so they are not in git). The first run, or `npm run test:visual -- --accept` after a wanted change, accepts the current screenshots; differences are saved as images in `tests/visual/diff`.
 
 ## Building
 

@@ -42,6 +42,20 @@ export default [
     files: ['src/renderer/js/**/*.js'],
     languageOptions: { sourceType: 'module' },
   },
+  {
+    // Test runners and the Electron test harness run in Node
+    files: ['tests/**/*.mjs'],
+    languageOptions: { sourceType: 'module', globals: globals.node },
+  },
+  {
+    files: ['tests/harness.cjs'],
+    languageOptions: { sourceType: 'commonjs', globals: globals.node },
+  },
+  {
+    // Test cases are page scripts: their functions run inside the app window
+    files: ['tests/cases/**/*.mjs', 'tests/visual-screens.mjs'],
+    languageOptions: { globals: { ...globals.browser } },
+  },
   // Formatting is Prettier's job; turn off stylistic rules that would conflict with it
   prettier,
 ];

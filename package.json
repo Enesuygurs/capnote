@@ -7,15 +7,17 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
+    "test": "node tests/run.mjs",
+    "test:visual": "node tests/visual.mjs",
     "build": "electron-builder",
     "build-win": "electron-builder --win",
     "build-mac": "electron-builder --mac",
     "build-linux": "electron-builder --linux",
     "release": "electron-builder --win --linux --publish always",
-    "lint": "eslint src scripts",
-    "lint:fix": "eslint src scripts --fix",
-    "format": "prettier --write \"src/**/*.{js,cjs,html,css,json}\"",
-    "format:check": "prettier --check \"src/**/*.{js,cjs,html,css,json}\"",
+    "lint": "eslint src scripts tests",
+    "lint:fix": "eslint src scripts tests --fix",
+    "format": "prettier --write \"src/**/*.{js,cjs,html,css,json}\" \"tests/**/*.{mjs,cjs}\" \"scripts/**/*.mjs\"",
+    "format:check": "prettier --check \"src/**/*.{js,cjs,html,css,json}\" \"tests/**/*.{mjs,cjs}\" \"scripts/**/*.mjs\"",
     "icons": "electron scripts/build-icons.mjs"
   },
   "repository": {
@@ -40,6 +42,8 @@
     "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^17.13.0",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "prettier": "^3.6.2"
   },
   "dependencies": {

@@ -32,3 +32,6 @@ ehthumbs.db
 
 # Local launcher
 /Capnote.bat
+
+# Screenshots of the visual test (they depend on the machine)
+/tests/visual/
