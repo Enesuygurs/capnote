@@ -43,7 +43,7 @@ export class UpdatesFeature {
     const { status, version } = this.updateState;
     this.updateStatusText.textContent = i18n.t(`updates.${status}`, { version });
     const ready = status === 'ready';
-    this.updateActionBtn.hidden = status === 'unsupported';
+    this.updateActionBtn.classList.toggle('hidden', status === 'unsupported');
     this.updateActionBtn.disabled = status === 'checking' || status === 'downloading';
     this.updateActionBtn.innerHTML = ready
       ? `<i class="fas fa-rotate-right"></i> ${i18n.t('updates.restart')}`
