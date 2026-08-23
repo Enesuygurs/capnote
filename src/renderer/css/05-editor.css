@@ -60,9 +60,7 @@
 }
 
 .emoji-panel-header input[type='text']:focus {
-  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
-  border-color: var(--accent-color);
-  background: var(--surface-raised);
+  box-shadow: var(--focus-ring);
 }
 /* hide scrollbars visually but keep scrolling functional */
 .emoji-tabs::-webkit-scrollbar,
@@ -73,8 +71,8 @@
 }
 .emoji-tabs {
   display: flex;
-  gap: 6px;
-  padding: 6px 0;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
   align-items: center;
   overflow-x: auto;
   -ms-overflow-style: none;
@@ -83,11 +81,11 @@
 .emoji-tabs-wrap {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   /* tightened lateral padding for a more compact group */
-  padding: 2px 8px 2px 8px;
+  padding: 2px var(--space-2) 2px var(--space-2);
   height: 28px;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
   position: relative; /* allow absolute positioning of nav arrows */
   width: 100%;
   justify-content: center; /* center the shell; arrows will be absolute */
@@ -95,13 +93,13 @@
 
 /* Professional style: pill shell around tabs */
 .emoji-tabs-wrap.professional {
-  padding: 4px 8px;
+  padding: var(--space-1) var(--space-2);
 }
 .emoji-tabs-shell {
   background: rgba(0, 0, 0, 0.03);
   border-radius: var(--radius-full);
   /* reduce shell padding so the pill feels tighter */
-  padding: 2px 6px;
+  padding: 2px var(--space-2);
   display: flex;
   align-items: center;
   /* ensure shell doesn't push outside the panel — allow room for arrows */
@@ -115,15 +113,12 @@
 }
 .emoji-tabs-shell .emoji-tabs {
   display: flex;
-  gap: 6px;
+  gap: var(--space-2);
   align-items: center;
   overflow-x: auto;
   padding: 0;
   -ms-overflow-style: none;
   scrollbar-width: none;
-}
-.emoji-tab:active {
-  transform: translateY(-1px) scale(0.98);
 }
 
 /* If the icons still look slightly off on some OS/font renderers, tweak the translateY value above. */

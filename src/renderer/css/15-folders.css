@@ -89,32 +89,32 @@ body.dark .default-folder.insert-after::after {
   pointer-events: none;
   z-index: 10;
   background: var(--bg-primary);
-  padding: 8px 16px;
+  padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-md);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Folder Container Styles */
 .folder-container {
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 }
 
 .folder-notes-container {
-  margin-left: 16px;
-  border-left: 1px solid var(--border-color);
-  padding-left: 8px;
+  margin-left: var(--space-4);
+  padding-left: var(--space-2);
 }
 
 .folder-note-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   margin-bottom: 2px;
   border-radius: var(--radius-sm);
   font-size: var(--fs-md);
   transition: var(--transition-fast);
   position: relative;
+  line-height: 20px;
 }
 
 .folder-note-item:hover {
@@ -156,24 +156,24 @@ body.dark .default-folder.insert-after::after {
 .context-menu {
   position: fixed;
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-popover);
   z-index: var(--z-popover);
   min-width: 150px;
-  padding: 4px;
+  padding: var(--space-1);
 }
 
 .context-menu-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 6px 10px;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   cursor: pointer;
   border-radius: var(--radius-md);
   transition: all 0.2s ease;
   color: var(--text-primary);
   font-size: var(--fs-base);
+  line-height: 20px;
 }
 
 .context-menu-item:hover {

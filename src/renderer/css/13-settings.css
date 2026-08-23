@@ -23,16 +23,16 @@
   min-width: 200px;
   background: var(--tint-subtle);
   border-right: 1px solid var(--border-color);
-  padding: 12px 0;
+  padding: var(--space-3) 0;
   overflow-y: auto;
 }
 
 .settings-tab {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   width: 100%;
-  padding: 12px 20px;
+  padding: var(--space-3) var(--space-5);
   border: none;
   background: transparent;
   color: var(--text-secondary);
@@ -41,7 +41,6 @@
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-left: 3px solid transparent;
 }
 
 .settings-tab i {
@@ -58,7 +57,6 @@
 .settings-tab.active {
   background: var(--accent-color-rgba-10);
   color: var(--accent-color);
-  border-left-color: var(--accent-color);
   font-weight: 600;
 }
 
@@ -86,7 +84,7 @@
 
 .settings-tab-content {
   display: none;
-  padding: 24px 28px;
+  padding: var(--space-6);
   animation: fadeIn 0.2s ease;
 }
 
@@ -109,16 +107,14 @@
   font-size: var(--fs-xl);
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--border-color);
+  gap: var(--space-3);
 }
 
 .settings-subsection {
-  margin-top: 24px;
+  margin-top: var(--space-6);
 }
 
 .settings-subsection:first-of-type {
@@ -126,18 +122,17 @@
 }
 
 .settings-subsection:not(:first-of-type) {
-  padding-top: 20px;
-  border-top: 1px solid var(--border-color);
+  padding-top: var(--space-5);
 }
 
 .settings-subsection h5 {
   font-size: var(--fs-base);
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .settings-subsection h5 i {
@@ -162,7 +157,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .setting-item:last-child {
@@ -177,7 +172,7 @@
   font-weight: 500;
   color: var(--text-primary);
   display: block;
-  margin-bottom: 4px;
+  margin-bottom: var(--space-1);
 }
 
 .setting-info small {
@@ -189,14 +184,13 @@
 
 .theme-swatches {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .swatch-btn {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  border: 2px solid transparent;
   cursor: pointer;
   transition:
     transform 120ms ease,
@@ -206,15 +200,12 @@
 
 .swatch-btn:focus {
   outline: none;
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--focus-ring);
 }
 
 /* Make the currently-selected accent swatch slightly larger and more prominent */
 .swatch-btn.active {
-  transform: scale(1.12);
-  box-shadow: 0 0 20px var(--accent-color-rgba-30);
-  border-color: var(--accent-color);
+  box-shadow: var(--swatch-ring);
 }
 
 #accentYellow {
@@ -291,7 +282,7 @@ input:checked + .toggle-slider:before {
 /* Long titles end with an ellipsis; while the options button is visible it gets room on the right */
 .note-item:hover .note-item-title,
 .note-item:has(.menu-open) .note-item-title {
-  padding-right: 24px;
+  padding-right: var(--space-6);
 }
 
 .note-item.locked .note-item-title {

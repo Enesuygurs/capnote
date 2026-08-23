@@ -9,16 +9,15 @@
   bottom: 80px;
   left: 50%;
   transform: translateX(-50%) translateY(100px);
-  background: var(--bg-primary);
-  border: 1px solid var(--primary-color);
+  background: var(--surface-raised);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  padding: 16px 20px;
+  box-shadow: var(--shadow-popover);
+  padding: var(--space-4) var(--space-5);
   max-width: 400px;
   z-index: var(--z-toast);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   transition: var(--transition-normal);
 }
 
@@ -30,13 +29,7 @@
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 /* Notification Types - All use yellow border */
-.notification.success,
-.notification.error,
-.notification.info,
-.notification.warning {
-  border: 1px solid var(--primary-color);
-}

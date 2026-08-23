@@ -237,7 +237,7 @@ export class NoteListFeature {
     div.title = title;
 
     div.innerHTML = `
-            <i class="fas fa-file-alt nav-icon"></i>
+            <i class="fas ${note.isPinned ? 'fa-thumbtack' : 'fa-file-alt'} nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(title)}</span>
             <div class="note-options-container">
                 <button class="more-options-btn" title="${i18n.t('titles.options')}">
