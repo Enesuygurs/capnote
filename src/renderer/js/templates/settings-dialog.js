@@ -280,7 +280,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                     ayarlar) içe aktarın</small
                   >
                 </div>
-                <button id="importAllDataBtn" class="btn-outline btn-small">
+                <button id="importAllDataBtn" class="btn-secondary btn-small">
                   <i class="fas fa-upload"></i> <span data-i18n="buttons.import">İçe Aktar</span>
                 </button>
               </div>
@@ -291,7 +291,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                     >Tüm verilerin bir yedeğini JSON olarak dışa aktarın</small
                   >
                 </div>
-                <button id="exportAllDataBtn" class="btn-outline btn-small">
+                <button id="exportAllDataBtn" class="btn-secondary btn-small">
                   <i class="fas fa-download"></i>
                   <span data-i18n="buttons.export">Dışa Aktar</span>
                 </button>

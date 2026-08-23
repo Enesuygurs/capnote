@@ -67,7 +67,8 @@ export class SettingsFeature {
 
     this.darkModeToggle.checked = settings.darkMode;
     this.applyTheme(settings.darkMode);
-    if (settings.accentColor) this.setAccentColor(settings.accentColor, { persist: false });
+    // Without a saved accent the default one is in use, so its swatch shows as selected
+    this.setAccentColor(settings.accentColor || DEFAULT_ACCENT, { persist: false });
 
     if (this.syncFolderAccentToggle)
       this.syncFolderAccentToggle.checked = settings.syncFolderAccent;

@@ -7,8 +7,8 @@
 }
 /* Search Container */
 .search-container {
-  padding: 6px 12px;
-  margin-bottom: 6px;
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-2);
   flex-shrink: 0;
 }
 
@@ -32,10 +32,9 @@
 
 .search-input {
   width: 100%;
-  padding: 8px 12px 8px 36px;
-  border: 1px solid rgb(229 229 229 / 79%);
+  padding: var(--space-2) var(--space-3) var(--space-2) 36px;
   border-radius: var(--radius-md);
-  background: var(--surface-sunken);
+  background: var(--field);
   color: var(--text-primary);
   font-size: var(--fs-base);
   transition: var(--transition-fast);
@@ -43,7 +42,7 @@
 
 .search-input:focus {
   outline: none;
-  background: var(--surface-raised);
+  box-shadow: var(--focus-ring);
 }
 
 .search-input::placeholder {
@@ -56,7 +55,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .notes-list-container.hidden {
@@ -76,12 +75,12 @@
 }
 /* Sidebar Footer */
 .sidebar-footer {
-  padding: 12px;
+  padding: var(--space-3);
   border-top: 1px solid var(--border-color);
 }
 
 .sidebar-footer .nav-item {
-  margin-bottom: 2px;
+  margin-bottom: 0;
 }
 
 .sidebar-footer .nav-item:last-child {
@@ -93,8 +92,8 @@
 .note-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
@@ -104,6 +103,7 @@
   position: relative;
   background: transparent;
   border: none;
+  line-height: 20px;
 }
 
 .note-item:hover {

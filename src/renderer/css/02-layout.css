@@ -4,7 +4,7 @@
 .app {
   display: flex;
   height: 100vh;
-  padding-top: 40px;
+  padding-top: var(--space-10);
 }
 .sidebar {
   width: 280px;
@@ -29,7 +29,7 @@
 
 /* Sidebar Header */
 .sidebar-header {
-  padding: 6px 16px 6px 16px;
+  padding: var(--space-3);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -40,20 +40,18 @@
 .viewer-content table {
   width: 100%;
   border-collapse: collapse;
-  margin: 16px 0;
-  background: var(--surface-sidebar);
+  margin: var(--space-4) 0;
   border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .rich-editor table th,
 .rich-editor .inserted-table th,
 .formatted-content table th,
 .viewer-content table th {
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border-color);
-  padding: 12px 16px;
+  background: var(--card);
+  border: 1px solid var(--divider);
+  padding: var(--space-3) var(--space-4);
   text-align: left;
   font-weight: 600;
   color: var(--text-primary);
@@ -64,8 +62,8 @@
 .rich-editor .inserted-table td,
 .formatted-content table td,
 .viewer-content table td {
-  border: 1px solid whitesmoke;
-  padding: 10px 16px;
+  border: 1px solid var(--divider);
+  padding: var(--space-3) var(--space-4);
   vertical-align: top;
   color: var(--text-primary);
   font-size: var(--fs-base);
@@ -80,25 +78,25 @@
 
 /* Table modal form spacing */
 .modal-content .form-group {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 .modal-content .form-group input[type='number'] {
   width: 100%;
-  padding: 6px 8px;
-  border: 1px solid var(--border-color);
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
+  background: var(--field);
 }
 #tableModal .form-row {
   display: flex;
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 #tableModal .form-row .form-group {
   flex: 1 1 0;
 }
 #tableModal .modal-content .form-group label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: var(--space-2);
   font-size: var(--fs-md);
   color: var(--text-secondary);
 }
@@ -106,7 +104,7 @@
 #tableModal .form-group label:has(input[type='checkbox']) {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
   cursor: pointer;
   font-size: var(--fs-base);
   font-weight: 500;
@@ -126,8 +124,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 6px 10px;
+  gap: var(--space-3);
+  padding: 0;
   width: 100%;
 }
 
@@ -135,9 +133,9 @@
 .app-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 4px 6px;
-  margin-left: -6px;
+  gap: var(--space-3);
+  padding: var(--space-1) var(--space-3);
+  margin-left: 0;
   border: none;
   border-radius: var(--radius-md);
   background: transparent;

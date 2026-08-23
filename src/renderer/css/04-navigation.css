@@ -2,12 +2,12 @@
 
 /* Navigation */
 .sidebar-nav {
-  padding: 0px 12px 12px 12px;
+  padding: var(--space-2) var(--space-3) var(--space-3);
   flex-shrink: 0;
 }
 
 .nav-section {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .nav-section:last-child {
@@ -18,8 +18,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
-  padding: 0 8px;
+  margin-bottom: var(--space-2);
+  padding: 0 var(--space-2);
 }
 
 .nav-section-title {
@@ -33,7 +33,7 @@
 .nav-count,
 .folder-count {
   min-width: 20px;
-  padding: 2px 6px;
+  padding: 2px var(--space-2);
   border-radius: var(--radius-full);
   background: var(--bg-tertiary);
   color: var(--text-secondary);
@@ -48,12 +48,12 @@
   color: var(--text-on-primary);
 }
 .nav-section-title .nav-count {
-  margin-left: 6px;
+  margin-left: var(--space-2);
 }
 
 .nav-section-controls {
   display: flex;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .nav-control-btn {
@@ -83,10 +83,9 @@
 
 .sort-dropdown {
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   margin: 0;
-  padding: 6px 0;
+  padding: var(--space-2) 0;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   position: absolute;
   z-index: var(--z-dropdown);
@@ -96,12 +95,13 @@
 .sort-option {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 6px 14px;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   font-size: var(--fs-md);
   cursor: pointer;
   transition: var(--transition-fast);
   color: var(--text-secondary);
+  line-height: 20px;
 }
 
 .sort-option:hover {
@@ -123,8 +123,8 @@
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 6px 12px;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
@@ -132,6 +132,7 @@
   color: var(--text-secondary);
   margin-bottom: 2px;
   position: relative;
+  line-height: 20px;
 }
 
 .nav-item:hover {
@@ -177,13 +178,14 @@ div#newNoteNav {
 /* Submenu */
 
 .nav-subitem {
-  padding: 6px 12px;
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition-fast);
   font-size: var(--fs-md);
   color: var(--text-muted);
   margin-bottom: 2px;
+  line-height: 20px;
 }
 
 .nav-subitem:hover {

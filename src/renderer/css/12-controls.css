@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
   position: absolute !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
@@ -26,13 +26,11 @@
 .select-selected {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 35px 10px 12px;
-  border: 1px solid var(--border-color);
+  gap: var(--space-2);
+  padding: var(--space-2) 36px var(--space-2) var(--space-3);
   font-size: var(--fs-sm);
   font-weight: 500;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  background: var(--surface-sidebar);
+  background: var(--field);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   cursor: pointer;
@@ -58,10 +56,7 @@
 
 .select-selected:hover {
   color: var(--text-primary);
-  border-color: var(--primary-color);
-  transform: translateY(-1px);
-  box-shadow: 0 2px 8px var(--accent-color-rgba-12);
-  background: var(--tint-hover);
+  background: var(--field-hover);
 }
 
 .select-selected.select-arrow-active:after {
@@ -69,7 +64,6 @@
 }
 
 .select-items {
-  border: 1px solid var(--border-color);
   min-width: 200px;
   position: absolute;
   background: var(--surface-sidebar);
@@ -97,21 +91,21 @@
 }
 
 .select-item {
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
   font-size: var(--fs-sm);
   font-weight: 500;
   color: var(--text-primary);
   cursor: pointer;
   transition: all var(--transition-normal);
-  border-bottom: 1px solid var(--border-color);
   background: var(--surface-sidebar);
+  line-height: 20px;
 }
 
 .select-item:hover {
   background: var(--accent-color-rgba-15);
   color: var(--text-light);
   font-weight: 600;
-  padding-left: 16px;
+  padding-left: var(--space-4);
 }
 
 .select-item.active {
@@ -130,13 +124,11 @@
 }
 
 .format-custom-select .select-selected {
-  padding: 6px 25px 6px 8px;
+  padding: var(--space-2) 28px var(--space-2) var(--space-2);
   font-size: var(--fs-xs);
-  border-radius: var(--radius-sm);
-  border: none;
   border-radius: var(--radius-md);
-  background: var(--surface-sunken);
-  box-shadow: none;
+  border: none;
+  background: var(--field);
 }
 
 .format-custom-select .select-selected:after {
@@ -159,12 +151,11 @@
 }
 
 .format-custom-select .select-item {
-  padding: 6px 8px;
+  padding: var(--space-2) var(--space-2);
   font-size: var(--fs-xs);
 }
 
 .format-custom-select .select-item:hover {
-  padding-left: 12px;
   background: var(--accent-color-rgba-15);
   color: var(--text-primary);
 }
@@ -172,25 +163,22 @@
 /* Note content area background fix */
 .note-content {
   flex: 1;
-  padding: 32px;
+  padding: var(--space-8);
   overflow-y: auto;
   position: relative;
-  background: var(--surface-panel) !important;
-  border-radius: var(--radius-lg);
-  margin: 16px;
-  box-shadow: var(--shadow-sm);
+  margin: 0;
 }
 
 /* Checklist styles */
 .checklist {
-  margin: 8px 0;
+  margin: var(--space-2) 0;
 }
 
 .checklist-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
   padding: 2px 0;
 }
 
@@ -219,8 +207,8 @@
 /* Editor list spacing: ensure ul/ol inside the editor have comfortable left padding */
 .rich-editor ul,
 .rich-editor ol {
-  margin: 8px 0;
-  padding-left: 16px;
+  margin: var(--space-2) 0;
+  padding-left: var(--space-4);
 }
 
 .rich-editor ul {
@@ -233,14 +221,10 @@
 
 .rich-editor ul li,
 .rich-editor ol li {
-  margin-bottom: 6px;
+  margin-bottom: var(--space-2);
 }
 
 /* Pinned and locked note indicators */
-.note-item.pinned {
-  border-left: 3px solid var(--accent-color, var(--warning-color));
-  background-color: var(--tint-subtle);
-}
 
 .note-options-container {
   position: absolute;
@@ -285,9 +269,8 @@
   gap: 2px;
   background: var(--surface-raised);
   border-radius: var(--radius-md);
-  padding: 6px;
+  padding: var(--space-2);
   box-shadow: var(--shadow-popover);
-  border: 1px solid var(--border-color);
   z-index: var(--z-popover);
   visibility: visible !important;
   opacity: 1 !important;
@@ -300,7 +283,7 @@
 
 .note-action-menu-btn {
   width: 100%;
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
   border: none;
   background: transparent;
   color: var(--text-secondary);
@@ -309,9 +292,10 @@
   font-size: var(--fs-sm);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
   transition: var(--transition-fast);
   text-align: left;
+  line-height: 20px;
 }
 
 .note-action-menu-btn i {
@@ -347,15 +331,6 @@
 }
 
 /* Titlebar button hover effects */
-.titlebar-button.minimize:hover {
-  background: var(--primary-color) !important;
-  color: white !important;
-}
-
-.titlebar-button.maximize:hover {
-  background: var(--success-color) !important;
-  color: white !important;
-}
 
 /* Center the welcome screen button */
 .welcome-content {
@@ -377,6 +352,6 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 40px;
+  padding: var(--space-10);
   background: var(--surface) !important;
 }

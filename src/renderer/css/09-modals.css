@@ -47,7 +47,7 @@
 }
 
 .modal-header {
-  padding: 24px 24px 0;
+  padding: var(--space-6) var(--space-6) 0;
   /* border-bottom removed to match design request */
   border-bottom: none;
   display: flex;
@@ -67,7 +67,7 @@
 .modal-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .modal-title h3 {
@@ -83,9 +83,9 @@
   width: 36px;
   height: 36px;
   border: none;
-  background: var(--bg-tertiary);
+  background: var(--field);
   color: var(--text-secondary);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -100,15 +100,14 @@
 
 .modal-close:hover {
   /* Use a solid hover tone (no transparency) */
-  background: var(--tint-hover);
+  background: var(--field-hover);
   color: var(--text-strong);
-  transform: scale(1.04);
 }
 
 .modal-actions {
-  padding: 16px 24px 24px;
+  padding: 0 var(--space-6) var(--space-6);
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
   justify-content: flex-end;
 }
 
@@ -116,7 +115,7 @@
 .confirm-modal {
   max-width: 420px;
   text-align: center;
-  padding: 32px 24px 24px;
+  padding: var(--space-8) var(--space-6) var(--space-6);
   position: relative;
 }
 
@@ -128,64 +127,73 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 24px;
+  margin: 0 auto var(--space-6);
   font-size: var(--fs-3xl);
   color: white;
-  box-shadow: 0 8px 25px var(--accent-color-rgba-30);
 }
 
 .confirm-text h3 {
   font-size: var(--fs-2xl);
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .confirm-text p {
   color: var(--text-secondary);
   line-height: 1.6;
-  margin-bottom: 32px;
+  margin-bottom: var(--space-6);
 }
 
 .confirm-modal .modal-actions {
   justify-content: center;
-  gap: 16px;
+  gap: var(--space-3);
   padding: 0;
 }
 
 .confirm-modal .modal-close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: var(--space-4);
+  right: var(--space-4);
 }
 
 .export-options {
-  padding: 24px;
+  padding: var(--space-6);
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .export-btn {
-  padding: 20px;
-  border: 2px solid var(--border-color);
-  background: var(--surface-raised);
+  padding: var(--space-5);
+  background: var(--card);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: var(--transition-fast);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   text-align: center;
 }
 
 .export-btn:hover {
-  border-color: var(--primary-color);
-  background: var(--tint-hover);
+  background: var(--tint-strong);
 }
 
 .export-btn i {
   font-size: var(--fs-3xl);
   color: var(--primary-color);
+}
+
+.modal-body {
+  padding: var(--space-6);
+}
+
+.modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: 0 var(--space-6) var(--space-6);
 }

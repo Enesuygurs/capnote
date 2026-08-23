@@ -6,6 +6,14 @@
   box-sizing: border-box;
 }
 
+/* Native controls draw their own borders; the design has none (docs/DESIGN.md) */
+button,
+input,
+select,
+textarea {
+  border: 0;
+}
+
 /* Performance optimization: Disable transitions during window resize */
 body.resizing,
 body.resizing *,
@@ -115,6 +123,28 @@ body.resizing .welcome-screen {
   --surface-sunken: #f8f9fa;
   --tint-hover: rgba(0, 0, 0, 0.05);
   --tint-subtle: rgba(0, 0, 0, 0.03);
+  --tint-strong: rgba(0, 0, 0, 0.08);
+  /* Cards and fields are tints, one step from whatever they sit on */
+  --card: rgba(0, 0, 0, 0.03);
+  --field: rgba(0, 0, 0, 0.045);
+  --field-hover: rgba(0, 0, 0, 0.07);
+  /* The only lines: dividers between regions of the window */
+  --divider: var(--border-color);
+  --focus-ring: 0 0 0 3px var(--accent-color-rgba-20);
+  --swatch-ring: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--accent-color);
+  /* Spacing on a 4px grid */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  /* Control heights */
+  --control-sm: 32px;
+  --control-md: 36px;
+  --control-lg: 44px;
   /* Stacking layers, bottom to top */
   --z-sidebar: 100;
   --z-dropdown: 900;
@@ -160,10 +190,15 @@ body.resizing .welcome-screen {
   --surface: #1a1a1a;
   --surface-sidebar: #181818;
   --surface-panel: #1e1e1e;
-  --surface-raised: #222222;
+  /* Floating surfaces need a clear step above the page in the dark theme */
+  --surface-raised: #282828;
   --surface-sunken: #262626;
   --tint-hover: rgba(255, 255, 255, 0.05);
   --tint-subtle: rgba(255, 255, 255, 0.03);
+  --tint-strong: rgba(255, 255, 255, 0.08);
+  --card: rgba(255, 255, 255, 0.03);
+  --field: rgba(255, 255, 255, 0.05);
+  --field-hover: rgba(255, 255, 255, 0.08);
   --text-strong: #ffffff;
   --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.4);
   --shadow-modal: var(--shadow-dark-lg);
@@ -199,7 +234,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px 0 0;
+  padding: 0 var(--space-5) 0 0;
   position: fixed;
   top: 0;
   left: 0;
@@ -215,7 +250,7 @@ body {
 }
 .titlebar-controls {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
   -webkit-app-region: no-drag;
   position: absolute;
   right: 10px;
@@ -243,9 +278,8 @@ body.platform-darwin .titlebar {
   color: var(--text-secondary);
 }
 .titlebar-button:hover {
-  background: rgba(0, 0, 0, 0.1);
-  color: var(--text-primary);
-  transform: scale(1.05);
+  background: var(--tint-hover);
+  color: var(--text-strong);
 }
 .titlebar-button.close:hover {
   background: var(--error-color);
@@ -266,7 +300,7 @@ body.platform-darwin .titlebar {
   transition: var(--transition-fast);
   border-radius: var(--radius-sm);
   -webkit-app-region: no-drag;
-  margin-left: 8px;
+  margin-left: var(--space-2);
 }
 
 .hamburger-btn:hover {

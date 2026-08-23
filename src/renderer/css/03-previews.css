@@ -20,13 +20,13 @@
     Arial;
   font-size: var(--fs-base);
   line-height: 1.6;
-  padding: 18px 20px;
+  padding: 0;
   overflow: auto;
   position: absolute;
-  top: 32px;
-  right: 32px;
-  bottom: 32px;
-  left: 32px;
+  top: var(--space-8);
+  right: var(--space-8);
+  bottom: var(--space-8);
+  left: var(--space-8);
   box-sizing: border-box;
   background: transparent;
 }
@@ -105,8 +105,7 @@
 .formatted-content pre {
   background: var(--code-bg);
   color: var(--code-text);
-  border: 1px solid var(--border-color);
-  padding: 12px 14px;
+  padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   overflow: auto;
   line-height: 1.5;
@@ -126,7 +125,7 @@
   background: var(--bg-hover);
   border: none;
   color: var(--text-secondary);
-  padding: 6px;
+  padding: var(--space-2);
   border-radius: var(--radius-md);
   cursor: pointer;
   display: inline-flex;
@@ -139,7 +138,6 @@
   z-index: 20;
 }
 .code-copy-btn:hover {
-  transform: translateY(-1px);
   color: var(--text-primary);
   background: var(--border-color);
 }
@@ -158,7 +156,7 @@
 .markdown-preview table th,
 .markdown-preview table td {
   border: 1px solid var(--border-color);
-  padding: 8px 10px;
+  padding: var(--space-2) var(--space-3);
 }
 .markdown-preview table th {
   background: rgba(0, 0, 0, 0.03);
@@ -183,29 +181,29 @@
 }
 .markdown-preview input[type='checkbox'] {
   transform: translateY(2px);
-  margin-right: 8px;
+  margin-right: var(--space-2);
 }
 
 /* HTML preview container styling */
 .html-preview {
-  padding: 18px 20px;
+  padding: 0;
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: var(--fs-base);
   line-height: 1.6;
   overflow: auto;
   position: absolute;
-  top: 32px;
-  right: 32px;
-  bottom: 32px;
-  left: 32px;
+  top: var(--space-8);
+  right: var(--space-8);
+  bottom: var(--space-8);
+  left: var(--space-8);
   box-sizing: border-box;
 }
 
 .html-preview pre {
   background: #0b1220;
   color: #e6edf3;
-  padding: 12px;
+  padding: var(--space-3);
   border-radius: var(--radius-md);
   overflow: auto;
 }

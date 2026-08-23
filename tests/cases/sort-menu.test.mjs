@@ -24,5 +24,5 @@ export const expected = {
   hidden: true,
   enText: 'Title (A → Z)',
   iconsKept: 5,
-  rowHeight: 33,
+  rowHeight: 36,
 };
