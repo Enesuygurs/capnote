@@ -51,6 +51,8 @@ npm run test:visual  # compare screenshots of every screen
 
 The main process is in `src/main/`, the preload bridge in `src/preload.cjs`, and the interface in `src/renderer/`: `js/app.js` plus one module per feature in `js/features/`, the markup of the editor and the dialogs in `js/templates/`, and stylesheets in `css/`, loaded in the numbered order.
 
+Interface changes follow the design rules in [docs/DESIGN.md](docs/DESIGN.md): no borders on components, spacing on a 4px grid, and the shared tokens for surfaces, spacing and shape.
+
 ## Tests
 
 Each file in `tests/cases` starts the real app with an empty data folder, runs a script inside the window and compares the result with the `expected` value in the same file (a regular expression or a function can stand in for values that change, such as dates). Tests that need existing data, for example data left by an older version, write it in a `seed` step first. `npm test -- search` runs only the tests whose name contains "search"; `--print` shows every result.
