@@ -98,7 +98,7 @@ export class RemindersFeature {
     );
 
     if (activeReminders.length === 0) {
-      this.remindersList.innerHTML = `<div class="empty-state empty-state-large">${i18n.t('messages.noActiveReminders')}</div>`;
+      this.remindersList.innerHTML = `<div class="empty-state empty-state-large"><i class="fas fa-bell-slash"></i><p>${i18n.t('messages.noActiveReminders')}</p></div>`;
       return;
     }
 
@@ -106,24 +106,25 @@ export class RemindersFeature {
       .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
       .map(
         (r) => `
-        <div class="reminder-card" data-reminder-id="${r.id}">
-          <div class="reminder-note-title">${this.escapeHtml(this.titleForNote(r.noteId, r.noteTitle))}</div>
-          <div class="reminder-datetime">
-            <i class="fas fa-clock"></i>
-            ${new Date(r.datetime).toLocaleString(this.getLocale(), {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-            ${r.recurrence && r.recurrence !== 'none' ? `<span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? ': ' + r.recurrenceDays.map((d) => this._weekdayShort(d)).join(', ') : ''}</span>` : ''}
+        <div class="list-card reminder-card" data-reminder-id="${r.id}">
+          <div class="list-card-main">
+            <div class="list-card-title reminder-note-title">${this.escapeHtml(this.titleForNote(r.noteId, r.noteTitle))}</div>
+            <div class="list-card-meta reminder-datetime">
+              <span>${new Date(r.datetime).toLocaleString(this.getLocale(), {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}</span>
+              ${r.recurrence && r.recurrence !== 'none' ? `<span class="chip reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? ': ' + r.recurrenceDays.map((d) => this._weekdayShort(d)).join(', ') : ''}</span>` : ''}
+            </div>
           </div>
-          <div class="reminder-actions">
-            <button class="reminder-action-btn view-note-btn" data-note-id="${r.noteId}">
+          <div class="list-card-actions">
+            <button class="btn-secondary btn-small view-note-btn" data-note-id="${r.noteId}">
               <i class="fas fa-eye"></i> ${i18n.t('messages.viewNote')}
             </button>
-            <button class="reminder-action-btn dismiss-btn" data-reminder-id="${r.id}">
+            <button class="btn-secondary btn-small dismiss-btn" data-reminder-id="${r.id}">
               <i class="fas fa-check"></i> ${i18n.t('messages.completed')}
             </button>
           </div>
@@ -251,9 +252,9 @@ export class RemindersFeature {
                 hour: '2-digit',
                 minute: '2-digit',
               })}
-              ${r.recurrence && r.recurrence !== 'none' ? ` <span class="reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? ': ' + r.recurrenceDays.map((d) => this._weekdayShort(d)).join(', ') : ''}</span>` : ''}
+              ${r.recurrence && r.recurrence !== 'none' ? ` <span class="chip reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? ': ' + r.recurrenceDays.map((d) => this._weekdayShort(d)).join(', ') : ''}</span>` : ''}
           </div>
-          <button class="note-reminder-remove" data-reminder-id="${r.id}" title="${i18n.t('buttons.delete')}">
+          <button class="btn-icon btn-icon-xs note-reminder-remove" data-reminder-id="${r.id}" title="${i18n.t('buttons.delete')}">
             <i class="fas fa-times"></i>
           </button>
         </div>

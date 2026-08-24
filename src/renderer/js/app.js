@@ -121,7 +121,6 @@ export class CapnoteApp {
     this.tagsList = document.getElementById('tagsList');
 
     // New control elements
-    this.searchBtn = document.getElementById('searchBtn');
     this.sortBtn = document.getElementById('sortBtn');
     this.searchContainer = document.getElementById('searchContainer');
     this.sortDropdown = document.getElementById('sortDropdown');
@@ -191,7 +190,7 @@ export class CapnoteApp {
     this.editorReadingTime = document.getElementById('editorReadingTime');
 
     // Filter tabs (modern navigation)
-    this.filterTabs = document.querySelectorAll('.nav-item[data-filter]');
+    this.filterTabs = document.querySelectorAll('.segment[data-filter]');
 
     // Notes list container
     this.notesListContainer = document.getElementById('notesListContainer');

@@ -254,8 +254,7 @@ export class UiFeature {
             break;
           case 'f':
             e.preventDefault();
-            if (this.searchContainer.classList.contains('hidden')) this.toggleSearch();
-            else this.searchInput.focus();
+            this.toggleSearch();
             break;
           case 'e':
             e.preventDefault();

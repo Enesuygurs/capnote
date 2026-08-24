@@ -1,118 +1,102 @@
-/* Search, the notes list and the sidebar footer */
+/* Sidebar rows: notes, folders and notes inside folders share one 32px row */
 
-/* Sidebar toggle button styling */
-#toggleSidebar.active {
-  background: var(--primary-color);
-  color: white;
-}
-/* Search Container */
-.search-container {
-  padding: var(--space-2) var(--space-3);
-  margin-bottom: var(--space-2);
-  flex-shrink: 0;
-}
-
-.search-container.hidden {
-  display: none;
-}
-
-.search-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.search-icon {
-  position: absolute;
-  left: 12px;
-  color: var(--text-muted);
-  font-size: var(--fs-base);
-  z-index: 1;
-}
-
-.search-input {
-  width: 100%;
-  padding: var(--space-2) var(--space-3) var(--space-2) 36px;
-  border-radius: var(--radius-md);
-  background: var(--field);
-  color: var(--text-primary);
-  font-size: var(--fs-base);
-  transition: var(--transition-fast);
-}
-
-.search-input:focus {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-.search-input::placeholder {
-  color: var(--text-muted);
-}
-
-/* Notes List Container */
 .notes-list-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  margin-bottom: var(--space-2);
+  position: relative;
 }
 
-.notes-list-container.hidden {
-  display: none;
-}
-
-.select-items.select-hide {
-  display: none;
-}
-
-/* Notes List */
-.notes-list {
-  overflow-y: auto;
-  max-height: 400px;
-  flex: 1;
-  min-height: 0;
-}
-/* Sidebar Footer */
-.sidebar-footer {
-  padding: var(--space-3);
-  border-top: 1px solid var(--border-color);
-}
-
-.sidebar-footer .nav-item {
-  margin-bottom: 0;
-}
-
-.sidebar-footer .nav-item:last-child {
-  margin-bottom: 0;
-}
-
-/* Dark Theme Sidebar Adjustments */
-
+.nav-item,
 .note-item {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  font-size: var(--fs-md);
+  height: var(--control-sm);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
   color: var(--text-secondary);
-  margin-bottom: 2px;
+  cursor: pointer;
   position: relative;
-  background: transparent;
-  border: none;
-  line-height: 20px;
+  transition: background var(--transition-fast);
 }
 
+.nav-item:hover,
 .note-item:hover {
   background: var(--tint-hover);
-  color: var(--text-primary);
+  color: var(--text-strong);
 }
 
-.note-item.active {
-  background: var(--accent-color-rgba-15);
-  color: var(--primary-color);
+.note-item.active,
+.note-item.active:hover {
+  background: var(--accent-tint);
+  color: var(--accent-text);
   font-weight: 500;
+}
+
+.nav-icon {
+  width: 16px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}
+
+.note-item.active .nav-icon {
+  color: inherit;
+}
+
+.nav-text {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* While the options button shows, the title makes room for it */
+.note-item:hover .note-item-title,
+.note-item:has(.menu-open) .note-item-title {
+  padding-right: var(--space-6);
+}
+
+/* Options button on the right of a note row; the menu itself is a .menu */
+.note-options-container {
+  position: absolute;
+  right: var(--space-1);
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+  z-index: 1;
+}
+
+.note-item:hover .note-options-container,
+.note-options-container.menu-open {
+  opacity: 1;
+}
+
+.more-options-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.more-options-btn:hover {
+  background: var(--tint-strong);
+  color: var(--text-strong);
+}
+
+.note-options-menu {
+  position: fixed;
+  z-index: var(--z-popover);
+}
+
+.note-options-menu.hidden {
+  display: none !important;
 }

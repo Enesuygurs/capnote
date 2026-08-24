@@ -1,20 +1,15 @@
-// Markup of the settings dialog and its tabs
+// Markup of the settings dialog: tabs on the left, the open tab on the right.
+// A tab is a title and groups; a group is a section label and a card of setting rows.
 
 export const SETTINGS_DIALOG = /* HTML */ `
   <!-- Settings Modal -->
   <div id="settingsModal" class="modal hidden">
     <div class="modal-content settings-modal">
-      <div class="modal-header">
-        <h3><i class="fas fa-cog"></i> <span data-i18n="nav.settings">Ayarlar</span></h3>
-        <button class="modal-close" id="closeSettingsModal">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="settings-body">
-        <!-- Vertical Tabs -->
+      <div class="settings-nav">
+        <h3 class="settings-nav-title" data-i18n="nav.settings">Ayarlar</h3>
         <div class="settings-tabs">
           <button class="settings-tab active" data-tab="general">
-            <i class="fas fa-cog"></i>
+            <i class="fas fa-sliders"></i>
             <span data-i18n="sections.general">Genel</span>
           </button>
           <button class="settings-tab" data-tab="appearance">
@@ -34,22 +29,24 @@ export const SETTINGS_DIALOG = /* HTML */ `
             <span data-i18n="sections.dataManagement">Veri Yönetimi</span>
           </button>
           <button class="settings-tab" data-tab="about">
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-circle-info"></i>
             <span data-i18n="sections.about">Hakkında</span>
           </button>
         </div>
+      </div>
 
-        <!-- Tab Content -->
-        <div class="settings-content">
-          <!-- General Tab -->
-          <div class="settings-tab-content active" data-content="general">
-            <h4><i class="fas fa-cog"></i> <span data-i18n="sections.general">Genel</span></h4>
+      <div class="settings-content">
+        <button class="modal-close settings-close" id="closeSettingsModal">
+          <i class="fas fa-times"></i>
+        </button>
 
-            <div class="settings-subsection">
-              <h5>
-                <i class="fas fa-file-alt"></i>
-                <span data-i18n="sections.noteSettings">Not Ayarları</span>
-              </h5>
+        <!-- General Tab -->
+        <div class="settings-tab-content active" data-content="general">
+          <h4 class="settings-title" data-i18n="sections.general">Genel</h4>
+
+          <section class="settings-section">
+            <h5 class="section-label" data-i18n="sections.noteSettings">Not Ayarları</h5>
+            <div class="settings-group">
               <div class="setting-item">
                 <div class="setting-info">
                   <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
@@ -107,11 +104,11 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 </label>
               </div>
             </div>
+          </section>
 
-            <div class="settings-subsection">
-              <h5>
-                <i class="fas fa-language"></i> <span data-i18n="sections.language">Dil</span>
-              </h5>
+          <section class="settings-section">
+            <h5 class="section-label" data-i18n="sections.language">Dil</h5>
+            <div class="settings-group">
               <div class="setting-item">
                 <div class="setting-info">
                   <label data-i18n="settings.language">Dil</label>
@@ -123,155 +120,160 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 </select>
               </div>
             </div>
-          </div>
+          </section>
+        </div>
 
-          <!-- Appearance Tab -->
-          <div class="settings-tab-content" data-content="appearance">
-            <h4>
-              <i class="fas fa-palette"></i> <span data-i18n="sections.appearance">Görünüm</span>
-            </h4>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label data-i18n="settings.darkMode">Karanlık Mod</label>
-                <small data-i18n="settings.darkModeDesc">Gözlerinizi yormasın</small>
+        <!-- Appearance Tab -->
+        <div class="settings-tab-content" data-content="appearance">
+          <h4 class="settings-title" data-i18n="sections.appearance">Görünüm</h4>
+          <section class="settings-section">
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.darkMode">Karanlık Mod</label>
+                  <small data-i18n="settings.darkModeDesc">Gözlerinizi yormasın</small>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="darkModeToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
               </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="darkModeToggle" />
-                <span class="toggle-slider"></span>
-              </label>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.accentColor">Vurgu Rengi</label>
+                  <small data-i18n="settings.accentColorDesc">Vurgu renklerini değiştirin</small>
+                </div>
+                <div class="theme-swatches">
+                  <button
+                    class="swatch-btn"
+                    id="accentYellow"
+                    data-i18n-title="titles.yellow"
+                    data-i18n-aria-label="titles.yellow"
+                    data-color="#f59e0b"
+                  ></button>
+                  <button
+                    class="swatch-btn"
+                    id="accentCherry"
+                    data-i18n-title="titles.cherryRed"
+                    data-i18n-aria-label="titles.cherryRed"
+                    data-color="#e11d48"
+                  ></button>
+                  <button
+                    class="swatch-btn"
+                    id="accentApple"
+                    data-i18n-title="titles.appleGreen"
+                    data-i18n-aria-label="titles.appleGreen"
+                    data-color="#22c55e"
+                  ></button>
+                  <button
+                    class="swatch-btn"
+                    id="accentPurple"
+                    data-i18n-title="titles.purple"
+                    data-i18n-aria-label="titles.purple"
+                    data-color="#8b5cf6"
+                  ></button>
+                  <button
+                    class="swatch-btn"
+                    id="accentBlue"
+                    data-i18n-title="titles.blue"
+                    data-i18n-aria-label="titles.blue"
+                    data-color="#3b82f6"
+                  ></button>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.syncFolderAccent"
+                    >Vurgu rengini klasör rengiyle eşitle</label
+                  >
+                  <small data-i18n="settings.syncFolderAccentDesc"
+                    >Tüm klasör ikon renklerini vurgu rengine ayarla</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="syncFolderAccentToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
             </div>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label data-i18n="settings.accentColor">Vurgu Rengi</label>
-                <small data-i18n="settings.accentColorDesc">Vurgu renklerini değiştirin</small>
-              </div>
-              <div class="theme-swatches">
-                <button
-                  class="swatch-btn"
-                  id="accentYellow"
-                  data-i18n-title="titles.yellow"
-                  data-i18n-aria-label="titles.yellow"
-                  data-color="#f59e0b"
-                ></button>
-                <button
-                  class="swatch-btn"
-                  id="accentCherry"
-                  data-i18n-title="titles.cherryRed"
-                  data-i18n-aria-label="titles.cherryRed"
-                  data-color="#e11d48"
-                ></button>
-                <button
-                  class="swatch-btn"
-                  id="accentApple"
-                  data-i18n-title="titles.appleGreen"
-                  data-i18n-aria-label="titles.appleGreen"
-                  data-color="#22c55e"
-                ></button>
-                <button
-                  class="swatch-btn"
-                  id="accentPurple"
-                  data-i18n-title="titles.purple"
-                  data-i18n-aria-label="titles.purple"
-                  data-color="#8b5cf6"
-                ></button>
-                <button
-                  class="swatch-btn"
-                  id="accentBlue"
-                  data-i18n-title="titles.blue"
-                  data-i18n-aria-label="titles.blue"
-                  data-color="#3b82f6"
-                ></button>
-              </div>
-            </div>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label data-i18n="settings.syncFolderAccent"
-                  >Vurgu rengini klasör rengiyle eşitle</label
-                >
-                <small data-i18n="settings.syncFolderAccentDesc"
-                  >Tüm klasör ikon renklerini vurgu rengine ayarla</small
-                >
-              </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="syncFolderAccentToggle" />
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-          </div>
+          </section>
+        </div>
 
-          <!-- Notifications Tab -->
-          <div class="settings-tab-content" data-content="notifications">
-            <h4>
-              <i class="fas fa-bell"></i>
-              <span data-i18n="sections.notifications">Bildirimler</span>
-            </h4>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label data-i18n="settings.systemNotifications">Sistem bildirimleri</label>
-                <small data-i18n="settings.systemNotificationsDesc"
-                  >Hatırlatmalar için işletim sistemi bildirimlerini göster</small
-                >
+        <!-- Notifications Tab -->
+        <div class="settings-tab-content" data-content="notifications">
+          <h4 class="settings-title" data-i18n="sections.notifications">Bildirimler</h4>
+          <section class="settings-section">
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.systemNotifications">Sistem bildirimleri</label>
+                  <small data-i18n="settings.systemNotificationsDesc"
+                    >Hatırlatmalar için işletim sistemi bildirimlerini göster</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggleNativeNotifications" />
+                  <span class="toggle-slider"></span>
+                </label>
               </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="toggleNativeNotifications" />
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label data-i18n="settings.testNotification">Test bildirimi gönder</label>
-                <small data-i18n="settings.testNotificationDesc"
-                  >Hemen bir test bildirimi göster</small
-                >
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.testNotification">Test bildirimi gönder</label>
+                  <small data-i18n="settings.testNotificationDesc"
+                    >Hemen bir test bildirimi göster</small
+                  >
+                </div>
+                <button type="button" id="testNativeNotifBtn" class="btn btn-secondary btn-small">
+                  <i class="fas fa-bell"></i>
+                  <span data-i18n="buttons.testNotifications">Bildirimleri test et</span>
+                </button>
               </div>
-              <button type="button" id="testNativeNotifBtn" class="btn btn-primary btn-small">
-                <i class="fas fa-bell"></i>
-                <span data-i18n="buttons.testNotifications">Bildirimleri test et</span>
-              </button>
             </div>
-          </div>
+          </section>
+        </div>
 
-          <!-- System Tab -->
-          <div class="settings-tab-content" data-content="system">
-            <h4><i class="fas fa-desktop"></i> <span data-i18n="sections.system">Sistem</span></h4>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label data-i18n="settings.startAtLogin">Başlangıçta çalıştır</label>
-                <small data-i18n="settings.startAtLoginDesc"
-                  >Oturum açıldığında Capnote arka planda başlasın</small
-                >
+        <!-- System Tab -->
+        <div class="settings-tab-content" data-content="system">
+          <h4 class="settings-title" data-i18n="sections.system">Sistem</h4>
+          <section class="settings-section">
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.startAtLogin">Başlangıçta çalıştır</label>
+                  <small data-i18n="settings.startAtLoginDesc"
+                    >Oturum açıldığında Capnote arka planda başlasın</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="startAtLoginToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
               </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="startAtLoginToggle" />
-                <span class="toggle-slider"></span>
-              </label>
-            </div>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label data-i18n="settings.closeToTray">Pencereyi kapatınca tepsiye küçült</label>
-                <small data-i18n="settings.closeToTrayDesc"
-                  >Kapat düğmesine basınca uygulama sistem tepsisinde çalışmaya devam etsin</small
-                >
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.closeToTray">Pencereyi kapatınca tepsiye küçült</label>
+                  <small data-i18n="settings.closeToTrayDesc"
+                    >Kapat düğmesine basınca uygulama sistem tepsisinde çalışmaya devam etsin</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="closeToTrayToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
               </div>
-              <label class="toggle-switch">
-                <input type="checkbox" id="closeToTrayToggle" />
-                <span class="toggle-slider"></span>
-              </label>
             </div>
-          </div>
+          </section>
+        </div>
 
-          <!-- Data Management Tab -->
-          <div class="settings-tab-content" data-content="data">
-            <h4>
-              <i class="fas fa-database"></i>
-              <span data-i18n="sections.dataManagement">Veri Yönetimi</span>
-            </h4>
+        <!-- Data Management Tab -->
+        <div class="settings-tab-content" data-content="data">
+          <h4 class="settings-title" data-i18n="sections.dataManagement">Veri Yönetimi</h4>
 
-            <div class="settings-subsection">
-              <h5>
-                <i class="fas fa-exchange-alt"></i>
-                <span data-i18n="sections.dataImportExport">Verileri İçe/Dışa Aktar</span>
-              </h5>
+          <section class="settings-section">
+            <h5 class="section-label" data-i18n="sections.dataImportExport">
+              Verileri İçe/Dışa Aktar
+            </h5>
+            <div class="settings-group">
               <div class="setting-item">
                 <div class="setting-info">
                   <label data-i18n="settings.importData">Verileri İçe Aktar</label>
@@ -297,12 +299,11 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 </button>
               </div>
             </div>
+          </section>
 
-            <div class="settings-subsection">
-              <h5>
-                <i class="fas fa-trash"></i>
-                <span data-i18n="sections.clearData">Verileri Temizle</span>
-              </h5>
+          <section class="settings-section">
+            <h5 class="section-label" data-i18n="sections.clearData">Verileri Temizle</h5>
+            <div class="settings-group">
               <div class="setting-item">
                 <div class="setting-info">
                   <label data-i18n="settings.deleteAllNotes">Tüm Notları Sil</label>
@@ -311,8 +312,8 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   >
                 </div>
                 <button id="clearAllNotesBtn" class="btn-outline btn-small btn-danger">
-                  <i class="fas fa-trash-alt"></i>
-                  <span data-i18n="settings.deleteAllNotes">Tüm Notları Sil</span>
+                  <i class="fas fa-trash"></i>
+                  <span data-i18n="buttons.delete">Sil</span>
                 </button>
               </div>
               <div class="setting-item">
@@ -323,8 +324,8 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   >
                 </div>
                 <button id="clearAllFoldersBtn" class="btn-outline btn-small btn-danger">
-                  <i class="fas fa-folder-minus"></i>
-                  <span data-i18n="settings.deleteAllFolders">Tüm Klasörleri Sil</span>
+                  <i class="fas fa-trash"></i>
+                  <span data-i18n="buttons.delete">Sil</span>
                 </button>
               </div>
               <div class="setting-item">
@@ -335,38 +336,40 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   >
                 </div>
                 <button id="clearAllContentBtn" class="btn-outline btn-small btn-danger">
-                  <i class="fas fa-eraser"></i>
-                  <span data-i18n="settings.resetApp">Uygulamayı Sıfırla</span>
+                  <i class="fas fa-rotate-left"></i>
+                  <span data-i18n="buttons.reset">Sıfırla</span>
                 </button>
               </div>
             </div>
-          </div>
+          </section>
+        </div>
 
-          <!-- About Tab -->
-          <div class="settings-tab-content" data-content="about">
-            <h4>
-              <i class="fas fa-info-circle"></i> <span data-i18n="sections.about">Hakkında</span>
-            </h4>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label>GitHub</label>
-                <small>github.com/Enesuygurs/capnote</small>
+        <!-- About Tab -->
+        <div class="settings-tab-content" data-content="about">
+          <h4 class="settings-title" data-i18n="sections.about">Hakkında</h4>
+          <section class="settings-section">
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.versionLabel">Versiyon</label>
+                  <small id="appVersionLabel">Capnote</small>
+                </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="updates.title">Güncellemeler</label>
+                  <small id="updateStatusText"></small>
+                </div>
+                <button id="updateActionBtn" class="btn btn-secondary btn-small"></button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label>GitHub</label>
+                  <small>github.com/Enesuygurs/capnote</small>
+                </div>
               </div>
             </div>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label data-i18n="settings.versionLabel">Versiyon</label>
-                <small id="appVersionLabel">Capnote</small>
-              </div>
-            </div>
-            <div class="setting-item">
-              <div class="setting-info">
-                <label data-i18n="updates.title">Güncellemeler</label>
-                <small id="updateStatusText"></small>
-              </div>
-              <button id="updateActionBtn" class="btn btn-secondary btn-small"></button>
-            </div>
-          </div>
+          </section>
         </div>
       </div>
     </div>

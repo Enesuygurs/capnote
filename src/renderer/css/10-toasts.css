@@ -1,23 +1,19 @@
-/* Toast messages */
-
-/* ============================================
-   NOTIFICATIONS
-   ============================================ */
+/* Toast: a floating message at the bottom center, clear of the viewer's stats bar; its icon shows the kind */
 
 .notification {
   position: fixed;
-  bottom: 80px;
+  bottom: var(--space-16);
   left: 50%;
-  transform: translateX(-50%) translateY(100px);
-  background: var(--surface-raised);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-popover);
-  padding: var(--space-4) var(--space-5);
+  transform: translateX(-50%) translateY(var(--space-4));
   max-width: 400px;
-  z-index: var(--z-toast);
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-popover);
+  z-index: var(--z-toast);
   transition: var(--transition-normal);
 }
 
@@ -26,10 +22,24 @@
 }
 
 .notification-content {
-  flex: 1;
   display: flex;
   align-items: center;
   gap: var(--space-3);
 }
 
-/* Notification Types - All use yellow border */
+#notificationIcon {
+  font-size: var(--fs-lg);
+  color: var(--accent-color);
+}
+
+.notification.success #notificationIcon {
+  color: var(--success-color);
+}
+
+.notification.warning #notificationIcon {
+  color: var(--warning-color);
+}
+
+.notification.error #notificationIcon {
+  color: var(--error-color);
+}

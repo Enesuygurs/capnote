@@ -1,349 +1,82 @@
-/* Header buttons and the password, emoji, folder, table, history and import dialogs */
+/* Parts specific to single dialogs: export choices, note history, password message, import options */
 
-/* ============================================
-   HEADER BUTTONS
-   ============================================ */
-
-/* Password Modal Styles */
-#passwordModal {
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-}
-
-#passwordModal .modal-content {
-  max-width: 400px;
-  width: 90%;
-  /* moderate shadow for password modal (light theme) */
-  animation: modalSlideIn 0.3s ease-out;
-  position: relative;
-}
-
-#passwordModal .modal-header {
-  border-bottom: none;
-  display: flex;
-  align-items: center;
-}
-
-#passwordModal .modal-header h3 {
-  margin: 0;
-  font-size: var(--fs-xl);
-  font-weight: 600;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-#passwordModal .form-group {
-  margin-bottom: 0;
-}
-
-#passwordModal .form-group label {
-  display: block;
-  font-weight: 500;
-  color: var(--text-primary);
-  margin-bottom: var(--space-2);
-  font-size: var(--fs-base);
-}
-
-#passwordModal .form-input {
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--field);
-  color: var(--text-primary);
-  font-size: var(--fs-base);
-  font-family: inherit;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-}
-
-#passwordModal .form-input:focus {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-#passwordModal .form-message {
-  margin-bottom: var(--space-4);
-  font-size: var(--fs-base);
-  color: var(--text-secondary);
-  text-align: left;
-  line-height: 1.4;
-  display: none;
-}
-
-#passwordModal .modal-footer {
-  display: flex;
-}
-
-#passwordModal .modal-close {
-  /* Use base .modal-close styles; keep slightly smaller sizing for password modal */
-  font-size: var(--fs-lg);
-}
-
-@keyframes modalSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* ============================== */
-/* FOLDER MODAL STYLES */
-/* ============================== */
-
-#folderModal {
-  z-index: var(--z-modal);
-}
-
-#folderModal .modal-content {
-  max-width: 450px;
-  width: 90%;
-  /* moderate shadow for folder modal (light theme) */
-  animation: modalSlideIn 0.3s ease-out;
-  position: relative;
-}
-
-#folderModal .form-group {
-  margin-bottom: 0;
-}
-
-#folderModal .form-input:focus {
-  box-shadow: var(--focus-ring);
-}
-
-#folderModal .form-input::placeholder {
-  color: var(--text-secondary);
-}
-
-#folderModal .modal-footer {
-  display: flex;
-}
-
-#folderModal .modal-close {
-  /* Inherit base .modal-close visual style; small tweaks for folder modal */
-  font-size: var(--fs-base);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    transform 150ms ease,
-    background 150ms ease,
-    color 150ms ease;
-}
-
-/* ============================== */
-/* TABLE MODAL STYLES (match folder modal) */
-/* ============================== */
-
-#tableModal {
-  z-index: var(--z-modal);
-}
-
-#tableModal .modal-content {
-  max-width: 450px;
-  width: 90%;
-  animation: modalSlideIn 0.3s ease-out;
-  position: relative;
-}
-
-#folderColorModal .modal-header,
-#folderModal .modal-header,
-#tableModal .modal-header {
-  display: flex;
-  align-items: center;
-  border-bottom: none;
-}
-
-#folderColorModal .modal-title h3,
-#folderModal .modal-title h3,
-#tableModal .modal-title h3 {
-  margin: 0;
-  font-size: var(--fs-2xl);
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-#folderColorModal .modal-title i,
-#folderModal .modal-title i,
-#tableModal .modal-title i {
-  color: var(--primary-color);
-  font-size: var(--fs-2xl);
-}
-
-#tableModal .form-group {
-  margin-bottom: 0;
-}
-
-#folderModal .form-group label,
-#tableModal .form-group label {
-  display: block;
-  margin-bottom: var(--space-3);
-  font-weight: 500;
-  color: var(--text-primary);
-  font-size: var(--fs-base);
-}
-
-#folderModal .form-input,
-#tableModal .form-input {
-  width: 100%;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  font-size: var(--fs-base);
-  background: var(--field);
-  color: var(--text-primary);
-  transition: all 0.2s ease;
-  outline: none;
-  box-sizing: border-box;
-  font-family: inherit;
-}
-
-#tableModal .form-input:focus {
-  box-shadow: var(--focus-ring);
-}
-
-#tableModal .form-input::placeholder {
-  color: var(--text-secondary);
-}
-
-#tableModal .modal-close {
-  font-size: var(--fs-base);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition:
-    transform 150ms ease,
-    background 150ms ease,
-    color 150ms ease;
-  border: none;
-}
-
-/* Note history modal styles */
-#noteHistoryModal .modal-content.history-modal {
-  max-width: 520px;
-  width: 95%;
-  padding: 0;
-}
-
-/* Folder Color Modal specific styling */
-.folder-color-modal {
-  max-width: 420px;
-  width: 92%;
-  /* reduce outer padding so header aligns with other modals */
-  padding: 0;
+/* Export: one 44px row per format */
+.export-options {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: var(--space-1);
+  padding-bottom: var(--space-6);
 }
 
-.folder-color-modal label {
-  display: block;
-  font-size: var(--fs-md);
-  color: var(--text-secondary);
-  margin-bottom: var(--space-2);
-}
-
-.folder-color-modal .form-input[type='color'] {
-  width: 48px;
-  height: 48px;
-  padding: var(--space-2);
-  border-radius: 50%; /* circular */
-  background: var(--bg-primary);
-  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
-  cursor: pointer;
-  display: inline-block;
-  vertical-align: middle;
-  -webkit-appearance: none;
-  appearance: none;
-  overflow: hidden;
-}
-
-/* Ensure the native color swatch inner element is round and fills the control */
-.folder-color-modal .form-input[type='color']::-webkit-color-swatch-wrapper {
-  padding: 0;
-}
-.folder-color-modal .form-input[type='color']::-webkit-color-swatch {
-  border: none;
-  border-radius: 50%;
-}
-
-.folder-color-modal .form-input[type='color']:hover {
-  box-shadow: 0 12px 28px rgba(16, 24, 40, 0.12);
-}
-
-.folder-color-modal .form-input[type='color']:focus {
-  outline: 3px solid var(--accent-color-rgba-12);
-  transform: translateY(-2px) scale(1.02);
-}
-
-.folder-color-modal .modal-footer {
+.export-btn {
   display: flex;
-  border-top: none;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--control-lg);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-fast);
 }
 
-/* Make sure Cancel button is subdued */
+.export-btn i {
+  width: 16px;
+  text-align: center;
+  color: var(--text-muted);
+}
 
-#noteHistoryModal .modal-body {
+.export-btn:hover {
+  background: var(--tint-strong);
+}
+
+/* Note history: one row per change, time on the right */
+.history-body {
   max-height: 50vh;
-  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
 }
 
 .history-entry,
 .history-item {
-  padding: var(--space-3) var(--space-2);
   display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  align-items: center;
+  min-height: var(--control-md);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-md);
 }
 
 .history-entry.created {
   background: var(--card);
-  font-weight: 600;
-  border-radius: var(--radius-md);
 }
 
-.history-list {
-  margin-top: var(--space-2);
-}
-
-.history-empty {
-  padding: var(--space-3);
+.history-type {
   color: var(--text-secondary);
 }
 
-/* Strong override in case other modal footer rules interfere */
-#noteHistoryModal .modal-footer {
-  display: flex;
-  align-items: center;
+.history-ts {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
 }
 
-/* Align import modal footer buttons to the right */
-.import-modal .modal-footer {
-  display: flex;
+.history-empty {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-md);
+  color: var(--text-muted);
 }
 
-/* Table modal footer: right-align buttons and add padding to match other modals */
-#tableModal .modal-footer {
-  display: flex;
-}
-
-#noteHistoryModal .modal-title h3 {
-  margin: 0;
-  font-size: var(--fs-xl);
-}
-
-.folder-item:hover .folder-count {
-  background: var(--primary-color);
-  color: white;
+/* Password dialog: the optional message above the field */
+.form-message:empty {
+  display: none;
 }

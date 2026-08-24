@@ -37,10 +37,14 @@
   <body>
     <div class="titlebar">
       <div class="titlebar-drag">
-        <button class="hamburger-btn" id="hamburgerBtn">
+        <button class="hamburger-btn" id="hamburgerBtn" data-i18n-title="titles.toggleSidebar">
           <i class="fas fa-bars"></i>
         </button>
-        <div class="titlebar-title">Capnote</div>
+        <!-- The app mark doubles as the home button -->
+        <button class="app-brand" id="homeBtn" data-i18n-title="titles.home">
+          <img class="app-brand-icon" src="../../assets/icons/source/capnote-small.svg" alt="" />
+          <span class="app-brand-name">Capnote</span>
+        </button>
       </div>
       <div class="titlebar-controls">
         <button class="titlebar-button minimize" id="minimizeBtn">
@@ -58,58 +62,38 @@
     <div class="app">
       <!-- Sidebar -->
       <div class="sidebar" id="sidebar">
-        <!-- Sidebar Header -->
-        <div class="sidebar-header">
-          <div class="sidebar-top">
-            <button class="app-brand" id="homeBtn" data-i18n-title="titles.home">
-              <img
-                class="app-brand-icon"
-                src="../../assets/icons/source/capnote-small.svg"
-                alt=""
-              />
-              <span class="app-brand-name">Capnote</span>
+        <!-- Fixed top: the main action, search and the list filter -->
+        <div class="sidebar-top">
+          <button class="btn-primary sidebar-new-note" id="newNoteNav">
+            <i class="fas fa-plus"></i>
+            <span data-i18n="nav.newNote">Yeni Not</span>
+          </button>
+          <div class="search-container" id="searchContainer">
+            <i class="fas fa-search search-icon"></i>
+            <input
+              type="text"
+              id="searchInput"
+              data-i18n-placeholder="placeholders.searchNotes"
+              placeholder="Notlarda ara..."
+              class="search-input"
+            />
+          </div>
+          <div class="segmented" role="tablist">
+            <button class="segment active" data-filter="all" role="tab" data-i18n="nav.allNotes">
+              Tümü
+            </button>
+            <button class="segment" data-filter="today" role="tab" data-i18n="nav.today">
+              Bugün
+            </button>
+            <button class="segment" data-filter="favorites" role="tab" data-i18n="nav.favorites">
+              Favoriler
             </button>
           </div>
         </div>
 
-        <!-- Sidebar Content -->
+        <!-- Scrolling middle: notes and folders -->
         <div class="sidebar-content">
-          <!-- Navigation Menu -->
           <nav class="sidebar-nav">
-            <div class="nav-section">
-              <div class="nav-item" id="newNoteNav">
-                <i class="fas fa-edit nav-icon"></i>
-                <span class="nav-text" data-i18n="nav.newNote">Yeni Not</span>
-              </div>
-              <div class="nav-item" id="notificationsNav">
-                <i class="fas fa-inbox nav-icon"></i>
-                <span class="nav-text" data-i18n="nav.notifications">Bildirimler</span>
-                <span class="nav-count hidden" id="activeNotificationsCount">0</span>
-              </div>
-              <div class="nav-item" id="remindersNav">
-                <i class="fas fa-bell nav-icon"></i>
-                <span class="nav-text" data-i18n="nav.reminders">Hatırlatmalar</span>
-                <span class="nav-count hidden" id="activeRemindersCount">0</span>
-              </div>
-              <div class="nav-item" id="todosNav">
-                <i class="fas fa-tasks nav-icon"></i>
-                <span class="nav-text" data-i18n="nav.todos">Yapılacaklar</span>
-                <span class="nav-count hidden" id="todosCount">0</span>
-              </div>
-              <div class="nav-item" data-filter="all">
-                <i class="fas fa-sticky-note nav-icon"></i>
-                <span class="nav-text" data-i18n="nav.allNotes">Tüm Notlar</span>
-              </div>
-              <div class="nav-item" data-filter="today">
-                <i class="fas fa-calendar-day nav-icon"></i>
-                <span class="nav-text" data-i18n="nav.today">Bugün</span>
-              </div>
-              <div class="nav-item" data-filter="favorites">
-                <i class="fas fa-heart nav-icon"></i>
-                <span class="nav-text" data-i18n="nav.favorites">Favoriler</span>
-              </div>
-            </div>
-
             <div class="nav-section">
               <div class="nav-section-header">
                 <div class="nav-section-title">
@@ -124,31 +108,14 @@
                   >
                     <i class="fas fa-plus"></i>
                   </button>
-                  <button class="nav-control-btn" id="searchBtn" data-i18n-title="titles.search">
-                    <i class="fas fa-search"></i>
-                  </button>
                   <button class="nav-control-btn" id="sortBtn" data-i18n-title="titles.sort">
                     <i class="fas fa-sort-amount-down"></i>
                   </button>
                 </div>
               </div>
 
-              <!-- Search Container (initially hidden) -->
-              <div class="search-container hidden" id="searchContainer">
-                <div class="search-wrapper">
-                  <i class="fas fa-search search-icon"></i>
-                  <input
-                    type="text"
-                    id="searchInput"
-                    data-i18n-placeholder="placeholders.searchNotes"
-                    placeholder="Notlarda ara..."
-                    class="search-input"
-                  />
-                </div>
-              </div>
-
               <!-- Sort Options (initially hidden) -->
-              <div class="sort-dropdown hidden" id="sortDropdown">
+              <div class="sort-dropdown menu hidden" id="sortDropdown">
                 <div class="sort-option active" data-value="date-desc">
                   <i class="fas fa-calendar-days" aria-hidden="true"></i>
                   <span data-i18n="sort.dateDesc">Tarih (Yeni → Eski)</span>
@@ -186,12 +153,23 @@
           </nav>
         </div>
 
-        <!-- Sidebar Footer -->
+        <!-- Fixed bottom: the other screens and settings -->
         <div class="sidebar-footer">
-          <div class="nav-item" id="settingsNav">
-            <i class="fas fa-cog nav-icon"></i>
-            <span class="nav-text" data-i18n="nav.settings">Ayarlar</span>
-          </div>
+          <button class="sidebar-tool" id="todosNav" data-i18n-title="nav.todos">
+            <i class="fas fa-list-check"></i>
+            <span class="nav-count hidden" id="todosCount">0</span>
+          </button>
+          <button class="sidebar-tool" id="remindersNav" data-i18n-title="nav.reminders">
+            <i class="fas fa-bell"></i>
+            <span class="nav-count hidden" id="activeRemindersCount">0</span>
+          </button>
+          <button class="sidebar-tool" id="notificationsNav" data-i18n-title="nav.notifications">
+            <i class="fas fa-inbox"></i>
+            <span class="nav-count hidden" id="activeNotificationsCount">0</span>
+          </button>
+          <button class="sidebar-tool" id="settingsNav" data-i18n-title="nav.settings">
+            <i class="fas fa-gear"></i>
+          </button>
         </div>
       </div>
 
@@ -200,24 +178,21 @@
         <!-- Welcome screen -->
         <div id="welcomeScreen" class="welcome-screen">
           <div class="welcome-content">
-            <i class="fas fa-book-open welcome-icon"></i>
+            <img class="welcome-mark" src="../../assets/icons/source/capnote.svg" alt="" />
             <h2 data-i18n="app.welcome">Capnote'a Hoş Geldiniz</h2>
             <p data-i18n="app.welcomeSubtext">
               Düşüncelerinizi yazın, anılarınızı kaydedin ve hayatınızı belgelendirin
             </p>
             <div class="quick-stats">
               <div class="stat-item">
-                <i class="fas fa-sticky-note"></i>
                 <span id="totalNotes">0</span>
                 <small data-i18n="stats.totalNotes">Toplam Not</small>
               </div>
               <div class="stat-item">
-                <i class="fas fa-calendar"></i>
                 <span id="daysActive">0</span>
                 <small data-i18n="stats.daysActive">Aktif Gün</small>
               </div>
               <div class="stat-item">
-                <i class="fas fa-pen"></i>
                 <span id="totalWords">0</span>
                 <small data-i18n="stats.totalWords">Toplam Kelime</small>
               </div>
@@ -229,73 +204,70 @@
         </div>
 
         <!-- Notifications screen -->
-        <div id="notificationsScreen" class="notifications-screen hidden">
-          <div class="notifications-header">
-            <h2>
-              <i class="fas fa-inbox"></i> <span data-i18n="notifications.title">Bildirimler</span>
-            </h2>
-            <p class="notifications-subtitle" data-i18n="notifications.subtitle">
-              Geçmiş hatırlatma bildirimleri
-            </p>
+        <div id="notificationsScreen" class="screen notifications-screen hidden">
+          <div class="page-header">
+            <div class="page-heading">
+              <h2 class="page-title" data-i18n="nav.notifications">Bildirimler</h2>
+              <p class="page-subtitle" data-i18n="notifications.subtitle">
+                Geçmiş hatırlatma bildirimleri
+              </p>
+            </div>
+            <div class="page-actions">
+              <button id="markAllReadBtn" class="btn-secondary btn-small">
+                <i class="fas fa-check-double"></i>
+                <span data-i18n="buttons.markAllRead">Tümünü okundu işaretle</span>
+              </button>
+            </div>
           </div>
-          <div class="notifications-actions">
-            <button
-              id="markAllReadBtn"
-              class="notification-action-btn mark-read-btn"
-              data-i18n-title="buttons.markAllRead"
-            >
-              <i class="fas fa-check-circle"></i>
-              <span data-i18n="buttons.markAllRead">Tümünü okundu işaretle</span>
-            </button>
-          </div>
-          <div id="notificationsList" class="notifications-list">
-            <!-- Notifications will be populated here -->
+          <div class="page-body">
+            <div id="notificationsList" class="card-list">
+              <!-- Notifications will be populated here -->
+            </div>
           </div>
         </div>
 
         <!-- Reminders screen -->
-        <div id="remindersScreen" class="reminders-screen hidden">
-          <div class="reminders-header">
-            <h2>
-              <i class="fas fa-bell"></i>
-              <span data-i18n="notifications.remindersTitle">Aktif Hatırlatmalar</span>
-            </h2>
-            <p class="reminders-subtitle" data-i18n="notifications.remindersSubtitle">
-              Notlarınız için ayarlanmış hatırlatmalar
-            </p>
+        <div id="remindersScreen" class="screen reminders-screen hidden">
+          <div class="page-header">
+            <div class="page-heading">
+              <h2 class="page-title" data-i18n="nav.reminders">Hatırlatmalar</h2>
+              <p class="page-subtitle" data-i18n="notifications.remindersSubtitle">
+                Notlarınız için ayarlanmış hatırlatmalar
+              </p>
+            </div>
           </div>
-          <div id="remindersList" class="reminders-list">
-            <!-- Reminders will be populated here -->
+          <div class="page-body">
+            <div id="remindersList" class="card-list">
+              <!-- Reminders will be populated here -->
+            </div>
           </div>
         </div>
 
         <!-- Todos Screen -->
-        <div id="todosScreen" class="todos-screen hidden">
-          <div class="todos-header">
-            <h2>
-              <i class="fas fa-tasks"></i>
-              <span data-i18n="todos.todosTitle">Yapılacaklar Listesi</span>
-            </h2>
-            <p class="todos-subtitle" data-i18n="todos.todosSubtitle">Görevlerinizi takip edin</p>
+        <div id="todosScreen" class="screen todos-screen hidden">
+          <div class="page-header">
+            <div class="page-heading">
+              <h2 class="page-title" data-i18n="nav.todos">Yapılacaklar</h2>
+              <p class="page-subtitle" data-i18n="todos.todosSubtitle">Görevlerinizi takip edin</p>
+            </div>
           </div>
-
-          <!-- Section input -->
-          <div class="todos-section-input">
-            <input
-              type="text"
-              id="todoSectionInput"
-              placeholder="Yeni bölüm ekle..."
-              data-i18n-placeholder="placeholders.newSection"
-              class="todo-section-input"
-            />
-            <button id="addTodoSectionBtn" class="btn-primary">
-              <i class="fas fa-folder-plus"></i>
-              <span data-i18n="buttons.addSection">Bölüm Ekle</span>
-            </button>
-          </div>
-
-          <div id="todosSectionsContainer" class="todos-sections-container">
-            <!-- Sections and todos will be populated here -->
+          <div class="page-body">
+            <div class="input-row">
+              <input
+                type="text"
+                id="todoSectionInput"
+                placeholder="Yeni bölüm ekle..."
+                data-i18n-placeholder="placeholders.newSection"
+                class="form-input"
+              />
+              <button id="addTodoSectionBtn" class="btn-primary">
+                <i class="fas fa-plus"></i>
+                <span data-i18n="buttons.addSection">Bölüm Ekle</span>
+              </button>
+            </div>
+            <div id="todosSectionsContainer" class="card-list">
+              <!-- Sections and todos will be populated here -->
+            </div>
           </div>
         </div>
 
@@ -303,17 +275,17 @@
 
         <!-- Note viewer -->
         <div id="noteViewer" class="note-viewer hidden">
-          <div class="viewer-header">
-            <div class="viewer-title-section">
-              <h2 id="viewerTitle"></h2>
-              <div class="viewer-meta">
+          <div class="page-header viewer-header">
+            <div class="page-heading">
+              <h2 id="viewerTitle" class="page-title"></h2>
+              <div class="page-meta viewer-meta">
                 <span id="viewerDate"></span>
                 <span id="viewerMood"></span>
                 <span id="viewerWeather"></span>
                 <div id="viewerTags" class="viewer-tags"></div>
               </div>
             </div>
-            <div class="viewer-actions">
+            <div class="page-actions viewer-actions">
               <button id="favoriteViewBtn" class="btn-icon" data-i18n-title="titles.favorite">
                 <i class="far fa-heart"></i>
               </button>

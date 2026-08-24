@@ -237,13 +237,13 @@ export class NoteListFeature {
     div.title = title;
 
     div.innerHTML = `
-            <i class="fas ${note.isPinned ? 'fa-thumbtack' : 'fa-file-alt'} nav-icon"></i>
+            <i class="fas ${note.isLocked ? 'fa-lock' : note.isPinned ? 'fa-thumbtack' : 'fa-file-lines'} nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(title)}</span>
             <div class="note-options-container">
                 <button class="more-options-btn" title="${i18n.t('titles.options')}">
                     <i class="fas fa-ellipsis-h"></i>
                 </button>
-                <div class="note-options-menu hidden" data-note-id="${note.id}">
+                <div class="note-options-menu menu hidden" data-note-id="${note.id}">
                     <button class="note-action-menu-btn favorite-btn ${note.isFavorite ? 'favorited' : ''}" data-note-id="${note.id}">
                         <i class="fas fa-heart"></i>
                         <span>${note.isFavorite ? i18n.t('messages.removeFromFavorites') : i18n.t('messages.addToFavorites')}</span>
@@ -256,7 +256,7 @@ export class NoteListFeature {
                         <i class="fas fa-lock"></i>
                         <span>${note.isLocked ? i18n.t('messages.unlockNote') : i18n.t('messages.lockNote')}</span>
                     </button>
-                    <button class="note-action-menu-btn delete-btn" data-note-id="${note.id}">
+                    <button class="note-action-menu-btn menu-item-danger delete-btn" data-note-id="${note.id}">
                         <i class="fas fa-trash"></i>
                         <span>${i18n.t('messages.deleteNote')}</span>
                     </button>
@@ -351,31 +351,16 @@ export class NoteListFeature {
     this.changeSorting(sort);
   }
 
+  // The search field is always visible; this moves the cursor into it
   toggleSearch() {
-    const isHidden = this.searchContainer.classList.contains('hidden');
-
-    // Hide sort dropdown if open
     this.sortDropdown.classList.add('hidden');
     this.sortBtn.classList.remove('active');
-
-    if (isHidden) {
-      this.searchContainer.classList.remove('hidden');
-      this.searchBtn.classList.add('active');
-      this.searchInput.focus();
-    } else {
-      this.searchContainer.classList.add('hidden');
-      this.searchBtn.classList.remove('active');
-      this.searchInput.value = '';
-      this.searchNotes(''); // Clear search
-    }
+    this.searchInput.focus();
+    this.searchInput.select();
   }
 
   toggleSort() {
     const isHidden = this.sortDropdown.classList.contains('hidden');
-
-    // Hide search container if open
-    this.searchContainer.classList.add('hidden');
-    this.searchBtn.classList.remove('active');
 
     if (isHidden) {
       // Position dropdown relative to sort button
@@ -417,9 +402,6 @@ export class NoteListFeature {
     // Search and filters
     this.searchInput.addEventListener('input', (e) => this.searchNotes(e.target.value));
 
-    // New control buttons
-    this.searchBtn?.addEventListener('click', () => this.toggleSearch());
-
     this.sortBtn?.addEventListener('click', () => this.toggleSort());
 
     // Sort dropdown options
@@ -437,29 +419,15 @@ export class NoteListFeature {
       });
     });
 
-    // Navigation items - modern sidebar
-    document.querySelectorAll('.nav-item[data-filter]').forEach((item) => {
+    // List filters (all / today / favorites)
+    this.filterTabs.forEach((item) => {
       item.addEventListener('click', (e) => {
         const clickedFilter = e.currentTarget.dataset.filter;
 
         // Toggle functionality: if clicking the same filter, deactivate it
         if (this.currentFilter === clickedFilter) {
-          // Remove active from filter-group items only (keep reminders/notifications state)
-          document
-            .querySelectorAll('.nav-item[data-filter]')
-            .forEach((nav) => nav.classList.remove('active'));
-          // Reset to "all" filter
           this.changeFilter('all');
-          // Make "all" filter active
-          document.querySelector('[data-filter="all"]').classList.add('active');
         } else {
-          // Remove active from other filter-group items only
-          document
-            .querySelectorAll('.nav-item[data-filter]')
-            .forEach((nav) => nav.classList.remove('active'));
-          // Add active to clicked filter item
-          e.currentTarget.classList.add('active');
-          // Apply filter
           this.changeFilter(clickedFilter);
         }
       });
@@ -467,14 +435,8 @@ export class NoteListFeature {
 
     // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
-      if (
-        !e.target.closest('.nav-section-controls') &&
-        !e.target.closest('.search-container') &&
-        !e.target.closest('.sort-dropdown')
-      ) {
-        this.searchContainer?.classList.add('hidden');
+      if (!e.target.closest('.nav-section-controls') && !e.target.closest('.sort-dropdown')) {
         this.sortDropdown?.classList.add('hidden');
-        this.searchBtn?.classList.remove('active');
         this.sortBtn?.classList.remove('active');
       }
     });

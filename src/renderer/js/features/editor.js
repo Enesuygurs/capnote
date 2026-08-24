@@ -356,7 +356,7 @@ export class EditorFeature {
     this.tagsList.innerHTML = '';
     this.tags.forEach((tag) => {
       const tagElement = document.createElement('span');
-      tagElement.className = 'tag';
+      tagElement.className = 'chip tag';
       tagElement.textContent = tag;
       const removeBtn = document.createElement('button');
       removeBtn.className = 'tag-remove';

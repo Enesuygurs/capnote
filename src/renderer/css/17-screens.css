@@ -1,124 +1,147 @@
-/* Reminders, to-dos, notifications screens and empty states */
+/* Cards on the screens (to-dos, reminders, notifications) and empty states */
 
-.todos-header {
-  margin-bottom: var(--space-8);
-}
-
-.todos-input-section {
+.card-list {
   display: flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
-.todo-input {
-  flex: 1;
-  padding: var(--space-2) var(--space-3);
-  background: var(--field);
-  color: var(--text-primary);
-  border-radius: var(--radius-md);
-  font-size: var(--fs-md);
-  font-family: var(--font-sans);
-  transition: var(--transition-fast);
+.input-row + .card-list {
+  margin-top: var(--space-6);
 }
 
-.todos-section-input {
-  display: flex;
-  gap: var(--space-2);
-  margin-bottom: var(--space-4);
-  align-items: stretch;
-}
-
-.todo-section-input {
-  flex: 1;
-  padding: var(--space-2) var(--space-3);
-  background: var(--field);
-  border-radius: var(--radius-md);
-  font-size: var(--fs-md);
-  font-family: var(--font-sans);
-  transition: var(--transition-fast);
-}
-
-.todo-input:focus,
-.todo-section-input:focus {
-  outline: none;
-  box-shadow: var(--focus-ring);
-}
-
-.todo-section {
+/* ============ Cards ============ */
+.card {
   background: var(--card);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
+}
+
+/* A list card: text on the left, its actions on the right (they wrap below on narrow windows) */
+.list-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3) var(--space-6);
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+
+.list-card-main {
+  flex: 1 1 240px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.list-card-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.list-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 24px;
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+}
+
+.list-card-text {
+  font-size: var(--fs-md);
+  color: var(--text-secondary);
+}
+
+.list-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Unread notification: an accent dot before the title */
+.notification-card.unread .list-card-title::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: var(--radius-full);
+  background: var(--accent-color);
+}
+
+.notification-card:not(.unread) .list-card-title {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* ============ To-dos ============ */
+.todo-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
 .todo-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--space-3) var(--space-3);
+  gap: var(--space-3);
+  padding-left: var(--space-3);
 }
 
 .todo-section-title {
   display: flex;
   align-items: center;
   gap: var(--space-2);
+  min-width: 0;
 }
 
 .todo-section-title h3 {
   font-size: var(--fs-base);
   font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.todo-section-count {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  background: var(--field);
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-full);
-}
-
-.todo-section-actions {
-  display: flex;
-  gap: var(--space-1);
-}
-
-.section-action-btn {
-  width: 30px;
-  height: 30px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  border-radius: var(--radius-md);
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--fs-md);
+  color: var(--text-strong);
 }
 
 .todos-list {
-  display: grid;
-  gap: var(--space-1);
+  display: flex;
+  flex-direction: column;
 }
 
 .todo-item {
-  background: transparent;
-  border-radius: var(--radius-md);
-  padding: var(--space-2) var(--space-3);
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  transition: var(--transition-fast);
+  min-height: var(--control-md);
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
 }
 
 .todo-item:hover {
   background: var(--tint-hover);
 }
 
-.todo-item.completed {
-  opacity: 0.6;
+.todo-checkbox {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.todo-text {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2) 0;
+  color: var(--text-primary);
+  word-break: break-word;
 }
 
 .todo-item.completed .todo-text {
@@ -126,446 +149,64 @@
   color: var(--text-muted);
 }
 
-.todo-checkbox {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: var(--accent-color);
-  flex-shrink: 0;
-}
-
-.todo-text {
-  flex: 1;
-  font-size: var(--fs-md);
-  color: var(--text-primary);
-  word-break: break-word;
-  line-height: 1.4;
-}
-
-.todo-text.editing {
-  display: none;
-}
-
 .todo-edit-input {
   flex: 1;
-  padding: var(--space-1) var(--space-2);
+  height: var(--control-xs);
+  padding: 0 var(--space-2);
   border-radius: var(--radius-md);
-  font-size: var(--fs-md);
-  font-family: var(--font-sans);
   background: var(--field);
+  outline: none;
 }
 
 .todo-edit-input:focus {
-  outline: none;
   box-shadow: var(--focus-ring);
 }
 
+/* Row actions appear with the pointer (and stay reachable by keyboard) */
 .todo-actions {
   display: flex;
-  gap: var(--space-1);
+  gap: 0;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
-.todo-action-btn {
-  width: 28px;
-  height: 28px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  border-radius: var(--radius-md);
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.todo-item:hover .todo-actions,
+.todo-actions:focus-within,
+.todo-item:has(.todo-edit-input:not(.hidden)) .todo-actions {
+  opacity: 1;
+}
+
+.empty-hint {
+  padding: var(--space-2) var(--space-3);
   font-size: var(--fs-md);
+  color: var(--text-muted);
 }
 
-.section-action-btn:hover,
-.todo-action-btn:hover {
-  background: var(--accent-color-rgba-10);
-  color: var(--accent-color);
-}
-
-.section-action-btn.delete-section:hover,
-.todo-action-btn.delete-todo:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--error-color);
-}
-
-/* Placeholder shown when a list has nothing to show (add .empty-state-large for full screens) */
+/* ============ Empty states ============
+   Centered icon, title and text where a list or note has nothing to show */
 .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-8) var(--space-6);
   text-align: center;
-  padding: var(--space-6) var(--space-4);
   color: var(--text-muted);
   font-size: var(--fs-md);
 }
+
 .empty-state-large {
-  padding: 60px var(--space-5);
+  padding: var(--space-12) var(--space-6);
 }
+
 .empty-state i {
-  display: block;
-  font-size: 48px;
-  margin-bottom: var(--space-4);
-  opacity: 0.3;
-}
-
-/* ============================================
-   NOTIFICATIONS STYLES
-   ============================================ */
-.reminders-screen,
-.todos-screen,
-.notifications-screen {
-  padding: var(--space-8);
-  overflow-y: auto;
-  height: 100%;
-}
-
-.notifications-header {
-  margin-bottom: var(--space-8);
-}
-
-.notifications-actions {
-  margin: 0 0 var(--space-3) 0;
-  display: flex;
-  justify-content: flex-start; /* keep button left under header */
-}
-
-.notification-card {
-  background: var(--card);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4) var(--space-5);
-  transition: var(--transition-fast);
-  position: relative;
-}
-
-.notification-card.unread {
-  background: var(--accent-color-rgba-10);
-}
-
-.notification-header {
-  margin-bottom: var(--space-1);
-}
-
-.notification-note-title {
-  font-weight: 600;
-  font-size: var(--fs-lg);
-  color: var(--text-primary);
-}
-
-.notification-time {
-  color: var(--text-secondary);
-  font-size: var(--fs-sm);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.notification-time i {
-  font-size: var(--fs-xs);
-}
-
-.notification-message {
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
-  line-height: 1.5;
-  margin-top: var(--space-2);
-}
-
-.notification-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-}
-
-.notification-action-btn {
-  padding: var(--space-2) var(--space-3);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  white-space: nowrap;
-}
-
-.notification-action-btn i {
-  font-size: var(--fs-sm);
-}
-
-.mark-read-btn {
-  background: var(--field);
-  color: var(--text-primary);
-}
-
-.mark-read-btn:hover {
-  background: var(--field-hover);
-}
-
-/* The 'Mark all as read' button */
-#markAllReadBtn {
-  background: var(--field); /* light gray */
-  color: var(--text-primary);
-}
-
-#markAllReadBtn:hover {
-  background: var(--field-hover); /* slightly darker gray on hover */
-}
-
-.delete-notification-btn {
-  background: color-mix(in srgb, var(--error-color) 12%, transparent);
-  color: var(--error-color);
-}
-
-.delete-notification-btn:hover {
-  background: color-mix(in srgb, var(--error-color) 20%, transparent);
-}
-
-.reminders-header {
-  margin-bottom: var(--space-8);
-}
-
-.todos-header h2,
-.notifications-header h2,
-.reminders-header h2 {
-  font-size: var(--fs-4xl);
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: var(--fs-5xl);
   margin-bottom: var(--space-2);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  opacity: 0.6;
 }
 
-.todos-subtitle,
-.notifications-subtitle,
-.reminders-subtitle {
-  color: var(--text-secondary);
+.empty-state h3 {
   font-size: var(--fs-base);
-}
-
-.todos-sections-container,
-.notifications-list,
-.reminders-list {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.reminder-card {
-  background: var(--card);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4) var(--space-5);
-  transition: var(--transition-fast);
-  cursor: pointer;
-}
-
-.reminder-note-title {
-  font-size: var(--fs-lg);
   font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--space-1);
-}
-
-.reminder-datetime {
-  font-size: var(--fs-base);
   color: var(--text-secondary);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.reminder-recurrence {
-  margin-left: var(--space-2);
-  font-size: var(--fs-sm);
-  color: var(--text-strong);
-  background: var(--field);
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-full);
-  color: var(--text-strong);
-}
-
-.reminder-actions {
-  display: flex;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
-}
-
-.reminder-action-btn {
-  padding: var(--space-2) var(--space-3);
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  white-space: nowrap;
-}
-
-.reminder-action-btn i {
-  font-size: var(--fs-sm);
-}
-
-.view-notification-note-btn,
-.view-note-btn {
-  background: var(--accent-color);
-  color: white;
-}
-
-.view-notification-note-btn:hover,
-.view-note-btn:hover {
-  filter: brightness(0.95);
-}
-
-.dismiss-btn {
-  background: var(--field);
-  color: var(--text-primary);
-}
-
-.dismiss-btn:hover {
-  background: var(--field-hover);
-}
-
-/* Reminder form in editor sidebar */
-.reminder-container {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.reminder-datetime-input {
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  font-family: var(--font-sans);
-  font-size: var(--fs-md);
-  color: var(--text-primary);
-  background: var(--field);
-  width: 100%;
-}
-
-.reminder-datetime-input:focus,
-.reminder-datetime-input:active {
-  outline: none;
-  box-shadow: var(--focus-ring); /* 1px accent colored border on focus */
-}
-
-/* Weekday selector for weekly recurrence */
-.reminder-weekdays {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.reminder-weekdays .weekday-list {
-  display: flex;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-}
-.reminder-weekdays label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-2);
-  border-radius: var(--radius-md);
-  background: rgba(0, 0, 0, 0.03);
-  font-size: var(--fs-md);
-  color: var(--text-primary);
-}
-.reminder-weekdays input[type='checkbox'] {
-  width: 14px;
-  height: 14px;
-}
-
-.note-reminders-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.note-reminder-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-3);
-  background: var(--surface-sunken);
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-sm);
-}
-
-.note-reminder-time {
-  color: var(--text-secondary);
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.note-reminder-time i {
-  font-size: var(--fs-xs);
-}
-
-.note-no-reminder {
-  color: var(--text-secondary);
-  font-size: calc(0.9rem - 2px); /* 2px smaller than original 0.9rem */
-  text-align: center;
-  padding: var(--space-2) 0;
-}
-
-.note-reminder-remove {
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: var(--space-2);
-  border-radius: var(--radius-sm);
-  transition: var(--transition-fast);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-}
-
-.note-reminder-remove:hover {
-  background: var(--error-color);
-  color: white;
-}
-
-.note-reminder-remove i {
-  font-size: var(--fs-sm);
-}
-
-/* Import modal specific spacing to match other modals */
-.import-modal .modal-body {
-  min-width: 320px;
-}
-
-.import-modal .form-block {
-  display: block;
-  margin-bottom: var(--space-2);
-}
-
-.import-modal .form-group {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin: var(--space-2) 0;
-}
-
-.import-modal .form-group label {
-  margin: 0;
-  color: var(--text-primary);
-}
-
-.import-modal .form-checkbox {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: var(--accent-color);
 }

@@ -1,200 +1,171 @@
-/* Sidebar navigation, the new note button and submenus */
+/* Sidebar contents: new note, search, list filter, the notes section header and the bottom toolbar */
 
-/* Navigation */
+.sidebar-new-note {
+  width: 100%;
+}
+
+/* Search field with a leading icon */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  height: var(--control-sm);
+  padding: 0 var(--space-3) 0 var(--space-8);
+  border-radius: var(--radius-md);
+  background: var(--field);
+  font-size: var(--fs-md);
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.search-input:hover {
+  background: var(--field-hover);
+}
+
+.search-input:focus {
+  box-shadow: var(--focus-ring);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Notes section: label, count and its controls on one 28px row */
 .sidebar-nav {
-  padding: var(--space-2) var(--space-3) var(--space-3);
-  flex-shrink: 0;
-}
-
-.nav-section {
-  margin-bottom: var(--space-3);
-}
-
-.nav-section:last-child {
-  margin-bottom: 0;
+  padding: 0 var(--space-3) var(--space-3);
 }
 
 .nav-section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--space-2);
-  padding: 0 var(--space-2);
+  height: var(--control-xs);
+  padding: 0 var(--space-1) 0 var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.sidebar-nav .nav-section {
+  position: relative;
 }
 
 .nav-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Section labels: the sidebar's notes header, the editor panel and the settings groups */
+.section-label,
+.panel-label,
+.nav-section-title > span:first-child {
   font-size: var(--fs-xs);
   font-weight: 600;
-  color: var(--text-muted);
+  line-height: 16px;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-/* Count badges in the sidebar (screens, the notes header and folders share one look) */
-.nav-count,
-.folder-count {
-  min-width: 20px;
-  padding: 2px var(--space-2);
-  border-radius: var(--radius-full);
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  line-height: 1.4;
-  text-align: center;
-  margin-left: auto;
-}
-.nav-count.is-emphasized {
-  background: var(--accent-color);
-  color: var(--text-on-primary);
-}
-.nav-section-title .nav-count {
-  margin-left: var(--space-2);
+  color: var(--text-muted);
 }
 
 .nav-section-controls {
   display: flex;
-  gap: var(--space-1);
+  gap: 0;
 }
 
 .nav-control-btn {
-  width: 20px;
-  height: 20px;
-  border: none;
-  background: transparent;
+  width: var(--control-xs);
+  height: var(--control-xs);
+  border-radius: var(--radius-md);
   color: var(--text-muted);
+  font-size: var(--fs-sm);
   cursor: pointer;
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--fs-xs);
   transition: var(--transition-fast);
 }
 
 .nav-control-btn:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-.nav-control-btn.active {
-  background: var(--primary-color);
-  color: white;
-}
-
-.sort-dropdown {
-  background: var(--bg-primary);
-  border-radius: var(--radius-md);
-  margin: 0;
-  padding: var(--space-2) 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  position: absolute;
-  z-index: var(--z-dropdown);
-  min-width: 180px;
-}
-
-.sort-option {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  font-size: var(--fs-md);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  color: var(--text-secondary);
-  line-height: 20px;
-}
-
-.sort-option:hover {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-}
-
-.sort-option i {
-  width: 14px;
-  text-align: center;
-}
-
-.sort-option.active {
-  background: var(--primary-light);
-  color: var(--primary-color);
-  font-weight: 500;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  font-size: var(--fs-base);
-  color: var(--text-secondary);
-  margin-bottom: 2px;
-  position: relative;
-  line-height: 20px;
-}
-
-.nav-item:hover {
-  background: var(--bg-hover);
+  background: var(--tint-hover);
   color: var(--text-strong);
 }
 
-.nav-item.active {
-  background: var(--primary-light);
-  color: var(--primary-color);
-  font-weight: 500;
+.nav-control-btn.active {
+  background: var(--accent-tint);
+  color: var(--accent-text);
 }
 
-/* Filters (all/today/favorites) mark the list state, not the open screen: accent text only */
-.nav-item[data-filter].active {
-  background: transparent;
-}
-
-/* New note button - light theme */
-div#newNoteNav {
-  background: #e7e7e736;
-}
-
-.nav-icon {
-  width: 16px;
-  font-size: var(--fs-base);
-  text-align: center;
-  opacity: 0.8;
-}
-
-.nav-text {
-  flex: 1;
-}
-
-.nav-expandable.expanded .nav-expand {
-  transform: rotate(0deg);
-}
-
-.nav-expandable:not(.expanded) .nav-expand {
-  transform: rotate(-90deg);
-}
-
-/* Submenu */
-
-.nav-subitem {
-  padding: var(--space-2) var(--space-3);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  font-size: var(--fs-md);
-  color: var(--text-muted);
-  margin-bottom: 2px;
-  line-height: 20px;
-}
-
-.nav-subitem:hover {
-  background: var(--bg-hover);
+/* Counts: neutral pills; .is-emphasized (unread) uses the accent */
+.nav-count,
+.folder-count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--field);
   color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
 }
 
-.nav-subitem.active {
-  background: var(--primary-light);
-  color: var(--primary-color);
-  font-weight: 500;
+.nav-count.is-emphasized {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+}
+
+/* Bottom toolbar: the other screens and settings, equal width */
+.sidebar-tool {
+  flex: 1;
+  height: var(--control-md);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: var(--fs-base);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: var(--transition-fast);
+}
+
+.sidebar-tool:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.sidebar-tool.active {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+/* A tool's count sits on the top right of its icon */
+.sidebar-tool .nav-count {
+  position: absolute;
+  top: 2px;
+  left: calc(50% + 4px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--space-1);
+  font-size: 10px;
+  line-height: 16px;
+  box-shadow: 0 0 0 2px var(--chrome);
+  background: var(--text-muted);
+  color: var(--chrome);
+}
+
+.sidebar-tool .nav-count.is-emphasized {
+  background: var(--accent-color);
 }

@@ -7,12 +7,8 @@ export class FoldersFeature {
     this._renamingFolderId = null;
     // Ensure modal title/button show create mode
     const titleEl = this.folderModal.querySelector('.modal-title h3');
-    const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
     if (titleEl) titleEl.textContent = i18n.t('messages.newFolder');
-    if (iconEl) {
-      iconEl.className = 'fas fa-folder-plus';
-    }
     if (createBtn) createBtn.textContent = i18n.t('buttons.create');
     this.folderNameInput.value = '';
     this.showModal(this.folderModal);
@@ -32,12 +28,8 @@ export class FoldersFeature {
     this._renamingFolderId = folder.id;
     // Update modal to show rename mode
     const titleEl = this.folderModal.querySelector('.modal-title h3');
-    const iconEl = this.folderModal.querySelector('.modal-title i');
     const createBtn = document.getElementById('createFolderBtn');
     if (titleEl) titleEl.textContent = i18n.t('messages.renameFolder');
-    if (iconEl) {
-      iconEl.className = 'fas fa-edit';
-    }
     if (createBtn) createBtn.textContent = i18n.t('buttons.save');
     this.showModal(this.folderModal);
     this.folderNameInput.focus();
