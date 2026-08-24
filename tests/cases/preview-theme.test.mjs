@@ -28,11 +28,11 @@ export async function run() {
 export const expected = {
   light: {
     scheme: 'light',
-    color: '30, 41, 59',
+    color: '31, 41, 55',
   },
   dark: {
     scheme: 'dark',
-    color: '232, 232, 232',
+    color: '230, 230, 230',
     link: 'color-mix(in srgb, #f59e0b 75%, white)',
   },
   accentLink: 'color-mix(in srgb, #3b82f6 75%, white)',

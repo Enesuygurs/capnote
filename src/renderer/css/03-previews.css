@@ -1,36 +1,22 @@
-/* Markdown and HTML preview */
+/* Note content: one typography for the editor, the viewer and the markdown preview; the HTML preview */
 
-/* =====================================================
-   GitHub-like Markdown Preview Styles (scoped)
-   These styles mimic GitHub's markdown rendering for
-   headings, code blocks, blockquotes, lists, tables, etc.
-   Applied to the .markdown-preview container only so the
-   rest of the app styles remain unchanged (backgrounds etc.).
-   ===================================================== */
+.rich-editor,
+.formatted-content,
 .markdown-preview {
-  /* for inline code background fallback */
+  font-size: var(--fs-lg);
+  line-height: 1.75;
   color: var(--text-primary);
-  font-family:
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial;
-  font-size: var(--fs-base);
-  line-height: 1.6;
-  padding: 0;
-  overflow: auto;
-  position: absolute;
-  top: var(--space-8);
-  right: var(--space-8);
-  bottom: var(--space-8);
-  left: var(--space-8);
-  box-sizing: border-box;
-  background: transparent;
+  word-wrap: break-word;
 }
 
+.formatted-content h1,
+.formatted-content h2,
+.formatted-content h3,
+.formatted-content h4,
+.rich-editor h1,
+.rich-editor h2,
+.rich-editor h3,
+.rich-editor h4,
 .markdown-preview h1,
 .markdown-preview h2,
 .markdown-preview h3,
@@ -38,32 +24,42 @@
 .markdown-preview h5,
 .markdown-preview h6 {
   font-weight: 600;
-  margin: 1.2em 0 0.6em;
-  line-height: 1.25;
-  color: var(--text-primary);
+  line-height: 1.3;
+  color: var(--text-strong);
+  margin: 1.2em 0 0.5em;
 }
+
+.formatted-content > :first-child,
+.rich-editor > :first-child,
+.markdown-preview > :first-child {
+  margin-top: 0;
+}
+
+.formatted-content h1,
+.rich-editor h1,
 .markdown-preview h1 {
   font-size: var(--fs-4xl);
 }
+.formatted-content h2,
+.rich-editor h2,
 .markdown-preview h2 {
   font-size: var(--fs-3xl);
 }
+.formatted-content h3,
+.rich-editor h3,
 .markdown-preview h3 {
   font-size: var(--fs-2xl);
 }
-.markdown-preview h4 {
-  font-size: var(--fs-lg);
-}
-.markdown-preview h5 {
-  font-size: var(--fs-lg);
-}
+.formatted-content h4,
+.rich-editor h4,
+.markdown-preview h4,
+.markdown-preview h5,
 .markdown-preview h6 {
-  font-size: var(--fs-base);
+  font-size: var(--fs-lg);
 }
 
 .markdown-preview p {
-  margin: 0.5em 0 1em;
-  color: var(--text-secondary);
+  margin: 0 0 1em;
 }
 
 .markdown-preview a,
@@ -74,43 +70,119 @@
   text-underline-offset: 2px;
 }
 
-.markdown-preview blockquote {
-  border-left: 4px solid var(--border-color);
-  padding: 0.4em 1em;
-  color: var(--text-secondary);
-  background: transparent;
-  margin: 0.6em 0;
-}
-
+/* Lists */
+.formatted-content ul,
+.formatted-content ol,
+.rich-editor ul,
+.rich-editor ol,
 .markdown-preview ul,
 .markdown-preview ol {
-  margin: 0.6em 0 0.6em 1.2em;
-}
-.markdown-preview li {
-  margin: 0.25em 0;
+  margin: var(--space-2) 0;
+  padding-left: var(--space-6);
 }
 
-/* Code in the editor, viewer and markdown preview */
+.rich-editor ul {
+  list-style-type: disc;
+}
+
+.rich-editor ol {
+  list-style-type: decimal;
+}
+
+.formatted-content li,
+.rich-editor li,
+.markdown-preview li {
+  margin-bottom: var(--space-1);
+}
+
+.markdown-preview .task-list-item {
+  list-style: none;
+}
+
+.markdown-preview input[type='checkbox'] {
+  margin-right: var(--space-2);
+  accent-color: var(--accent-color);
+}
+
+/* Checklists inserted from the toolbar */
+.checklist {
+  margin: var(--space-2) 0;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-sm);
+}
+
+.checklist-item input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.checklist-item label {
+  flex: 1;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.checklist-item input[type='checkbox']:checked + label {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+/* Quotes and rules are part of the content, so they keep their lines */
+.formatted-content blockquote,
+.rich-editor blockquote,
+.markdown-preview blockquote {
+  border-left: 3px solid var(--divider);
+  padding: 0 var(--space-4);
+  margin: var(--space-3) 0;
+  color: var(--text-secondary);
+}
+
+.formatted-content hr,
+.rich-editor hr,
+.markdown-preview hr {
+  border: 0;
+  border-top: 1px solid var(--divider);
+  margin: var(--space-6) 0;
+}
+
+.markdown-preview img,
+.formatted-content img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+}
+
+/* Code */
 .markdown-preview pre,
 .markdown-preview code,
 .note-content pre,
 .note-content code,
 .formatted-content pre,
 .formatted-content code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+  font-family: var(--font-mono);
   font-size: var(--fs-md);
 }
+
 .markdown-preview pre,
 .note-content pre,
 .formatted-content pre {
+  position: relative;
   background: var(--code-bg);
   color: var(--code-text);
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
   overflow: auto;
-  line-height: 1.5;
-  margin: 0.8em 0;
+  line-height: 1.6;
+  margin: var(--space-3) 0;
 }
+
 .markdown-preview :not(pre) > code,
 .note-content :not(pre) > code,
 .formatted-content :not(pre) > code {
@@ -118,92 +190,83 @@
   padding: 0.1em 0.35em;
   border-radius: var(--radius-sm);
 }
+
+/* Copy button in the top right of a code block */
 .code-copy-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
-  background: var(--bg-hover);
-  border: none;
-  color: var(--text-secondary);
-  padding: var(--space-2);
-  border-radius: var(--radius-md);
-  cursor: pointer;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: var(--control-xs);
+  height: var(--control-xs);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--field);
+  color: var(--text-secondary);
   font-size: var(--fs-sm);
-  transition:
-    transform 0.12s ease,
-    background 0.12s ease;
-  z-index: 20;
-}
-.code-copy-btn:hover {
-  color: var(--text-primary);
-  background: var(--border-color);
-}
-.code-copy-btn.copied {
-  background: var(--primary-color);
-  color: var(--text-on-primary, #fff);
-  transform: scale(0.98);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  z-index: 2;
 }
 
+.code-copy-btn:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+.code-copy-btn.copied {
+  background: var(--accent-tint-strong);
+  color: var(--accent-text);
+}
+
+/* Tables: cells keep their lines, they are content */
+.rich-editor table,
+.formatted-content table,
 .markdown-preview table {
   width: 100%;
   border-collapse: collapse;
-  margin: 0.8em 0;
-  font-size: var(--fs-md);
-}
-.markdown-preview table th,
-.markdown-preview table td {
-  border: 1px solid var(--border-color);
-  padding: var(--space-2) var(--space-3);
-}
-.markdown-preview table th {
-  background: rgba(0, 0, 0, 0.03);
-  font-weight: 600;
-}
-
-.markdown-preview img {
-  max-width: 100%;
-  border-radius: var(--radius-md);
-  display: block;
-  margin: 0.6em 0;
-}
-
-.markdown-preview hr {
-  border: none;
-  border-top: 1px solid var(--border-color);
-  margin: 1em 0;
-}
-
-.markdown-preview .task-list-item {
-  list-style: none;
-}
-.markdown-preview input[type='checkbox'] {
-  transform: translateY(2px);
-  margin-right: var(--space-2);
-}
-
-/* HTML preview container styling */
-.html-preview {
-  padding: 0;
-  color: var(--text-primary);
-  font-family: var(--font-sans);
+  margin: var(--space-4) 0;
   font-size: var(--fs-base);
-  line-height: 1.6;
-  overflow: auto;
-  position: absolute;
-  top: var(--space-8);
-  right: var(--space-8);
-  bottom: var(--space-8);
-  left: var(--space-8);
-  box-sizing: border-box;
 }
 
-.html-preview pre {
-  background: #0b1220;
-  color: #e6edf3;
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
+.rich-editor th,
+.rich-editor td,
+.formatted-content th,
+.formatted-content td,
+.markdown-preview th,
+.markdown-preview td {
+  border: 1px solid var(--divider);
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  vertical-align: top;
+}
+
+.rich-editor th,
+.formatted-content th,
+.markdown-preview th {
+  background: var(--card);
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+/* Inserted tables carry inline padding from older versions; the design decides the cell padding */
+.rich-editor .inserted-table th,
+.rich-editor .inserted-table td,
+.formatted-content .inserted-table th,
+.formatted-content .inserted-table td {
+  padding: var(--space-2) var(--space-3) !important;
+}
+
+/* Previews cover the writing area, inset by the page gutter */
+.markdown-preview,
+.html-preview {
+  position: absolute;
+  inset: var(--gutter);
   overflow: auto;
+  background: var(--surface);
+}
+
+.html-preview {
+  font-size: var(--fs-base);
 }

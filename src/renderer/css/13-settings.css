@@ -1,209 +1,168 @@
-/* Settings dialog, toggles, accent swatches and locked notes */
+/* Settings dialog: tabs on a tinted column, the open tab as a title and groups of setting rows */
 
-/* ============================================
-   SETTINGS MODAL
-   ============================================ */
-.settings-modal {
-  width: 750px;
-  max-width: 90vw;
-  max-height: 85vh;
+.modal-content.settings-modal {
+  width: 760px;
+  height: min(560px, 100%);
+  flex-direction: row;
 }
 
-.settings-body {
+/* ============ Tabs ============ */
+.settings-nav {
+  width: 208px;
+  flex-shrink: 0;
   display: flex;
-  gap: 0;
-  overflow: hidden;
-  flex: 1;
-  min-height: 0;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-3);
+  background: var(--card);
+  overflow-y: auto;
 }
 
-/* Vertical Tabs Sidebar */
+.settings-nav-title {
+  padding: 0 var(--space-3);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--text-strong);
+}
+
 .settings-tabs {
-  width: 200px;
-  min-width: 200px;
-  background: var(--tint-subtle);
-  border-right: 1px solid var(--border-color);
-  padding: var(--space-3) 0;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .settings-tab {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  width: 100%;
-  padding: var(--space-3) var(--space-5);
-  border: none;
-  background: transparent;
+  height: var(--control-sm);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
   color: var(--text-secondary);
-  font-size: var(--fs-base);
-  font-weight: 500;
   text-align: left;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition-fast);
 }
 
 .settings-tab i {
-  font-size: var(--fs-lg);
-  width: 18px;
+  width: 16px;
   text-align: center;
+  font-size: var(--fs-md);
+  color: var(--text-muted);
 }
 
 .settings-tab:hover {
   background: var(--tint-hover);
-  color: var(--text-primary);
+  color: var(--text-strong);
 }
 
 .settings-tab.active {
-  background: var(--accent-color-rgba-10);
-  color: var(--accent-color);
-  font-weight: 600;
+  background: var(--accent-tint);
+  color: var(--accent-text);
+  font-weight: 500;
 }
 
-/* Tab Content Area */
+.settings-tab.active i {
+  color: inherit;
+}
+
+/* ============ Content ============ */
 .settings-content {
   flex: 1;
-  padding: 0;
+  min-width: 0;
   overflow-y: auto;
-  overflow-x: hidden;
-  min-height: 0;
+  position: relative;
 }
 
-.settings-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.settings-content::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.settings-content::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: var(--radius-sm);
+.settings-close {
+  position: absolute;
+  top: var(--space-6);
+  right: var(--space-6);
+  z-index: 1;
 }
 
 .settings-tab-content {
   display: none;
   padding: var(--space-6);
-  animation: fadeIn 0.2s ease;
 }
 
 .settings-tab-content.active {
   display: block;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.settings-tab-content h4 {
+.settings-title {
   font-size: var(--fs-xl);
   font-weight: 600;
-  color: var(--text-primary);
+  line-height: 32px;
+  color: var(--text-strong);
   margin-bottom: var(--space-5);
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  padding-right: var(--space-10);
 }
 
-.settings-subsection {
+.settings-section + .settings-section {
   margin-top: var(--space-6);
 }
 
-.settings-subsection:first-of-type {
-  margin-top: 0;
+.settings-section .section-label {
+  display: block;
+  margin: 0 0 var(--space-2) var(--space-4);
 }
 
-.settings-subsection:not(:first-of-type) {
-  padding-top: var(--space-5);
+/* A group: rows in one card, separated by space only */
+.settings-group {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-1) var(--space-4);
 }
-
-.settings-subsection h5 {
-  font-size: var(--fs-base);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--space-4);
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.settings-subsection h5 i {
-  font-size: var(--fs-base);
-  opacity: 0.7;
-}
-
-.settings-tab-content h4 i {
-  color: var(--accent-color);
-}
-
-/* Additional comprehensive dark theme fixes */
-
-.checklist-item input[type='checkbox']:checked {
-  background: var(--primary-color);
-  accent-color: var(--primary-color);
-}
-
-/* Fix the last remaining white background - formatting toolbar */
 
 .setting-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-4);
-}
-
-.setting-item:last-child {
-  margin-bottom: 0;
+  justify-content: space-between;
+  gap: var(--space-6);
+  min-height: 56px;
+  padding: var(--space-3) 0;
 }
 
 .setting-info {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .setting-info label {
   font-weight: 500;
   color: var(--text-primary);
-  display: block;
-  margin-bottom: var(--space-1);
 }
 
 .setting-info small {
   font-size: var(--fs-sm);
+  line-height: 16px;
   color: var(--text-secondary);
 }
 
-/* Toggle Switch */
-
+/* Accent color swatches */
 .theme-swatches {
   display: flex;
-  gap: var(--space-2);
+  gap: var(--space-3);
+  padding: var(--space-1);
 }
 
 .swatch-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  transition:
-    transform 120ms ease,
-    box-shadow 120ms ease,
-    border-color 120ms ease;
+  transition: box-shadow var(--transition-fast);
 }
 
-.swatch-btn:focus {
+.swatch-btn:focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
 }
 
-/* Make the currently-selected accent swatch slightly larger and more prominent */
 .swatch-btn.active {
   box-shadow: var(--swatch-ring);
 }
@@ -222,74 +181,4 @@
 }
 #accentBlue {
   background: #3b82f6;
-}
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: var(--radius-xl);
-}
-
-.toggle-slider:before {
-  position: absolute;
-  content: '';
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .toggle-slider {
-  background-color: var(--primary-color);
-}
-
-input:checked + .toggle-slider:before {
-  transform: translateX(26px);
-}
-
-/* Locked Note Styles */
-.note-item.locked {
-  opacity: 0.7;
-  position: relative;
-}
-
-.note-item-title {
-  font-size: var(--fs-base);
-  font-weight: 500;
-}
-
-/* Long titles end with an ellipsis; while the options button is visible it gets room on the right */
-.note-item:hover .note-item-title,
-.note-item:has(.menu-open) .note-item-title {
-  padding-right: var(--space-6);
-}
-
-.note-item.locked .note-item-title {
-  opacity: 0.6;
-}
-
-.lock-btn.locked {
-  color: var(--warning-color);
-  background: rgba(255, 193, 7, 0.1);
 }

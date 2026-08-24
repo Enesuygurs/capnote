@@ -3,23 +3,23 @@
 export const NOTE_EDITOR = /* HTML */ `
   <!-- Note editor -->
   <div id="noteEditor" class="note-editor hidden">
-    <div class="editor-header">
-      <div class="title-section">
+    <div class="page-header editor-header">
+      <div class="page-heading">
         <input
           type="text"
           id="noteTitle"
           data-i18n-placeholder="placeholders.noteTitle"
           placeholder="Not başlığı..."
-          class="note-title-input"
+          class="page-title note-title-input"
         />
-        <div class="note-meta">
+        <div class="page-meta note-meta">
           <span id="noteDate"></span>
           <span id="wordCount">0 <span data-i18n="stats.words">kelime</span></span>
           <span id="charCount">0 <span data-i18n="stats.characters">karakter</span></span>
           <span id="editorReadingTime">~0 <span data-i18n="stats.readingTime">dk okuma</span></span>
         </div>
       </div>
-      <div class="editor-actions">
+      <div class="page-actions editor-actions">
         <button id="saveNoteBtn" class="btn-icon" data-i18n-title="buttons.save">
           <i class="fas fa-save"></i>
         </button>
@@ -34,7 +34,7 @@ export const NOTE_EDITOR = /* HTML */ `
       <div class="format-group">
         <div class="custom-select format-custom-select" id="fontFamily">
           <div class="select-selected">Inter</div>
-          <div class="select-items select-hide">
+          <div class="select-items menu select-hide">
             <div data-value="Inter" class="select-item active">Inter</div>
             <div data-value="Crimson Text" class="select-item">Crimson Text</div>
             <div data-value="Roboto Mono" class="select-item">Roboto Mono</div>
@@ -44,7 +44,7 @@ export const NOTE_EDITOR = /* HTML */ `
         </div>
         <div class="custom-select format-custom-select" id="fontSize">
           <div class="select-selected">14px</div>
-          <div class="select-items select-hide">
+          <div class="select-items menu select-hide">
             <div data-value="12" class="select-item">12px</div>
             <div data-value="14" class="select-item active">14px</div>
             <div data-value="16" class="select-item">16px</div>
@@ -184,7 +184,7 @@ export const NOTE_EDITOR = /* HTML */ `
         <div id="markdownPreview" class="markdown-preview hidden" aria-hidden="true"></div>
         <div id="htmlPreview" class="html-preview hidden" aria-hidden="true"></div>
         <!-- Emoji panel (hidden by default) -->
-        <div id="emojiPanel" class="emoji-panel hidden">
+        <div id="emojiPanel" class="emoji-panel menu hidden">
           <div class="emoji-panel-header">
             <input
               type="text"
@@ -304,7 +304,7 @@ export const NOTE_EDITOR = /* HTML */ `
 
       <div class="editor-sidebar">
         <div class="sidebar-section">
-          <h4><i class="fas fa-smile"></i> <span data-i18n="sections.mood">Ruh Hali</span></h4>
+          <h4 class="panel-label" data-i18n="sections.mood">Ruh Hali</h4>
           <div class="mood-selector">
             <button class="mood-btn" data-mood="happy" data-i18n-title="titles.happy">
               <i class="fas fa-face-smile" aria-hidden="true"></i>
@@ -334,10 +334,7 @@ export const NOTE_EDITOR = /* HTML */ `
         </div>
 
         <div class="sidebar-section">
-          <h4>
-            <i class="fas fa-cloud-sun"></i>
-            <span data-i18n="sections.weather">Hava Durumu</span>
-          </h4>
+          <h4 class="panel-label" data-i18n="sections.weather">Hava Durumu</h4>
           <div class="weather-selector">
             <button class="weather-btn" data-weather="sunny" data-i18n-title="titles.sunny">
               <i class="fas fa-sun" aria-hidden="true"></i>
@@ -365,11 +362,12 @@ export const NOTE_EDITOR = /* HTML */ `
         </div>
 
         <div class="sidebar-section">
-          <h4><i class="fas fa-tags"></i> <span data-i18n="sections.tags">Etiketler</span></h4>
+          <h4 class="panel-label" data-i18n="sections.tags">Etiketler</h4>
           <div class="tags-container">
             <input
               type="text"
               id="tagInput"
+              class="form-input form-input-sm"
               data-i18n-placeholder="placeholders.addTag"
               placeholder="Etiket ekle..."
             />
@@ -378,12 +376,16 @@ export const NOTE_EDITOR = /* HTML */ `
         </div>
 
         <div class="sidebar-section">
-          <h4><i class="fas fa-bell"></i> <span data-i18n="sections.reminder">Hatırlatma</span></h4>
+          <h4 class="panel-label" data-i18n="sections.reminder">Hatırlatma</h4>
           <div class="reminder-container">
-            <input type="datetime-local" id="reminderDatetime" class="reminder-datetime-input" />
+            <input
+              type="datetime-local"
+              id="reminderDatetime"
+              class="form-input form-input-sm reminder-datetime-input"
+            />
             <select
               id="reminderRecurrence"
-              class="select-small"
+              class="select-small select-block"
               data-i18n-aria-label="reminder.recurrence"
               aria-label="Tekrarlama"
             >
@@ -425,14 +427,12 @@ export const NOTE_EDITOR = /* HTML */ `
                 >
               </div>
             </div>
-            <button id="setReminderBtn" class="btn-small btn-primary">
+            <button id="setReminderBtn" class="btn-secondary btn-small">
               <i class="fas fa-plus"></i> <span data-i18n="buttons.add">Ekle</span>
             </button>
             <div id="noteRemindersList" class="note-reminders-list"></div>
           </div>
         </div>
-
-        <!-- Emoji picker moved to editor toolbar -->
       </div>
     </div>
   </div>

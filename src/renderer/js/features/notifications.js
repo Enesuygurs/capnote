@@ -40,42 +40,43 @@ export class NotificationsFeature {
     if (!this.notificationsList) return;
 
     if (this.notifications.length === 0) {
-      this.notificationsList.innerHTML = `<div class="empty-state empty-state-large">${i18n.t('messages.noNotifications')}</div>`;
+      this.notificationsList.innerHTML = `<div class="empty-state empty-state-large"><i class="fas fa-inbox"></i><p>${i18n.t('messages.noNotifications')}</p></div>`;
       return;
     }
 
     this.notificationsList.innerHTML = this.notifications
       .map(
         (n) => `
-      <div class="notification-card ${n.read ? '' : 'unread'}" data-notification-id="${n.id}">
-        <div class="notification-header">
-          <div class="notification-note-title">${this.escapeHtml(this.notificationTitle(n))}</div>
-          <div class="notification-time">
-            <i class="fas fa-clock"></i>
-            ${new Date(n.time).toLocaleString(this.getLocale(), {
+      <div class="list-card notification-card ${n.read ? '' : 'unread'}" data-notification-id="${n.id}">
+        <div class="list-card-main">
+          <div class="list-card-title">
+            <span class="notification-note-title">${this.escapeHtml(this.notificationTitle(n))}</span>
+          </div>
+          <div class="list-card-meta">
+            <span>${new Date(n.time).toLocaleString(this.getLocale(), {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
               hour: '2-digit',
               minute: '2-digit',
-            })}
+            })}</span>
           </div>
+          <div class="list-card-text notification-message">${this.escapeHtml(this.notificationMessage(n))}</div>
         </div>
-        <div class="notification-message">${this.escapeHtml(this.notificationMessage(n))}</div>
-        <div class="notification-actions">
-          <button class="notification-action-btn view-notification-note-btn" data-note-id="${n.noteId}">
+        <div class="list-card-actions">
+          <button class="btn-secondary btn-small view-notification-note-btn" data-note-id="${n.noteId}">
             <i class="fas fa-eye"></i> ${i18n.t('messages.view')}
           </button>
           ${
             !n.read
               ? `
-            <button class="notification-action-btn mark-read-btn" data-notification-id="${n.id}">
+            <button class="btn-secondary btn-small mark-read-btn" data-notification-id="${n.id}">
               <i class="fas fa-check"></i> ${i18n.t('messages.markAsRead')}
             </button>
           `
               : ''
           }
-          <button class="notification-action-btn delete-notification-btn" data-notification-id="${n.id}">
+          <button class="btn-outline btn-danger btn-small delete-notification-btn" data-notification-id="${n.id}">
             <i class="fas fa-trash"></i> ${i18n.t('messages.deleteNotification')}
           </button>
         </div>

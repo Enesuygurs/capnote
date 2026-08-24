@@ -1,4 +1,4 @@
-/* Design tokens, resets, resize performance helpers and the titlebar */
+/* Design tokens, resets, resize helpers and the titlebar (docs/DESIGN.md) */
 
 * {
   margin: 0;
@@ -6,12 +6,18 @@
   box-sizing: border-box;
 }
 
-/* Native controls draw their own borders; the design has none (docs/DESIGN.md) */
+/* Native controls draw their own borders; the design has none */
 button,
 input,
 select,
 textarea {
   border: 0;
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
 }
 
 /* Performance optimization: Disable transitions during window resize */
@@ -33,7 +39,6 @@ body.resizing .notes-list,
 body.resizing .note-item,
 body.resizing .folders-list,
 body.resizing .folder-notes-container,
-body.resizing .folder-note-item,
 body.resizing .note-editor,
 body.resizing .note-viewer {
   contain: layout style paint !important;
@@ -41,70 +46,64 @@ body.resizing .note-viewer {
 }
 
 /* Disable expensive effects during resize */
-body.resizing .titlebar,
-body.resizing .sidebar,
 body.resizing .modal {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
 
-/* GPU acceleration for better resize performance */
-.sidebar,
-.note-editor,
-.note-viewer,
-.welcome-screen {
-  transform: translateZ(0);
-  will-change: auto;
-}
-
-body.resizing .sidebar,
-body.resizing .note-editor,
-body.resizing .note-viewer,
-body.resizing .welcome-screen {
-  will-change: transform;
-}
-
 :root {
-  /* Ana Renkler */
-  --primary-color: #f59e0b;
-  /* Accent used for active highlights (default yellow) */
+  /* Accent: set from the settings on the root element; --primary-color is the same value */
   --accent-color: #f59e0b;
-  /* Transparent tints follow whatever accent is set on the root element */
-  --accent-color-rgba-10: color-mix(in srgb, var(--accent-color) 10%, transparent);
-  --accent-color-rgba-12: color-mix(in srgb, var(--accent-color) 12%, transparent);
-  --accent-color-rgba-15: color-mix(in srgb, var(--accent-color) 15%, transparent);
-  --accent-color-rgba-18: color-mix(in srgb, var(--accent-color) 18%, transparent);
-  --accent-color-rgba-20: color-mix(in srgb, var(--accent-color) 20%, transparent);
-  --accent-color-rgba-30: color-mix(in srgb, var(--accent-color) 30%, transparent);
-  --bg-primary: #ffffff;
-  --bg-secondary: #fdfdfd;
-  --bg-tertiary: #f1f5f9;
-  --bg-dark: #1e293b;
-  --text-primary: #1e293b;
-  --text-secondary: #64748b;
-  --text-muted: #94a3b8;
-  --text-light: #ffffff;
-  --success-color: #22c55e;
-  --warning-color: #f59e0b;
-  --error-color: #ef4444;
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  /* Softer dialog shadow for the dark theme */
-  --shadow-dark-lg: 0 6px 18px rgba(0, 0, 0, 0.6);
-  --radius-sm: 4px;
+  --primary-color: var(--accent-color);
+  /* Accent backgrounds for active and selected things, and accent text that reads on them */
+  --accent-tint: color-mix(in srgb, var(--accent-color) 14%, transparent);
+  --accent-tint-strong: color-mix(in srgb, var(--accent-color) 22%, transparent);
+  --accent-text: color-mix(in srgb, var(--accent-color) 86%, black);
+  --text-on-accent: #ffffff;
+
+  /* Text */
+  --text-primary: #1f2937;
+  --text-secondary: #5b6472;
+  --text-muted: #8f97a3;
+  --text-strong: #111827;
+
+  /* Surfaces by role */
+  --chrome: #f1f2f4;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --panel-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+  /* Tints: one step from whatever they sit on, so they work on every surface */
+  --card: rgba(15, 23, 42, 0.035);
+  --field: rgba(15, 23, 42, 0.05);
+  --field-hover: rgba(15, 23, 42, 0.08);
+  --tint-hover: rgba(15, 23, 42, 0.05);
+  --tint-strong: rgba(15, 23, 42, 0.09);
+  /* The only lines: dividers between regions and inside note content */
+  --divider: rgba(15, 23, 42, 0.08);
+  --focus-ring: 0 0 0 3px color-mix(in srgb, var(--accent-color) 25%, transparent);
+  --swatch-ring: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--accent-color);
+
+  /* Status colors (toasts, destructive actions) */
+  --success-color: #16a34a;
+  --warning-color: #d97706;
+  --error-color: #dc2626;
+  --danger-tint: color-mix(in srgb, var(--error-color) 12%, transparent);
+  --danger-tint-strong: color-mix(in srgb, var(--error-color) 20%, transparent);
+
+  /* Shadows: only floating surfaces have one */
+  --shadow-popover: 0 8px 24px rgba(15, 23, 42, 0.14);
+  --shadow-modal: 0 16px 40px rgba(15, 23, 42, 0.2);
+  --overlay: rgba(15, 23, 42, 0.32);
+
+  /* Shape */
+  --radius-sm: 6px;
   --radius-md: 8px;
   --radius-lg: 12px;
-  --radius-xl: 16px;
-  --transition-fast: 150ms ease;
-  --transition-normal: 250ms ease;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --bg-hover: #eef2f6;
-  --border-color: #e5e7eb;
-  --primary-light: var(--accent-color-rgba-12);
-  --text-on-primary: #ffffff;
   --radius-full: 999px;
-  /* Type scale */
+
+  /* Type */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
   --fs-xs: 11px;
   --fs-sm: 12px;
   --fs-md: 13px;
@@ -115,23 +114,7 @@ body.resizing .welcome-screen {
   --fs-3xl: 24px;
   --fs-4xl: 28px;
   --fs-5xl: 32px;
-  /* Surfaces by role */
-  --surface: #fdfdfd;
-  --surface-sidebar: #ffffff;
-  --surface-panel: #fdfdfd;
-  --surface-raised: #ffffff;
-  --surface-sunken: #f8f9fa;
-  --tint-hover: rgba(0, 0, 0, 0.05);
-  --tint-subtle: rgba(0, 0, 0, 0.03);
-  --tint-strong: rgba(0, 0, 0, 0.08);
-  /* Cards and fields are tints, one step from whatever they sit on */
-  --card: rgba(0, 0, 0, 0.03);
-  --field: rgba(0, 0, 0, 0.045);
-  --field-hover: rgba(0, 0, 0, 0.07);
-  /* The only lines: dividers between regions of the window */
-  --divider: var(--border-color);
-  --focus-ring: 0 0 0 3px var(--accent-color-rgba-20);
-  --swatch-ring: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--accent-color);
+
   /* Spacing on a 4px grid */
   --space-1: 4px;
   --space-2: 8px;
@@ -141,10 +124,24 @@ body.resizing .welcome-screen {
   --space-6: 24px;
   --space-8: 32px;
   --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
   /* Control heights */
+  --control-xs: 28px;
   --control-sm: 32px;
   --control-md: 36px;
   --control-lg: 44px;
+
+  /* Layout */
+  --titlebar-height: 40px;
+  --sidebar-width: 264px;
+  --gutter: var(--space-8);
+
+  /* Motion */
+  --transition-fast: 120ms ease;
+  --transition-normal: 200ms ease;
+
   /* Stacking layers, bottom to top */
   --z-sidebar: 100;
   --z-dropdown: 900;
@@ -152,89 +149,77 @@ body.resizing .welcome-screen {
   --z-popover: 1500;
   --z-modal: 2000;
   --z-toast: 3000;
-  --text-strong: var(--text-primary);
-  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.15);
-  --shadow-modal: 0 10px 28px rgba(0, 0, 0, 0.18);
-  /* Note content: neutral code blocks and links derived from the accent, readable for any accent */
+
+  /* Icons drawn by CSS */
+  --chevron: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none'><path stroke='%238f97a3' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
+  --scrollbar: rgba(15, 23, 42, 0.16);
+  --scrollbar-hover: rgba(15, 23, 42, 0.28);
+  --toggle-off: rgba(15, 23, 42, 0.16);
+
+  /* Note content: neutral code blocks and links derived from the accent */
   --code-bg: #f6f8fa;
   --code-text: #1f2328;
   --code-inline-bg: rgba(27, 31, 35, 0.06);
   --link-color: color-mix(in srgb, var(--accent-color) 65%, black);
 }
+
 [data-theme='dark'] {
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #181818;
-  --bg-tertiary: #2e2e2e;
-  --bg-dark: #0d0d0d;
-
-  /* Background variables for each area */
-  --welcome-content-bg: transparent;
-  --quick-stats-bg: transparent;
-  --title-section-bg: transparent;
-  --note-title-input-bg: transparent;
-  --note-meta-bg: transparent;
-  --editor-actions-bg: transparent;
-  --format-btn-bg: transparent;
-  --editor-content-bg: transparent;
-  --modal-content-bg: #222222;
-  --modal-footer-bg: transparent;
-
-  --export-options-bg: #222222;
-
-  --text-primary: #e8e8e8;
-  --text-secondary: #c0c0c0;
-  --text-muted: #888888;
-  --text-light: #ffffff;
-  --bg-hover: rgba(255, 255, 255, 0.04);
-  --border-color: rgba(255, 255, 255, 0.08);
-  --surface: #1a1a1a;
-  --surface-sidebar: #181818;
-  --surface-panel: #1e1e1e;
-  /* Floating surfaces need a clear step above the page in the dark theme */
-  --surface-raised: #282828;
-  --surface-sunken: #262626;
-  --tint-hover: rgba(255, 255, 255, 0.05);
-  --tint-subtle: rgba(255, 255, 255, 0.03);
-  --tint-strong: rgba(255, 255, 255, 0.08);
-  --card: rgba(255, 255, 255, 0.03);
-  --field: rgba(255, 255, 255, 0.05);
-  --field-hover: rgba(255, 255, 255, 0.08);
+  --accent-text: color-mix(in srgb, var(--accent-color) 85%, white);
+  --text-primary: #e6e6e6;
+  --text-secondary: #a8a8a8;
+  --text-muted: #7a7a7a;
   --text-strong: #ffffff;
-  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --shadow-modal: var(--shadow-dark-lg);
+
+  --chrome: #121212;
+  --surface: #1b1b1b;
+  --surface-raised: #262626;
+  --panel-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --card: rgba(255, 255, 255, 0.035);
+  --field: rgba(255, 255, 255, 0.06);
+  --field-hover: rgba(255, 255, 255, 0.09);
+  --tint-hover: rgba(255, 255, 255, 0.05);
+  --tint-strong: rgba(255, 255, 255, 0.09);
+  --divider: rgba(255, 255, 255, 0.08);
+
+  --success-color: #22c55e;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+
+  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --overlay: rgba(0, 0, 0, 0.5);
+
+  --chevron: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none'><path stroke='%237a7a7a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/></svg>");
+  --scrollbar: rgba(255, 255, 255, 0.14);
+  --scrollbar-hover: rgba(255, 255, 255, 0.24);
+  --toggle-off: rgba(255, 255, 255, 0.18);
+
   --code-bg: #111214;
   --code-text: #e6e6e6;
   --code-inline-bg: rgba(255, 255, 255, 0.08);
   --link-color: color-mix(in srgb, var(--accent-color) 75%, white);
 }
-input,
-textarea,
-select {
-  color: var(--text-primary);
-}
 
 body {
   font-family: var(--font-sans);
-  /* replaced gradient with a solid neutral background to avoid gradients */
-  background: var(--surface);
+  background: var(--chrome);
   height: 100vh;
   overflow: hidden;
   color: var(--text-primary);
   font-size: var(--fs-base);
-  line-height: 1.6;
+  line-height: 20px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* ============ Titlebar ============
+   Sits on the window chrome with the sidebar: toggle and app mark on the left, window buttons on the right */
 .titlebar {
-  height: 40px;
-  background: var(--surface);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-color);
+  height: var(--titlebar-height);
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 var(--space-5) 0 0;
+  justify-content: space-between;
+  padding: 0 var(--space-2) 0 var(--space-3);
   position: fixed;
   top: 0;
   left: 0;
@@ -242,18 +227,67 @@ body {
   z-index: var(--z-titlebar);
   -webkit-app-region: drag;
 }
+
 .titlebar-drag {
-  flex: 1;
   display: flex;
   align-items: center;
+  gap: var(--space-1);
   height: 100%;
 }
+
+.hamburger-btn,
+.app-brand {
+  -webkit-app-region: no-drag;
+}
+
+.hamburger-btn {
+  width: var(--control-xs);
+  height: var(--control-xs);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.hamburger-btn:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+/* The app mark doubles as the home button */
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-xs);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.app-brand:hover {
+  background: var(--tint-hover);
+}
+
+.app-brand-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.app-brand-name {
+  font-size: var(--fs-md);
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
 .titlebar-controls {
   display: flex;
-  gap: var(--space-2);
+  gap: var(--space-1);
   -webkit-app-region: no-drag;
-  position: absolute;
-  right: 10px;
 }
 
 /* macOS uses its native traffic-light buttons: hide ours and leave room for them */
@@ -263,64 +297,39 @@ body.platform-darwin .titlebar-controls {
 body.platform-darwin .titlebar {
   padding-left: 80px;
 }
+
 .titlebar-button {
-  width: 32px;
-  height: 24px;
-  border: none;
-  border-radius: var(--radius-sm);
+  width: var(--control-sm);
+  height: var(--control-xs);
+  border-radius: var(--radius-md);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--fs-xs);
+  font-size: var(--fs-sm);
   transition: var(--transition-fast);
-  background: transparent;
   color: var(--text-secondary);
 }
+
 .titlebar-button:hover {
   background: var(--tint-hover);
   color: var(--text-strong);
 }
+
+/* Only close turns red, as on every platform */
 .titlebar-button.close:hover {
   background: var(--error-color);
-  color: white;
+  color: #ffffff;
 }
 
-.hamburger-btn {
-  width: 36px;
-  height: 24px;
-  border: none;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--fs-base);
-  transition: var(--transition-fast);
-  border-radius: var(--radius-sm);
-  -webkit-app-region: no-drag;
-  margin-left: var(--space-2);
-}
-
-.hamburger-btn:hover {
-  background: var(--tint-hover);
-  color: var(--text-strong);
-}
-
-/* Nudge the minimize icon down */
 .titlebar-button.minimize i {
   transform: translateY(2px);
 }
 
-/* Make the close icon bolder */
-.titlebar-button.close i {
-  font-weight: 900 !important;
-  font-size: var(--fs-base) !important;
-  transform: scale(1.1);
+.titlebar-button.maximize i {
+  transform: scale(0.85);
 }
 
-/* Make the maximize icon smaller */
-.titlebar-button.maximize i {
-  transform: scale(0.9);
+.titlebar-button.close i {
+  font-size: var(--fs-base);
 }

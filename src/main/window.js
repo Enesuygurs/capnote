@@ -103,8 +103,8 @@ function saveWindowState(win) {
   }
 }
 
-// Window background before the page paints, matching the app's light and dark --surface colors
-const BACKGROUND = { light: '#fdfdfd', dark: '#1a1a1a' };
+// Window background before the page paints: the app's light and dark --chrome colors
+const BACKGROUND = { light: '#f1f2f4', dark: '#121212' };
 
 function createMainWindow({ darkMode = false, devTools = false } = {}) {
   // Determine icon path (prefer .ico on Windows if available)

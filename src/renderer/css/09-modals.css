@@ -1,21 +1,17 @@
-/* Modal dialogs and the confirm dialog */
-
-/* ============================================
-   MODALS
-   ============================================ */
+/* Dialogs (docs/DESIGN.md: Dialogs)
+   Every dialog: .modal-header (title + close), .modal-body, .modal-footer (buttons on the right).
+   Widths: .modal-sm 400px, default 480px, the settings dialog its own. */
 
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: var(--space-6);
   z-index: var(--z-modal);
   opacity: 0;
   visibility: hidden;
@@ -28,172 +24,111 @@
 }
 
 .modal-content {
-  background: var(--surface-raised);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-modal);
-  max-width: 500px;
-  width: 90%;
-  max-height: 80vh;
-  overflow: hidden;
-  position: relative;
-  transform: scale(0.9);
-  transition: var(--transition-normal);
+  width: 480px;
+  max-width: 100%;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: var(--surface-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-modal);
+  transform: scale(0.97);
+  transition: transform var(--transition-normal);
 }
 
 .modal:not(.hidden) .modal-content {
   transform: scale(1);
 }
 
+.modal-content.modal-sm {
+  width: 400px;
+}
+
 .modal-header {
-  padding: var(--space-6) var(--space-6) 0;
-  /* border-bottom removed to match design request */
-  border-bottom: none;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6) 0;
   flex-shrink: 0;
+}
+
+.modal-title {
+  min-width: 0;
 }
 
 .modal-header h3 {
   font-size: var(--fs-xl);
   font-weight: 600;
-  color: var(--text-primary);
-  flex: 1;
-}
-
-/* Dialog title: an icon in the accent color next to the heading */
-.modal-title {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.modal-title h3 {
-  margin: 0;
-}
-
-.modal-title i,
-.modal-title-icon {
-  color: var(--primary-color);
-}
-
-.modal-close {
-  width: 36px;
-  height: 36px;
-  border: none;
-  background: var(--field);
-  color: var(--text-secondary);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    transform 150ms ease,
-    background 150ms ease,
-    color 150ms ease;
-  flex-shrink: 0;
-  font-size: var(--fs-base);
-}
-
-.modal-close:hover {
-  /* Use a solid hover tone (no transparency) */
-  background: var(--field-hover);
+  line-height: 32px;
   color: var(--text-strong);
 }
 
-.modal-actions {
-  padding: 0 var(--space-6) var(--space-6);
-  display: flex;
-  gap: var(--space-3);
-  justify-content: flex-end;
-}
-
-/* Modern Confirm Modal */
-.confirm-modal {
-  max-width: 420px;
-  text-align: center;
-  padding: var(--space-8) var(--space-6) var(--space-6);
-  position: relative;
-}
-
-.confirm-icon {
-  width: 64px;
-  height: 64px;
-  background: var(--warning-color);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto var(--space-6);
-  font-size: var(--fs-3xl);
-  color: white;
-}
-
-.confirm-text h3 {
-  font-size: var(--fs-2xl);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--space-2);
-}
-
-.confirm-text p {
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin-bottom: var(--space-6);
-}
-
-.confirm-modal .modal-actions {
-  justify-content: center;
-  gap: var(--space-3);
-  padding: 0;
-}
-
-.confirm-modal .modal-close {
-  position: absolute;
-  top: var(--space-4);
-  right: var(--space-4);
-}
-
-.export-options {
-  padding: var(--space-6);
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-3);
-}
-
-.export-btn {
-  padding: var(--space-5);
-  background: var(--card);
-  border-radius: var(--radius-lg);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  text-align: center;
-}
-
-.export-btn:hover {
-  background: var(--tint-strong);
-}
-
-.export-btn i {
-  font-size: var(--fs-3xl);
-  color: var(--primary-color);
-}
-
 .modal-body {
-  padding: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.modal-text {
+  color: var(--text-secondary);
 }
 
 .modal-footer {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--space-3);
+  gap: var(--space-2);
   padding: 0 var(--space-6) var(--space-6);
+  flex-shrink: 0;
+}
+
+/* ============ Forms inside dialogs ============ */
+.form-group + .form-group,
+.form-row + .form-group,
+.form-row + .form-check,
+.form-group + .form-check,
+.form-message + .form-group {
+  margin-top: var(--space-4);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.form-row .form-group + .form-group {
+  margin-top: 0;
+}
+
+/* A checkbox with its label on one 32px row */
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-sm);
+  cursor: pointer;
+}
+
+.form-check input[type='checkbox'],
+.form-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.form-check label {
+  cursor: pointer;
 }

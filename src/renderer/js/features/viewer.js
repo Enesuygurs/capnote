@@ -110,7 +110,7 @@ export class ViewerFeature {
     this.viewerTags.innerHTML = '';
     tags.forEach((tag) => {
       const tagElement = document.createElement('span');
-      tagElement.className = 'viewer-tag';
+      tagElement.className = 'chip viewer-tag';
       tagElement.textContent = tag;
       this.viewerTags.appendChild(tagElement);
     });
@@ -127,7 +127,7 @@ export class ViewerFeature {
     if (created) {
       const el = document.createElement('div');
       el.className = 'history-entry created';
-      el.innerHTML = `<strong>${i18n.t('viewer.created')}</strong> ${created.toLocaleString(locale)}`;
+      el.innerHTML = `<span class="history-type">${i18n.t('viewer.created')}</span> <span class="history-ts">${created.toLocaleString(locale)}</span>`;
       this.historyBody.appendChild(el);
     }
 
@@ -145,7 +145,7 @@ export class ViewerFeature {
       });
       this.historyBody.appendChild(list);
     } else {
-      const empty = document.createElement('div');
+      const empty = document.createElement('p');
       empty.className = 'history-empty';
       empty.textContent = i18n.t('viewer.noHistory');
       this.historyBody.appendChild(empty);

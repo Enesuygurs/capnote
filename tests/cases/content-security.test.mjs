@@ -25,7 +25,7 @@ export async function run() {
     violations,
     csp: !!document.querySelector('meta[http-equiv="Content-Security-Policy"]'),
     iframe: !!iframe,
-    faIcon: getComputedStyle(document.querySelector('.fa-cog'), '::before').fontFamily,
+    faIcon: getComputedStyle(document.querySelector('.fa-gear'), '::before').fontFamily,
     inter: document.fonts.check('16px Inter'),
     translations: (await import(new URL('js/i18n.js', location.href).href)).i18n.t('nav.notes'),
   };

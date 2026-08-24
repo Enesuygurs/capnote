@@ -1,4 +1,5 @@
-// Markup of the smaller dialogs and the folder context menu
+// Markup of the smaller dialogs and the folder context menu.
+// Every dialog has the same parts: .modal-header (title + close), .modal-body, .modal-footer.
 
 export const NOTE_DIALOGS = /* HTML */ `
   <!-- Export Modal -->
@@ -6,16 +7,15 @@ export const NOTE_DIALOGS = /* HTML */ `
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-file-export" aria-hidden="true"></i>
           <h3 data-i18n="modals.exportNote">Notu Dışa Aktar</h3>
         </div>
         <button class="modal-close" id="closeExportModal">
           <i class="fas fa-times"></i>
         </button>
       </div>
-      <div class="export-options">
+      <div class="modal-body export-options">
         <button class="export-btn" data-type="txt">
-          <i class="fas fa-file-alt"></i>
+          <i class="fas fa-file-lines"></i>
           <span data-i18n="export.plainText">Düz Metin (.txt)</span>
         </button>
         <button class="export-btn" data-type="html">
@@ -39,7 +39,6 @@ export const NOTE_DIALOGS = /* HTML */ `
     <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-table"></i>
           <h3 data-i18n="modals.addTable">Tablo Ekle</h3>
         </div>
         <button class="modal-close" id="closeTableModal">
@@ -57,12 +56,10 @@ export const NOTE_DIALOGS = /* HTML */ `
             <input id="tableCols" class="form-input" type="number" min="1" value="2" />
           </div>
         </div>
-        <div class="form-group">
-          <label for="tableHeader"
-            ><input id="tableHeader" type="checkbox" />
-            <span data-i18n="modals.tableHeader">Başlık satırı ekle</span></label
-          >
-        </div>
+        <label class="form-check" for="tableHeader">
+          <input id="tableHeader" type="checkbox" />
+          <span data-i18n="modals.tableHeader">Başlık satırı ekle</span>
+        </label>
       </div>
       <div class="modal-footer">
         <button id="cancelTableBtn" class="btn btn-secondary" data-i18n="buttons.cancel">
@@ -77,17 +74,16 @@ export const NOTE_DIALOGS = /* HTML */ `
 
   <!-- Note History Modal -->
   <div id="noteHistoryModal" class="modal hidden">
-    <div class="modal-content history-modal">
+    <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-clock-rotate-left" aria-hidden="true"></i>
           <h3 data-i18n="modals.noteHistory">Not Geçmişi</h3>
         </div>
         <button class="modal-close" id="closeHistoryModal">
           <i class="fas fa-times"></i>
         </button>
       </div>
-      <div class="modal-body" id="historyBody">
+      <div class="modal-body history-body" id="historyBody">
         <!-- history entries will be injected here -->
       </div>
       <div class="modal-footer">
@@ -102,37 +98,40 @@ export const NOTE_DIALOGS = /* HTML */ `
 export const APP_DIALOGS = /* HTML */ `
   <!-- Confirm dialog -->
   <div id="confirmModal" class="modal hidden">
-    <div class="modal-content confirm-modal">
-      <div class="confirm-icon">
-        <i class="fas fa-exclamation-triangle"></i>
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h3 data-i18n="modals.confirmAction">İşlemi Onayla</h3>
+        </div>
+        <button class="modal-close" id="closeConfirmModal">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
-      <div class="confirm-text">
-        <h3 data-i18n="modals.confirmAction">İşlemi Onayla</h3>
-        <p id="confirmMessage" data-i18n="modals.confirmMessage">
+      <div class="modal-body">
+        <p id="confirmMessage" class="modal-text" data-i18n="modals.confirmMessage">
           Bu işlemi gerçekleştirmek istediğinizden emin misiniz?
         </p>
       </div>
-      <div class="modal-actions">
+      <div class="modal-footer">
         <button id="cancelBtn" class="btn btn-secondary" data-i18n="buttons.cancel">İptal</button>
         <button id="confirmBtn" class="btn btn-danger" data-i18n="buttons.confirm">Onayla</button>
       </div>
-      <button class="modal-close" id="closeConfirmModal">
-        <i class="fas fa-times"></i>
-      </button>
     </div>
   </div>
 
   <!-- Password Modal -->
   <div id="passwordModal" class="modal hidden">
-    <div class="modal-content">
+    <div class="modal-content modal-sm">
       <div class="modal-header">
-        <h3 id="passwordModalTitle" data-i18n="modals.enterPassword">Şifre Girin</h3>
+        <div class="modal-title">
+          <h3 id="passwordModalTitle" data-i18n="modals.enterPassword">Şifre Girin</h3>
+        </div>
         <button class="modal-close" id="closePasswordModal">
           <i class="fas fa-times"></i>
         </button>
       </div>
       <div class="modal-body">
-        <div id="passwordMessage" class="form-message"></div>
+        <p id="passwordMessage" class="modal-text form-message"></p>
         <div class="form-group">
           <label for="passwordInput" data-i18n="modals.password">Şifre:</label>
           <input
@@ -158,10 +157,9 @@ export const APP_DIALOGS = /* HTML */ `
 
   <!-- New folder dialog -->
   <div id="folderModal" class="modal hidden">
-    <div class="modal-content folder-modal">
+    <div class="modal-content">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-folder-plus"></i>
           <h3 data-i18n="modals.newFolder">Yeni Klasör</h3>
         </div>
         <button class="modal-close" id="closeFolderModal">
@@ -193,16 +191,16 @@ export const APP_DIALOGS = /* HTML */ `
   </div>
 
   <!-- Context Menu -->
-  <div id="contextMenu" class="context-menu hidden">
-    <div class="context-menu-item" id="changeFolderColorMenuItem">
+  <div id="contextMenu" class="context-menu menu hidden">
+    <div class="menu-item" id="changeFolderColorMenuItem">
       <i class="fas fa-palette"></i>
       <span data-i18n="modals.changeFolderColor">Klasör Rengini Değiştir</span>
     </div>
-    <div class="context-menu-item" id="renameFolderMenuItem">
-      <i class="fas fa-edit"></i>
+    <div class="menu-item" id="renameFolderMenuItem">
+      <i class="fas fa-pen"></i>
       <span data-i18n="modals.renameFolder">Yeniden Adlandır</span>
     </div>
-    <div class="context-menu-item" id="deleteFolderMenuItem">
+    <div class="menu-item menu-item-danger" id="deleteFolderMenuItem">
       <i class="fas fa-trash"></i>
       <span data-i18n="modals.deleteFolder">Klasörü Sil</span>
     </div>
@@ -210,10 +208,9 @@ export const APP_DIALOGS = /* HTML */ `
 
   <!-- Folder Color Modal (custom picker with Save) -->
   <div id="folderColorModal" class="modal hidden">
-    <div class="modal-content folder-color-modal">
+    <div class="modal-content modal-sm">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-palette"></i>
           <h3 data-i18n="modals.selectFolderColor">Klasör Rengi Seç</h3>
         </div>
         <button class="modal-close" id="closeFolderColorModal">
@@ -223,7 +220,7 @@ export const APP_DIALOGS = /* HTML */ `
       <div class="modal-body">
         <div class="form-group">
           <label for="folderColorInput" data-i18n="modals.color">Renk</label>
-          <input type="color" id="folderColorInput" class="form-input" />
+          <input type="color" id="folderColorInput" class="form-input form-color" />
         </div>
       </div>
       <div class="modal-footer">

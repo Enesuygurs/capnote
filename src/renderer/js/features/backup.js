@@ -308,17 +308,13 @@ export class BackupFeature {
       modal.className = 'modal';
       modal.style.display = 'flex';
       const content = document.createElement('div');
-      content.className = 'modal-content import-modal';
+      content.className = 'modal-content modal-sm import-modal';
 
       // header
       const header = document.createElement('div');
       header.className = 'modal-header';
       const titleWrap = document.createElement('div');
       titleWrap.className = 'modal-title';
-      const icon = document.createElement('i');
-      icon.className = 'fas fa-file-import';
-      icon.setAttribute('aria-hidden', 'true');
-      titleWrap.appendChild(icon);
       const h3 = document.createElement('h3');
       h3.textContent = i18n.t('modals.importOptions');
       titleWrap.appendChild(h3);
@@ -341,7 +337,7 @@ export class BackupFeature {
       types.forEach((t) => {
         if (!available[t]) return;
         const row = document.createElement('div');
-        row.className = 'form-group';
+        row.className = 'form-check';
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.checked = true;
@@ -366,7 +362,7 @@ export class BackupFeature {
       });
 
       const mergeRow = document.createElement('div');
-      mergeRow.className = 'form-group';
+      mergeRow.className = 'form-check';
       const mergeToggle = document.createElement('input');
       mergeToggle.type = 'checkbox';
       mergeToggle.checked = true;

@@ -9,7 +9,7 @@ export class TodosFeature {
     if (this.todoSections.length === 0) {
       this.todosSectionsContainer.innerHTML = `
         <div class="empty-state empty-state-large">
-          <i class="fas fa-folder-open"></i>
+          <i class="fas fa-list-check"></i>
           <p>${i18n.t('todos.noTodos')}</p>
         </div>
       `;
@@ -21,7 +21,7 @@ export class TodosFeature {
         const activeTodos = section.todos.filter((t) => !t.completed).length;
         const todosHtml =
           section.todos.length === 0
-            ? `<div class="empty-state">${i18n.t('todos.noTodosInSection')}</div>`
+            ? `<p class="empty-hint">${i18n.t('todos.noTodosInSection')}</p>`
             : section.todos
                 .map(
                   (todo) => `
@@ -30,10 +30,10 @@ export class TodosFeature {
             <span class="todo-text" data-todo-id="${todo.id}">${this.escapeHtml(todo.text)}</span>
             <input type="text" class="todo-edit-input hidden" value="${this.escapeHtml(todo.text)}" data-todo-id="${todo.id}" data-section-id="${section.id}">
             <div class="todo-actions">
-              <button class="todo-action-btn edit-todo" data-action="edit" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${i18n.t('actions.edit')}">
+              <button class="btn-icon btn-icon-xs edit-todo" data-action="edit" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${i18n.t('actions.edit')}">
                 <i class="fas fa-edit"></i>
               </button>
-              <button class="todo-action-btn delete-todo" data-action="delete" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${i18n.t('actions.delete')}">
+              <button class="btn-icon btn-icon-xs btn-icon-danger delete-todo" data-action="delete" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${i18n.t('actions.delete')}">
                 <i class="fas fa-trash"></i>
               </button>
             </div>
@@ -43,26 +43,24 @@ export class TodosFeature {
                 .join('');
 
         return `
-        <div class="todo-section" data-section-id="${section.id}">
+        <div class="card todo-section" data-section-id="${section.id}">
           <div class="todo-section-header">
             <div class="todo-section-title">
               <h3>${this.escapeHtml(section.name)}</h3>
-              <span class="todo-section-count">${i18n.t('todos.taskCount', { count: activeTodos })}</span>
+              <span class="chip todo-section-count">${i18n.t('todos.taskCount', { count: activeTodos })}</span>
             </div>
-            <div class="todo-section-actions">
-              <button class="section-action-btn delete-section" data-action="delete-section" data-section-id="${section.id}" title="${i18n.t('actions.delete')}">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          </div>
-          <div class="todos-input-section">
-            <input type="text" class="todo-input" placeholder="${i18n.t('placeholders.newTodo')}" data-section-id="${section.id}">
-            <button class="btn-primary add-todo-btn" data-section-id="${section.id}">
-              <i class="fas fa-plus"></i> ${i18n.t('buttons.add')}
+            <button class="btn-icon btn-icon-sm btn-icon-danger delete-section" data-action="delete-section" data-section-id="${section.id}" title="${i18n.t('actions.delete')}">
+              <i class="fas fa-trash"></i>
             </button>
           </div>
           <div class="todos-list">
             ${todosHtml}
+          </div>
+          <div class="input-row">
+            <input type="text" class="form-input todo-input" placeholder="${i18n.t('placeholders.newTodo')}" data-section-id="${section.id}">
+            <button class="btn-secondary add-todo-btn" data-section-id="${section.id}">
+              <i class="fas fa-plus"></i> ${i18n.t('buttons.add')}
+            </button>
           </div>
         </div>
       `;

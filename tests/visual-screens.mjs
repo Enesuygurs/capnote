@@ -126,7 +126,6 @@ export async function run() {
       m.classList.add('hidden');
       m.style.display = 'none';
     });
-    a.searchContainer.classList.add('hidden');
     a.sortDropdown.classList.add('hidden');
     await wait(50);
   };
@@ -140,6 +139,9 @@ export async function run() {
     await shot(theme + '-01-welcome');
     a.selectNote(byTitle('Weekly plan'));
     await shot(theme + '-02-viewer');
+    a.toggleSidebar();
+    await shot(theme + '-02-viewer-sidebar-hidden');
+    a.toggleSidebar();
     a.openNote(byTitle('Private diary'));
     await shot(theme + '-03-viewer-locked');
     a.selectNote(byTitle('Weekly plan'));
