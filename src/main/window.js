@@ -131,6 +131,8 @@ function createMainWindow({ darkMode = false, devTools = false } = {}) {
     // macOS keeps its native traffic-light buttons; other platforms use the custom titlebar
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
     frame: process.platform === 'darwin',
+    // Without the thick frame, Windows 10 draws no 1px border on the left, right and bottom edges
+    thickFrame: false,
     show: false,
     icon: iconPath,
     backgroundColor: darkMode ? BACKGROUND.dark : BACKGROUND.light,
