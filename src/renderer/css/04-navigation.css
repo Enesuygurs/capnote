@@ -1,4 +1,4 @@
-/* Sidebar contents: new note, search, list filter, the notes section header and the bottom toolbar */
+/* Sidebar contents: new note, search, list filter, the notes section header and the counts */
 
 .sidebar-new-note {
   width: 100%;
@@ -124,48 +124,4 @@
 .nav-count.is-emphasized {
   background: var(--accent-color);
   color: var(--text-on-accent);
-}
-
-/* Bottom toolbar: the other screens and settings, equal width */
-.sidebar-tool {
-  flex: 1;
-  height: var(--control-md);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: var(--fs-base);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition: var(--transition-fast);
-}
-
-.sidebar-tool:hover {
-  background: var(--tint-hover);
-  color: var(--text-strong);
-}
-
-.sidebar-tool.active {
-  background: var(--accent-tint);
-  color: var(--accent-text);
-}
-
-/* A tool's count sits on the top right of its icon */
-.sidebar-tool .nav-count {
-  position: absolute;
-  top: 2px;
-  left: calc(50% + 4px);
-  min-width: 16px;
-  height: 16px;
-  padding: 0 var(--space-1);
-  font-size: 10px;
-  line-height: 16px;
-  box-shadow: 0 0 0 2px var(--chrome);
-  background: var(--text-muted);
-  color: var(--chrome);
-}
-
-.sidebar-tool .nav-count.is-emphasized {
-  background: var(--accent-color);
 }

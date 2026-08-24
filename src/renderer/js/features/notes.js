@@ -145,9 +145,6 @@ export class NotesFeature {
     try {
       this.updateNotesList();
       this.updateFoldersList();
-      if (this.currentNote && this.currentNote.id) {
-        this.updateActionButtonStates(this.currentNote.id);
-      }
     } catch (e) {
       // If anything goes wrong, ensure full refresh
       this.updateNotesList();
@@ -236,13 +233,14 @@ export class NotesFeature {
     this.deleteNoteById(this.currentNote.id);
   }
 
-  duplicateNote() {
-    if (!this.currentNote || this.isNoteLockedForView(this.currentNote)) return;
+  // Copy a note (the open one by default) and open the copy
+  duplicateNote(note = this.currentNote) {
+    if (!note || this.isNoteLockedForView(note)) return;
 
     const duplicate = {
-      ...this.currentNote,
+      ...note,
       id: this.newId(),
-      title: this.currentNote.title + i18n.t('messages.noteCopySuffix'),
+      title: note.title + i18n.t('messages.noteCopySuffix'),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       isPinned: false, // A copy starts unpinned
@@ -291,8 +289,7 @@ export class NotesFeature {
     // Update viewer favorite UI
     this.updateFavoriteButtons();
 
-    // Update any other instances of this note's buttons and lists
-    this.updateActionButtonStates(this.currentNote.id);
+    // Update the lists that show this note
     if (this.currentNote.folderId) {
       this.updateSpecificFolder(this.currentNote.folderId);
     } else {
@@ -413,9 +410,7 @@ export class NotesFeature {
     note.updatedAt = new Date().toISOString();
 
     await this.saveNotes();
-
-    // Update all instances of this note's action buttons
-    this.updateActionButtonStates(noteId);
+    if (this.currentNote?.id === noteId) this.updateFavoriteButtons();
 
     // Only update the specific folder if note is in a folder, otherwise update main list
     if (note.folderId) {
@@ -453,9 +448,6 @@ export class NotesFeature {
 
     await this.saveNotes();
 
-    // Update all instances of this note's action buttons
-    this.updateActionButtonStates(noteId);
-
     // Only update the specific folder if note is in a folder, otherwise update main list
     if (note.folderId) {
       this.updateSpecificFolder(note.folderId);
@@ -468,47 +460,6 @@ export class NotesFeature {
 
     const message = note.isPinned ? i18n.t('messages.notePinned') : i18n.t('messages.noteUnpinned');
     this.showNotification(message, 'success');
-  }
-
-  updateActionButtonStates(noteId) {
-    const note = this.notes.find((n) => n.id === noteId);
-    if (!note) return;
-
-    // Find all instances of this note in DOM (main list and folders)
-    const noteElements = document.querySelectorAll(`[data-note-id="${noteId}"]`);
-
-    noteElements.forEach((noteElement) => {
-      const favoriteBtn = noteElement.querySelector('.favorite-btn');
-      const pinBtn = noteElement.querySelector('.pin-btn');
-      const lockBtn = noteElement.querySelector('.lock-btn');
-
-      // Update favorite button
-      if (favoriteBtn) {
-        if (note.isFavorite) {
-          favoriteBtn.classList.add('favorited');
-        } else {
-          favoriteBtn.classList.remove('favorited');
-        }
-      }
-
-      // Update pin button
-      if (pinBtn) {
-        if (note.isPinned) {
-          pinBtn.classList.add('pinned');
-        } else {
-          pinBtn.classList.remove('pinned');
-        }
-      }
-
-      // Update lock button
-      if (lockBtn) {
-        if (note.isLocked) {
-          lockBtn.classList.add('locked');
-        } else {
-          lockBtn.classList.remove('locked');
-        }
-      }
-    });
   }
 
   // Save/cancel in the editor and the action buttons of the viewer

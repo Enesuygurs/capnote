@@ -158,11 +158,58 @@
   gap: var(--space-1);
 }
 
+/* Each mood and weather has its own icon color; the viewer's meta line uses the same ones */
+[data-mood='happy'],
+[data-tone='happy'],
+[data-weather='sunny'],
+[data-tone='sunny'],
+[data-weather='partlyCloudy'],
+[data-tone='partlyCloudy'] {
+  --tone: var(--tone-amber);
+}
+[data-mood='sad'],
+[data-tone='sad'],
+[data-weather='rainy'],
+[data-tone='rainy'] {
+  --tone: var(--tone-blue);
+}
+[data-mood='angry'],
+[data-tone='angry'] {
+  --tone: var(--tone-red);
+}
+[data-mood='tired'],
+[data-tone='tired'],
+[data-weather='stormy'],
+[data-tone='stormy'] {
+  --tone: var(--tone-violet);
+}
+[data-mood='inLove'],
+[data-tone='inLove'] {
+  --tone: var(--tone-rose);
+}
+[data-mood='thoughtful'],
+[data-tone='thoughtful'] {
+  --tone: var(--tone-teal);
+}
+[data-mood='cool'],
+[data-tone='cool'],
+[data-weather='snowy'],
+[data-tone='snowy'] {
+  --tone: var(--tone-sky);
+}
+[data-mood='bored'],
+[data-tone='bored'],
+[data-weather='cloudy'],
+[data-tone='cloudy'] {
+  --tone: var(--tone-slate);
+}
+
 .mood-btn,
 .weather-btn {
   height: var(--control-md);
   border-radius: var(--radius-md);
-  color: var(--text-secondary);
+  background: var(--field);
+  color: var(--tone, var(--text-secondary));
   font-size: var(--fs-lg);
   cursor: pointer;
   display: flex;
@@ -173,14 +220,16 @@
 
 .mood-btn:hover,
 .weather-btn:hover {
-  background: var(--tint-hover);
-  color: var(--text-strong);
+  background: color-mix(in srgb, var(--tone) 16%, transparent);
 }
 
+/* The chosen one is filled with the accent */
 .mood-btn.active,
-.weather-btn.active {
-  background: var(--accent-tint);
-  color: var(--accent-text);
+.weather-btn.active,
+.mood-btn.active:hover,
+.weather-btn.active:hover {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
 }
 
 .tags-container,

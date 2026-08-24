@@ -104,6 +104,8 @@ export class ViewerFeature {
     const icon = button?.querySelector('i');
     target.replaceChildren(...(icon ? [icon.cloneNode()] : []));
     target.title = icon ? button.title : '';
+    // Carries the key so the icon gets the same color as in the editor
+    target.dataset.tone = icon ? button.dataset.mood || button.dataset.weather : '';
   }
 
   displayViewerTags(tags) {

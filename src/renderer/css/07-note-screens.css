@@ -72,7 +72,7 @@
 #viewerMood,
 #viewerWeather {
   display: inline-flex;
-  color: var(--text-secondary);
+  color: var(--tone, var(--text-secondary));
 }
 
 #viewerMood:empty,

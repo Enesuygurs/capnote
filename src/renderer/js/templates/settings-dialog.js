@@ -9,27 +9,27 @@ export const SETTINGS_DIALOG = /* HTML */ `
         <h3 class="settings-nav-title" data-i18n="nav.settings">Ayarlar</h3>
         <div class="settings-tabs">
           <button class="settings-tab active" data-tab="general">
-            <i class="fas fa-sliders"></i>
+            <i class="fas fa-sliders tone-blue"></i>
             <span data-i18n="sections.general">Genel</span>
           </button>
           <button class="settings-tab" data-tab="appearance">
-            <i class="fas fa-palette"></i>
+            <i class="fas fa-palette tone-rose"></i>
             <span data-i18n="sections.appearance">Görünüm</span>
           </button>
           <button class="settings-tab" data-tab="notifications">
-            <i class="fas fa-bell"></i>
+            <i class="fas fa-bell tone-amber"></i>
             <span data-i18n="sections.notifications">Bildirimler</span>
           </button>
           <button class="settings-tab" data-tab="system">
-            <i class="fas fa-desktop"></i>
+            <i class="fas fa-desktop tone-slate"></i>
             <span data-i18n="sections.system">Sistem</span>
           </button>
           <button class="settings-tab" data-tab="data">
-            <i class="fas fa-database"></i>
+            <i class="fas fa-database tone-green"></i>
             <span data-i18n="sections.dataManagement">Veri Yönetimi</span>
           </button>
           <button class="settings-tab" data-tab="about">
-            <i class="fas fa-circle-info"></i>
+            <i class="fas fa-circle-info tone-violet"></i>
             <span data-i18n="sections.about">Hakkında</span>
           </button>
         </div>

@@ -252,6 +252,7 @@ input:focus-visible + .toggle-slider {
 .menu {
   display: flex;
   flex-direction: column;
+  gap: var(--stack-gap);
   min-width: 200px;
   padding: var(--space-1);
   background: var(--surface-raised);
@@ -260,7 +261,6 @@ input:focus-visible + .toggle-slider {
 }
 
 .menu-item,
-.note-action-menu-btn,
 .sort-option,
 .select-item {
   display: flex;
@@ -278,19 +278,31 @@ input:focus-visible + .toggle-slider {
   transition: background var(--transition-fast);
 }
 
+/* Menu icons are neutral unless they carry a tone (favorite, pin, lock, ...) */
 .menu-item i,
-.note-action-menu-btn i,
 .sort-option i {
   width: 16px;
   text-align: center;
-  color: var(--text-muted);
+  color: var(--tone, var(--text-muted));
 }
 
 .menu-item:hover,
-.note-action-menu-btn:hover,
 .sort-option:hover,
 .select-item:hover {
   background: var(--tint-hover);
+}
+
+.menu-item:disabled {
+  opacity: 0.45;
+  cursor: default;
+  background: none;
+}
+
+/* Sets the destructive item apart from the others */
+.menu-divider {
+  height: 1px;
+  margin: var(--space-1) var(--space-2);
+  background: var(--divider);
 }
 
 .sort-option.active,
