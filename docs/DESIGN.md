@@ -6,26 +6,28 @@ These rules describe how the interface is built. Every change to the interface f
 
 The window has two layers:
 
-- **Chrome** (`--chrome`): the titlebar and the sidebar share one background with no line between them. The titlebar holds the sidebar toggle and the app mark on the left, and the tools (to-dos, reminders, notifications with their counts, settings) next to the window buttons on the right. Below 900px the tools drop their labels.
+- **Chrome** (`--chrome`): the titlebar and the sidebar share one background with no line between them. The titlebar holds only the sidebar toggle and the window buttons.
 - **Content panel** (`.main-content`, `--surface`): a rounded panel (`--radius-lg`, `--panel-shadow`) on the chrome, 8px from the right and bottom edge (and from the left edge when the sidebar is hidden).
 
 ```
 +----------------------------------------------------------------------+
-| [=] [mark] Capnote  [todos 1] [reminders 1] [inbox 1] [s] [-][o][x]  |
-| [+ New note]          +------------------------------------------+  |
-| [search]              | Title                          [actions] |  |
-| [All | Today | Favs]  | meta                                     |  |
-| NOTES 5      [+] [s]  |------------------------------------------|  |
-| rows                  | page body                                |  |
-|                       |                                          |  |
-|                       +------------------------------------------+  |
+| [=]                                                  [-] [o] [x]     |
+|    [mark] Capnote     +------------------------------------------+   |
+| [+ New note]          | Title                          [actions] |   |
+| [todo][rem ][inbox]   | meta                                     |   |
+| [search]              |------------------------------------------|   |
+| [All | Today | Favs]  | page body                                |   |
+| NOTES 5      [+] [s]  |                                          |   |
+| rows                  |                                          |   |
+|    [gear Settings]    +------------------------------------------+   |
 +----------------------------------------------------------------------+
 ```
 
-**Sidebar** (`--sidebar-width`, 12px side padding), in two parts:
+**Sidebar** (`--sidebar-width`, 12px side padding), in three parts:
 
-1. Fixed top: the new note button, the search field and the list filter (a segmented control), 8px apart.
+1. Fixed top, 8px apart: the app mark (centered, also the home button), the new note button, the tools (to-dos, reminders, notifications as three tiles with their icon, label and count), the search field and the list filter (a segmented control).
 2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons.
+3. Fixed bottom: settings, one full-width row.
 
 **Every screen in the panel** has the same structure:
 
@@ -140,15 +142,16 @@ Text colors: `--text-strong` for titles, `--text-primary` for text, `--text-seco
 - Red (`--error-color`) is only for destructive actions and errors.
 - **Tones** give a kind of thing its own icon color, the same everywhere it appears. An element takes one with a `.tone-*` class (`rose`, `red`, `amber`, `green`, `teal`, `sky`, `blue`, `violet`, `slate`), which sets `--tone`; each theme has its own values.
 
-| Thing                                  | Tone                                                 |
-| -------------------------------------- | ---------------------------------------------------- |
-| Favorite (sidebar heart, menu, viewer) | rose                                                 |
-| Pin / lock                             | blue / violet                                        |
-| Copy                                   | teal                                                 |
-| To-dos / reminders / notifications     | green / amber / blue (titlebar and page)             |
-| Settings tabs                          | a tile each: blue, rose, amber, slate, green, violet |
-| Moods and weather                      | one per value (`05-editor.css`), also in the viewer  |
+| Thing                                  | Tone                                                                       |
+| -------------------------------------- | -------------------------------------------------------------------------- |
+| Favorite (sidebar heart, menu, viewer) | rose                                                                       |
+| Pin / lock                             | blue / violet                                                              |
+| Copy                                   | teal                                                                       |
+| To-dos / reminders / notifications     | green / amber / blue (sidebar tiles and page)                              |
+| Settings tabs                          | a tile each: blue, rose, amber, slate, green, violet                       |
+| Moods and weather                      | one per value (`05-editor.css`): on hover in the editor, and in the viewer |
 
+- A group of icons (mood and weather pickers, toolbars) is never colored all at once: its icons are neutral and only the hovered one shows its tone.
 - Other icons are neutral (`--text-muted` / `--text-secondary`), never the accent.
 - Folder colors are the user's; they color only the folder icon.
 
@@ -159,13 +162,14 @@ Text colors: `--text-strong` for titles, `--text-primary` for text, `--text-seco
 | Class                       | Look                       | Use                                       |
 | --------------------------- | -------------------------- | ----------------------------------------- |
 | `.btn-primary`              | accent fill, white text    | the main action of a view or dialog (one) |
-| `.btn-secondary`            | `--field` fill             | other actions                             |
+| `.btn-tinted`               | accent tint, accent text   | actions repeated in lists, row actions    |
+| `.btn-secondary`            | `--field` fill             | cancel, close and neutral actions         |
 | `.btn-outline`              | transparent, tint on hover | low-emphasis actions                      |
 | `.btn-danger`               | red fill                   | confirming a destructive action           |
 | `.btn-outline.btn-danger`   | red tint, red text         | starting a destructive action             |
 | `.btn-icon` (+ `-sm`/`-xs`) | transparent square         | toolbars, headers, row actions            |
 
-Hover changes color only; nothing moves, scales or glows.
+Actions use the accent: a form's add or set button is `.btn-primary`, and buttons that act on an item in a list are `.btn-tinted`. `.btn-secondary` is only for cancelling, closing and other neutral choices. Hover changes color only; nothing moves, scales or glows.
 
 **Fields** (`.form-input`, 36px; `.form-input-sm`, 32px), **selects** (`.select-small`, the custom `.custom-select`), the **toggle** (36×20), **chips** (`.chip`, 24px, neutral), **counts** (`.nav-count`, 20px pill; accent when unread) and the **segmented control** (`.segmented` / `.segment`) are in `12-controls.css`.
 
