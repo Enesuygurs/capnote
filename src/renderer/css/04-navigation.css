@@ -1,7 +1,121 @@
-/* Sidebar contents: new note, search, list filter, the notes section header and the counts */
+/* Sidebar contents: the app mark, new note, the other screens, search, list filter,
+   the notes section header, the counts and settings */
+
+/* The app mark, centered on the sidebar; it doubles as the home button */
+.app-brand {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.app-brand:hover {
+  background: var(--tint-hover);
+}
+
+.app-brand-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.app-brand-name {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--text-strong);
+}
 
 .sidebar-new-note {
   width: 100%;
+}
+
+/* To-dos, reminders and notifications: three tiles with an icon in their tone, a label and a count */
+.sidebar-tools {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-1);
+}
+
+.sidebar-tool {
+  position: relative;
+  min-width: 0;
+  height: 56px;
+  padding: 0;
+  border-radius: var(--radius-md);
+  background: var(--field);
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.sidebar-tool i {
+  font-size: var(--fs-lg);
+  color: var(--tone, inherit);
+}
+
+.sidebar-tool-label {
+  max-width: 100%;
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-tool:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+.sidebar-tool.active {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+/* A tool's count on the tile's top right corner */
+.sidebar-tool .nav-count {
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--space-1);
+  font-size: 10px;
+  line-height: 16px;
+}
+
+/* Settings: one full-width row at the bottom */
+.sidebar-settings {
+  width: 100%;
+  height: var(--control-md);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.sidebar-settings i {
+  color: var(--text-muted);
+}
+
+.sidebar-settings:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
 }
 
 /* Search field with a leading icon */

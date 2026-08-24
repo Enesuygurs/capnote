@@ -426,7 +426,7 @@ export const NOTE_EDITOR = /* HTML */ `
                 >
               </div>
             </div>
-            <button id="setReminderBtn" class="btn-secondary btn-small">
+            <button id="setReminderBtn" class="btn-primary btn-small">
               <i class="fas fa-plus"></i> <span data-i18n="buttons.add">Ekle</span>
             </button>
             <div id="noteRemindersList" class="note-reminders-list"></div>

@@ -223,7 +223,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                     >Hemen bir test bildirimi göster</small
                   >
                 </div>
-                <button type="button" id="testNativeNotifBtn" class="btn btn-secondary btn-small">
+                <button type="button" id="testNativeNotifBtn" class="btn btn-tinted btn-small">
                   <i class="fas fa-bell"></i>
                   <span data-i18n="buttons.testNotifications">Bildirimleri test et</span>
                 </button>
@@ -282,7 +282,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                     ayarlar) içe aktarın</small
                   >
                 </div>
-                <button id="importAllDataBtn" class="btn-secondary btn-small">
+                <button id="importAllDataBtn" class="btn-tinted btn-small">
                   <i class="fas fa-upload"></i> <span data-i18n="buttons.import">İçe Aktar</span>
                 </button>
               </div>
@@ -293,7 +293,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                     >Tüm verilerin bir yedeğini JSON olarak dışa aktarın</small
                   >
                 </div>
-                <button id="exportAllDataBtn" class="btn-secondary btn-small">
+                <button id="exportAllDataBtn" class="btn-tinted btn-small">
                   <i class="fas fa-download"></i>
                   <span data-i18n="buttons.export">Dışa Aktar</span>
                 </button>
@@ -360,7 +360,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <label data-i18n="updates.title">Güncellemeler</label>
                   <small id="updateStatusText"></small>
                 </div>
-                <button id="updateActionBtn" class="btn btn-secondary btn-small"></button>
+                <button id="updateActionBtn" class="btn btn-tinted btn-small"></button>
               </div>
               <div class="setting-item">
                 <div class="setting-info">

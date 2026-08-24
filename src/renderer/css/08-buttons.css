@@ -1,9 +1,11 @@
 /* Buttons (docs/DESIGN.md: Buttons)
-   Text buttons: .btn-primary, .btn-secondary, .btn-outline, .btn-danger, .btn-outline.btn-danger (quiet destructive);
+   Text buttons: .btn-primary, .btn-tinted (accent tint), .btn-secondary, .btn-outline, .btn-danger,
+   .btn-outline.btn-danger (quiet destructive);
    sizes .btn-small (32px) and .btn-large (44px), 36px otherwise. Icon buttons: .btn-icon 36px, -sm 32px, -xs 28px. */
 
 .btn,
 .btn-primary,
+.btn-tinted,
 .btn-secondary,
 .btn-outline,
 .btn-danger {
@@ -28,6 +30,16 @@
 
 .btn-primary:hover {
   filter: brightness(0.94);
+}
+
+/* An accent action that is not the one main action: row actions, repeated buttons in a list */
+.btn-tinted {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+.btn-tinted:hover {
+  background: var(--accent-tint-strong);
 }
 
 .btn-secondary {
@@ -82,6 +94,7 @@
 
 .btn i,
 .btn-primary i,
+.btn-tinted i,
 .btn-secondary i,
 .btn-outline i,
 .btn-danger i {
@@ -91,6 +104,7 @@
 .btn:disabled,
 .btn-primary:disabled,
 .btn-primary.disabled,
+.btn-tinted:disabled,
 .btn-secondary:disabled,
 .btn-outline:disabled,
 .btn-danger:disabled {

@@ -64,13 +64,13 @@ export class NotificationsFeature {
           <div class="list-card-text notification-message">${this.escapeHtml(this.notificationMessage(n))}</div>
         </div>
         <div class="list-card-actions">
-          <button class="btn-secondary btn-small view-notification-note-btn" data-note-id="${n.noteId}">
+          <button class="btn-tinted btn-small view-notification-note-btn" data-note-id="${n.noteId}">
             <i class="fas fa-eye"></i> ${i18n.t('messages.view')}
           </button>
           ${
             !n.read
               ? `
-            <button class="btn-secondary btn-small mark-read-btn" data-notification-id="${n.id}">
+            <button class="btn-tinted btn-small mark-read-btn" data-notification-id="${n.id}">
               <i class="fas fa-check"></i> ${i18n.t('messages.markAsRead')}
             </button>
           `

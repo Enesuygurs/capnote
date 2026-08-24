@@ -58,7 +58,7 @@ export class TodosFeature {
           </div>
           <div class="input-row">
             <input type="text" class="form-input todo-input" placeholder="${i18n.t('placeholders.newTodo')}" data-section-id="${section.id}">
-            <button class="btn-secondary add-todo-btn" data-section-id="${section.id}">
+            <button class="btn-primary add-todo-btn" data-section-id="${section.id}">
               <i class="fas fa-plus"></i> ${i18n.t('buttons.add')}
             </button>
           </div>
