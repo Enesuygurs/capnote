@@ -148,7 +148,7 @@ body.resizing .modal {
 
   /* Layout */
   --titlebar-height: 40px;
-  --sidebar-width: 264px;
+  --sidebar-width: 280px;
   --gutter: var(--space-8);
 
   /* Motion */
@@ -265,8 +265,7 @@ body {
 }
 
 /* ============ Titlebar ============
-   Sits on the window chrome with the sidebar: toggle and app mark on the left; the tools
-   (to-dos, reminders, notifications, settings) and the window buttons on the right */
+   Sits on the window chrome with the sidebar: the sidebar toggle on the left, window buttons on the right */
 .titlebar {
   height: var(--titlebar-height);
   display: flex;
@@ -288,8 +287,7 @@ body {
   height: 100%;
 }
 
-.hamburger-btn,
-.app-brand {
+.hamburger-btn {
   -webkit-app-region: no-drag;
 }
 
@@ -308,93 +306,6 @@ body {
 .hamburger-btn:hover {
   background: var(--tint-hover);
   color: var(--text-strong);
-}
-
-/* The app mark doubles as the home button */
-.app-brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: var(--control-xs);
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.app-brand:hover {
-  background: var(--tint-hover);
-}
-
-.app-brand-icon {
-  width: 20px;
-  height: 20px;
-}
-
-.app-brand-name {
-  font-size: var(--fs-md);
-  font-weight: 600;
-  color: var(--text-strong);
-}
-
-/* The other screens: labelled buttons with their own icon color and a count */
-.titlebar-tools {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  margin: 0 var(--space-4) 0 auto;
-  -webkit-app-region: no-drag;
-}
-
-.titlebar-tool {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: var(--control-xs);
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-md);
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
-  font-weight: 500;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.titlebar-tool i {
-  width: 16px;
-  text-align: center;
-  color: var(--tone, inherit);
-}
-
-.titlebar-tool:hover {
-  background: var(--tint-hover);
-  color: var(--text-strong);
-}
-
-.titlebar-tool.active {
-  background: var(--accent-tint);
-  color: var(--accent-text);
-}
-
-.titlebar-tool-icon {
-  width: var(--control-sm);
-  justify-content: center;
-  padding: 0;
-}
-
-.titlebar-tool .nav-count {
-  min-width: 18px;
-  height: 18px;
-  line-height: 18px;
-  font-size: 10px;
-}
-
-/* Narrow windows keep the icons and counts only */
-@media (max-width: 900px) {
-  .titlebar-tool-label {
-    display: none;
-  }
 }
 
 .titlebar-controls {

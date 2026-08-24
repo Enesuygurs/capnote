@@ -204,12 +204,13 @@
   --tone: var(--tone-slate);
 }
 
+/* Icons are neutral; a button shows its tone on hover, and the chosen one is filled with the accent */
 .mood-btn,
 .weather-btn {
   height: var(--control-md);
   border-radius: var(--radius-md);
   background: var(--field);
-  color: var(--tone, var(--text-secondary));
+  color: var(--text-secondary);
   font-size: var(--fs-lg);
   cursor: pointer;
   display: flex;
@@ -221,9 +222,9 @@
 .mood-btn:hover,
 .weather-btn:hover {
   background: color-mix(in srgb, var(--tone) 16%, transparent);
+  color: var(--tone);
 }
 
-/* The chosen one is filled with the accent */
 .mood-btn.active,
 .weather-btn.active,
 .mood-btn.active:hover,

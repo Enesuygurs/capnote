@@ -40,36 +40,6 @@
         <button class="hamburger-btn" id="hamburgerBtn" data-i18n-title="titles.toggleSidebar">
           <i class="fas fa-bars"></i>
         </button>
-        <!-- The app mark doubles as the home button -->
-        <button class="app-brand" id="homeBtn" data-i18n-title="titles.home">
-          <img class="app-brand-icon" src="../../assets/icons/source/capnote-small.svg" alt="" />
-          <span class="app-brand-name">Capnote</span>
-        </button>
-      </div>
-      <!-- The other screens and settings, next to the window buttons -->
-      <div class="titlebar-tools">
-        <button class="titlebar-tool" id="todosNav" data-i18n-title="nav.todos">
-          <i class="fas fa-list-check tone-green"></i>
-          <span class="titlebar-tool-label" data-i18n="nav.todos">Yapılacaklar</span>
-          <span class="nav-count hidden" id="todosCount">0</span>
-        </button>
-        <button class="titlebar-tool" id="remindersNav" data-i18n-title="nav.reminders">
-          <i class="fas fa-bell tone-amber"></i>
-          <span class="titlebar-tool-label" data-i18n="nav.reminders">Hatırlatmalar</span>
-          <span class="nav-count hidden" id="activeRemindersCount">0</span>
-        </button>
-        <button class="titlebar-tool" id="notificationsNav" data-i18n-title="nav.notifications">
-          <i class="fas fa-inbox tone-blue"></i>
-          <span class="titlebar-tool-label" data-i18n="nav.notifications">Bildirimler</span>
-          <span class="nav-count hidden" id="activeNotificationsCount">0</span>
-        </button>
-        <button
-          class="titlebar-tool titlebar-tool-icon"
-          id="settingsNav"
-          data-i18n-title="nav.settings"
-        >
-          <i class="fas fa-gear"></i>
-        </button>
       </div>
       <div class="titlebar-controls">
         <button class="titlebar-button minimize" id="minimizeBtn">
@@ -87,12 +57,34 @@
     <div class="app">
       <!-- Sidebar -->
       <div class="sidebar" id="sidebar">
-        <!-- Fixed top: the main action, search and the list filter -->
+        <!-- Fixed top: the app mark, the main action, the other screens, search and the list filter -->
         <div class="sidebar-top">
+          <!-- The app mark doubles as the home button -->
+          <button class="app-brand" id="homeBtn" data-i18n-title="titles.home">
+            <img class="app-brand-icon" src="../../assets/icons/source/capnote-small.svg" alt="" />
+            <span class="app-brand-name">Capnote</span>
+          </button>
           <button class="btn-primary sidebar-new-note" id="newNoteNav">
             <i class="fas fa-plus"></i>
             <span data-i18n="nav.newNote">Yeni Not</span>
           </button>
+          <div class="sidebar-tools">
+            <button class="sidebar-tool" id="todosNav" data-i18n-title="nav.todos">
+              <i class="fas fa-list-check tone-green"></i>
+              <span class="sidebar-tool-label" data-i18n="nav.todos">Yapılacaklar</span>
+              <span class="nav-count hidden" id="todosCount">0</span>
+            </button>
+            <button class="sidebar-tool" id="remindersNav" data-i18n-title="nav.reminders">
+              <i class="fas fa-bell tone-amber"></i>
+              <span class="sidebar-tool-label" data-i18n="nav.reminders">Hatırlatmalar</span>
+              <span class="nav-count hidden" id="activeRemindersCount">0</span>
+            </button>
+            <button class="sidebar-tool" id="notificationsNav" data-i18n-title="nav.notifications">
+              <i class="fas fa-inbox tone-blue"></i>
+              <span class="sidebar-tool-label" data-i18n="nav.notifications">Bildirimler</span>
+              <span class="nav-count hidden" id="activeNotificationsCount">0</span>
+            </button>
+          </div>
           <div class="search-container" id="searchContainer">
             <i class="fas fa-search search-icon"></i>
             <input
@@ -177,6 +169,14 @@
             </div>
           </nav>
         </div>
+
+        <!-- Fixed bottom: settings -->
+        <div class="sidebar-footer">
+          <button class="sidebar-settings" id="settingsNav">
+            <i class="fas fa-gear"></i>
+            <span data-i18n="nav.settings">Ayarlar</span>
+          </button>
+        </div>
       </div>
 
       <!-- Main content -->
@@ -220,7 +220,7 @@
               </p>
             </div>
             <div class="page-actions">
-              <button id="markAllReadBtn" class="btn-secondary btn-small">
+              <button id="markAllReadBtn" class="btn-tinted btn-small">
                 <i class="fas fa-check-double"></i>
                 <span data-i18n="buttons.markAllRead">Tümünü okundu işaretle</span>
               </button>
