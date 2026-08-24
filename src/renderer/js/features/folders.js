@@ -238,7 +238,6 @@ export class FoldersFeature {
   // Fill a folder's notes container and hide the folder when filtering leaves it empty
   renderFolderNotes(container) {
     const folderId = container.getAttribute('data-folder-id');
-    this.discardDetachedMenus();
     container.innerHTML = '';
     const notes = this.getSortedNotes(this.visibleFolderNotes(folderId));
     notes.forEach((note) => container.appendChild(this.createNoteItem(note, true)));
@@ -502,9 +501,6 @@ export class FoldersFeature {
         }
       }
 
-      // Update any action-button states that may appear in multiple places
-      this.updateActionButtonStates(noteId);
-
       // If viewing a special filter that depends on membership (favorites), refresh the view
       if (this.currentFilter === 'favorites') this.updateNotesList();
     } catch (error) {
@@ -533,12 +529,9 @@ export class FoldersFeature {
 
   // Context menu functions
   showFolderContextMenu(x, y, folderId) {
+    this.hideNoteContextMenu();
     this.selectedFolderId = folderId;
-
-    // Position the context menu
-    this.contextMenu.style.left = x + 'px';
-    this.contextMenu.style.top = y + 'px';
-    this.contextMenu.classList.remove('hidden');
+    this.positionMenu(this.contextMenu, x, y);
   }
 
   hideContextMenu() {

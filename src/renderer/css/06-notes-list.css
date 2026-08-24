@@ -31,16 +31,23 @@
   font-weight: 500;
 }
 
+/* Rows in a list never touch, so a hovered row stays apart from the active one */
+.sidebar-nav .nav-item,
+.sidebar-nav .note-item {
+  margin-bottom: var(--stack-gap);
+}
+
+/* Icons are neutral unless they carry a tone: a pinned note (blue), a locked note (violet) */
 .nav-icon {
   width: 16px;
   flex-shrink: 0;
   text-align: center;
   font-size: var(--fs-md);
-  color: var(--text-muted);
+  color: var(--tone, var(--text-muted));
 }
 
 .note-item.active .nav-icon {
-  color: inherit;
+  color: var(--tone, inherit);
 }
 
 .nav-text {
@@ -51,52 +58,9 @@
   text-overflow: ellipsis;
 }
 
-/* While the options button shows, the title makes room for it */
-.note-item:hover .note-item-title,
-.note-item:has(.menu-open) .note-item-title {
-  padding-right: var(--space-6);
-}
-
-/* Options button on the right of a note row; the menu itself is a .menu */
-.note-options-container {
-  position: absolute;
-  right: var(--space-1);
-  top: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-  z-index: 1;
-}
-
-.note-item:hover .note-options-container,
-.note-options-container.menu-open {
-  opacity: 1;
-}
-
-.more-options-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition-fast);
-}
-
-.more-options-btn:hover {
-  background: var(--tint-strong);
-  color: var(--text-strong);
-}
-
-.note-options-menu {
-  position: fixed;
-  z-index: var(--z-popover);
-}
-
-.note-options-menu.hidden {
-  display: none !important;
+/* A favorite: a small heart at the end of the row */
+.note-item-favorite {
+  flex-shrink: 0;
+  font-size: var(--fs-xs);
+  color: var(--tone);
 }

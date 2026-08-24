@@ -20,11 +20,10 @@ export const NOTE_EDITOR = /* HTML */ `
         </div>
       </div>
       <div class="page-actions editor-actions">
-        <button id="saveNoteBtn" class="btn-icon" data-i18n-title="buttons.save">
-          <i class="fas fa-save"></i>
-        </button>
-        <button id="cancelNoteBtn" class="btn-icon" data-i18n-title="buttons.cancel">
-          <i class="fas fa-times"></i>
+        <button id="cancelNoteBtn" class="btn-secondary" data-i18n="buttons.cancel">İptal</button>
+        <button id="saveNoteBtn" class="btn-primary">
+          <i class="fas fa-check"></i>
+          <span data-i18n="buttons.save">Kaydet</span>
         </button>
       </div>
     </div>

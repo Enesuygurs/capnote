@@ -17,7 +17,14 @@ export async function run() {
     before,
     after: a.lastModified.textContent,
     words: a.viewerWordCount.textContent,
-    menuLabel: document.querySelector('.note-options-menu .favorite-btn span')?.textContent,
+    menuLabel: (() => {
+      a.showNoteContextMenu(10, 10, a.currentNote.id);
+      const text = document.querySelector(
+        '#noteContextMenu [data-action="favorite"] span'
+      ).textContent;
+      a.hideNoteContextMenu();
+      return text;
+    })(),
   };
 }
 

@@ -137,9 +137,6 @@ export class LockFeature {
     note.updatedAt = new Date().toISOString();
     await this.saveNotes();
 
-    // Update all instances of this note's action buttons
-    this.updateActionButtonStates(noteId);
-
     // Only update the specific folder if note is in a folder, otherwise update main list
     if (note.folderId) {
       this.updateSpecificFolder(note.folderId);

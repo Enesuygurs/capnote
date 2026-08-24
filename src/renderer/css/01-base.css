@@ -90,6 +90,18 @@ body.resizing .modal {
   --danger-tint: color-mix(in srgb, var(--error-color) 12%, transparent);
   --danger-tint-strong: color-mix(in srgb, var(--error-color) 20%, transparent);
 
+  /* Tones: each kind of thing keeps its own icon color (favorite, pin, lock, the tools, moods).
+     An element picks one with a .tone-* class, which sets --tone */
+  --tone-rose: #e11d48;
+  --tone-red: #dc2626;
+  --tone-amber: #d97706;
+  --tone-green: #16a34a;
+  --tone-teal: #0d9488;
+  --tone-sky: #0284c7;
+  --tone-blue: #2563eb;
+  --tone-violet: #7c3aed;
+  --tone-slate: #64748b;
+
   /* Shadows: only floating surfaces have one */
   --shadow-popover: 0 8px 24px rgba(15, 23, 42, 0.14);
   --shadow-modal: 0 16px 40px rgba(15, 23, 42, 0.2);
@@ -115,7 +127,8 @@ body.resizing .modal {
   --fs-4xl: 28px;
   --fs-5xl: 32px;
 
-  /* Spacing on a 4px grid */
+  /* Spacing on a 4px grid; --stack-gap keeps highlighted neighbours (rows, tabs, menu items) apart */
+  --stack-gap: 2px;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -185,6 +198,16 @@ body.resizing .modal {
   --warning-color: #f59e0b;
   --error-color: #ef4444;
 
+  --tone-rose: #fb7185;
+  --tone-red: #f87171;
+  --tone-amber: #fbbf24;
+  --tone-green: #4ade80;
+  --tone-teal: #2dd4bf;
+  --tone-sky: #38bdf8;
+  --tone-blue: #60a5fa;
+  --tone-violet: #a78bfa;
+  --tone-slate: #94a3b8;
+
   --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.45);
   --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.55);
   --overlay: rgba(0, 0, 0, 0.5);
@@ -212,8 +235,38 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Tone classes: set the --tone an element (or its icon rules) colors with */
+.tone-rose {
+  --tone: var(--tone-rose);
+}
+.tone-red {
+  --tone: var(--tone-red);
+}
+.tone-amber {
+  --tone: var(--tone-amber);
+}
+.tone-green {
+  --tone: var(--tone-green);
+}
+.tone-teal {
+  --tone: var(--tone-teal);
+}
+.tone-sky {
+  --tone: var(--tone-sky);
+}
+.tone-blue {
+  --tone: var(--tone-blue);
+}
+.tone-violet {
+  --tone: var(--tone-violet);
+}
+.tone-slate {
+  --tone: var(--tone-slate);
+}
+
 /* ============ Titlebar ============
-   Sits on the window chrome with the sidebar: toggle and app mark on the left, window buttons on the right */
+   Sits on the window chrome with the sidebar: toggle and app mark on the left; the tools
+   (to-dos, reminders, notifications, settings) and the window buttons on the right */
 .titlebar {
   height: var(--titlebar-height);
   display: flex;
@@ -282,6 +335,66 @@ body {
   font-size: var(--fs-md);
   font-weight: 600;
   color: var(--text-strong);
+}
+
+/* The other screens: labelled buttons with their own icon color and a count */
+.titlebar-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0 var(--space-4) 0 auto;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar-tool {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-xs);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.titlebar-tool i {
+  width: 16px;
+  text-align: center;
+  color: var(--tone, inherit);
+}
+
+.titlebar-tool:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.titlebar-tool.active {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+.titlebar-tool-icon {
+  width: var(--control-sm);
+  justify-content: center;
+  padding: 0;
+}
+
+.titlebar-tool .nav-count {
+  min-width: 18px;
+  height: 18px;
+  line-height: 18px;
+  font-size: 10px;
+}
+
+/* Narrow windows keep the icons and counts only */
+@media (max-width: 900px) {
+  .titlebar-tool-label {
+    display: none;
+  }
 }
 
 .titlebar-controls {

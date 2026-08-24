@@ -7,7 +7,7 @@
 }
 
 /* ============ Sidebar ============
-   Three parts: a fixed top (new note, search, filter), the scrolling list and a fixed bottom toolbar */
+   Two parts: a fixed top (new note, search, filter) and the scrolling list */
 .sidebar {
   width: var(--sidebar-width);
   flex-shrink: 0;
@@ -47,13 +47,6 @@
   display: none;
 }
 
-.sidebar-footer {
-  display: flex;
-  gap: var(--space-1);
-  padding: var(--space-2) var(--space-3) var(--space-3);
-  flex-shrink: 0;
-}
-
 /* ============ Content panel ============
    One rounded panel on the chrome; the sidebar and titlebar need no divider */
 .main-content {
@@ -90,10 +83,24 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-6);
+  gap: var(--space-4);
   padding: var(--space-6) var(--gutter);
   border-bottom: 1px solid var(--divider);
   flex-shrink: 0;
+}
+
+/* A screen's own icon before its title (to-dos, reminders, notifications), in the screen's tone */
+.page-icon {
+  width: var(--control-lg);
+  height: var(--control-lg);
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  color: var(--tone);
+  font-size: var(--fs-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .page-heading {

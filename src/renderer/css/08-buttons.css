@@ -134,11 +134,16 @@
 }
 
 .btn-icon.active,
-.btn-icon.favorited,
-.btn-icon.active:hover,
-.btn-icon.favorited:hover {
+.btn-icon.active:hover {
   background: var(--accent-tint);
   color: var(--accent-text);
+}
+
+/* A favorite keeps the favorite tone (the same heart as in the sidebar and the menu) */
+.btn-icon.favorited,
+.btn-icon.favorited:hover {
+  background: color-mix(in srgb, var(--tone-rose) 14%, transparent);
+  color: var(--tone-rose);
 }
 
 .btn-icon-danger:hover {

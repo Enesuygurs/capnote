@@ -122,10 +122,7 @@ export async function run() {
     a.hideEmojiPanel();
     a.hideContextMenu();
     a.closeAllDropdowns();
-    document.querySelectorAll('.note-options-menu').forEach((m) => {
-      m.classList.add('hidden');
-      m.style.display = 'none';
-    });
+    a.hideNoteContextMenu();
     a.sortDropdown.classList.add('hidden');
     await wait(50);
   };
@@ -163,7 +160,7 @@ export async function run() {
     await shot(theme + '-07-html-preview');
     a.toggleHtmlMode();
     a.cancelEdit();
-    document.querySelector('.note-item .more-options-btn').click();
+    a.showNoteContextMenu(120, 236, byTitle('Weekly plan').id);
     await shot(theme + '-08-note-menu');
     await closeAll();
     const folder = document.querySelector('.folder-item');
