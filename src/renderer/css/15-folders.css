@@ -40,11 +40,13 @@
   color: var(--accent-color) !important;
 }
 
-/* Where a dragged folder will be placed */
+/* Where a dragged folder or note will be placed */
 .folder-item.insert-before::before,
 .default-folder.insert-before::before,
+.note-item.insert-before::before,
 .folder-item.insert-after::after,
-.default-folder.insert-after::after {
+.default-folder.insert-after::after,
+.note-item.insert-after::after {
   content: '';
   position: absolute;
   left: var(--space-2);
@@ -56,13 +58,15 @@
 }
 
 .folder-item.insert-before::before,
-.default-folder.insert-before::before {
-  top: -1px;
+.default-folder.insert-before::before,
+.note-item.insert-before::before {
+  top: -2px;
 }
 
 .folder-item.insert-after::after,
-.default-folder.insert-after::after {
-  bottom: -1px;
+.default-folder.insert-after::after,
+.note-item.insert-after::after {
+  bottom: -2px;
 }
 
 /* Dropping a note back into the root list */

@@ -12,6 +12,7 @@ export const DEFAULT_SETTINGS = {
   syncFolderAccent: false,
   folderColorsBackup: null,
   maxPinnedNotes: 3,
+  noteSort: 'date-desc',
   autoSave: true,
   confirmDelete: true,
   onNoteDelete: 'lastNote',

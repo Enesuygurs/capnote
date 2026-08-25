@@ -112,7 +112,8 @@
     "dateAsc": "Date (Oldest → Newest)",
     "updatedDesc": "Recently Updated",
     "titleAsc": "Title (A → Z)",
-    "titleDesc": "Title (Z → A)"
+    "titleDesc": "Title (Z → A)",
+    "manual": "Custom order (drag)"
   },
   "sections": {
     "mood": "Mood",

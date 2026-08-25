@@ -64,6 +64,8 @@ export class SettingsFeature {
   loadSettings() {
     const settings = this.settings;
     if (this.languageSelect) this.languageSelect.value = settings.language;
+    this.currentSort = settings.noteSort;
+    this.markSortOption(settings.noteSort);
 
     this.darkModeToggle.checked = settings.darkMode;
     this.applyTheme(settings.darkMode);
