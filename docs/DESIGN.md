@@ -25,9 +25,9 @@ The window has two layers:
 
 **Sidebar** (`--sidebar-width`, 12px side padding), in three parts:
 
-1. Fixed top, 8px apart: the app mark (centered, also the home button), the new note button, the tools (to-dos, reminders, notifications as three tiles with their icon, label and count), the search field and the list filter (a segmented control).
-2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons.
-3. Fixed bottom: settings, one full-width row.
+1. Fixed top, 8px apart: the app mark (centered, also the home button), the new note button, the tools (to-dos, reminders, notifications: three quick buttons, each a 36px icon tile in its tone with the count on its corner and the label below; the open screen's tile is filled with its tone), the search field and the list filter (a segmented control).
+2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons. Dragging a note onto another places it before or after it (an insertion line shows where) and switches the list to the custom order.
+3. Fixed bottom: settings, one full-width row, left-aligned with the list rows.
 
 **Every screen in the panel** has the same structure:
 
@@ -55,7 +55,7 @@ States that could be a border use something else:
 | Keyboard focus         | `--focus-ring` (a box-shadow)                       |
 | Active / selected / on | `--accent-tint` background and `--accent-text`      |
 | Chosen segment / tab   | a raised segment (`--surface-raised` + soft shadow) |
-| Pinned / locked note   | blue thumbtack / violet lock in place of the icon   |
+| Pinned / locked note   | amber thumbtack / violet lock in place of the icon  |
 | Favorite note          | a rose heart at the end of the row                  |
 | Unread notification    | an 8px accent dot before the title                  |
 | Selected color swatch  | `--swatch-ring`                                     |
@@ -145,7 +145,7 @@ Text colors: `--text-strong` for titles, `--text-primary` for text, `--text-seco
 | Thing                                  | Tone                                                                       |
 | -------------------------------------- | -------------------------------------------------------------------------- |
 | Favorite (sidebar heart, menu, viewer) | rose                                                                       |
-| Pin / lock                             | blue / violet                                                              |
+| Pin / lock                             | amber / violet                                                             |
 | Copy                                   | teal                                                                       |
 | To-dos / reminders / notifications     | green / amber / blue (sidebar tiles and page)                              |
 | Settings tabs                          | a tile each: blue, rose, amber, slate, green, violet                       |
