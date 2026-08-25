@@ -233,7 +233,7 @@ export class NoteListFeature {
     const icon = note.isLocked
       ? 'fa-lock tone-violet'
       : note.isPinned
-        ? 'fa-thumbtack tone-blue'
+        ? 'fa-thumbtack tone-amber'
         : 'fa-file-lines';
     div.innerHTML = `
             <i class="fas ${icon} nav-icon"></i>

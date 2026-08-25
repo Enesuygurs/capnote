@@ -197,7 +197,7 @@ export const APP_DIALOGS = /* HTML */ `
       <span></span>
     </button>
     <button class="menu-item" data-action="pin" role="menuitem">
-      <i class="fas fa-thumbtack tone-blue"></i>
+      <i class="fas fa-thumbtack tone-amber"></i>
       <span></span>
     </button>
     <button class="menu-item" data-action="lock" role="menuitem">
