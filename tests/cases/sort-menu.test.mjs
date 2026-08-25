@@ -23,6 +23,6 @@ export const expected = {
   active: 'title-asc',
   hidden: true,
   enText: 'Title (A → Z)',
-  iconsKept: 5,
+  iconsKept: 6,
   rowHeight: 32,
 };

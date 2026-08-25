@@ -112,7 +112,8 @@
     "dateAsc": "Tarih (Eski → Yeni)",
     "updatedDesc": "Son Güncellenen",
     "titleAsc": "Başlık (A → Z)",
-    "titleDesc": "Başlık (Z → A)"
+    "titleDesc": "Başlık (Z → A)",
+    "manual": "Özel sıra (sürükle)"
   },
   "sections": {
     "mood": "Ruh Hali",

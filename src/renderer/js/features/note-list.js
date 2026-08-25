@@ -207,6 +207,9 @@ export class NoteListFeature {
           return a.title.localeCompare(b.title);
         case 'title-desc':
           return b.title.localeCompare(a.title);
+        case 'manual':
+          // Dragged notes keep their place; newer notes without one come first
+          return (a.order ?? -1) - (b.order ?? -1) || new Date(b.createdAt) - new Date(a.createdAt);
         default:
           return new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt);
       }
@@ -250,13 +253,65 @@ export class NoteListFeature {
 
     div.addEventListener('dragstart', (e) => {
       e.dataTransfer.setData('text/plain', note.id);
+      this.draggedNoteId = note.id;
       div.classList.add('dragging');
     });
     div.addEventListener('dragend', () => {
+      this.draggedNoteId = null;
       div.classList.remove('dragging');
     });
 
+    // Dropping another note on this row places it before or after this one
+    const dropBefore = (e) => {
+      const rect = div.getBoundingClientRect();
+      return e.clientY < rect.top + rect.height / 2;
+    };
+    div.addEventListener('dragover', (e) => {
+      if (!this.draggedNoteId || this.draggedNoteId === note.id) return;
+      e.preventDefault();
+      e.stopPropagation();
+      document.getElementById('notesListContainer')?.classList.remove('drag-over');
+      const before = dropBefore(e);
+      div.classList.toggle('insert-before', before);
+      div.classList.toggle('insert-after', !before);
+    });
+    div.addEventListener('dragleave', () => div.classList.remove('insert-before', 'insert-after'));
+    div.addEventListener('drop', (e) => {
+      div.classList.remove('insert-before', 'insert-after');
+      if (!this.draggedNoteId || this.draggedNoteId === note.id) return;
+      e.preventDefault();
+      e.stopPropagation();
+      this.reorderNote(this.draggedNoteId, note.id, dropBefore(e));
+    });
+
     return div;
+  }
+
+  // Place a note before or after another one (moving it into that note's folder if needed) and
+  // switch the list to the custom order
+  async reorderNote(sourceId, targetId, before) {
+    const source = this.notes.find((n) => n.id === sourceId);
+    const target = this.notes.find((n) => n.id === targetId);
+    if (!source || !target || source === target) return;
+
+    const folderId = target.folderId || null;
+    if ((source.folderId || null) !== folderId) {
+      source.folderId = folderId;
+      source.updatedAt = new Date().toISOString();
+    }
+    // Number the notes of that list in the order they are shown now, with the note in its new place
+    const siblings = this.getSortedNotes(
+      this.notes.filter((n) => n !== source && (n.folderId || null) === folderId)
+    );
+    siblings.splice(siblings.indexOf(target) + (before ? 0 : 1), 0, source);
+    siblings.forEach((n, i) => {
+      n.order = i;
+    });
+
+    if (this.currentSort !== 'manual') this.changeSorting('manual');
+    await this.saveNotes();
+    this.updateNotesList();
+    this.updateFoldersList();
   }
 
   // The right-click menu of a note: its labels follow the note's current state
@@ -313,7 +368,16 @@ export class NoteListFeature {
 
   changeSorting(sort) {
     this.currentSort = sort;
+    this.markSortOption(sort);
+    if (this.settings.noteSort !== sort) this.setSetting('noteSort', sort);
     this.updateNotesList();
+    this.updateFolderNotes();
+  }
+
+  markSortOption(sort) {
+    document.querySelectorAll('.sort-option').forEach((option) => {
+      option.classList.toggle('active', option.dataset.value === sort);
+    });
   }
 
   setSortOrder(sort) {
@@ -386,11 +450,7 @@ export class NoteListFeature {
     // Sort dropdown options
     document.querySelectorAll('.sort-option').forEach((option) => {
       option.addEventListener('click', (e) => {
-        // Remove active from all options
-        document.querySelectorAll('.sort-option').forEach((opt) => opt.classList.remove('active'));
-        // Add active to clicked option
-        e.currentTarget.classList.add('active');
-        // Apply sort
+        // Apply sort (marks the chosen option)
         this.setSortOrder(e.currentTarget.dataset.value);
         // Close dropdown
         this.sortDropdown.classList.add('hidden');
