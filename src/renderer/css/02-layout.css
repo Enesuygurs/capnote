@@ -7,8 +7,8 @@
 }
 
 /* ============ Sidebar ============
-   Three parts: a fixed top (app mark, new note, the other screens, search, filter),
-   the scrolling list and a fixed bottom (settings) */
+   Three parts: a fixed top (app mark, new note, search, filter), the scrolling list and a fixed
+   bottom row (settings and the other screens) */
 .sidebar {
   width: var(--sidebar-width);
   flex-shrink: 0;
@@ -49,6 +49,9 @@
 }
 
 .sidebar-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   padding: var(--space-2) var(--space-3) var(--space-3);
   flex-shrink: 0;
 }
