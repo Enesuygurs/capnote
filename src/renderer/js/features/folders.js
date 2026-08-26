@@ -106,26 +106,30 @@ export class FoldersFeature {
       );
     }
 
-    // Extended palette (16 colors)
+    // Vivid, mid-light colors that read on both themes: no dark or washed-out shades
     const colors = [
       '#3B82F6', // blue
-      '#1E40AF', // indigo
-      '#06B6D4', // teal
-      '#0891B2', // cyan
-      '#10B981', // green
-      '#065F46', // dark green
+      '#0EA5E9', // sky
+      '#06B6D4', // cyan
+      '#14B8A6', // teal
+      '#22C55E', // green
       '#84CC16', // lime
+      '#EAB308', // yellow
       '#F59E0B', // amber
       '#F97316', // orange
-      '#EA580C', // deep orange
       '#EF4444', // red
-      '#BE185D', // magenta
+      '#F43F5E', // rose
       '#EC4899', // pink
-      '#8B5CF6', // purple
-      '#7C3AED', // deep purple
-      '#64748B', // slate
+      '#D946EF', // fuchsia
+      '#A855F7', // purple
+      '#8B5CF6', // violet
+      '#6366F1', // indigo
     ];
-    return colors[Math.floor(Math.random() * colors.length)];
+    // Prefer a color no other folder has yet
+    const used = new Set(this.folders.map((f) => String(f.color || '').toUpperCase()));
+    const free = colors.filter((c) => !used.has(c));
+    const pool = free.length ? free : colors;
+    return pool[Math.floor(Math.random() * pool.length)];
   }
 
   updateFoldersList() {
