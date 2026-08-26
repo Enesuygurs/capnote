@@ -1,11 +1,12 @@
-/* Sidebar contents: the app mark, new note, the other screens, search, list filter,
-   the notes section header, the counts and settings */
+/* Sidebar contents: the app mark, new note, search, list filter, the notes section header,
+   the counts, and the bottom row with settings and the other screens */
 
-/* The app mark, centered on the sidebar; it doubles as the home button */
+/* The app mark, centered on a full-width button; it doubles as the home button */
 .app-brand {
-  align-self: center;
+  width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-3);
   height: var(--space-12);
   padding: 0 var(--space-3);
@@ -20,12 +21,12 @@
 }
 
 .app-brand-icon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 }
 
 .app-brand-name {
-  font-size: var(--fs-2xl);
+  font-size: var(--fs-xl);
   font-weight: 600;
   color: var(--text-strong);
 }
@@ -34,86 +35,10 @@
   width: 100%;
 }
 
-/* To-dos, reminders and notifications: three quick buttons, each an icon tile in its tone with
-   the count on its corner and the label below */
-.sidebar-tools {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-1);
-}
-
-.sidebar-tool {
-  min-width: 0;
-  padding: var(--space-2) 0;
-  border-radius: var(--radius-lg);
-  color: var(--text-secondary);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.sidebar-tool-icon {
-  position: relative;
-  width: var(--control-md);
-  height: var(--control-md);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--tone) 14%, transparent);
-  color: var(--tone);
-  font-size: var(--fs-base);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition-fast);
-}
-
-.sidebar-tool-label {
-  max-width: 100%;
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  line-height: 16px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.sidebar-tool:hover {
-  background: var(--tint-hover);
-  color: var(--text-strong);
-}
-
-.sidebar-tool:hover .sidebar-tool-icon {
-  background: color-mix(in srgb, var(--tone) 22%, transparent);
-}
-
-/* The open screen: the tile fills with its tone */
-.sidebar-tool.active {
-  color: var(--text-strong);
-}
-
-.sidebar-tool.active .sidebar-tool-icon {
-  background: var(--tone);
-  color: var(--chrome);
-}
-
-/* The count sits on the icon tile's top right corner, cut out from the chrome */
-.sidebar-tool .nav-count {
-  position: absolute;
-  top: calc(var(--space-2) * -1);
-  right: calc(var(--space-2) * -1);
-  min-width: 18px;
-  height: 18px;
-  padding: 0 var(--space-1);
-  font-size: 10px;
-  line-height: 18px;
-  box-shadow: 0 0 0 2px var(--chrome);
-}
-
-/* Settings: one full-width row at the bottom, aligned with the list rows */
+/* Bottom row: settings with its label on the left, the other screens as icon buttons on the right */
 .sidebar-settings {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   height: var(--control-md);
   padding: 0 var(--space-2);
   border-radius: var(--radius-md);
@@ -133,6 +58,49 @@
 .sidebar-settings:hover {
   background: var(--tint-hover);
   color: var(--text-strong);
+}
+
+.sidebar-tools {
+  display: flex;
+  gap: var(--stack-gap);
+}
+
+.sidebar-tool {
+  position: relative;
+  width: var(--control-md);
+  height: var(--control-md);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.sidebar-tool i {
+  color: var(--tone);
+}
+
+.sidebar-tool:hover {
+  background: var(--tint-hover);
+}
+
+.sidebar-tool.active {
+  background: color-mix(in srgb, var(--tone) 16%, transparent);
+}
+
+/* A tool's count on the button's top right corner, cut out from the chrome */
+.sidebar-tool .nav-count {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--space-1);
+  font-size: 10px;
+  line-height: 16px;
+  box-shadow: 0 0 0 2px var(--chrome);
 }
 
 /* Search field with a leading icon */

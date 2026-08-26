@@ -5,13 +5,6 @@
   color-scheme: dark;
 }
 
-/* The raised segment and emoji tab need a lighter step than the field they sit in */
-[data-theme='dark'] .segment.active,
-[data-theme='dark'] .emoji-tab.active {
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: none;
-}
-
 [data-theme='dark'] .toggle-slider::before {
   background: #f2f2f2;
 }

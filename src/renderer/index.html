@@ -41,6 +41,7 @@
           <i class="fas fa-bars"></i>
         </button>
       </div>
+      <span class="titlebar-title">Capnote</span>
       <div class="titlebar-controls">
         <button class="titlebar-button minimize" id="minimizeBtn">
           <i class="fas fa-minus"></i>
@@ -57,7 +58,7 @@
     <div class="app">
       <!-- Sidebar -->
       <div class="sidebar" id="sidebar">
-        <!-- Fixed top: the app mark, the main action, the other screens, search and the list filter -->
+        <!-- Fixed top: the app mark, the main action, search and the list filter -->
         <div class="sidebar-top">
           <!-- The app mark doubles as the home button -->
           <button class="app-brand" id="homeBtn" data-i18n-title="titles.home">
@@ -68,29 +69,6 @@
             <i class="fas fa-plus"></i>
             <span data-i18n="nav.newNote">Yeni Not</span>
           </button>
-          <div class="sidebar-tools">
-            <button class="sidebar-tool" id="todosNav" data-i18n-title="nav.todos">
-              <span class="sidebar-tool-icon tone-green">
-                <i class="fas fa-list-check"></i>
-                <span class="nav-count hidden" id="todosCount">0</span>
-              </span>
-              <span class="sidebar-tool-label" data-i18n="nav.todos">Yapılacaklar</span>
-            </button>
-            <button class="sidebar-tool" id="remindersNav" data-i18n-title="nav.reminders">
-              <span class="sidebar-tool-icon tone-amber">
-                <i class="fas fa-bell"></i>
-                <span class="nav-count hidden" id="activeRemindersCount">0</span>
-              </span>
-              <span class="sidebar-tool-label" data-i18n="nav.reminders">Hatırlatmalar</span>
-            </button>
-            <button class="sidebar-tool" id="notificationsNav" data-i18n-title="nav.notifications">
-              <span class="sidebar-tool-icon tone-blue">
-                <i class="fas fa-inbox"></i>
-                <span class="nav-count hidden" id="activeNotificationsCount">0</span>
-              </span>
-              <span class="sidebar-tool-label" data-i18n="nav.notifications">Bildirimler</span>
-            </button>
-          </div>
           <div class="search-container" id="searchContainer">
             <i class="fas fa-search search-icon"></i>
             <input
@@ -180,12 +158,34 @@
           </nav>
         </div>
 
-        <!-- Fixed bottom: settings -->
+        <!-- Fixed bottom: settings, then the other screens as icon buttons -->
         <div class="sidebar-footer">
           <button class="sidebar-settings" id="settingsNav">
             <i class="fas fa-gear"></i>
             <span data-i18n="nav.settings">Ayarlar</span>
           </button>
+          <div class="sidebar-tools">
+            <button class="sidebar-tool tone-green" id="todosNav" data-i18n-title="nav.todos">
+              <i class="fas fa-list-check"></i>
+              <span class="nav-count hidden" id="todosCount">0</span>
+            </button>
+            <button
+              class="sidebar-tool tone-amber"
+              id="remindersNav"
+              data-i18n-title="nav.reminders"
+            >
+              <i class="fas fa-bell"></i>
+              <span class="nav-count hidden" id="activeRemindersCount">0</span>
+            </button>
+            <button
+              class="sidebar-tool tone-blue"
+              id="notificationsNav"
+              data-i18n-title="nav.notifications"
+            >
+              <i class="fas fa-inbox"></i>
+              <span class="nav-count hidden" id="activeNotificationsCount">0</span>
+            </button>
+          </div>
         </div>
       </div>
 

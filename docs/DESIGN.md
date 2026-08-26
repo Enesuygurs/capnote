@@ -6,28 +6,28 @@ These rules describe how the interface is built. Every change to the interface f
 
 The window has two layers:
 
-- **Chrome** (`--chrome`): the titlebar and the sidebar share one background with no line between them. The titlebar holds only the sidebar toggle and the window buttons.
+- **Chrome** (`--chrome`): the titlebar and the sidebar share one background with no line between them. The titlebar holds the sidebar toggle on the left, the app name centered on the window, and the window buttons on the right.
 - **Content panel** (`.main-content`, `--surface`): a rounded panel (`--radius-lg`, `--panel-shadow`) on the chrome, 8px from the right and bottom edge (and from the left edge when the sidebar is hidden).
 
 ```
 +----------------------------------------------------------------------+
-| [=]                                                  [-] [o] [x]     |
-|    [mark] Capnote     +------------------------------------------+   |
+| [=]                           Capnote                [-] [o] [x]     |
+|    [mark Capnote]     +------------------------------------------+   |
 | [+ New note]          | Title                          [actions] |   |
-| [todo][rem ][inbox]   | meta                                     |   |
-| [search]              |------------------------------------------|   |
-| [All | Today | Favs]  | page body                                |   |
-| NOTES 5      [+] [s]  |                                          |   |
+| [search]              | meta                                     |   |
+| [All | Today | Favs]  |------------------------------------------|   |
+| NOTES 5      [+] [s]  | page body                                |   |
 | rows                  |                                          |   |
-|    [gear Settings]    +------------------------------------------+   |
+|                       |                                          |   |
+| [gear]  [t] [r] [i]   +------------------------------------------+   |
 +----------------------------------------------------------------------+
 ```
 
 **Sidebar** (`--sidebar-width`, 12px side padding), in three parts:
 
-1. Fixed top, 8px apart: the app mark (centered, also the home button), the new note button, the tools (to-dos, reminders, notifications: three quick buttons, each a 36px icon tile in its tone with the count on its corner and the label below; the open screen's tile is filled with its tone), the search field and the list filter (a segmented control).
+1. Fixed top, 8px apart: the app mark (a full-width home button with the mark centered), the new note button, the search field and the list filter (a segmented control).
 2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons. Dragging a note onto another places it before or after it (an insertion line shows where) and switches the list to the custom order.
-3. Fixed bottom: settings, one full-width row, left-aligned with the list rows.
+3. Fixed bottom row: settings (icon and label, left-aligned with the list rows), then the tools on the right: to-dos, reminders and notifications as 36px icon buttons in their tone, with the count on the corner and the name as a tooltip. The open screen's button gets a tint of its tone.
 
 **Every screen in the panel** has the same structure:
 
@@ -49,16 +49,16 @@ Lines (`--divider`, 1px) are allowed only in these places:
 
 States that could be a border use something else:
 
-| State                  | Shown with                                          |
-| ---------------------- | --------------------------------------------------- |
-| Hover                  | `--tint-hover` (or `--field-hover` on fields)       |
-| Keyboard focus         | `--focus-ring` (a box-shadow)                       |
-| Active / selected / on | `--accent-tint` background and `--accent-text`      |
-| Chosen segment / tab   | a raised segment (`--surface-raised` + soft shadow) |
-| Pinned / locked note   | amber thumbtack / violet lock in place of the icon  |
-| Favorite note          | a rose heart at the end of the row                  |
-| Unread notification    | an 8px accent dot before the title                  |
-| Selected color swatch  | `--swatch-ring`                                     |
+| State                  | Shown with                                        |
+| ---------------------- | ------------------------------------------------- |
+| Hover                  | `--tint-hover` (or `--field-hover` on fields)     |
+| Keyboard focus         | `--focus-ring` (a box-shadow)                     |
+| Active / selected / on | `--accent-tint` background and `--accent-text`    |
+| Chosen segment / tab   | `--segment-active`, one soft step above the track |
+| Pinned / locked note   | gold thumbtack / violet lock in place of the icon |
+| Favorite note          | a rose heart at the end of the row                |
+| Unread notification    | an 8px accent dot before the title                |
+| Selected color swatch  | `--swatch-ring`                                   |
 
 ## 3. Surfaces
 
@@ -145,15 +145,15 @@ Text colors: `--text-strong` for titles, `--text-primary` for text, `--text-seco
 | Thing                                  | Tone                                                                       |
 | -------------------------------------- | -------------------------------------------------------------------------- |
 | Favorite (sidebar heart, menu, viewer) | rose                                                                       |
-| Pin / lock                             | amber / violet                                                             |
+| Pin / lock                             | gold / violet                                                              |
 | Copy                                   | teal                                                                       |
-| To-dos / reminders / notifications     | green / amber / blue (sidebar tiles and page)                              |
+| To-dos / reminders / notifications     | green / amber / blue (sidebar buttons and page)                            |
 | Settings tabs                          | a tile each: blue, rose, amber, slate, green, violet                       |
 | Moods and weather                      | one per value (`05-editor.css`): on hover in the editor, and in the viewer |
 
 - A group of icons (mood and weather pickers, toolbars) is never colored all at once: its icons are neutral and only the hovered one shows its tone.
 - Other icons are neutral (`--text-muted` / `--text-secondary`), never the accent.
-- Folder colors are the user's; they color only the folder icon.
+- Folder colors are the user's; they color only the folder icon. A new folder gets a vivid, mid-light color (no dark or washed-out shades) that no other folder has yet, when one is left.
 
 ## 9. Components
 
@@ -173,7 +173,7 @@ Actions use the accent: a form's add or set button is `.btn-primary`, and button
 
 **Fields** (`.form-input`, 36px; `.form-input-sm`, 32px), **selects** (`.select-small`, the custom `.custom-select`), the **toggle** (36×20), **chips** (`.chip`, 24px, neutral), **counts** (`.nav-count`, 20px pill; accent when unread) and the **segmented control** (`.segmented` / `.segment`) are in `12-controls.css`.
 
-**Menus**: every popup list is a `.menu` (`--surface-raised`, `--radius-lg`, 4px padding, `--shadow-popover`) with 32px items (`.menu-item`) 2px apart. Item icons take their action's tone. A destructive item is `.menu-item-danger`, last, after a `.menu-divider`; the chosen item uses `--accent-text`. The note and folder context menus (right-click, kept inside the window), sort, the toolbar selects and the emoji panel all use it.
+**Menus**: every popup list is a `.menu` (`--surface-raised`, `--radius-lg`, 4px padding, `--shadow-popover`) with 32px items (`.menu-item`) 2px apart. Item icons take their action's tone. A destructive item is `.menu-item-danger`, last, after a `.menu-divider`; the chosen item uses `--accent-text`. The note and folder context menus (right-click, kept inside the window) are compact: 28px items with 12px text. Sort, the toolbar selects and the emoji panel all use it.
 
 **Dialogs** (`09-modals.css`): `.modal-header` (title + `.modal-close`), `.modal-body`, `.modal-footer` with the buttons on the right, primary last. 24px around, 20px between the parts. Widths: `.modal-sm` 400, default 480, settings 760. Titles have no icons. A confirmation is a normal dialog with the message in the body.
 
