@@ -234,7 +234,7 @@ export class NoteListFeature {
     div.title = title;
 
     const icon = note.isLocked
-      ? 'fa-lock tone-violet'
+      ? 'fa-lock'
       : note.isPinned
         ? 'fa-thumbtack tone-gold'
         : 'fa-file-lines';

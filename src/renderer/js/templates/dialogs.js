@@ -201,11 +201,11 @@ export const APP_DIALOGS = /* HTML */ `
       <span></span>
     </button>
     <button class="menu-item" data-action="lock" role="menuitem">
-      <i class="fas fa-lock tone-violet"></i>
+      <i class="fas fa-lock"></i>
       <span></span>
     </button>
     <button class="menu-item" data-action="duplicate" role="menuitem">
-      <i class="fas fa-copy tone-teal"></i>
+      <i class="fas fa-copy"></i>
       <span data-i18n="buttons.duplicate">Kopyala</span>
     </button>
     <div class="menu-divider" role="separator"></div>
