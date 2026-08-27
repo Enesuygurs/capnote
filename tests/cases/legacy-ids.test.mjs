@@ -51,7 +51,7 @@ export async function run() {
   const inFolder = a.notes.find((n) => n.title === 'In folder');
   const root = a.notes.find((n) => n.title === 'Root default');
   // reminders/notifications still resolve their notes
-  document.querySelector('#remindersNav').click();
+  document.querySelector('#notificationsNav').click();
   const viewBtn = a.remindersList.querySelector('.view-note-btn');
   viewBtn.click();
   const openedFromReminder = a.currentNote && a.currentNote.title;

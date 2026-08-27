@@ -9,14 +9,12 @@ export class ScreensFeature {
       welcome: this.welcomeScreen,
       editor: this.noteEditor,
       viewer: this.noteViewer,
-      reminders: this.remindersScreen,
       notifications: this.notificationsScreen,
       todos: this.todosScreen,
     };
     Object.entries(screens).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
 
     const navItems = {
-      reminders: this.remindersNav,
       notifications: this.notificationsNav,
       todos: this.todosNav,
     };
@@ -49,13 +47,14 @@ export class ScreensFeature {
     this.clearSavedSelection();
   }
 
+  // Upcoming reminders are a section of the notifications screen
   showRemindersScreen() {
-    this.showScreen('reminders');
-    this.updateRemindersView();
+    this.showNotificationsScreen();
   }
 
   showNotificationsScreen() {
     this.showScreen('notifications');
+    this.updateRemindersView();
     this.updateNotificationsView();
   }
 

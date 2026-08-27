@@ -215,8 +215,9 @@
   },
   "notifications": {
     "title": "Bildirimler",
-    "subtitle": "Geçmiş hatırlatma bildirimleri",
-    "remindersTitle": "Aktif Hatırlatmalar",
+    "subtitle": "Yaklaşan hatırlatmalar ve geçmiş bildirimler",
+    "history": "Geçmiş bildirimler",
+    "remindersTitle": "Yaklaşan hatırlatmalar",
     "remindersSubtitle": "Notlarınız için ayarlanmış hatırlatmalar"
   },
   "todos": {

@@ -203,8 +203,6 @@ export async function run() {
     await closeAll();
     a.showTodosScreen();
     await shot(theme + '-19-todos');
-    a.showRemindersScreen();
-    await shot(theme + '-20-reminders');
     a.showNotificationsScreen();
     await shot(theme + '-21-notifications');
     a.selectNote(byTitle('Weekly plan'));

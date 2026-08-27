@@ -1,16 +1,24 @@
-/* Sidebar contents: the app mark, new note, search, list filter, the notes section header,
-   the counts, and the bottom row with settings and the other screens */
+/* Sidebar contents: the header (app mark, to-dos, notifications), new note, search, list filter,
+   the notes section header, the counts and settings */
 
-/* The app mark, centered on a full-width button; it doubles as the home button */
-.app-brand {
-  width: 100%;
+/* Header: the app mark on the left, to-dos and notifications as icon buttons on the right */
+.sidebar-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--space-3);
-  height: var(--space-12);
-  padding: 0 var(--space-3);
-  margin-bottom: var(--space-1);
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: var(--control-lg);
+}
+
+/* The app mark doubles as the home button */
+.app-brand {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  margin-left: calc(var(--space-2) * -1);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: var(--transition-fast);
@@ -21,24 +29,68 @@
 }
 
 .app-brand-icon {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 .app-brand-name {
-  font-size: var(--fs-xl);
+  font-size: var(--fs-lg);
   font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--text-strong);
+}
+
+.sidebar-header-actions {
+  display: flex;
+  gap: var(--space-1);
+  margin-right: calc(var(--space-1) * -1);
+}
+
+.sidebar-tool {
+  position: relative;
+  width: var(--control-sm);
+  height: var(--control-sm);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: var(--fs-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.sidebar-tool:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.sidebar-tool.active {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+/* A count on the button's top right corner, cut out from the chrome */
+.sidebar-tool .nav-count {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--space-1);
+  font-size: 10px;
+  line-height: 16px;
+  box-shadow: 0 0 0 2px var(--chrome);
 }
 
 .sidebar-new-note {
   width: 100%;
 }
 
-/* Bottom row: settings with its label on the left, the other screens as icon buttons on the right */
+/* Settings: one full-width row at the bottom, aligned with the list rows */
 .sidebar-settings {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   height: var(--control-md);
   padding: 0 var(--space-2);
   border-radius: var(--radius-md);
@@ -58,49 +110,6 @@
 .sidebar-settings:hover {
   background: var(--tint-hover);
   color: var(--text-strong);
-}
-
-.sidebar-tools {
-  display: flex;
-  gap: var(--stack-gap);
-}
-
-.sidebar-tool {
-  position: relative;
-  width: var(--control-md);
-  height: var(--control-md);
-  border-radius: var(--radius-md);
-  font-size: var(--fs-base);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: var(--transition-fast);
-}
-
-.sidebar-tool i {
-  color: var(--tone);
-}
-
-.sidebar-tool:hover {
-  background: var(--tint-hover);
-}
-
-.sidebar-tool.active {
-  background: color-mix(in srgb, var(--tone) 16%, transparent);
-}
-
-/* A tool's count on the button's top right corner, cut out from the chrome */
-.sidebar-tool .nav-count {
-  position: absolute;
-  top: 0;
-  right: 0;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 var(--space-1);
-  font-size: 10px;
-  line-height: 16px;
-  box-shadow: 0 0 0 2px var(--chrome);
 }
 
 /* Search field with a leading icon */

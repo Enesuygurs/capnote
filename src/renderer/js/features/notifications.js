@@ -40,7 +40,7 @@ export class NotificationsFeature {
     if (!this.notificationsList) return;
 
     if (this.notifications.length === 0) {
-      this.notificationsList.innerHTML = `<div class="empty-state empty-state-large"><i class="fas fa-inbox"></i><p>${i18n.t('messages.noNotifications')}</p></div>`;
+      this.notificationsList.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>${i18n.t('messages.noNotifications')}</p></div>`;
       return;
     }
 

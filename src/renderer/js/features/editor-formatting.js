@@ -79,9 +79,6 @@ export class EditorFormattingFeature {
     }
 
     // Reminder event listeners
-    if (this.remindersNav) {
-      this.remindersNav.addEventListener('click', () => this.showRemindersScreen());
-    }
     if (this.setReminderBtn) {
       this.setReminderBtn.addEventListener('click', () => this.addReminder());
     }
