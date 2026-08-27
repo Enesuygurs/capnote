@@ -6,32 +6,32 @@ These rules describe how the interface is built. Every change to the interface f
 
 The window has two layers:
 
-- **Chrome** (`--chrome`): the titlebar and the sidebar share one background with no line between them. The titlebar holds the sidebar toggle on the left, the app name centered on the window, and the window buttons on the right.
+- **Chrome** (`--chrome`): the titlebar and the sidebar share one background with no line between them. The titlebar holds the sidebar toggle on the left, the app name centered on the window, and the window buttons on the right (minimize and maximize are drawn to match the close icon's stroke).
 - **Content panel** (`.main-content`, `--surface`): a rounded panel (`--radius-lg`, `--panel-shadow`) on the chrome, 8px from the right and bottom edge (and from the left edge when the sidebar is hidden).
 
 ```
 +----------------------------------------------------------------------+
 | [=]                           Capnote                [-] [o] [x]     |
-|    [mark Capnote]     +------------------------------------------+   |
+| [mark] Capnote [t][b] +------------------------------------------+   |
 | [+ New note]          | Title                          [actions] |   |
 | [search]              | meta                                     |   |
 | [All | Today | Favs]  |------------------------------------------|   |
 | NOTES 5      [+] [s]  | page body                                |   |
 | rows                  |                                          |   |
 |                       |                                          |   |
-| [gear]  [t] [r] [i]   +------------------------------------------+   |
+| [gear Settings]       +------------------------------------------+   |
 +----------------------------------------------------------------------+
 ```
 
 **Sidebar** (`--sidebar-width`, 12px side padding), in three parts:
 
-1. Fixed top, 8px apart: the app mark (a full-width home button with the mark centered), the new note button, the search field and the list filter (a segmented control).
+1. Fixed top, 8px apart: the header (44px: the app mark and name on the left, also the home button; to-dos and notifications as 32px neutral icon buttons on the right, with the count on the corner and the name as a tooltip), the new note button, the search field and the list filter (a segmented control).
 2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons. Dragging a note onto another places it before or after it (an insertion line shows where) and switches the list to the custom order.
-3. Fixed bottom row: settings (icon and label, left-aligned with the list rows), then the tools on the right: to-dos, reminders and notifications as 36px icon buttons in their tone, with the count on the corner and the name as a tooltip. The open screen's button gets a tint of its tone.
+3. Fixed bottom: settings, one full-width row, left-aligned with the list rows.
 
 **Every screen in the panel** has the same structure:
 
-- `.page-header`: an optional `.page-icon` (a 44px tile in the screen's tone, on to-dos, reminders and notifications), the title (`.page-title`, 24/32 semibold) with a subtitle or meta line (`.page-subtitle` / `.page-meta`, 13px) below it, and actions (`.page-actions`) on the right. Padding is 24px vertically and `--gutter` (32px) horizontally, with a divider below.
+- `.page-header`: an optional `.page-icon` (a 44px tile in the screen's tone, on to-dos and notifications), the title (`.page-title`, 24/32 semibold) with a subtitle or meta line (`.page-subtitle` / `.page-meta`, 13px) below it, and actions (`.page-actions`) on the right. Padding is 24px vertically and `--gutter` (32px) horizontally, with a divider below. A body with parts uses `.page-section`s, each under a `.page-section-label` (a section label with an optional count), 32px apart.
 - `.page-body`: scrolls, 24px top padding, `--gutter` on the other sides.
 
 The viewer, the editor, to-dos, reminders and notifications all use this header, so the title is in the same place on every screen. The editor's toolbar belongs to its header region: header, then toolbar, then the divider.
@@ -49,16 +49,16 @@ Lines (`--divider`, 1px) are allowed only in these places:
 
 States that could be a border use something else:
 
-| State                  | Shown with                                        |
-| ---------------------- | ------------------------------------------------- |
-| Hover                  | `--tint-hover` (or `--field-hover` on fields)     |
-| Keyboard focus         | `--focus-ring` (a box-shadow)                     |
-| Active / selected / on | `--accent-tint` background and `--accent-text`    |
-| Chosen segment / tab   | `--segment-active`, one soft step above the track |
-| Pinned / locked note   | gold thumbtack / violet lock in place of the icon |
-| Favorite note          | a rose heart at the end of the row                |
-| Unread notification    | an 8px accent dot before the title                |
-| Selected color swatch  | `--swatch-ring`                                   |
+| State                  | Shown with                                           |
+| ---------------------- | ---------------------------------------------------- |
+| Hover                  | `--tint-hover` (or `--field-hover` on fields)        |
+| Keyboard focus         | `--focus-ring` (a box-shadow)                        |
+| Active / selected / on | `--accent-tint` background and `--accent-text`       |
+| Chosen segment / tab   | `--segment-active`, one soft step above the track    |
+| Pinned / locked note   | yellow thumbtack (the default accent) / neutral lock |
+| Favorite note          | a rose heart at the end of the row                   |
+| Unread notification    | an 8px accent dot before the title                   |
+| Selected color swatch  | `--swatch-ring`                                      |
 
 ## 3. Surfaces
 
@@ -145,14 +145,13 @@ Text colors: `--text-strong` for titles, `--text-primary` for text, `--text-seco
 | Thing                                  | Tone                                                                       |
 | -------------------------------------- | -------------------------------------------------------------------------- |
 | Favorite (sidebar heart, menu, viewer) | rose                                                                       |
-| Pin / lock                             | gold / violet                                                              |
-| Copy                                   | teal                                                                       |
-| To-dos / reminders / notifications     | green / amber / blue (sidebar buttons and page)                            |
+| Pin                                    | `--tone-gold`, the yellow of the default accent                            |
+| To-dos / notifications (page icon)     | green / amber                                                              |
 | Settings tabs                          | a tile each: blue, rose, amber, slate, green, violet                       |
 | Moods and weather                      | one per value (`05-editor.css`): on hover in the editor, and in the viewer |
 
 - A group of icons (mood and weather pickers, toolbars) is never colored all at once: its icons are neutral and only the hovered one shows its tone.
-- Other icons are neutral (`--text-muted` / `--text-secondary`), never the accent.
+- Other icons are neutral (`--text-muted` / `--text-secondary`), never the accent: lock, copy, edit and the sidebar tools among them. A tone is only for a state that must stand out (favorite, pin) or a choice that is its own thing (mood, weather, settings tabs).
 - Folder colors are the user's; they color only the folder icon. A new folder gets a vivid, mid-light color (no dark or washed-out shades) that no other folder has yet, when one is left.
 
 ## 9. Components
