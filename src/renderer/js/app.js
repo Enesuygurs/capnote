@@ -151,8 +151,6 @@ export class CapnoteApp {
     this.viewerWordCount = document.getElementById('viewerWordCount');
 
     // Reminders elements
-    this.remindersScreen = document.getElementById('remindersScreen');
-    this.remindersNav = document.getElementById('remindersNav');
     this.remindersList = document.getElementById('remindersList');
     this.activeRemindersCount = document.getElementById('activeRemindersCount');
     this.reminderDatetime = document.getElementById('reminderDatetime');

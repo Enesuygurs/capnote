@@ -58,13 +58,33 @@
     <div class="app">
       <!-- Sidebar -->
       <div class="sidebar" id="sidebar">
-        <!-- Fixed top: the app mark, the main action, search and the list filter -->
+        <!-- Fixed top: the header, the main action, search and the list filter -->
         <div class="sidebar-top">
-          <!-- The app mark doubles as the home button -->
-          <button class="app-brand" id="homeBtn" data-i18n-title="titles.home">
-            <img class="app-brand-icon" src="../../assets/icons/source/capnote-small.svg" alt="" />
-            <span class="app-brand-name">Capnote</span>
-          </button>
+          <!-- Header: the app mark (also the home button), then to-dos and notifications -->
+          <div class="sidebar-header">
+            <button class="app-brand" id="homeBtn" data-i18n-title="titles.home">
+              <img
+                class="app-brand-icon"
+                src="../../assets/icons/source/capnote-small.svg"
+                alt=""
+              />
+              <span class="app-brand-name">Capnote</span>
+            </button>
+            <div class="sidebar-header-actions">
+              <button class="sidebar-tool" id="todosNav" data-i18n-title="nav.todos">
+                <i class="fas fa-list-check"></i>
+                <span class="nav-count hidden" id="todosCount">0</span>
+              </button>
+              <button
+                class="sidebar-tool"
+                id="notificationsNav"
+                data-i18n-title="nav.notifications"
+              >
+                <i class="fas fa-bell"></i>
+                <span class="nav-count hidden" id="activeNotificationsCount">0</span>
+              </button>
+            </div>
+          </div>
           <button class="btn-primary sidebar-new-note" id="newNoteNav">
             <i class="fas fa-plus"></i>
             <span data-i18n="nav.newNote">Yeni Not</span>
@@ -158,34 +178,12 @@
           </nav>
         </div>
 
-        <!-- Fixed bottom: settings, then the other screens as icon buttons -->
+        <!-- Fixed bottom: settings -->
         <div class="sidebar-footer">
           <button class="sidebar-settings" id="settingsNav">
             <i class="fas fa-gear"></i>
             <span data-i18n="nav.settings">Ayarlar</span>
           </button>
-          <div class="sidebar-tools">
-            <button class="sidebar-tool tone-green" id="todosNav" data-i18n-title="nav.todos">
-              <i class="fas fa-list-check"></i>
-              <span class="nav-count hidden" id="todosCount">0</span>
-            </button>
-            <button
-              class="sidebar-tool tone-amber"
-              id="remindersNav"
-              data-i18n-title="nav.reminders"
-            >
-              <i class="fas fa-bell"></i>
-              <span class="nav-count hidden" id="activeRemindersCount">0</span>
-            </button>
-            <button
-              class="sidebar-tool tone-blue"
-              id="notificationsNav"
-              data-i18n-title="nav.notifications"
-            >
-              <i class="fas fa-inbox"></i>
-              <span class="nav-count hidden" id="activeNotificationsCount">0</span>
-            </button>
-          </div>
         </div>
       </div>
 
@@ -222,11 +220,11 @@
         <!-- Notifications screen -->
         <div id="notificationsScreen" class="screen notifications-screen hidden">
           <div class="page-header">
-            <span class="page-icon tone-blue"><i class="fas fa-inbox"></i></span>
+            <span class="page-icon tone-amber"><i class="fas fa-bell"></i></span>
             <div class="page-heading">
               <h2 class="page-title" data-i18n="nav.notifications">Bildirimler</h2>
               <p class="page-subtitle" data-i18n="notifications.subtitle">
-                Geçmiş hatırlatma bildirimleri
+                Yaklaşan hatırlatmalar ve geçmiş bildirimler
               </p>
             </div>
             <div class="page-actions">
@@ -237,27 +235,23 @@
             </div>
           </div>
           <div class="page-body">
-            <div id="notificationsList" class="card-list">
-              <!-- Notifications will be populated here -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Reminders screen -->
-        <div id="remindersScreen" class="screen reminders-screen hidden">
-          <div class="page-header">
-            <span class="page-icon tone-amber"><i class="fas fa-bell"></i></span>
-            <div class="page-heading">
-              <h2 class="page-title" data-i18n="nav.reminders">Hatırlatmalar</h2>
-              <p class="page-subtitle" data-i18n="notifications.remindersSubtitle">
-                Notlarınız için ayarlanmış hatırlatmalar
-              </p>
-            </div>
-          </div>
-          <div class="page-body">
-            <div id="remindersList" class="card-list">
-              <!-- Reminders will be populated here -->
-            </div>
+            <section class="page-section">
+              <h3 class="section-label page-section-label">
+                <span data-i18n="notifications.remindersTitle">Yaklaşan hatırlatmalar</span>
+                <span class="nav-count hidden" id="activeRemindersCount">0</span>
+              </h3>
+              <div id="remindersList" class="card-list">
+                <!-- Upcoming reminders are rendered here -->
+              </div>
+            </section>
+            <section class="page-section">
+              <h3 class="section-label page-section-label" data-i18n="notifications.history">
+                Geçmiş bildirimler
+              </h3>
+              <div id="notificationsList" class="card-list">
+                <!-- Notifications are rendered here -->
+              </div>
+            </section>
           </div>
         </div>
 

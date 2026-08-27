@@ -98,7 +98,7 @@ export class RemindersFeature {
     );
 
     if (activeReminders.length === 0) {
-      this.remindersList.innerHTML = `<div class="empty-state empty-state-large"><i class="fas fa-bell-slash"></i><p>${i18n.t('messages.noActiveReminders')}</p></div>`;
+      this.remindersList.innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>${i18n.t('messages.noActiveReminders')}</p></div>`;
       return;
     }
 
