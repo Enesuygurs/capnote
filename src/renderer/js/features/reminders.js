@@ -97,8 +97,12 @@ export class RemindersFeature {
       (r) => !r.dismissed && new Date(r.datetime) > new Date()
     );
 
+    // The upcoming section shows only while there is something coming up
+    this.remindersList
+      .closest('.page-section')
+      ?.classList.toggle('hidden', !activeReminders.length);
     if (activeReminders.length === 0) {
-      this.remindersList.innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i><p>${i18n.t('messages.noActiveReminders')}</p></div>`;
+      this.remindersList.innerHTML = '';
       return;
     }
 
