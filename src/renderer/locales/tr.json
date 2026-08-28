@@ -216,7 +216,7 @@
   "notifications": {
     "title": "Bildirimler",
     "subtitle": "Yaklaşan hatırlatmalar ve geçmiş bildirimler",
-    "history": "Geçmiş bildirimler",
+    "history": "Bildirimler",
     "remindersTitle": "Yaklaşan hatırlatmalar",
     "remindersSubtitle": "Notlarınız için ayarlanmış hatırlatmalar"
   },
