@@ -45,20 +45,20 @@ Lines (`--divider`, 1px) are allowed only in these places:
 - **Region dividers inside the content panel**: below a page header (or the editor toolbar), above the viewer's stats bar.
 - **Note content**: table cells, blockquotes and horizontal rules.
 - **Menus**: one divider before a destructive item (`.menu-divider`).
-- **Transient feedback**: the dashed outline of a drop target while dragging, the insertion line when reordering folders, and the dashed outline of a selected image.
+- **Transient feedback**: the dashed outline of a drop target while dragging (the root list shows "take out of the folder" only while a note from a folder is dragged), the insertion line when reordering folders, and the dashed outline of a selected image.
 
 States that could be a border use something else:
 
-| State                  | Shown with                                           |
-| ---------------------- | ---------------------------------------------------- |
-| Hover                  | `--tint-hover` (or `--field-hover` on fields)        |
-| Keyboard focus         | `--focus-ring` (a box-shadow)                        |
-| Active / selected / on | `--accent-tint` background and `--accent-text`       |
-| Chosen segment / tab   | `--segment-active`, one soft step above the track    |
-| Pinned / locked note   | yellow thumbtack (the default accent) / neutral lock |
-| Favorite note          | a rose heart at the end of the row                   |
-| Unread notification    | an 8px accent dot before the title                   |
-| Selected color swatch  | `--swatch-ring`                                      |
+| State                  | Shown with                                              |
+| ---------------------- | ------------------------------------------------------- |
+| Hover                  | `--tint-hover` (or `--field-hover` on fields)           |
+| Keyboard focus         | `--focus-ring` (a box-shadow)                           |
+| Active / selected / on | `--accent-tint` background and `--accent-text`          |
+| Chosen segment / tab   | `--segment-active` (an accent tint) and `--accent-text` |
+| Pinned / locked note   | yellow thumbtack (the default accent) / neutral lock    |
+| Favorite note          | a rose heart at the end of the row                      |
+| Unread notification    | an 8px accent dot before the title                      |
+| Selected color swatch  | `--swatch-ring`                                         |
 
 ## 3. Surfaces
 
@@ -146,7 +146,7 @@ Text colors: `--text-strong` for titles, `--text-primary` for text, `--text-seco
 | -------------------------------------- | -------------------------------------------------------------------------- |
 | Favorite (sidebar heart, menu, viewer) | rose                                                                       |
 | Pin                                    | `--tone-gold`, the yellow of the default accent                            |
-| To-dos / notifications (page icon)     | green / amber                                                              |
+| To-dos / notifications (page icon)     | blue / amber                                                               |
 | Settings tabs                          | a tile each: blue, rose, amber, slate, green, violet                       |
 | Moods and weather                      | one per value (`05-editor.css`): on hover in the editor, and in the viewer |
 

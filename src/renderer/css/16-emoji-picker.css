@@ -82,7 +82,6 @@
 .emoji-tab.active {
   background: var(--segment-active);
   color: var(--accent-text);
-  box-shadow: var(--segment-shadow);
 }
 
 .emoji-grid {

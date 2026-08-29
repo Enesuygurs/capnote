@@ -108,9 +108,9 @@
     "noReminder": "No reminder for this note"
   },
   "sort": {
-    "dateDesc": "Date (Newest → Oldest)",
-    "dateAsc": "Date (Oldest → Newest)",
-    "updatedDesc": "Recently Updated",
+    "dateDesc": "Created (Newest → Oldest)",
+    "dateAsc": "Created (Oldest → Newest)",
+    "updatedDesc": "Recently edited",
     "titleAsc": "Title (A → Z)",
     "titleDesc": "Title (Z → A)",
     "manual": "Custom order (drag)"
