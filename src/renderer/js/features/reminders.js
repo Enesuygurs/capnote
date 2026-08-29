@@ -3,7 +3,9 @@
 import { i18n } from '../i18n.js';
 
 export class RemindersFeature {
-  _computeNextRecurrence(datetimeIso, recurrence) {
+  // anchorDay: the day of month a monthly reminder was set for, so Jan 31 goes to Feb 28/29 and
+  // then back to Mar 31 instead of drifting to the 3rd
+  _computeNextRecurrence(datetimeIso, recurrence, anchorDay = null) {
     try {
       const dt = new Date(datetimeIso);
       if (isNaN(dt)) return null;
@@ -16,9 +18,14 @@ export class RemindersFeature {
           // Basic weekly increment will be handled by caller when recurrenceDays are provided.
           next.setDate(next.getDate() + 7);
           break;
-        case 'monthly':
+        case 'monthly': {
+          const day = anchorDay || dt.getDate();
+          next.setDate(1);
           next.setMonth(next.getMonth() + 1);
+          const lastDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+          next.setDate(Math.min(day, lastDay));
           break;
+        }
         default:
           return null;
       }
@@ -209,24 +216,37 @@ export class RemindersFeature {
       } catch (err) {
         // ignore
       }
+      // The first time falls on one of the picked days (the chosen date itself counts)
+      if (!reminder.recurrenceDays.includes(reminderDate.getDay())) {
+        const first = this._computeNextWeeklyFromDays(
+          new Date(reminderDate.getTime() - 60000).toISOString(),
+          reminder.recurrenceDays
+        );
+        if (first) reminder.datetime = first.toISOString();
+      }
     }
+    if (reminder.recurrence === 'monthly') reminder.anchorDay = reminderDate.getDate();
 
     this.reminders.push(reminder);
     await this.saveReminders();
     this.reminderDatetime.value = '';
+    this.updateRemindersView();
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
+    this.armReminderTimer();
     this.showNotification(i18n.t('messages.reminderAdded'), 'success');
   }
 
+  // Completing a one-time reminder ends it; a recurring one moves on to its next time
   async dismissReminder(reminderId) {
     const reminder = this.reminders.find((r) => r.id === reminderId);
     if (reminder) {
-      reminder.dismissed = true;
+      this.scheduleNextOccurrence(reminder, new Date(reminder.datetime));
       await this.saveReminders();
       this.updateRemindersView();
       this.updateNoteRemindersDisplay();
       this.updateActiveRemindersCount();
+      this.armReminderTimer();
       this.showNotification(i18n.t('messages.reminderCompleted'), 'success');
     }
   }
@@ -278,8 +298,10 @@ export class RemindersFeature {
   async removeReminder(reminderId) {
     this.reminders = this.reminders.filter((r) => r.id !== reminderId);
     await this.saveReminders();
+    this.updateRemindersView();
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
+    this.armReminderTimer();
     this.showNotification(i18n.t('messages.reminderDeleted'), 'info');
   }
 
@@ -292,21 +314,48 @@ export class RemindersFeature {
   }
 
   startReminderChecker() {
-    // Catch up on reminders that came due while the app was closed, then check every minute
+    // Catch up on reminders that came due while the app was closed. A timer fires the next one
+    // on time; the minute check and the focus/visibility checks catch up after sleep or the tray.
     this.checkDueReminders();
     setInterval(() => this.checkDueReminders(), 60000);
+    window.addEventListener('focus', () => this.checkDueReminders());
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) this.checkDueReminders();
+    });
 
     // Also update counts on init
     this.updateActiveRemindersCount();
     this.updateActiveNotificationsCount();
   }
 
+  // Wake up when the next reminder is due
+  armReminderTimer() {
+    clearTimeout(this.reminderTimer);
+    const next = this.reminders
+      .filter((r) => !r.dismissed)
+      .map((r) => new Date(r.datetime).getTime())
+      .filter((t) => !isNaN(t))
+      .sort((a, b) => a - b)[0];
+    if (next === undefined) return;
+    // setTimeout holds at most ~24.8 days; the minute check covers anything later
+    const delay = Math.min(Math.max(next - Date.now(), 0) + 50, 2 ** 31 - 1);
+    this.reminderTimer = setTimeout(() => this.checkDueReminders(), delay);
+  }
+
   checkDueReminders() {
     const now = new Date();
     let hasNotification = false;
+    let changed = false;
 
     this.reminders.forEach((reminder) => {
-      if (reminder.dismissed || new Date(reminder.datetime) > now) return;
+      if (reminder.dismissed) return;
+      // A reminder without a valid time can never fire; drop it instead of failing every check
+      if (isNaN(new Date(reminder.datetime))) {
+        reminder.dismissed = true;
+        changed = true;
+        return;
+      }
+      if (new Date(reminder.datetime) > now) return;
 
       // Being later than a couple of check intervals means the app was not running at that time
       const missed = now - new Date(reminder.datetime) > 2 * 60000;
@@ -347,13 +396,14 @@ export class RemindersFeature {
       hasNotification = true;
     });
 
-    if (hasNotification) {
+    if (hasNotification || changed) {
       this.saveReminders();
       this.updateRemindersView();
       this.updateNoteRemindersDisplay();
       this.updateActiveRemindersCount();
       this.updateActiveNotificationsCount();
     }
+    this.armReminderTimer();
   }
 
   // Move a fired reminder to its next occurrence after `now`, or dismiss it.
@@ -373,11 +423,11 @@ export class RemindersFeature {
     for (let i = 0; i < 5000 && next <= now; i++) {
       const candidate = weeklyDays
         ? this._computeNextWeeklyFromDays(next.toISOString(), weeklyDays)
-        : this._computeNextRecurrence(next.toISOString(), reminder.recurrence);
+        : this._computeNextRecurrence(next.toISOString(), reminder.recurrence, reminder.anchorDay);
       if (!candidate) break;
       next = candidate;
     }
-    if (next <= now) {
+    if (isNaN(next) || next <= now) {
       reminder.dismissed = true;
     } else {
       reminder.datetime = next.toISOString();

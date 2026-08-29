@@ -54,6 +54,11 @@ export class LockFeature {
       this.unlockedNotes.delete(String(this.currentNote.id));
       this.currentNote.content = '';
       this.updateNotesList();
+      // Its text must not stay visible: show it locked
+      if (this.isEditorOpen() || this.isViewerOpen()) {
+        this.showViewer();
+        this.displayNote(this.currentNote);
+      }
     }
   }
 

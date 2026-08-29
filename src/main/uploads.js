@@ -63,7 +63,9 @@ function registerUploadIpc() {
 
       fs.mkdirSync(uploadsDir(), { recursive: true });
       // Prefix with a timestamp and a random part to avoid collisions
-      const targetName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${path.basename(srcPath)}`;
+      // Only letters, digits, dot, dash and underscore, so the name reads the same in every URL
+      const plainName = path.basename(srcPath).replace(/[^\p{L}\p{N}._-]/gu, '_');
+      const targetName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${plainName}`;
       fs.copyFileSync(srcPath, path.join(uploadsDir(), targetName));
       return `capnote-file://upload/${encodeURIComponent(targetName)}`;
     } catch (err) {

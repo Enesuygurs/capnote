@@ -21,7 +21,7 @@ export class AttachmentsFeature {
   // Names of the upload files a note's HTML refers to
   extractUploadNames(html) {
     const names = new Set();
-    for (const match of String(html || '').matchAll(/capnote-file:\/\/upload\/([^"'\s)<>]+)/g)) {
+    for (const match of String(html || '').matchAll(/capnote-file:\/\/upload\/([^"\s<>]+)/g)) {
       try {
         names.add(decodeURIComponent(match[1]));
       } catch {

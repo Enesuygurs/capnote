@@ -189,8 +189,12 @@ export class EditorInsertFeature {
         return { pre, code, textNode };
       };
 
-      if (!sel || !sel.rangeCount) {
-        // append at the end
+      // No caret in the editor (e.g. it is in the title): append at the end
+      if (
+        !sel ||
+        !sel.rangeCount ||
+        !this.richEditor.contains(sel.getRangeAt(0).commonAncestorContainer)
+      ) {
         const { pre, textNode } = createPreWithZW();
         this.richEditor.appendChild(pre);
         try {
@@ -662,7 +666,11 @@ export class EditorInsertFeature {
             a.target = '_blank';
             try {
               const sel = window.getSelection();
-              if (sel && sel.rangeCount) {
+              if (
+                sel &&
+                sel.rangeCount &&
+                this.richEditor.contains(sel.getRangeAt(0).commonAncestorContainer)
+              ) {
                 const range = sel.getRangeAt(0);
                 range.deleteContents();
                 range.insertNode(a);

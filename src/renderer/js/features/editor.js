@@ -156,6 +156,13 @@ export class EditorFeature {
     const currentContent = this.getCurrentNoteContent();
     this.currentNoteContent = currentContent;
     this.updateSaveButtonState();
+    this.scheduleAutoSave?.();
+  }
+
+  // Whether the open note is edited as markdown (its preview can hide the markdown editor)
+  isMarkdownEditing() {
+    if (!this.markdownEditor) return false;
+    return !!this.currentNote?.isMarkdown || !this.markdownEditor.classList.contains('hidden');
   }
 
   getCurrentNoteContent() {
@@ -164,7 +171,7 @@ export class EditorFeature {
 
     return {
       title: this.noteTitle.value.trim(),
-      content: this.richEditor.innerHTML,
+      content: this.isMarkdownEditing() ? this.markdownEditor.value : this.richEditor.innerHTML,
       mood: this.selectedMood,
       weather: this.selectedWeather,
       tags: this.tags,
@@ -250,11 +257,13 @@ export class EditorFeature {
 
       clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
-        if (this.currentNote && this.noteEditor && !this.noteEditor.classList.contains('hidden')) {
+        if (this.currentNote && this.isEditorOpen() && this.hasUnsavedChanges()) {
           this.saveNote(true); // Silent save
         }
       }, 2000);
     };
+
+    this.cancelAutoSave = () => clearTimeout(autoSaveTimer);
 
     this.richEditor.addEventListener('input', this.scheduleAutoSave);
     this.noteTitle.addEventListener('input', this.scheduleAutoSave);
@@ -333,7 +342,8 @@ export class EditorFeature {
 
   // Tags methods
   addTag(tagText) {
-    if (!tagText || this.tags.includes(tagText)) return;
+    const lower = String(tagText || '').toLocaleLowerCase(this.getLocale());
+    if (!tagText || this.tags.some((t) => t.toLocaleLowerCase(this.getLocale()) === lower)) return;
 
     // At most 5 tags per note
     if (this.tags.length >= 5) {

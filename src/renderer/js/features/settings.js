@@ -64,6 +64,11 @@ export class SettingsFeature {
   loadSettings() {
     const settings = this.settings;
     if (this.languageSelect) this.languageSelect.value = settings.language;
+    if (i18n.getLanguage() !== settings.language) {
+      i18n.setLanguage(settings.language);
+      window.electronAPI?.setLanguage?.(settings.language);
+      this.updateDynamicTranslations?.();
+    }
     this.currentSort = settings.noteSort;
     this.markSortOption(settings.noteSort);
 

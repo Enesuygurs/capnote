@@ -100,9 +100,11 @@ export class UiFeature {
         if (e.key !== 'Enter') return;
         // If focus is inside a textarea or contenteditable, let Enter behave normally
         const active = document.activeElement;
-        if (!active) return;
+        if (!active || modal.classList.contains('hidden')) return;
         const tag = (active.tagName || '').toLowerCase();
         if (tag === 'textarea' || active.isContentEditable) return;
+        // A focused button (e.g. Cancel) handles Enter itself
+        if (tag === 'button' && modal.contains(active)) return;
 
         // Disable Enter key in settings modal to prevent accidental button clicks
         if (modal.id === 'settingsModal') {
@@ -239,7 +241,8 @@ export class UiFeature {
 
   setupKeyboardShortcuts() {
     document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey || e.metaKey) {
+      const dialogOpen = !!document.querySelector('.modal:not(.hidden)');
+      if ((e.ctrlKey || e.metaKey) && !dialogOpen) {
         switch (e.key.toLowerCase()) {
           case 'n':
             e.preventDefault();
@@ -273,14 +276,38 @@ export class UiFeature {
 
       if (e.key === 'Escape') {
         // Close the top-most thing first; only leave the editor when nothing else is open
-        const openModal = document.querySelector('.modal:not(.hidden)');
+        // The top-most open dialog: the last one in the page (the import options sit above settings)
+        const openModal = [...document.querySelectorAll('.modal:not(.hidden)')].pop();
         if (openModal) {
-          if (openModal === this.passwordModal) this.hidePasswordModal();
+          // A dialog built on the fly (import options) knows how to cancel itself
+          if (openModal.cancel) openModal.cancel();
+          else if (openModal === this.passwordModal) this.hidePasswordModal();
           else this.hideAllModals();
           return;
         }
         if (this.emojiPanel && !this.emojiPanel.classList.contains('hidden')) {
           this.hideEmojiPanel();
+          return;
+        }
+        // Menus close before anything else
+        const openMenu = document.querySelector(
+          '.context-menu:not(.hidden), .sort-dropdown:not(.hidden), .select-items:not(.select-hide)'
+        );
+        if (openMenu) {
+          this.hideNoteContextMenu();
+          this.hideContextMenu();
+          this.sortDropdown?.classList.add('hidden');
+          this.closeAllDropdowns?.();
+          return;
+        }
+        // In the search or another field outside the note, Escape only leaves that field
+        const active = document.activeElement;
+        const inNote =
+          active === this.noteTitle ||
+          this.richEditor.contains(active) ||
+          active === this.markdownEditor;
+        if (active && active !== document.body && !inNote && active.matches('input, textarea')) {
+          active.blur();
           return;
         }
         if (this.isEditorOpen()) this.cancelEdit();

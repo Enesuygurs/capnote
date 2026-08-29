@@ -146,6 +146,13 @@ function createMainWindow({ darkMode = false, devTools = false } = {}) {
     mainWindow.show();
   });
 
+  // A closed window is gone (macOS closes instead of hiding to the tray); forget it so the tray,
+  // notifications and the updater do not talk to a destroyed window
+  const win = mainWindow;
+  win.on('closed', () => {
+    if (mainWindow === win) mainWindow = null;
+  });
+
   // Intercept close to support close-to-tray behavior
   mainWindow.on('close', (e) => {
     saveWindowState(mainWindow);

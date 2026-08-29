@@ -49,7 +49,13 @@ export class FoldersFeature {
     }
 
     // Check if folder name exists
-    if (this.folders.some((folder) => folder.name.toLowerCase() === name.toLowerCase())) {
+    // Renaming a folder to another capitalisation of its own name is allowed
+    if (
+      this.folders.some(
+        (folder) =>
+          folder.id !== this._renamingFolderId && folder.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
       this.showNotification(i18n.t('messages.folderNameExists'), 'warning');
       return;
     }
@@ -257,7 +263,8 @@ export class FoldersFeature {
     folderHeader.className = 'nav-item folder-item nav-expandable expanded';
     folderHeader.setAttribute('data-folder-id', folder.id);
 
-    const noteCount = this.notes.filter((note) => note.folderId === folder.id).length;
+    // The same count the badge shows after a move: the notes visible under the filter
+    const noteCount = this.getVisibleCountForFolder(folder.id);
 
     folderHeader.innerHTML = `
             <i class="fas fa-folder nav-icon" style="color: ${this.safeColor(folder.color)}"></i>
@@ -460,53 +467,14 @@ export class FoldersFeature {
 
     note.folderId = targetFolderId;
     note.updatedAt = new Date().toISOString();
+    // Its custom place belonged to the other list; it starts at the top of the new one
+    delete note.order;
 
     try {
       await this.saveNotes();
 
-      // Remove any existing DOM nodes representing this note (main list and folder lists)
-      const mainNoteEl = document.querySelector(`.note-item[data-note-id="${noteId}"]`);
-      if (mainNoteEl && mainNoteEl.parentElement) mainNoteEl.parentElement.removeChild(mainNoteEl);
-
-      document.querySelectorAll(`.folder-note-item[data-note-id="${noteId}"]`).forEach((el) => {
-        if (el && el.parentElement) el.parentElement.removeChild(el);
-      });
-
-      // Determine current search/filter so we only insert the note where it should be visible
-      const rawSearch = this.searchInput ? String(this.searchInput.value) : '';
-      const searchTerm = this.normalizeForSearch(rawSearch);
-
-      // Update folder count badges for old and new folders
-      if (oldFolderId) this.updateFolderCountInDOM(oldFolderId);
-      if (folderId) this.updateFolderCountInDOM(folderId);
-
-      // Insert into destination if it should be visible under current filter/search
-      if (folderId) {
-        const folderContainer = document.querySelector(
-          `.folder-notes-container[data-folder-id="${folderId}"]`
-        );
-        if (folderContainer) {
-          // Respect current filter (today/favorites) and search
-          const visible = this.matchesCurrentView(note, searchTerm);
-
-          if (visible) {
-            const newEl = this.createNoteItem(note, true);
-            folderContainer.appendChild(newEl);
-          }
-        }
-      } else {
-        // Moved to main list
-        const visible = !note.folderId && this.matchesCurrentView(note, searchTerm);
-
-        if (visible && this.notesList) {
-          const newEl = this.createNoteItem(note);
-          // Prepend to keep recent ordering without rebuilding entire list
-          this.notesList.insertBefore(newEl, this.notesList.firstChild);
-        }
-      }
-
-      // If viewing a special filter that depends on membership (favorites), refresh the view
-      if (this.currentFilter === 'favorites') this.updateNotesList();
+      this.updateNotesList();
+      this.updateFoldersList();
     } catch (error) {
       console.error('Moving the note failed:', error);
       // Fallback: ensure consistent UI by falling back to full updates
@@ -585,8 +553,8 @@ export class FoldersFeature {
       this.saveNotes();
       this.saveFolders();
       this.updateFoldersList();
+      this.updateNotesList();
       this.updateStats();
-      if (this.currentFilter === 'favorites') this.updateNotesList();
 
       // Clear selection if current note was in deleted folder
       if (this.currentNote && this.currentNote.folderId === folderIdToDelete) {
@@ -686,44 +654,37 @@ export class FoldersFeature {
     // Hide context menu when clicking elsewhere
     document.addEventListener('click', () => this.hideContextMenu());
 
-    // Notes list container drag-drop (for moving notes out of folders)
+    // Taking a note out of its folder: drop it anywhere in the sidebar list outside the folders.
+    // Only a note that is in a folder can be dropped there; the root list shows where it goes.
     const notesListContainer = document.getElementById('notesListContainer');
+    const area = this.sidebarContent;
+    if (notesListContainer && area) {
+      const draggedFolderNote = (e) => {
+        if (this.isDraggingFolder(e) || e.target.closest('.folder-container')) return null;
+        const note = this.notes.find((n) => n.id === this.draggedNoteId);
+        return note && note.folderId ? note : null;
+      };
 
-    if (notesListContainer) {
-      notesListContainer.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        // If the active drag is a folder, ignore: folders should not be dropped into the "no-folder" area
-        if (this.isDraggingFolder(e)) {
-          // do not show drop target for folders
+      area.addEventListener('dragover', (e) => {
+        if (!draggedFolderNote(e)) {
+          notesListContainer.classList.remove('drag-over');
           return;
         }
-
+        e.preventDefault();
         notesListContainer.dataset.dropLabel = i18n.t('messages.dropOutsideFolders');
         notesListContainer.classList.add('drag-over');
       });
 
-      notesListContainer.addEventListener('dragleave', (e) => {
-        // Only remove drag-over if leaving the container entirely
-        if (!notesListContainer.contains(e.relatedTarget)) {
-          notesListContainer.classList.remove('drag-over');
-        }
+      area.addEventListener('dragleave', (e) => {
+        if (!area.contains(e.relatedTarget)) notesListContainer.classList.remove('drag-over');
       });
 
-      notesListContainer.addEventListener('drop', (e) => {
-        e.preventDefault();
+      area.addEventListener('drop', (e) => {
         notesListContainer.classList.remove('drag-over');
-        // If a folder is being dragged, ignore the drop here
-        try {
-          const folderId = e.dataTransfer.getData('text/folder-id');
-          if (folderId) {
-            return;
-          }
-        } catch (err) {
-          // ignore getData errors and continue
-        }
-
-        const noteId = e.dataTransfer.getData('text/plain');
-        this.moveNoteToFolder(noteId, null);
+        const note = draggedFolderNote(e);
+        if (!note) return;
+        e.preventDefault();
+        this.moveNoteToFolder(note.id, null);
       });
     }
   }
