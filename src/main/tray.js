@@ -112,7 +112,8 @@ function createTray() {
       const win = getMainWindow();
       if (!win) return;
       // Other platforms: toggle visibility on left-click for convenience
-      if (win.isVisible()) win.hide();
+      // A minimized window counts as visible; it is restored, not hidden
+      if (win.isVisible() && !win.isMinimized()) win.hide();
       else showMainWindow();
     });
   } catch (err) {

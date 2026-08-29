@@ -69,7 +69,12 @@
   bottom: -2px;
 }
 
-/* Dropping a note back into the root list */
+/* Dropping a note back into the root list: while a folder note is dragged the list has room
+   for the drop even when it is empty */
+.dragging-folder-note .notes-list-container {
+  min-height: var(--control-lg);
+}
+
 .notes-list-container.drag-over {
   background: var(--accent-tint);
   outline: 2px dashed var(--accent-color);

@@ -64,9 +64,13 @@ export class NotificationsFeature {
           <div class="list-card-text notification-message">${this.escapeHtml(this.notificationMessage(n))}</div>
         </div>
         <div class="list-card-actions">
-          <button class="btn-tinted btn-small view-notification-note-btn" data-note-id="${n.noteId}">
+          ${
+            n.noteId && this.notes.some((note) => note.id === n.noteId)
+              ? `<button class="btn-tinted btn-small view-notification-note-btn" data-note-id="${n.noteId}">
             <i class="fas fa-eye"></i> ${i18n.t('messages.view')}
-          </button>
+          </button>`
+              : ''
+          }
           ${
             !n.read
               ? `

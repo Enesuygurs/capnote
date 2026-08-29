@@ -255,10 +255,17 @@ export class NoteListFeature {
       e.dataTransfer.setData('text/plain', note.id);
       this.draggedNoteId = note.id;
       div.classList.add('dragging');
+      // A note in a folder can be dropped on the root list, which then needs room even if empty.
+      // Changing the layout during dragstart cancels the drag, so wait a frame.
+      if (note.folderId) {
+        requestAnimationFrame(() => document.body.classList.add('dragging-folder-note'));
+      }
     });
     div.addEventListener('dragend', () => {
       this.draggedNoteId = null;
       div.classList.remove('dragging');
+      document.body.classList.remove('dragging-folder-note');
+      document.getElementById('notesListContainer')?.classList.remove('drag-over');
     });
 
     // Dropping another note on this row places it before or after this one
@@ -364,6 +371,8 @@ export class NoteListFeature {
     });
 
     this.updateNotesList();
+    // Folders hidden by the previous filter come back (and empty ones hide)
+    this.updateFoldersList();
   }
 
   changeSorting(sort) {

@@ -37,9 +37,23 @@ export class NotesFeature {
     }
   }
 
+  // Before another note opens: keep the edits of the open one (if any) and lock it again if it
+  // was unlocked. Opening the same note again keeps it unlocked.
+  leaveCurrentNote(next = null) {
+    this.cancelAutoSave?.();
+    if (
+      this.currentNote &&
+      this.isEditorOpen() &&
+      this.hasUnsavedChanges() &&
+      !this.isCurrentNoteEmpty()
+    ) {
+      this.saveNote(true);
+    }
+    if (next !== this.currentNote) this.autoLockCurrentNote();
+  }
+
   openNote(note) {
-    // Auto-lock the current note if it was unlocked and is locked
-    this.autoLockCurrentNote();
+    this.leaveCurrentNote(note);
 
     this.currentNote = note;
     this.showViewer();
@@ -48,8 +62,7 @@ export class NotesFeature {
   }
 
   createNewNote() {
-    // Auto-lock the current note if it was unlocked and is locked
-    this.autoLockCurrentNote();
+    this.leaveCurrentNote();
 
     // Ensure emoji panel is closed when leaving the current note
     this.hideEmojiPanel();
@@ -119,6 +132,8 @@ export class NotesFeature {
 
   saveNote(silent = false) {
     if (!this.currentNote) return;
+    // An automatic save never creates an empty "Untitled" note
+    if (silent && this.isCurrentNoteEmpty()) return;
 
     // Sync checkbox states before saving
     this.syncCheckboxStates();
@@ -126,7 +141,8 @@ export class NotesFeature {
     const title = this.noteTitle.value.trim() || i18n.t('messages.untitledNote');
     // If markdown editor is visible, save raw markdown; otherwise save HTML from rich editor
     // If the markdown editor is visible (editing markdown), save raw markdown; otherwise save HTML from rich editor
-    const isMarkdownMode = this.markdownEditor && !this.markdownEditor.classList.contains('hidden');
+    // A markdown note stays markdown even while a preview hides its editor
+    const isMarkdownMode = this.isMarkdownEditing();
     const content = isMarkdownMode ? this.markdownEditor.value : this.richEditor.innerHTML;
 
     // Saved notes get a history entry when their title or text actually changed
@@ -204,6 +220,7 @@ export class NotesFeature {
   }
 
   cancelEdit() {
+    this.cancelAutoSave?.();
     // A brand-new note that was never saved must not be shown as if it existed
     if (this.currentNote && !this.notes.includes(this.currentNote)) {
       const previous =
@@ -237,17 +254,24 @@ export class NotesFeature {
   duplicateNote(note = this.currentNote) {
     if (!note || this.isNoteLockedForView(note)) return;
 
+    const now = new Date().toISOString();
+    // A copy has its own tags, formatting and history; it does not share the original's
     const duplicate = {
       ...note,
       id: this.newId(),
       title: note.title + i18n.t('messages.noteCopySuffix'),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      tags: [...(note.tags || [])],
+      formatting: { ...(note.formatting || this.getDefaultFormatting()) },
+      attachments: [...(note.attachments || [])],
+      history: [{ type: 'created', ts: now }],
+      createdAt: now,
+      updatedAt: now,
       isPinned: false, // A copy starts unpinned
       isLocked: false, // A copy starts unlocked
       isFavorite: false, // A copy is not a favorite
     };
     delete duplicate.encrypted;
+    delete duplicate.order;
 
     this.notes.unshift(duplicate);
     this.saveNotes();
@@ -303,8 +327,7 @@ export class NotesFeature {
   }
 
   selectNote(note) {
-    // Auto-lock the current note if it was unlocked and is locked
-    this.autoLockCurrentNote();
+    this.leaveCurrentNote(note);
 
     // Check if note is locked
     if (this.isNoteLockedForView(note)) {
@@ -373,7 +396,8 @@ export class NotesFeature {
     if (this.currentNote && this.currentNote.id === note.id) {
       this.currentNote = null;
       if (this.settings.onNoteDelete !== 'home' && this.notes.length > 0) {
-        this.openNote(this.notes[0]);
+        // The note at the top of the list as it is shown now
+        this.openNote(this.getSortedNotes(this.getFilteredNotes())[0] || this.notes[0]);
       } else {
         this.showWelcome();
       }

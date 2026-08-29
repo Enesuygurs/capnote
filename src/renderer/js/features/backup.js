@@ -122,6 +122,15 @@ export class BackupFeature {
         const folderIdMap = {};
         if (Array.isArray(data.folders) && importOptions.folders) {
           data.folders.forEach((f) => {
+            // A folder with the same name takes the imported notes instead of a copy of it
+            const sameName = this.folders.find(
+              (existing) =>
+                String(existing.name || '').toLowerCase() === String(f.name || '').toLowerCase()
+            );
+            if (sameName) {
+              folderIdMap[f.id] = sameName.id;
+              return;
+            }
             const newId = this.newId();
             folderIdMap[f.id] = newId;
             const newFolder = { ...f, id: newId };
@@ -190,7 +199,10 @@ export class BackupFeature {
                 newR.noteId = null;
               }
             }
-            this.reminders.push(newR);
+            const exists = this.reminders.some(
+              (r2) => r2.noteId === newR.noteId && r2.datetime === newR.datetime
+            );
+            if (!exists) this.reminders.push(newR);
           });
         }
 
@@ -205,7 +217,14 @@ export class BackupFeature {
                 newN.noteId = null;
               }
             }
-            this.notifications.push(newN);
+            const exists = this.notifications.some(
+              (n2) =>
+                n2.noteId === newN.noteId &&
+                n2.kind === newN.kind &&
+                n2.at === newN.at &&
+                n2.time === newN.time
+            );
+            if (!exists) this.notifications.push(newN);
           });
         }
 
@@ -258,6 +277,20 @@ export class BackupFeature {
         // Encrypt locked notes coming from old backups that still carry a plain password
         await this.migrateLegacyLockedNotes();
 
+        // Nothing may point at what a replace removed: notes in missing folders go to the root
+        // list, reminders and notifications of missing notes go, the open note closes
+        const folderIds = new Set(this.folders.map((f) => f.id));
+        this.notes.forEach((n) => {
+          if (n.folderId && !folderIds.has(n.folderId)) n.folderId = null;
+        });
+        const noteIds = new Set(this.notes.map((n) => n.id));
+        this.reminders = this.reminders.filter((r) => !r.noteId || noteIds.has(r.noteId));
+        this.notifications = this.notifications.filter((n) => !n.noteId || noteIds.has(n.noteId));
+        if (this.currentNote && !noteIds.has(this.currentNote.id)) {
+          this.currentNote = null;
+          this.showWelcome();
+        }
+
         // Persist everything
         // Each save reports its own failures
         await this.saveFolders();
@@ -268,6 +301,7 @@ export class BackupFeature {
 
         // Reload UI/state
         this.loadSettings();
+        this.loadSidebarPreference();
         this.updateFoldersList();
         this.updateNotesList();
         this.updateFolderNotes();
@@ -404,6 +438,10 @@ export class BackupFeature {
         cleanup();
         resolve(null);
       });
+      modal.cancel = () => {
+        cleanup();
+        resolve(null);
+      };
       cancelBtn.addEventListener('click', () => {
         cleanup();
         resolve(null);

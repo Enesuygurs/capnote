@@ -13,6 +13,8 @@ export async function run() {
   a.noteTitle.value = 'X';
   a.richEditor.innerHTML = '<p>placeholder</p>';
   a.saveNote(true);
+  // Leave the editor first, so the planted content is not replaced by the editor's text
+  a.selectNote(a.currentNote);
   a.currentNote.content = evil;
   a.countWordsAndCharsFromHtml(evil);
   a.getPlainText(evil);

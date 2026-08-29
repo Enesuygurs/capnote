@@ -124,14 +124,17 @@ export class TodosFeature {
 
     // Todo edit inputs
     this.todosSectionsContainer.querySelectorAll('.todo-edit-input').forEach((input) => {
-      input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-          this.saveTodoEdit(input.dataset.sectionId, input.dataset.todoId, input.value);
-        }
+      const finish = (save) => {
+        if (input.dataset.done) return;
+        input.dataset.done = '1';
+        if (save) this.saveTodoEdit(input.dataset.sectionId, input.dataset.todoId, input.value);
+        else this.renderTodosSections();
+      };
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') finish(true);
+        else if (e.key === 'Escape') finish(false);
       });
-      input.addEventListener('blur', (e) => {
-        this.saveTodoEdit(input.dataset.sectionId, input.dataset.todoId, input.value);
-      });
+      input.addEventListener('blur', () => finish(true));
     });
   }
 
@@ -223,13 +226,13 @@ export class TodosFeature {
 
   saveTodoEdit(sectionId, todoId, newText) {
     const text = newText.trim();
-    if (!text) return;
-
     const section = this.todoSections.find((s) => s.id === sectionId);
-    if (!section) return;
-
-    const todo = section.todos.find((t) => t.id === todoId);
-    if (!todo) return;
+    const todo = section?.todos.find((t) => t.id === todoId);
+    // Nothing to save: show the row as it was
+    if (!todo || !text || text === todo.text) {
+      this.renderTodosSections();
+      return;
+    }
 
     todo.text = text;
     this.saveTodos();

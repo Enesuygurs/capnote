@@ -224,6 +224,7 @@ export class PreviewsFeature {
           this.renderMarkdownPreview(this.markdownEditor.value);
         }
         this.trackContentChanges();
+        this.scheduleAutoSave?.();
       });
   }
 }

@@ -54,6 +54,8 @@ export class ScreensFeature {
 
   showNotificationsScreen() {
     this.showScreen('notifications');
+    // Fire anything that came due since the last check, so nothing past shows as upcoming
+    this.checkDueReminders();
     this.updateRemindersView();
     this.updateNotificationsView();
   }
