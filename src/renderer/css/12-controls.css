@@ -243,8 +243,7 @@ input:focus-visible + .toggle-slider {
 
 .segment.active {
   background: var(--segment-active);
-  color: var(--text-strong);
-  box-shadow: var(--segment-shadow);
+  color: var(--accent-text);
 }
 
 /* ============ Menus ============
