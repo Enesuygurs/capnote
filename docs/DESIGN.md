@@ -162,13 +162,14 @@ Text colors: `--text-strong` for titles, `--text-primary` for text, `--text-seco
 | --------------------------- | -------------------------- | ----------------------------------------- |
 | `.btn-primary`              | accent fill, white text    | the main action of a view or dialog (one) |
 | `.btn-tinted`               | accent tint, accent text   | actions repeated in lists, row actions    |
+| `.btn-tinted.btn-success`   | green tint, green text     | finishing something (a reminder done)     |
 | `.btn-secondary`            | `--field` fill             | cancel, close and neutral actions         |
 | `.btn-outline`              | transparent, tint on hover | low-emphasis actions                      |
 | `.btn-danger`               | red fill                   | confirming a destructive action           |
 | `.btn-outline.btn-danger`   | red tint, red text         | starting a destructive action             |
 | `.btn-icon` (+ `-sm`/`-xs`) | transparent square         | toolbars, headers, row actions            |
 
-Actions use the accent: a form's add or set button is `.btn-primary`, and buttons that act on an item in a list are `.btn-tinted`. `.btn-secondary` is only for cancelling, closing and other neutral choices. Hover changes color only; nothing moves, scales or glows.
+Actions use the accent: a form's add or set button is `.btn-primary`. On a list item each kind of action has its own look, so buttons side by side never look alike: opening the item is `.btn-secondary`, its main action (mark as read) `.btn-tinted`, finishing it `.btn-tinted.btn-success`, deleting it `.btn-outline.btn-danger`. `.btn-secondary` is otherwise for cancelling, closing and other neutral choices. Hover changes color only; nothing moves, scales or glows.
 
 **Fields** (`.form-input`, 36px; `.form-input-sm`, 32px), **selects** (`.select-small`, the custom `.custom-select`), the **toggle** (36×20), **chips** (`.chip`, 24px, neutral), **counts** (`.nav-count`, 20px pill; accent when unread) and the **segmented control** (`.segmented` / `.segment`) are in `12-controls.css`.
 

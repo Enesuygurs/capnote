@@ -66,7 +66,7 @@ export class NotificationsFeature {
         <div class="list-card-actions">
           ${
             n.noteId && this.notes.some((note) => note.id === n.noteId)
-              ? `<button class="btn-tinted btn-small view-notification-note-btn" data-note-id="${n.noteId}">
+              ? `<button class="btn-secondary btn-small view-notification-note-btn" data-note-id="${n.noteId}">
             <i class="fas fa-eye"></i> ${i18n.t('messages.view')}
           </button>`
               : ''

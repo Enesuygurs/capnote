@@ -108,8 +108,8 @@
     "noReminder": "Bu not için hatırlatma yok"
   },
   "sort": {
-    "dateDesc": "Oluşturulma (Yeni → Eski)",
-    "dateAsc": "Oluşturulma (Eski → Yeni)",
+    "dateDesc": "Önce en yeni",
+    "dateAsc": "Önce en eski",
     "updatedDesc": "Son düzenlenen",
     "titleAsc": "Başlık (A → Z)",
     "titleDesc": "Başlık (Z → A)",

@@ -132,10 +132,10 @@ export class RemindersFeature {
             </div>
           </div>
           <div class="list-card-actions">
-            <button class="btn-tinted btn-small view-note-btn" data-note-id="${r.noteId}">
+            <button class="btn-secondary btn-small view-note-btn" data-note-id="${r.noteId}">
               <i class="fas fa-eye"></i> ${i18n.t('messages.viewNote')}
             </button>
-            <button class="btn-tinted btn-small dismiss-btn" data-reminder-id="${r.id}">
+            <button class="btn-tinted btn-success btn-small dismiss-btn" data-reminder-id="${r.id}">
               <i class="fas fa-check"></i> ${i18n.t('messages.completed')}
             </button>
           </div>
