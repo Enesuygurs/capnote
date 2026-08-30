@@ -42,6 +42,16 @@
   background: var(--accent-tint-strong);
 }
 
+/* Finishing something (a reminder done) */
+.btn-tinted.btn-success {
+  background: color-mix(in srgb, var(--success-color) 14%, transparent);
+  color: var(--success-color);
+}
+
+.btn-tinted.btn-success:hover {
+  background: color-mix(in srgb, var(--success-color) 22%, transparent);
+}
+
 .btn-secondary {
   background: var(--field);
   color: var(--text-primary);
