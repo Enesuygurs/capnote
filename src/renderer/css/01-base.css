@@ -317,11 +317,12 @@ body {
   color: var(--text-strong);
 }
 
-/* The app name, centered on the whole window */
+/* The app name, centered on the whole window (no transform, which can put text between pixels) */
 .titlebar-title {
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  text-align: center;
   font-size: var(--fs-md);
   font-weight: 600;
   color: var(--text-secondary);
@@ -366,14 +367,13 @@ body.platform-darwin .titlebar {
   color: #ffffff;
 }
 
-/* Minimize and maximize are drawn with the stroke weight of the close icon */
+/* Minimize and maximize are filled shapes snapped to whole pixels, so they stay sharp at any
+   display scale (a thin stroke falls between pixels and looks blurred) */
 .titlebar-icon {
   width: 14px;
   height: 14px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.75;
-  stroke-linecap: round;
+  fill: currentColor;
+  shape-rendering: crispEdges;
 }
 
 .titlebar-button.close i {
