@@ -291,18 +291,19 @@ export class FoldersFeature {
       if (chevron) chevron.style.transform = 'rotate(-90deg)';
     }
 
+    folderHeader.classList.toggle('is-selected', this.selectedFolderIds.has(folder.id));
     folderHeader.addEventListener('click', async (e) => {
       e.preventDefault();
-      folderHeader.classList.toggle('expanded');
-      if (folderHeader.classList.contains('expanded')) {
-        notesContainer.style.display = 'block';
-        if (chevron) chevron.style.transform = 'rotate(0deg)';
-        folder.expanded = true;
-      } else {
-        notesContainer.style.display = 'none';
-        if (chevron) chevron.style.transform = 'rotate(-90deg)';
-        folder.expanded = false;
+      // Ctrl/Cmd+click picks the folder for a selection instead of opening it
+      if (e.ctrlKey || e.metaKey) {
+        this.toggleSelection('folder', folder.id);
+        return;
       }
+      this.clearSelection();
+      folder.expanded = !folderHeader.classList.contains('expanded');
+      folderHeader.classList.toggle('expanded', folder.expanded);
+      if (chevron) chevron.style.transform = folder.expanded ? 'rotate(0deg)' : 'rotate(-90deg)';
+      this.animateFolderNotes(notesContainer, folder.expanded);
       // persist the expanded state
       await this.saveFolders();
     });
@@ -310,6 +311,7 @@ export class FoldersFeature {
     // Add right-click context menu
     folderHeader.addEventListener('contextmenu', (e) => {
       e.preventDefault();
+      if (this.showSelectionMenuIfSelected(e.clientX, e.clientY, 'folder', folder.id)) return;
       this.showFolderContextMenu(e.clientX, e.clientY, folder.id);
     });
 
@@ -499,9 +501,39 @@ export class FoldersFeature {
     if (container) this.renderFolderNotes(container);
   }
 
+  // Open or close a folder's notes with a short height and fade transition
+  animateFolderNotes(el, expand) {
+    clearTimeout(el._folderAnimTimer);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const finish = () => {
+      el.style.height = '';
+      el.style.opacity = '';
+      el.style.overflow = '';
+      el.style.transition = '';
+      el.style.display = expand ? 'block' : 'none';
+    };
+    if (reduce) {
+      finish();
+      return;
+    }
+    el.style.display = 'block';
+    el.style.overflow = 'hidden';
+    const full = el.scrollHeight;
+    const start = expand ? 0 : el.getBoundingClientRect().height;
+    el.style.transition = 'none';
+    el.style.height = start + 'px';
+    el.style.opacity = expand ? '0' : '1';
+    void el.offsetHeight; // apply the start values before transitioning
+    el.style.transition = 'height 200ms ease, opacity 200ms ease';
+    el.style.height = (expand ? full : 0) + 'px';
+    el.style.opacity = expand ? '1' : '0';
+    el._folderAnimTimer = setTimeout(finish, 220);
+  }
+
   // Context menu functions
   showFolderContextMenu(x, y, folderId) {
     this.hideNoteContextMenu();
+    this.hideSelectionMenu?.();
     this.selectedFolderId = folderId;
     this.positionMenu(this.contextMenu, x, y);
   }

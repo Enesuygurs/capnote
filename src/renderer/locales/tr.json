@@ -375,5 +375,12 @@
     "check": "Güncellemeleri denetle",
     "restart": "Yeniden başlat ve güncelle",
     "readyToast": "Capnote {version} hazır. Kurmak için Ayarlar → Hakkında'dan yeniden başlatın."
+  },
+  "selection": {
+    "unfile": "Klasörden çıkar",
+    "delete": "Seçilenleri sil ({count})",
+    "confirmDeleteNotes": "Seçilen {count} not silinecek. Emin misiniz?",
+    "confirmDeleteWithFolders": "{notes} not ve {folders} klasör silinecek; klasörlerin içindeki notlar da silinir. Emin misiniz?",
+    "deleted": "{count} öğe silindi"
   }
 }

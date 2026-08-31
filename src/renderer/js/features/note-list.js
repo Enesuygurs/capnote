@@ -244,10 +244,24 @@ export class NoteListFeature {
             ${note.isFavorite ? '<i class="fas fa-heart note-item-favorite tone-rose" aria-hidden="true"></i>' : ''}
         `;
 
-    div.addEventListener('click', () => this.selectNote(note));
+    div.classList.toggle('is-selected', this.selectedNoteIds.has(note.id));
+    // Ctrl/Cmd+click picks the note for a selection; a plain click opens it
+    div.addEventListener('click', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        this.toggleSelection('note', note.id);
+        return;
+      }
+      this.clearSelection();
+      this.selectNote(note);
+    });
+    div.addEventListener('dblclick', (e) => {
+      if (e.ctrlKey || e.metaKey) return;
+      this.startRenameNote(note, div);
+    });
     div.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       e.stopPropagation();
+      if (this.showSelectionMenuIfSelected(e.clientX, e.clientY, 'note', note.id)) return;
       this.showNoteContextMenu(e.clientX, e.clientY, note.id);
     });
 
@@ -326,6 +340,7 @@ export class NoteListFeature {
     const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
     this.hideContextMenu();
+    this.hideSelectionMenu?.();
     this.contextNoteId = noteId;
 
     const label = (action, key) => {
