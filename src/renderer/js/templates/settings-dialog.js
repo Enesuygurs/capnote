@@ -63,36 +63,6 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
-                  <label data-i18n="settings.confirmDelete">Silme işleminde onay iste</label>
-                  <small data-i18n="settings.confirmDeleteDesc"
-                    >Notları silerken onay ekranı göster</small
-                  >
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="confirmDeleteToggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="settings.maxPinnedNotes">Sabit Not Sayısı</label>
-                  <small data-i18n="settings.maxPinnedNotesDesc"
-                    >En fazla kaç not sabitlenebilsin (3 - 10)</small
-                  >
-                </div>
-                <select id="maxPinnedSelect" class="select-small">
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-                </select>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
                   <label data-i18n="settings.autoSave">Otomatik Kaydetme</label>
                   <small data-i18n="settings.autoSaveDesc"
                     >Notları yazarken otomatik olarak kaydet</small

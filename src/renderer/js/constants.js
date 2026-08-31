@@ -5,16 +5,17 @@ export const DEFAULT_ACCENT = '#f59e0b';
 // Version of the stored data layout; backups record it so newer files are not misread
 export const SCHEMA_VERSION = 2;
 
+// How many notes can be pinned at once
+export const MAX_PINNED_NOTES = 10;
+
 export const DEFAULT_SETTINGS = {
   language: 'tr',
   darkMode: false,
   accentColor: null,
   syncFolderAccent: false,
   folderColorsBackup: null,
-  maxPinnedNotes: 3,
   noteSort: 'date-desc',
   autoSave: true,
-  confirmDelete: true,
   onNoteDelete: 'lastNote',
   nativeNotifications: true,
   editorSidebarVisible: true,

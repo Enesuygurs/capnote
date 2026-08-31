@@ -142,8 +142,6 @@
     "startAtLoginDesc": "Oturum açıldığında Capnote arka planda başlasın",
     "closeToTray": "Pencereyi kapatınca tepsiye küçült",
     "closeToTrayDesc": "Kapat düğmesine basınca uygulama sistem tepsisinde çalışmaya devam etsin",
-    "maxPinnedNotes": "Sabit Not Sayısı",
-    "maxPinnedNotesDesc": "En fazla kaç not sabitlenebilsin (3 - 10)",
     "systemNotifications": "Sistem bildirimleri",
     "systemNotificationsDesc": "Hatırlatmalar için işletim sistemi bildirimlerini göster",
     "testNotification": "Test bildirimi gönder",
@@ -166,9 +164,7 @@
     "onNoteDelete": "Not silindiğinde",
     "onNoteDeleteDesc": "Not silindiğinde ne olacağını seç",
     "openLastNote": "Son kalan notu aç",
-    "openHome": "Ana sayfa bölümünü aç",
-    "confirmDelete": "Silme işleminde onay iste",
-    "confirmDeleteDesc": "Notları silerken onay ekranı göster"
+    "openHome": "Ana sayfa bölümünü aç"
   },
   "modals": {
     "exportNote": "Notu Dışa Aktar",
@@ -302,7 +298,6 @@
     "noteUnlocked": "Not kilidi açıldı",
     "wrongPassword": "Yanlış şifre!",
     "noteTemporarilyUnlocked": "Not geçici olarak açıldı",
-    "pinnedLimitUpdated": "Sabit not limiti güncellendi",
     "noActiveReminders": "Aktif hatırlatma bulunmuyor",
     "confirmDelete": "notunu silmek istediğinizden emin misiniz?",
     "folderColorUpdated": "Klasör rengi güncellendi",

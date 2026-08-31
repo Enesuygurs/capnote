@@ -49,9 +49,9 @@ export async function run() {
     notifs: a.notifications.length,
     current: a.currentNote?.title,
   };
-  // without confirmation
-  a.setSetting('confirmDelete', false);
+  // a second delete asks again
   a.deleteNoteById(n2.id);
+  a.confirmBtn.click();
   return {
     r1,
     r2: { notes: a.notes.map((n) => n.title), reminders: a.reminders.map((r) => r.id) },
