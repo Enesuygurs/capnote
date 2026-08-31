@@ -26,7 +26,7 @@ The window has two layers:
 **Sidebar** (`--sidebar-width`, 12px side padding), in three parts:
 
 1. Fixed top, 8px apart: the header (44px: the app mark and name on the left, also the home button; to-dos and notifications as 32px neutral icon buttons on the right, with the count on the corner and the name as a tooltip), the new note button, the search field and the list filter (a segmented control).
-2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons. Dragging a note onto another places it before or after it (an insertion line shows where) and switches the list to the custom order.
+2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons. Dragging a note onto another places it before or after it (an insertion line shows where) and switches the list to the custom order. A double-click renames a note in place (the title becomes a field; Enter or leaving it saves, Escape cancels). Ctrl/Cmd+click selects notes and folders; right-click on the selection opens its menu (favorite, take out of folder, delete), Escape clears it. A folder opens and closes with a 200ms height and fade transition.
 3. Fixed bottom: settings, one full-width row, left-aligned with the list rows.
 
 **Every screen in the panel** has the same structure:
@@ -49,16 +49,17 @@ Lines (`--divider`, 1px) are allowed only in these places:
 
 States that could be a border use something else:
 
-| State                  | Shown with                                              |
-| ---------------------- | ------------------------------------------------------- |
-| Hover                  | `--tint-hover` (or `--field-hover` on fields)           |
-| Keyboard focus         | `--focus-ring` (a box-shadow)                           |
-| Active / selected / on | `--accent-tint` background and `--accent-text`          |
-| Chosen segment / tab   | `--segment-active` (an accent tint) and `--accent-text` |
-| Pinned / locked note   | yellow thumbtack (the default accent) / neutral lock    |
-| Favorite note          | a rose heart at the end of the row                      |
-| Unread notification    | an 8px accent dot before the title                      |
-| Selected color swatch  | `--swatch-ring`                                         |
+| State                  | Shown with                                                            |
+| ---------------------- | --------------------------------------------------------------------- |
+| Hover                  | `--tint-hover` (or `--field-hover` on fields)                         |
+| Keyboard focus         | `--focus-ring` (a box-shadow)                                         |
+| Active / selected / on | `--accent-tint` background and `--accent-text`                        |
+| Chosen segment / tab   | `--segment-active` (one neutral step darker than the track), semibold |
+| Pinned / locked note   | yellow thumbtack (the default accent) / neutral lock                  |
+| Selected (Ctrl+click)  | `--accent-tint-strong`                                                |
+| Favorite note          | a rose heart at the end of the row                                    |
+| Unread notification    | an 8px accent dot before the title                                    |
+| Selected color swatch  | `--swatch-ring`                                                       |
 
 ## 3. Surfaces
 

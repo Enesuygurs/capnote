@@ -21,9 +21,7 @@ export class SettingsFeature {
       accentColor: get('accentColor') || undefined,
       syncFolderAccent: bool(get('syncFolderAccent')),
       folderColorsBackup,
-      maxPinnedNotes: parseInt(get('maxPinnedNotes'), 10) || undefined,
       autoSave: bool(get('settings.autoSave')),
-      confirmDelete: bool(get('settings.confirmDelete')),
       onNoteDelete: get('settings.onNoteDelete') || undefined,
       nativeNotifications: bool(get('settings.nativeNotifications')),
       editorSidebarVisible: bool(get('editorSidebarVisible')),
@@ -36,7 +34,11 @@ export class SettingsFeature {
   async loadSettingsData() {
     const stored = this.storedData.settings;
     if (stored && typeof stored === 'object') {
-      this.settings = { ...DEFAULT_SETTINGS, ...stored };
+      // Settings that no longer exist (e.g. the pin limit, delete confirmation) are dropped
+      const known = Object.fromEntries(
+        Object.entries(stored).filter(([key]) => key in DEFAULT_SETTINGS)
+      );
+      this.settings = { ...DEFAULT_SETTINGS, ...known };
       return;
     }
     // First launch with settings in the file storage: take over the old values
@@ -84,9 +86,7 @@ export class SettingsFeature {
 
     if (this.toggleNativeNotifications)
       this.toggleNativeNotifications.checked = settings.nativeNotifications;
-    if (this.maxPinnedSelect) this.maxPinnedSelect.value = String(settings.maxPinnedNotes);
     if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
-    if (this.confirmDeleteToggle) this.confirmDeleteToggle.checked = settings.confirmDelete;
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
 
@@ -135,28 +135,10 @@ export class SettingsFeature {
       });
     });
 
-    // Max pinned notes change
-    if (this.maxPinnedSelect) {
-      this.maxPinnedSelect.addEventListener('change', (e) => {
-        const v = parseInt(e.target.value, 10);
-        if (!isNaN(v) && v >= 3 && v <= 10) {
-          this.setSetting('maxPinnedNotes', v);
-          this.showNotification(i18n.t('messages.pinnedLimitUpdated'), 'success');
-        }
-      });
-    }
-
     // On note delete behavior change
     if (this.onNoteDeleteSelect) {
       this.onNoteDeleteSelect.addEventListener('change', (e) => {
         this.setSetting('onNoteDelete', e.target.value);
-      });
-    }
-
-    // Confirm delete toggle
-    if (this.confirmDeleteToggle) {
-      this.confirmDeleteToggle.addEventListener('change', (e) => {
-        this.setSetting('confirmDelete', e.target.checked);
       });
     }
 

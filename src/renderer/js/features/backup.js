@@ -236,7 +236,6 @@ export class BackupFeature {
             syncFolderAccent: 'syncFolderAccent',
             darkMode: 'darkMode',
             accentColor: 'accentColor',
-            maxPinnedNotes: 'maxPinnedNotes',
           };
           Object.entries(data.settings).forEach(([key, value]) => {
             const name = legacyNames[key] || key;

@@ -10,7 +10,6 @@ export async function run() {
   a.addTodoSection();
   a.setAccentColor('#8b5cf6');
   a.toggleDarkMode(true);
-  a.setSetting('maxPinnedNotes', 7);
   a.toggleEditorSidebar();
   a.languageSelect.value = 'en';
   a.languageSelect.dispatchEvent(new Event('change'));
@@ -22,7 +21,6 @@ export async function run() {
     settings: {
       accent: stored.settings.accentColor,
       dark: stored.settings.darkMode,
-      maxPinned: stored.settings.maxPinnedNotes,
       sidebar: stored.settings.editorSidebarVisible,
       language: stored.settings.language,
     },
@@ -39,7 +37,6 @@ export const expected = {
   settings: {
     accent: null,
     dark: false,
-    maxPinned: 3,
     sidebar: true,
     language: 'en',
   },

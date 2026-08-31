@@ -104,8 +104,8 @@ body.resizing .modal {
   --tone-violet: #7c3aed;
   --tone-slate: #64748b;
 
-  /* The chosen segment or tab: an accent tint of its track, like the active sidebar row */
-  --segment-active: var(--accent-tint-strong);
+  /* The chosen segment or tab: one neutral step darker than its track */
+  --segment-active: rgba(15, 23, 42, 0.08);
 
   /* Shadows: only floating surfaces have one */
   --shadow-popover: 0 8px 24px rgba(15, 23, 42, 0.14);
@@ -200,6 +200,7 @@ body.resizing .modal {
   --divider: rgba(255, 255, 255, 0.08);
 
   --success-color: #22c55e;
+  --segment-active: rgba(255, 255, 255, 0.1);
   --warning-color: #f59e0b;
   --error-color: #ef4444;
 

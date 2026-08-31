@@ -1,6 +1,6 @@
 // Note lifecycle: create, open, save, duplicate, delete, favorite, pin and history
 
-import { HISTORY_MERGE_MS, HISTORY_LIMIT } from '../constants.js';
+import { HISTORY_MERGE_MS, HISTORY_LIMIT, MAX_PINNED_NOTES } from '../constants.js';
 import { i18n } from '../i18n.js';
 
 export class NotesFeature {
@@ -373,10 +373,6 @@ export class NotesFeature {
     const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
 
-    if (!this.settings.confirmDelete) {
-      this.performNoteDeletion(note);
-      return;
-    }
     this.showConfirm(`"${note.title}" ${i18n.t('messages.confirmDelete')}`, () =>
       this.performNoteDeletion(note)
     );
@@ -457,7 +453,7 @@ export class NotesFeature {
     // If trying to pin and already 3 notes are pinned, block and notify
     if (!note.isPinned) {
       const pinnedCount = this.notes.filter((n) => n.isPinned).length;
-      const maxPinned = this.settings.maxPinnedNotes;
+      const maxPinned = MAX_PINNED_NOTES;
       if (pinnedCount >= maxPinned) {
         this.showNotification(
           i18n.t('messages.maxPinnedNotes').replace('{count}', maxPinned),

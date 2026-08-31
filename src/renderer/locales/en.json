@@ -142,8 +142,6 @@
     "startAtLoginDesc": "Launch Capnote in background when you log in",
     "closeToTray": "Minimize to tray on close",
     "closeToTrayDesc": "Keep app running in system tray when close button is pressed",
-    "maxPinnedNotes": "Max Pinned Notes",
-    "maxPinnedNotesDesc": "Maximum number of notes that can be pinned (3 - 10)",
     "systemNotifications": "System notifications",
     "systemNotificationsDesc": "Show operating system notifications for reminders",
     "testNotification": "Send test notification",
@@ -166,9 +164,7 @@
     "onNoteDelete": "On note deletion",
     "onNoteDeleteDesc": "Choose what happens when a note is deleted",
     "openLastNote": "Open last remaining note",
-    "openHome": "Open home section",
-    "confirmDelete": "Confirm on delete",
-    "confirmDeleteDesc": "Show confirmation screen when deleting notes"
+    "openHome": "Open home section"
   },
   "modals": {
     "exportNote": "Export Note",
@@ -302,7 +298,6 @@
     "noteUnlocked": "Note unlocked",
     "wrongPassword": "Wrong password!",
     "noteTemporarilyUnlocked": "Note temporarily unlocked",
-    "pinnedLimitUpdated": "Pinned note limit updated",
     "noActiveReminders": "No active reminders",
     "confirmDelete": "are you sure you want to delete the note?",
     "folderColorUpdated": "Folder color updated",
