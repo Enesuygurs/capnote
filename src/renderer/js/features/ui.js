@@ -289,6 +289,11 @@ export class UiFeature {
           this.hideEmojiPanel();
           return;
         }
+        if (this.hasSelection) {
+          this.hideSelectionMenu();
+          this.clearSelection();
+          return;
+        }
         // Menus close before anything else
         const openMenu = document.querySelector(
           '.context-menu:not(.hidden), .sort-dropdown:not(.hidden), .select-items:not(.select-hide)'

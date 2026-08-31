@@ -23,6 +23,7 @@ import { ExportFeature } from './features/export.js';
 import { BackupFeature } from './features/backup.js';
 import { AttachmentsFeature } from './features/attachments.js';
 import { UpdatesFeature } from './features/updates.js';
+import { SelectionFeature } from './features/selection.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -42,6 +43,9 @@ export class CapnoteApp {
     this.isResizing = false; // Flag to prevent re-renders during resize
     // Passwords of locked notes unlocked in this session (memory only, never persisted)
     this.unlockedNotes = new Map();
+    // Notes and folders picked with Ctrl/Cmd+click
+    this.selectedNoteIds = new Set();
+    this.selectedFolderIds = new Set();
     // Latest re-encryption request per note, so an older result never overwrites a newer one
     this.sealRequests = new WeakMap();
 
@@ -208,7 +212,6 @@ export class CapnoteApp {
     this.clearAllNotesBtn = document.getElementById('clearAllNotesBtn');
     this.clearAllFoldersBtn = document.getElementById('clearAllFoldersBtn');
     this.clearAllContentBtn = document.getElementById('clearAllContentBtn');
-    this.maxPinnedSelect = document.getElementById('maxPinnedSelect');
     this.darkModeToggle = document.getElementById('darkModeToggle');
     this.languageSelect = document.getElementById('languageSelect');
     this.accentYellowBtn = document.getElementById('accentYellow');
@@ -222,7 +225,6 @@ export class CapnoteApp {
     this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
     // General settings
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
-    this.confirmDeleteToggle = document.getElementById('confirmDeleteToggle');
     this.autoSaveToggle = document.getElementById('autoSaveToggle');
 
     // Folder elements
@@ -249,6 +251,7 @@ export class CapnoteApp {
     // Context menu
     this.contextMenu = document.getElementById('contextMenu');
     this.noteContextMenu = document.getElementById('noteContextMenu');
+    this.selectionMenu = document.getElementById('selectionMenu');
     this.sidebarContent = document.querySelector('.sidebar-content');
     this.deleteFolderMenuItem = document.getElementById('deleteFolderMenuItem');
     this.renameFolderMenuItem = document.getElementById('renameFolderMenuItem');
@@ -319,6 +322,7 @@ export class CapnoteApp {
     this.setupNoteListEvents();
     this.setupPreviewEvents();
     this.setupFolderEvents();
+    this.setupSelectionEvents();
     this.setupReminderEvents();
     this.setupEditorEvents();
     this.setupInsertEvents();
@@ -584,4 +588,5 @@ applyFeatures(CapnoteApp, [
   BackupFeature,
   AttachmentsFeature,
   UpdatesFeature,
+  SelectionFeature,
 ]);

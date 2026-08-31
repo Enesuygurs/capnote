@@ -58,6 +58,30 @@
   text-overflow: ellipsis;
 }
 
+/* Picked with Ctrl/Cmd+click: a stronger tint than the open note */
+.nav-item.is-selected,
+.note-item.is-selected,
+.note-item.is-selected:hover,
+.nav-item.is-selected:hover {
+  background: var(--accent-tint-strong);
+  color: var(--accent-text);
+}
+
+/* Renaming a note in place: the title becomes a field of the same size */
+.note-rename-input {
+  flex: 1;
+  min-width: 0;
+  height: 24px;
+  padding: 0 var(--space-1);
+  margin-left: calc(var(--space-1) * -1);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--focus-ring);
+  color: var(--text-strong);
+  font-size: inherit;
+  outline: none;
+}
+
 /* A favorite: a small heart at the end of the row */
 .note-item-favorite {
   flex-shrink: 0;

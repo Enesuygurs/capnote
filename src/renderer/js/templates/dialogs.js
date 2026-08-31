@@ -215,14 +215,31 @@ export const APP_DIALOGS = /* HTML */ `
     </button>
   </div>
 
+  <!-- Menu for a selection of several notes and folders (Ctrl/Cmd+click) -->
+  <div id="selectionMenu" class="context-menu menu hidden" role="menu">
+    <button class="menu-item" data-action="favorite" role="menuitem">
+      <i class="fas fa-heart tone-rose"></i>
+      <span></span>
+    </button>
+    <button class="menu-item" data-action="unfile" role="menuitem">
+      <i class="fas fa-folder-minus"></i>
+      <span data-i18n="selection.unfile">Klasörden çıkar</span>
+    </button>
+    <div class="menu-divider" role="separator"></div>
+    <button class="menu-item menu-item-danger" data-action="delete" role="menuitem">
+      <i class="fas fa-trash"></i>
+      <span></span>
+    </button>
+  </div>
+
   <!-- Folder context menu -->
   <div id="contextMenu" class="context-menu menu hidden" role="menu">
     <div class="menu-item" id="changeFolderColorMenuItem" role="menuitem">
-      <i class="fas fa-palette tone-amber"></i>
+      <i class="fas fa-palette"></i>
       <span data-i18n="modals.changeFolderColor">Klasör Rengini Değiştir</span>
     </div>
     <div class="menu-item" id="renameFolderMenuItem" role="menuitem">
-      <i class="fas fa-pen tone-blue"></i>
+      <i class="fas fa-pen"></i>
       <span data-i18n="modals.renameFolder">Yeniden Adlandır</span>
     </div>
     <div class="menu-divider" role="separator"></div>
