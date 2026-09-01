@@ -6,6 +6,17 @@
   margin-left: auto;
 }
 
+/* A pinned folder: a small gold pin before its count */
+.folder-pin {
+  margin-left: auto;
+  font-size: var(--fs-xs);
+  color: var(--tone);
+}
+
+.folder-pin + .folder-count {
+  margin-left: 0;
+}
+
 .nav-expand {
   width: 16px;
   flex-shrink: 0;

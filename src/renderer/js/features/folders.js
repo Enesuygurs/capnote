@@ -148,6 +148,7 @@ export class FoldersFeature {
     }
 
     this.foldersList.innerHTML = '';
+    if (this.pinnedFoldersList) this.pinnedFoldersList.innerHTML = '';
 
     // Compute visible counts per folder and skip folders with zero visible notes
     const treatAsFilter = this.isViewFiltered();
@@ -157,7 +158,10 @@ export class FoldersFeature {
       // If current filter/search should restrict visibility, hide folders with zero visible notes
       if (treatAsFilter && visibleCount === 0) return;
       const folderElement = this.createFolderElement(folder);
-      this.foldersList.appendChild(folderElement);
+      // Pinned folders sit above the notes
+      const list =
+        folder.isPinned && this.pinnedFoldersList ? this.pinnedFoldersList : this.foldersList;
+      list.appendChild(folderElement);
     });
     // Ensure folder notes are populated after rebuilding the DOM
     this.updateFolderNotes();
@@ -269,6 +273,7 @@ export class FoldersFeature {
     folderHeader.innerHTML = `
             <i class="fas fa-folder nav-icon" style="color: ${this.safeColor(folder.color)}"></i>
             <span class="nav-text">${this.escapeHtml(folder.name)}</span>
+            ${folder.isPinned ? '<i class="fas fa-thumbtack folder-pin tone-gold" aria-hidden="true"></i>' : ''}
             <span class="folder-count">${noteCount}</span>
             <i class="fas fa-chevron-down nav-expand"></i>
         `;
@@ -448,29 +453,40 @@ export class FoldersFeature {
         return;
       }
 
-      // Otherwise assume a note was dropped onto this folder
-      const noteId = e.dataTransfer.getData('text/plain');
-      if (noteId) {
-        this.moveNoteToFolder(noteId, folder.id);
-      }
+      // Otherwise a note (or the selected notes) was dropped onto this folder
+      const noteId = this.draggedNoteId || e.dataTransfer.getData('text/plain');
+      if (noteId) this.moveNotesToFolder(this.draggedNoteIds(noteId), folder.id);
     });
 
     return container;
   }
 
+  // The notes a drag moves: the whole selection when the dragged note is part of it
+  draggedNoteIds(noteId) {
+    return this.selectedNoteIds.has(noteId) && this.selectedNoteIds.size > 1
+      ? [...this.selectedNoteIds]
+      : [noteId];
+  }
+
   async moveNoteToFolder(noteId, folderId) {
-    const note = this.notes.find((n) => n.id === noteId);
-    if (!note) return;
+    return this.moveNotesToFolder([noteId], folderId);
+  }
 
-    const oldFolderId = note.folderId || null;
+  // Move notes into a folder (null: the root list)
+  async moveNotesToFolder(noteIds, folderId) {
     const targetFolderId = folderId || null;
-    // No-op if nothing changed
-    if (oldFolderId === targetFolderId) return;
+    const notes = this.notes.filter(
+      (n) => noteIds.includes(n.id) && (n.folderId || null) !== targetFolderId
+    );
+    if (!notes.length) return;
+    const note = notes[0];
 
-    note.folderId = targetFolderId;
-    note.updatedAt = new Date().toISOString();
-    // Its custom place belonged to the other list; it starts at the top of the new one
-    delete note.order;
+    notes.forEach((n) => {
+      n.folderId = targetFolderId;
+      n.updatedAt = new Date().toISOString();
+      // Its custom place belonged to the other list; it starts at the top of the new one
+      delete n.order;
+    });
 
     try {
       await this.saveNotes();
@@ -489,9 +505,12 @@ export class FoldersFeature {
       : this.folders.find((f) => f.id === folderId)?.name || i18n.t('messages.unknownFolder');
     const noteTitle = note.title || i18n.t('messages.untitledNote');
     this.showNotification(
-      i18n.t('messages.noteMovedToFolder', { title: noteTitle, folder: folderName }),
+      notes.length > 1
+        ? i18n.t('selection.moved', { count: notes.length, folder: folderName })
+        : i18n.t('messages.noteMovedToFolder', { title: noteTitle, folder: folderName }),
       'success'
     );
+    this.markSelection();
   }
 
   updateSpecificFolder(folderId) {
@@ -530,11 +549,33 @@ export class FoldersFeature {
     el._folderAnimTimer = setTimeout(finish, 220);
   }
 
+  async togglePinFolders(folderIds) {
+    const folders = this.folders.filter((f) => folderIds.includes(f.id));
+    if (!folders.length) return;
+    const value = !folders.every((f) => f.isPinned);
+    folders.forEach((f) => {
+      f.isPinned = value;
+    });
+    await this.saveFolders();
+    this.updateFoldersList();
+    this.markSelection();
+    this.showNotification(
+      i18n.t(value ? 'folders.pinned' : 'folders.unpinned', { count: folders.length }),
+      'success'
+    );
+  }
+
   // Context menu functions
   showFolderContextMenu(x, y, folderId) {
     this.hideNoteContextMenu();
     this.hideSelectionMenu?.();
     this.selectedFolderId = folderId;
+    const folder = this.folders.find((f) => f.id === folderId);
+    if (this.pinFolderMenuItem) {
+      this.pinFolderMenuItem.querySelector('span').textContent = i18n.t(
+        folder?.isPinned ? 'folders.unpin' : 'folders.pin'
+      );
+    }
     this.positionMenu(this.contextMenu, x, y);
   }
 
@@ -666,6 +707,10 @@ export class FoldersFeature {
 
     this.renameFolderMenuItem?.addEventListener('click', () => this.renameSelectedFolder());
 
+    this.pinFolderMenuItem?.addEventListener('click', () => {
+      if (this.selectedFolderId) this.togglePinFolders([this.selectedFolderId]);
+    });
+
     this.deleteFolderMenuItem?.addEventListener('click', () => this.deleteSelectedFolder());
 
     // Folder color modal handlers
@@ -691,10 +736,12 @@ export class FoldersFeature {
     const notesListContainer = document.getElementById('notesListContainer');
     const area = this.sidebarContent;
     if (notesListContainer && area) {
+      // The dragged notes, if any of them is in a folder
       const draggedFolderNote = (e) => {
         if (this.isDraggingFolder(e) || e.target.closest('.folder-container')) return null;
-        const note = this.notes.find((n) => n.id === this.draggedNoteId);
-        return note && note.folderId ? note : null;
+        if (!this.draggedNoteId) return null;
+        const ids = this.draggedNoteIds(this.draggedNoteId);
+        return this.notes.some((n) => ids.includes(n.id) && n.folderId) ? ids : null;
       };
 
       area.addEventListener('dragover', (e) => {
@@ -713,10 +760,10 @@ export class FoldersFeature {
 
       area.addEventListener('drop', (e) => {
         notesListContainer.classList.remove('drag-over');
-        const note = draggedFolderNote(e);
-        if (!note) return;
+        const ids = draggedFolderNote(e);
+        if (!ids) return;
         e.preventDefault();
-        this.moveNoteToFolder(note.id, null);
+        this.moveNotesToFolder(ids, null);
       });
     }
   }

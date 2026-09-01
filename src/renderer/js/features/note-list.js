@@ -302,7 +302,8 @@ export class NoteListFeature {
       if (!this.draggedNoteId || this.draggedNoteId === note.id) return;
       e.preventDefault();
       e.stopPropagation();
-      this.reorderNote(this.draggedNoteId, note.id, dropBefore(e));
+      const ids = this.draggedNoteIds(this.draggedNoteId);
+      if (!ids.includes(note.id)) this.reorderNote(ids, note.id, dropBefore(e));
     });
 
     return div;
@@ -310,21 +311,26 @@ export class NoteListFeature {
 
   // Place a note before or after another one (moving it into that note's folder if needed) and
   // switch the list to the custom order
+  // sourceId may be one id or several (a dragged selection, kept in its shown order)
   async reorderNote(sourceId, targetId, before) {
-    const source = this.notes.find((n) => n.id === sourceId);
+    const ids = Array.isArray(sourceId) ? sourceId : [sourceId];
     const target = this.notes.find((n) => n.id === targetId);
-    if (!source || !target || source === target) return;
+    const sources = this.notes.filter((n) => ids.includes(n.id) && n !== target);
+    if (!sources.length || !target) return;
 
     const folderId = target.folderId || null;
-    if ((source.folderId || null) !== folderId) {
-      source.folderId = folderId;
-      source.updatedAt = new Date().toISOString();
-    }
-    // Number the notes of that list in the order they are shown now, with the note in its new place
+    sources.forEach((source) => {
+      if ((source.folderId || null) !== folderId) {
+        source.folderId = folderId;
+        source.updatedAt = new Date().toISOString();
+      }
+    });
+    const moving = this.getSortedNotes([...sources]);
+    // Number the notes of that list in the order they are shown now, with the notes in their new place
     const siblings = this.getSortedNotes(
-      this.notes.filter((n) => n !== source && (n.folderId || null) === folderId)
+      this.notes.filter((n) => !sources.includes(n) && (n.folderId || null) === folderId)
     );
-    siblings.splice(siblings.indexOf(target) + (before ? 0 : 1), 0, source);
+    siblings.splice(siblings.indexOf(target) + (before ? 0 : 1), 0, ...moving);
     siblings.forEach((n, i) => {
       n.order = i;
     });
@@ -354,11 +360,13 @@ export class NoteListFeature {
     this.noteContextMenu.querySelector('[data-action="duplicate"]').disabled =
       this.isNoteLockedForView(note);
 
+    this.noteContextMenu.querySelector('[data-action="move"]').hidden = !this.folders.length;
     this.positionMenu(this.noteContextMenu, x, y);
   }
 
   hideNoteContextMenu() {
     this.noteContextMenu?.classList.add('hidden');
+    this.moveToFolderMenu?.classList.add('hidden');
     this.contextNoteId = null;
   }
 
@@ -444,6 +452,11 @@ export class NoteListFeature {
       const item = e.target.closest('[data-action]');
       if (!item || item.disabled) return;
       e.stopPropagation();
+      // "Move to folder" opens the folder list next to it and keeps this menu open
+      if (item.dataset.action === 'move') {
+        this.showMoveToFolderMenu(item, [this.contextNoteId]);
+        return;
+      }
       const noteId = this.contextNoteId;
       const note = this.notes.find((n) => n.id === noteId);
       this.hideNoteContextMenu();
@@ -458,7 +471,9 @@ export class NoteListFeature {
       actions[item.dataset.action]?.();
     });
     const closeNoteMenu = () => this.hideNoteContextMenu();
-    document.addEventListener('click', closeNoteMenu);
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#moveToFolderMenu')) closeNoteMenu();
+    });
     document.addEventListener('contextmenu', (e) => {
       if (!e.target.closest('.note-item')) closeNoteMenu();
     });

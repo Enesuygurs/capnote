@@ -121,6 +121,7 @@ export async function run() {
     a.hideAllModals();
     a.hideEmojiPanel();
     a.hideContextMenu();
+    a.hideSelectionMenu();
     a.closeAllDropdowns();
     a.hideNoteContextMenu();
     a.sortDropdown.classList.add('hidden');
@@ -166,6 +167,17 @@ export async function run() {
     const folder = document.querySelector('.folder-item');
     a.showFolderContextMenu(300, 420, folder.getAttribute('data-folder-id'));
     await shot(theme + '-09-context-menu');
+    await closeAll();
+    // Several notes selected: the selection menu with its folder list
+    a.selectedNoteIds = new Set([byTitle('Weekly plan').id, byTitle('Shopping list').id]);
+    a.markSelection();
+    a.showSelectionMenuIfSelected(140, 300, 'note', byTitle('Shopping list').id);
+    a.showMoveToFolderMenu(a.selectionMenu.querySelector('[data-action="move"]'), [
+      ...a.selectedNoteIds,
+    ]);
+    await shot(theme + '-09-selection-menu');
+    a.hideSelectionMenu();
+    a.clearSelection();
     await closeAll();
     a.toggleSearch();
     a.searchInput.value = 'plan';
