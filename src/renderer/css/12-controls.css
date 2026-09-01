@@ -298,6 +298,17 @@ input:focus-visible + .toggle-slider {
   background: none;
 }
 
+/* An item that opens a list beside the menu */
+.menu-item .menu-item-more {
+  margin-left: auto;
+  font-size: 10px;
+}
+
+.move-menu {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
 /* Sets the destructive item apart from the others */
 .menu-divider {
   height: 1px;

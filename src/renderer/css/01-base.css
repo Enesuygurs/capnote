@@ -20,6 +20,11 @@ button {
   background: none;
 }
 
+/* The hidden attribute wins over any display rule */
+[hidden] {
+  display: none !important;
+}
+
 /* Performance optimization: Disable transitions during window resize */
 body.resizing,
 body.resizing *,

@@ -234,6 +234,7 @@ export class CapnoteApp {
     this.createFolderBtn = document.getElementById('createFolderBtn');
     this.cancelFolderBtn = document.getElementById('cancelFolderBtn');
     this.foldersList = document.getElementById('foldersList');
+    this.pinnedFoldersList = document.getElementById('pinnedFoldersList');
     this.importAllDataBtn = document.getElementById('importAllDataBtn');
     this.exportAllDataBtn = document.getElementById('exportAllDataBtn');
     // Table modal elements (editor table insertion)
@@ -252,10 +253,12 @@ export class CapnoteApp {
     this.contextMenu = document.getElementById('contextMenu');
     this.noteContextMenu = document.getElementById('noteContextMenu');
     this.selectionMenu = document.getElementById('selectionMenu');
+    this.moveToFolderMenu = document.getElementById('moveToFolderMenu');
     this.sidebarContent = document.querySelector('.sidebar-content');
     this.deleteFolderMenuItem = document.getElementById('deleteFolderMenuItem');
     this.renameFolderMenuItem = document.getElementById('renameFolderMenuItem');
     this.changeFolderColorMenuItem = document.getElementById('changeFolderColorMenuItem');
+    this.pinFolderMenuItem = document.getElementById('pinFolderMenuItem');
     this.folderColorModal = document.getElementById('folderColorModal');
     this.folderColorInput = document.getElementById('folderColorInput');
     this.saveFolderColorBtn = document.getElementById('saveFolderColorBtn');
