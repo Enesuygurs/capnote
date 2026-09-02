@@ -377,7 +377,6 @@
     "confirmDeleteNotes": "The {count} selected notes will be deleted. Are you sure?",
     "confirmDeleteWithFolders": "{notes} notes and {folders} folders will be deleted, including the notes inside the folders. Are you sure?",
     "deleted": "{count} items deleted",
-    "moveTo": "Move to folder",
     "moved": "{count} notes moved to \"{folder}\""
   },
   "folders": {

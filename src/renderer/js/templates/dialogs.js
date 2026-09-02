@@ -208,11 +208,6 @@ export const APP_DIALOGS = /* HTML */ `
       <i class="fas fa-copy"></i>
       <span data-i18n="buttons.duplicate">Kopyala</span>
     </button>
-    <button class="menu-item" data-action="move" role="menuitem">
-      <i class="fas fa-folder-open"></i>
-      <span data-i18n="selection.moveTo">Klasöre taşı</span>
-      <i class="fas fa-chevron-right menu-item-more"></i>
-    </button>
     <div class="menu-divider" role="separator"></div>
     <button class="menu-item menu-item-danger" data-action="delete" role="menuitem">
       <i class="fas fa-trash"></i>
@@ -234,11 +229,6 @@ export const APP_DIALOGS = /* HTML */ `
       <i class="fas fa-thumbtack tone-gold"></i>
       <span></span>
     </button>
-    <button class="menu-item" data-action="move" role="menuitem">
-      <i class="fas fa-folder-open"></i>
-      <span data-i18n="selection.moveTo">Klasöre taşı</span>
-      <i class="fas fa-chevron-right menu-item-more"></i>
-    </button>
     <button class="menu-item" data-action="unfile" role="menuitem">
       <i class="fas fa-folder-minus"></i>
       <span data-i18n="selection.unfile">Klasörden çıkar</span>
@@ -249,9 +239,6 @@ export const APP_DIALOGS = /* HTML */ `
       <span></span>
     </button>
   </div>
-
-  <!-- Folders to move notes into, opened from "Move to folder" -->
-  <div id="moveToFolderMenu" class="context-menu menu move-menu hidden" role="menu"></div>
 
   <!-- Folder context menu -->
   <div id="contextMenu" class="context-menu menu hidden" role="menu">
