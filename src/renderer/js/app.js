@@ -253,7 +253,6 @@ export class CapnoteApp {
     this.contextMenu = document.getElementById('contextMenu');
     this.noteContextMenu = document.getElementById('noteContextMenu');
     this.selectionMenu = document.getElementById('selectionMenu');
-    this.moveToFolderMenu = document.getElementById('moveToFolderMenu');
     this.sidebarContent = document.querySelector('.sidebar-content');
     this.deleteFolderMenuItem = document.getElementById('deleteFolderMenuItem');
     this.renameFolderMenuItem = document.getElementById('renameFolderMenuItem');

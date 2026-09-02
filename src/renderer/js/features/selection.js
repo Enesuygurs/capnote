@@ -58,7 +58,6 @@ export class SelectionFeature {
     item('pin').querySelector('span').textContent = i18n.t(
       allPinned ? 'messages.unpinNote' : 'messages.pinNote'
     );
-    item('move').hidden = notes.length === 0 || this.folders.length === 0;
     const foldersPinned = folders.length > 0 && folders.every((f) => f.isPinned);
     item('pinFolders').hidden = folders.length === 0;
     item('pinFolders').querySelector('span').textContent = i18n.t(
@@ -79,7 +78,6 @@ export class SelectionFeature {
 
   hideSelectionMenu() {
     this.selectionMenu?.classList.add('hidden');
-    this.moveToFolderMenu?.classList.add('hidden');
   }
 
   // Pin the selected notes (or unpin them if all are pinned), up to the pin limit
@@ -112,39 +110,6 @@ export class SelectionFeature {
       i18n.t(value ? 'messages.notePinned' : 'messages.noteUnpinned'),
       'success'
     );
-  }
-
-  // The folder list for "Move to folder", opened beside the menu item
-  showMoveToFolderMenu(item, noteIds) {
-    const menu = this.moveToFolderMenu;
-    menu.innerHTML = '';
-    const notes = this.notes.filter((n) => noteIds.includes(n.id));
-    this.folders.forEach((folder) => {
-      const button = document.createElement('button');
-      button.className = 'menu-item';
-      // A folder all of these notes are in already is shown but cannot be picked
-      button.disabled = notes.every((n) => n.folderId === folder.id);
-      const icon = document.createElement('i');
-      icon.className = 'fas fa-folder';
-      icon.style.color = this.safeColor(folder.color);
-      const label = document.createElement('span');
-      label.textContent = folder.name;
-      button.append(icon, label);
-      button.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.hideSelectionMenu();
-        this.hideNoteContextMenu();
-        this.moveNotesToFolder(noteIds, folder.id);
-      });
-      menu.appendChild(button);
-    });
-    const rect = item.getBoundingClientRect();
-    this.positionMenu(menu, rect.right + 4, rect.top - 4);
-    // No room on the right: open to the left of the menu
-    if (menu.getBoundingClientRect().left < rect.right) {
-      const width = menu.getBoundingClientRect().width;
-      menu.style.left = Math.max(8, rect.left - width - 4) + 'px';
-    }
   }
 
   async favoriteSelection() {
@@ -279,10 +244,6 @@ export class SelectionFeature {
       if (!item) return;
       e.stopPropagation();
       this.hideSelectionMenu();
-      if (item.dataset.action === 'move') {
-        this.showMoveToFolderMenu(item, [...this.selectedNoteIds]);
-        return;
-      }
       const actions = {
         favorite: () => this.favoriteSelection(),
         pin: () => this.pinSelection(),
@@ -293,9 +254,7 @@ export class SelectionFeature {
       actions[item.dataset.action]?.();
     });
     const close = () => this.hideSelectionMenu();
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('#moveToFolderMenu')) close();
-    });
+    document.addEventListener('click', close);
     // A click on an empty part of the list clears the selection
     this.sidebarContent?.addEventListener('click', (e) => {
       if (e.ctrlKey || e.metaKey) return;

@@ -360,13 +360,11 @@ export class NoteListFeature {
     this.noteContextMenu.querySelector('[data-action="duplicate"]').disabled =
       this.isNoteLockedForView(note);
 
-    this.noteContextMenu.querySelector('[data-action="move"]').hidden = !this.folders.length;
     this.positionMenu(this.noteContextMenu, x, y);
   }
 
   hideNoteContextMenu() {
     this.noteContextMenu?.classList.add('hidden');
-    this.moveToFolderMenu?.classList.add('hidden');
     this.contextNoteId = null;
   }
 
@@ -452,11 +450,6 @@ export class NoteListFeature {
       const item = e.target.closest('[data-action]');
       if (!item || item.disabled) return;
       e.stopPropagation();
-      // "Move to folder" opens the folder list next to it and keeps this menu open
-      if (item.dataset.action === 'move') {
-        this.showMoveToFolderMenu(item, [this.contextNoteId]);
-        return;
-      }
       const noteId = this.contextNoteId;
       const note = this.notes.find((n) => n.id === noteId);
       this.hideNoteContextMenu();
@@ -471,9 +464,7 @@ export class NoteListFeature {
       actions[item.dataset.action]?.();
     });
     const closeNoteMenu = () => this.hideNoteContextMenu();
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('#moveToFolderMenu')) closeNoteMenu();
-    });
+    document.addEventListener('click', closeNoteMenu);
     document.addEventListener('contextmenu', (e) => {
       if (!e.target.closest('.note-item')) closeNoteMenu();
     });
