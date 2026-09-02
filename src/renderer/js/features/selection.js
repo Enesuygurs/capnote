@@ -207,6 +207,7 @@ export class SelectionFeature {
     input.maxLength = 200;
     titleEl.replaceWith(input);
     row.draggable = false;
+    row.classList.add('is-renaming');
     input.focus();
     input.select();
 
