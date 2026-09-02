@@ -67,19 +67,34 @@
   color: var(--accent-text);
 }
 
-/* Renaming a note in place: the title becomes a field of the same size */
-.note-rename-input {
-  flex: 1;
-  min-width: 0;
-  height: 24px;
-  padding: 0 var(--space-1);
-  margin-left: calc(var(--space-1) * -1);
-  border-radius: var(--radius-sm);
+/* Renaming a note in place: the row itself becomes the field. It keeps its size and the title
+   keeps its place; the row turns into a field surface with the focus ring. */
+.note-item.is-renaming,
+.note-item.is-renaming:hover {
   background: var(--surface);
   box-shadow: var(--focus-ring);
   color: var(--text-strong);
-  font-size: inherit;
+  cursor: text;
+}
+
+.note-item.is-renaming .nav-icon {
+  color: var(--tone, var(--text-muted));
+}
+
+.note-rename-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
   outline: none;
+}
+
+.note-rename-input::selection {
+  background: var(--accent-tint-strong);
 }
 
 /* A favorite: a small heart at the end of the row */

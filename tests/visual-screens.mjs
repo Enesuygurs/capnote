@@ -105,12 +105,12 @@ export async function run() {
     if (a.noteDate) a.noteDate.textContent = 'Sunday, March 1, 2026';
     document.querySelectorAll('.reminder-datetime-input').forEach((i) => (i.value = ''));
   };
-  const shot = async (name, { keepToast = false } = {}) => {
+  const shot = async (name, { keepToast = false, keepFocus = false } = {}) => {
     freeze();
     if (!keepToast) a.hideNotification();
     await wait(400);
     // Dialogs move focus a moment after opening; drop it last so no focus ring is captured
-    if (document.activeElement && document.activeElement !== document.body)
+    if (!keepFocus && document.activeElement && document.activeElement !== document.body)
       document.activeElement.blur();
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
     window.__shotDone = null;
@@ -172,13 +172,20 @@ export async function run() {
     a.selectedNoteIds = new Set([byTitle('Weekly plan').id, byTitle('Shopping list').id]);
     a.markSelection();
     a.showSelectionMenuIfSelected(140, 300, 'note', byTitle('Shopping list').id);
-    a.showMoveToFolderMenu(a.selectionMenu.querySelector('[data-action="move"]'), [
-      ...a.selectedNoteIds,
-    ]);
     await shot(theme + '-09-selection-menu');
     a.hideSelectionMenu();
     a.clearSelection();
     await closeAll();
+    // Renaming a note in place
+    a.startRenameNote(
+      byTitle('Shopping list'),
+      document.querySelector(`.note-item[data-note-id="${byTitle('Shopping list').id}"]`)
+    );
+    await shot(theme + '-09-rename', { keepFocus: true });
+    document
+      .querySelector('.note-rename-input')
+      ?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await wait(50);
     a.toggleSearch();
     a.searchInput.value = 'plan';
     a.searchNotes();
