@@ -250,10 +250,37 @@ export class NotesFeature {
     this.deleteNoteById(this.currentNote.id);
   }
 
-  // Copy a note (the open one by default) and open the copy
+  // Duplicate a note (the open one by default) and open the copy
   duplicateNote(note = this.currentNote) {
     if (!note || this.isNoteLockedForView(note)) return;
 
+    const duplicate = this.makeDuplicate(note);
+    this.notes.unshift(duplicate);
+    this.saveNotes();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+    this.showNotification(i18n.t('messages.noteCopied'), 'success');
+
+    this.selectNote(duplicate);
+  }
+
+  // Duplicate several notes; locked ones are skipped (they cannot be read without a password)
+  duplicateNotes(notes) {
+    const copies = notes
+      .filter((n) => !this.isNoteLockedForView(n))
+      .map((n) => this.makeDuplicate(n));
+    if (!copies.length) return;
+    this.notes.unshift(...copies);
+    this.saveNotes();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+    this.showNotification(i18n.t('selection.duplicated', { count: copies.length }), 'success');
+  }
+
+  // A new note with the content of `note`, in the same folder
+  makeDuplicate(note) {
     const now = new Date().toISOString();
     // A copy has its own tags, formatting and history; it does not share the original's
     const duplicate = {
@@ -272,14 +299,7 @@ export class NotesFeature {
     };
     delete duplicate.encrypted;
     delete duplicate.order;
-
-    this.notes.unshift(duplicate);
-    this.saveNotes();
-    this.updateNotesList();
-    this.updateStats();
-    this.showNotification(i18n.t('messages.noteCopied'), 'success');
-
-    this.selectNote(duplicate);
+    return duplicate;
   }
 
   /**

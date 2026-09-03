@@ -55,6 +55,8 @@ export class SelectionFeature {
     // Note actions only with notes in the selection, folder actions only with folders
     const allPinned = notes.length > 0 && notes.every((n) => n.isPinned);
     item('pin').hidden = notes.length === 0;
+    // Locked notes cannot be read without their password, so they are not duplicated
+    item('duplicate').hidden = !notes.some((n) => !this.isNoteLockedForView(n));
     item('pin').querySelector('span').textContent = i18n.t(
       allPinned ? 'messages.unpinNote' : 'messages.pinNote'
     );
@@ -248,6 +250,8 @@ export class SelectionFeature {
       const actions = {
         favorite: () => this.favoriteSelection(),
         pin: () => this.pinSelection(),
+        duplicate: () =>
+          this.duplicateNotes(this.notes.filter((n) => this.selectedNoteIds.has(n.id))),
         pinFolders: () => this.togglePinFolders([...this.selectedFolderIds]),
         unfile: () => this.unfileSelection(),
         delete: () => this.deleteSelection(),

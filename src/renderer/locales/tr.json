@@ -28,7 +28,7 @@
     "start": "Yazmaya Başlayın",
     "export": "Dışa Aktar",
     "import": "İçe Aktar",
-    "duplicate": "Kopyala",
+    "duplicate": "Çoğalt",
     "markAllRead": "Tümünü okundu işaretle",
     "testNotifications": "Bildirimleri test et"
   },
@@ -282,7 +282,7 @@
     "reminderCompleted": "Hatırlatma tamamlandı",
     "reminderDeleted": "Hatırlatma silindi",
     "reminderPrefix": "Hatırlatma:",
-    "noteCopied": "Not kopyalandı!",
+    "noteCopied": "Not çoğaltıldı",
     "autoSaveEnabled": "Otomatik kaydetme açıldı",
     "autoSaveDisabled": "Otomatik kaydetme kapatıldı",
     "noteCopySuffix": " (Kopya)",
@@ -377,7 +377,8 @@
     "confirmDeleteNotes": "Seçilen {count} not silinecek. Emin misiniz?",
     "confirmDeleteWithFolders": "{notes} not ve {folders} klasör silinecek; klasörlerin içindeki notlar da silinir. Emin misiniz?",
     "deleted": "{count} öğe silindi",
-    "moved": "{count} not \"{folder}\" klasörüne taşındı"
+    "moved": "{count} not \"{folder}\" klasörüne taşındı",
+    "duplicated": "{count} not çoğaltıldı"
   },
   "folders": {
     "pin": "Klasörü sabitle",

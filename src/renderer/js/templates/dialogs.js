@@ -205,8 +205,8 @@ export const APP_DIALOGS = /* HTML */ `
       <span></span>
     </button>
     <button class="menu-item" data-action="duplicate" role="menuitem">
-      <i class="fas fa-copy"></i>
-      <span data-i18n="buttons.duplicate">Kopyala</span>
+      <i class="fas fa-clone"></i>
+      <span data-i18n="buttons.duplicate">Çoğalt</span>
     </button>
     <div class="menu-divider" role="separator"></div>
     <button class="menu-item menu-item-danger" data-action="delete" role="menuitem">
@@ -224,6 +224,10 @@ export const APP_DIALOGS = /* HTML */ `
     <button class="menu-item" data-action="pin" role="menuitem">
       <i class="fas fa-thumbtack tone-gold"></i>
       <span></span>
+    </button>
+    <button class="menu-item" data-action="duplicate" role="menuitem">
+      <i class="fas fa-clone"></i>
+      <span data-i18n="buttons.duplicate">Çoğalt</span>
     </button>
     <button class="menu-item" data-action="pinFolders" role="menuitem">
       <i class="fas fa-thumbtack tone-gold"></i>

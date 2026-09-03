@@ -49,6 +49,15 @@ export async function run() {
   await a.pinSelection();
   const pinned = [n1.isPinned, n2.isPinned];
 
+  // Duplicate both at once: two new notes, the originals stay
+  const countBefore = a.notes.length;
+  a.selectionMenu.querySelector('[data-action="duplicate"]').click();
+  const duplicated = a.notes.length - countBefore;
+  const copyTitles = a.notes
+    .slice(0, 2)
+    .map((n) => n.title)
+    .sort();
+
   // Only folders selected: no note actions
   a.selectedNoteIds = new Set();
   a.selectedFolderIds = new Set(['fa', 'fb']);
@@ -68,7 +77,17 @@ export async function run() {
   a.sidebarContent.querySelector('.sidebar-nav').click();
   const cleared = !a.hasSelection;
 
-  return { moved, unfileBefore, unfileAfter, pinned, folderOnly, pinnedFolderOnTop, cleared };
+  return {
+    moved,
+    unfileBefore,
+    unfileAfter,
+    pinned,
+    duplicated,
+    copyTitles,
+    folderOnly,
+    pinnedFolderOnTop,
+    cleared,
+  };
 }
 
 export const expected = {
@@ -76,6 +95,8 @@ export const expected = {
   unfileBefore: true,
   unfileAfter: false,
   pinned: [true, true],
+  duplicated: 2,
+  copyTitles: ['N1 (Kopya)', 'N2 (Kopya)'],
   folderOnly: { unfile: false, favorite: false, pinFolders: true },
   pinnedFolderOnTop: true,
   cleared: true,
