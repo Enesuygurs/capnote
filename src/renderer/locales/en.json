@@ -282,7 +282,7 @@
     "reminderCompleted": "Reminder completed",
     "reminderDeleted": "Reminder deleted",
     "reminderPrefix": "Reminder:",
-    "noteCopied": "Note copied!",
+    "noteCopied": "Note duplicated",
     "autoSaveEnabled": "Auto save enabled",
     "autoSaveDisabled": "Auto save disabled",
     "noteCopySuffix": " (Copy)",
@@ -377,7 +377,8 @@
     "confirmDeleteNotes": "The {count} selected notes will be deleted. Are you sure?",
     "confirmDeleteWithFolders": "{notes} notes and {folders} folders will be deleted, including the notes inside the folders. Are you sure?",
     "deleted": "{count} items deleted",
-    "moved": "{count} notes moved to \"{folder}\""
+    "moved": "{count} notes moved to \"{folder}\"",
+    "duplicated": "{count} notes duplicated"
   },
   "folders": {
     "pin": "Pin folder",
