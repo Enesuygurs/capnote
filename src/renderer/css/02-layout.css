@@ -151,8 +151,11 @@
 }
 
 /* A titled part of a page body (upcoming reminders, past notifications) */
-.page-section + .page-section {
-  margin-top: var(--space-8);
+/* Sections are spaced by the body's gap, so a hidden one leaves no space behind */
+.page-body:has(> .page-section) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
 }
 
 .page-section-label {
