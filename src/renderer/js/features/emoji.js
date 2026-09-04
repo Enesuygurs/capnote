@@ -5,7 +5,10 @@ import { EMOJI_SETS, EMOJI_KEYWORDS } from '../data/emoji.js';
 export class EmojiFeature {
   toggleEmojiPanel() {
     if (!this.emojiPanel) return;
-    if (this.emojiPanel.classList.contains('hidden')) {
+    // A close that is still finishing must not hide the panel being opened now
+    const closing = !this.emojiPanel.classList.contains('show');
+    if (this.emojiPanel.classList.contains('hidden') || (closing && this.emojiHideTimers)) {
+      this.clearEmojiHideTimers();
       // capture the current editor selection so we can restore it after the panel steals focus
       try {
         this.captureEditorSelection();
@@ -43,19 +46,36 @@ export class EmojiFeature {
         });
       });
     } else {
-      this.emojiPanel.classList.remove('show');
-      // wait for animation then hide
-      setTimeout(() => this.emojiPanel.classList.add('hidden'), 160);
-      if (this.openEmojiBtn) this.openEmojiBtn.classList.remove('active');
+      this.hideEmojiPanel();
     }
+  }
+
+  clearEmojiHideTimers() {
+    (this.emojiHideTimers || []).forEach(clearTimeout);
+    this.emojiHideTimers = null;
+  }
+
+  // A press anywhere outside the panel (and its button) closes it
+  setupEmojiOutsideClose() {
+    document.addEventListener(
+      'pointerdown',
+      (e) => {
+        if (!this.emojiPanel || this.emojiPanel.classList.contains('hidden')) return;
+        if (this.emojiPanel.contains(e.target) || this.openEmojiBtn?.contains(e.target)) return;
+        this.hideEmojiPanel();
+      },
+      true
+    );
   }
 
   hideEmojiPanel() {
     if (!this.emojiPanel) return;
     this.emojiPanel.classList.remove('show');
-    setTimeout(() => this.emojiPanel.classList.add('hidden'), 160);
-    // clear inline positioning after hide
-    setTimeout(() => {
+    this.clearEmojiHideTimers();
+    // Hide after the closing animation, then clear the inline position
+    const hide = setTimeout(() => this.emojiPanel.classList.add('hidden'), 160);
+    const reset = setTimeout(() => {
+      this.emojiHideTimers = null;
       if (this.emojiPanel) {
         this.emojiPanel.style.left = '';
         this.emojiPanel.style.top = '';
@@ -63,6 +83,7 @@ export class EmojiFeature {
       // clear any saved selection when the panel is closed explicitly
       this.clearSavedSelection();
     }, 200);
+    this.emojiHideTimers = [hide, reset];
     if (this.openEmojiBtn) this.openEmojiBtn.classList.remove('active');
   }
 

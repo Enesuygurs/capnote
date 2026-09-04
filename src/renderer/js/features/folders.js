@@ -313,6 +313,12 @@ export class FoldersFeature {
       await this.saveFolders();
     });
 
+    // Double-click renames the folder in place (its two clicks open and close it again)
+    folderHeader.addEventListener('dblclick', (e) => {
+      if (e.ctrlKey || e.metaKey) return;
+      this.startRenameFolder(folder, folderHeader);
+    });
+
     // Add right-click context menu
     folderHeader.addEventListener('contextmenu', (e) => {
       e.preventDefault();

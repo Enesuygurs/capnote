@@ -325,6 +325,7 @@ export class CapnoteApp {
     this.setupPreviewEvents();
     this.setupFolderEvents();
     this.setupSelectionEvents();
+    this.setupEmojiOutsideClose();
     this.setupReminderEvents();
     this.setupEditorEvents();
     this.setupInsertEvents();
