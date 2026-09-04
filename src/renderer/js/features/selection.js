@@ -241,6 +241,53 @@ export class SelectionFeature {
     );
   }
 
+  // Double-click on a folder: edit its name in its row, like a note's title
+  startRenameFolder(folder, row) {
+    const nameEl = row.querySelector('.nav-text');
+    if (!nameEl || row.querySelector('.note-rename-input')) return;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'note-rename-input';
+    input.value = folder.name || '';
+    input.maxLength = 50;
+    nameEl.replaceWith(input);
+    row.draggable = false;
+    row.classList.add('is-renaming');
+    input.focus();
+    input.select();
+
+    let done = false;
+    const finish = async (save) => {
+      if (done) return;
+      done = true;
+      const name = input.value.trim();
+      const taken = this.folders.some(
+        (f) => f.id !== folder.id && f.name.toLowerCase() === name.toLowerCase()
+      );
+      if (save && name && name !== folder.name) {
+        if (taken) {
+          this.showNotification(i18n.t('messages.folderNameExists'), 'warning');
+        } else {
+          folder.name = name;
+          await this.saveFolders();
+          this.showNotification(i18n.t('messages.folderRenamed', { name }), 'success');
+        }
+      }
+      this.updateFoldersList();
+    };
+    input.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Enter') finish(true);
+      else if (e.key === 'Escape') finish(false);
+    });
+    input.addEventListener('blur', () => finish(true));
+    // Clicks in the field must not open or close the folder or start a drag
+    ['click', 'dblclick', 'mousedown'].forEach((type) =>
+      input.addEventListener(type, (e) => e.stopPropagation())
+    );
+  }
+
   setupSelectionEvents() {
     this.selectionMenu.addEventListener('click', (e) => {
       const item = e.target.closest('[data-action]');

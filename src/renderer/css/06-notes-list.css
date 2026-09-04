@@ -70,14 +70,17 @@
 /* Renaming a note in place: the row itself becomes the field. It keeps its size and the title
    keeps its place; the row turns into a field surface with the focus ring. */
 .note-item.is-renaming,
-.note-item.is-renaming:hover {
+.note-item.is-renaming:hover,
+.folder-item.is-renaming,
+.folder-item.is-renaming:hover {
   background: var(--surface);
   box-shadow: var(--focus-ring);
   color: var(--text-strong);
   cursor: text;
 }
 
-.note-item.is-renaming .nav-icon {
+.note-item.is-renaming .nav-icon,
+.folder-item.is-renaming .nav-icon {
   color: var(--tone, var(--text-muted));
 }
 
