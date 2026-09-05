@@ -12,6 +12,25 @@ export class NotesFeature {
     return this.settings.lastViewedNoteId;
   }
 
+  openStartupPage() {
+    switch (this.settings.startupPage) {
+      case 'home':
+        this.showWelcome();
+        return;
+      case 'newNote':
+        this.createNewNote();
+        return;
+      case 'todos':
+        this.showTodosScreen();
+        return;
+      case 'notifications':
+        this.showNotificationsScreen();
+        return;
+      default:
+        this.loadLastViewedNote();
+    }
+  }
+
   loadLastViewedNote() {
     if (this.notes.length === 0) {
       this.showWelcome();

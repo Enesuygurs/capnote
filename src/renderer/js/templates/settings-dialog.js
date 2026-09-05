@@ -49,6 +49,23 @@ export const SETTINGS_DIALOG = /* HTML */ `
             <div class="settings-group">
               <div class="setting-item">
                 <div class="setting-info">
+                  <label data-i18n="settings.startupPage">Açılışta gösterilecek sayfa</label>
+                  <small data-i18n="settings.startupPageDesc"
+                    >Capnote açıldığında ilk ne görünsün</small
+                  >
+                </div>
+                <select id="startupPageSelect" class="select-small">
+                  <option value="lastNote" data-i18n="settings.startupLastNote">
+                    Son açılan not
+                  </option>
+                  <option value="home" data-i18n="settings.startupHome">Giriş sayfası</option>
+                  <option value="newNote" data-i18n="settings.startupNewNote">Yeni not</option>
+                  <option value="todos" data-i18n="nav.todos">Yapılacaklar</option>
+                  <option value="notifications" data-i18n="nav.notifications">Bildirimler</option>
+                </select>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
                   <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
                   <small data-i18n="settings.onNoteDeleteDesc"
                     >Not silindiğinde ne olacağını seç</small

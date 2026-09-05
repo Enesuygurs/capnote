@@ -164,7 +164,12 @@
     "onNoteDelete": "Not silindiğinde",
     "onNoteDeleteDesc": "Not silindiğinde ne olacağını seç",
     "openLastNote": "Son kalan notu aç",
-    "openHome": "Ana sayfa bölümünü aç"
+    "openHome": "Ana sayfa bölümünü aç",
+    "startupPage": "Açılışta gösterilecek sayfa",
+    "startupPageDesc": "Capnote açıldığında ilk ne görünsün",
+    "startupLastNote": "Son açılan not",
+    "startupHome": "Giriş sayfası",
+    "startupNewNote": "Yeni not"
   },
   "modals": {
     "exportNote": "Notu Dışa Aktar",

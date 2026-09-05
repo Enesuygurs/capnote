@@ -87,6 +87,7 @@ export class SettingsFeature {
     if (this.toggleNativeNotifications)
       this.toggleNativeNotifications.checked = settings.nativeNotifications;
     if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
+    if (this.startupPageSelect) this.startupPageSelect.value = settings.startupPage;
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
 
@@ -136,6 +137,12 @@ export class SettingsFeature {
     });
 
     // On note delete behavior change
+    if (this.startupPageSelect) {
+      this.startupPageSelect.addEventListener('change', (e) => {
+        this.setSetting('startupPage', e.target.value);
+      });
+    }
+
     if (this.onNoteDeleteSelect) {
       this.onNoteDeleteSelect.addEventListener('change', (e) => {
         this.setSetting('onNoteDelete', e.target.value);

@@ -95,8 +95,8 @@ export class CapnoteApp {
     // the corresponding nav item appears active on startup
     this.changeFilter(this.currentFilter);
 
-    // Load last viewed note if available
-    this.loadLastViewedNote();
+    // The page chosen in the settings: the last note, home, a new note, to-dos or notifications
+    this.openStartupPage();
   }
 
   initializeElements() {
@@ -225,6 +225,7 @@ export class CapnoteApp {
     this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
     // General settings
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
+    this.startupPageSelect = document.getElementById('startupPageSelect');
     this.autoSaveToggle = document.getElementById('autoSaveToggle');
 
     // Folder elements
