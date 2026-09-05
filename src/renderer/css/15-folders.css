@@ -35,6 +35,34 @@
 }
 
 /* ============ Drag and drop (transient feedback) ============ */
+
+/* A pinned note or folder cannot be dragged: it shakes instead */
+@keyframes row-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.note-item.shake,
+.folder-item.shake {
+  animation: row-shake 320ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-item.shake,
+  .folder-item.shake {
+    animation: none;
+  }
+}
 .note-item.dragging {
   opacity: 0.5;
 }
