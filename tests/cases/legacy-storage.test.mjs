@@ -96,6 +96,7 @@ export const expected = {
     folderColorsBackup: null,
     autoSave: true,
     onNoteDelete: 'lastNote',
+    startupPage: 'lastNote',
     nativeNotifications: true,
     editorSidebarVisible: false,
     closeToTray: true,

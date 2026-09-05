@@ -164,7 +164,12 @@
     "onNoteDelete": "On note deletion",
     "onNoteDeleteDesc": "Choose what happens when a note is deleted",
     "openLastNote": "Open last remaining note",
-    "openHome": "Open home section"
+    "openHome": "Open home section",
+    "startupPage": "Page on start",
+    "startupPageDesc": "What Capnote shows when it opens",
+    "startupLastNote": "Last opened note",
+    "startupHome": "Home page",
+    "startupNewNote": "New note"
   },
   "modals": {
     "exportNote": "Export Note",

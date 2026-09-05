@@ -17,6 +17,8 @@ export const DEFAULT_SETTINGS = {
   noteSort: 'date-desc',
   autoSave: true,
   onNoteDelete: 'lastNote',
+  // What opens when the app starts: lastNote, home, newNote, todos or notifications
+  startupPage: 'lastNote',
   nativeNotifications: true,
   editorSidebarVisible: true,
   closeToTray: true,
