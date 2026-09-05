@@ -333,6 +333,12 @@ export class FoldersFeature {
     // Make folder header draggable so folders can be reordered
     folderHeader.draggable = true;
     folderHeader.addEventListener('dragstart', (ev) => {
+      // A pinned folder stays where it is: the drag is refused with a shake
+      if (folder.isPinned) {
+        ev.preventDefault();
+        this.shakeRow(folderHeader);
+        return;
+      }
       try {
         ev.dataTransfer.effectAllowed = 'move';
         // Use a dedicated mime type for folder drags to avoid colliding with note drags
@@ -468,10 +474,12 @@ export class FoldersFeature {
   }
 
   // The notes a drag moves: the whole selection when the dragged note is part of it
+  // Pinned notes in the selection stay where they are
   draggedNoteIds(noteId) {
-    return this.selectedNoteIds.has(noteId) && this.selectedNoteIds.size > 1
-      ? [...this.selectedNoteIds]
-      : [noteId];
+    if (!(this.selectedNoteIds.has(noteId) && this.selectedNoteIds.size > 1)) return [noteId];
+    return [...this.selectedNoteIds].filter(
+      (id) => id === noteId || !this.notes.find((n) => n.id === id)?.isPinned
+    );
   }
 
   async moveNoteToFolder(noteId, folderId) {

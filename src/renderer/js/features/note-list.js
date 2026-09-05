@@ -266,6 +266,12 @@ export class NoteListFeature {
     });
 
     div.addEventListener('dragstart', (e) => {
+      // A pinned note stays where it is: the drag is refused with a shake
+      if (note.isPinned) {
+        e.preventDefault();
+        this.shakeRow(div);
+        return;
+      }
       e.dataTransfer.setData('text/plain', note.id);
       this.draggedNoteId = note.id;
       div.classList.add('dragging');
@@ -339,6 +345,14 @@ export class NoteListFeature {
     await this.saveNotes();
     this.updateNotesList();
     this.updateFoldersList();
+  }
+
+  // Play the "cannot move" shake on a row
+  shakeRow(row) {
+    row.classList.remove('shake');
+    void row.offsetWidth; // restart the animation if it is already running
+    row.classList.add('shake');
+    row.addEventListener('animationend', () => row.classList.remove('shake'), { once: true });
   }
 
   // The right-click menu of a note: its labels follow the note's current state
