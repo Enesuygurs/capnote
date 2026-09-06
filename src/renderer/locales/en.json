@@ -254,7 +254,7 @@
     "noHistory": "No edits yet"
   },
   "messages": {
-    "dropOutsideFolders": "Drop here to take the note out of its folder",
+    "dropOutsideFolders": "Take out of folder",
     "noteSaved": "Note saved!",
     "noteDeleted": "Note deleted!",
     "folderCreated": "Folder \"{name}\" created",
