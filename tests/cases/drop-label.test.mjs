@@ -42,6 +42,6 @@ export async function run() {
 export const expected = {
   rootShows: false,
   folderShows: true,
-  tr: '"Notu klasörden çıkarmak için buraya bırakın"',
-  en: '"Drop here to take the note out of its folder"',
+  tr: '"Klasörden çıkar"',
+  en: '"Take out of folder"',
 };

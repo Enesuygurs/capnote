@@ -254,7 +254,7 @@
     "noHistory": "Henüz düzenleme yok"
   },
   "messages": {
-    "dropOutsideFolders": "Notu klasörden çıkarmak için buraya bırakın",
+    "dropOutsideFolders": "Klasörden çıkar",
     "noteSaved": "Not kaydedildi!",
     "noteDeleted": "Not silindi!",
     "folderCreated": "\"{name}\" klasörü oluşturuldu",

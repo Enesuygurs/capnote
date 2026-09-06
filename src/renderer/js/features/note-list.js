@@ -349,7 +349,8 @@ export class NoteListFeature {
 
   // Play the "cannot move" shake on a row
   shakeRow(row) {
-    row.classList.remove('shake');
+    // The row's appear animation would replay when the shake ends and blink the row out
+    row.classList.remove('fade-in', 'shake');
     void row.offsetWidth; // restart the animation if it is already running
     row.classList.add('shake');
     row.addEventListener('animationend', () => row.classList.remove('shake'), { once: true });

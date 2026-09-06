@@ -1,4 +1,5 @@
-// Pinned notes and folders cannot be dragged: the drag is cancelled and the row shakes
+// Pinned notes and folders cannot be dragged: the drag is cancelled and the row shakes, without
+// replaying its appear animation (which blinked the row out)
 
 export async function run() {
   const a = window.app;
@@ -25,7 +26,11 @@ export async function run() {
     });
     el.dispatchEvent(event);
     el.dispatchEvent(new DragEvent('dragend', { bubbles: true }));
-    return { refused: event.defaultPrevented, shakes: el.classList.contains('shake') };
+    return {
+      refused: event.defaultPrevented,
+      shakes: el.classList.contains('shake'),
+      appearsAgain: el.classList.contains('fade-in') && el.classList.contains('shake'),
+    };
   };
   const note = (n) => document.querySelector(`.note-item[data-note-id="${n.id}"]`);
   const folder = (id) => document.querySelector(`.folder-item[data-folder-id="${id}"]`);
@@ -45,9 +50,9 @@ export async function run() {
 }
 
 export const expected = {
-  pinnedNote: { refused: true, shakes: true },
-  looseNote: { refused: false, shakes: false },
-  pinnedFolder: { refused: true, shakes: true },
-  looseFolder: { refused: false, shakes: false },
+  pinnedNote: { refused: true, shakes: true, appearsAgain: false },
+  looseNote: { refused: false, shakes: false, appearsAgain: false },
+  pinnedFolder: { refused: true, shakes: true, appearsAgain: false },
+  looseFolder: { refused: false, shakes: false, appearsAgain: false },
   draggedOnlyLoose: true,
 };

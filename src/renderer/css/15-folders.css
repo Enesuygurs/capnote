@@ -136,6 +136,9 @@
   font-size: var(--fs-md);
   font-weight: 500;
   white-space: nowrap;
+  max-width: calc(100% - var(--space-4));
+  overflow: hidden;
+  text-overflow: ellipsis;
   pointer-events: none;
   z-index: 10;
 }
