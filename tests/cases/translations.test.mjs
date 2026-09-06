@@ -50,7 +50,7 @@ export const expected = {
   folderToast: 'Folder "Docs" created',
   moveToast: '"Untitled Note" moved to Docs',
   untitled: 'Untitled Note',
-  editorTemplates: 'First itemSecond itemThird itemTaskHeader 1Header 2 x',
+  editorTemplates: 'xHeader 1Header 2',
   todoCount: '0 tasks',
   emptySection: 'No tasks in this section',
   weekday: 'Mon',
