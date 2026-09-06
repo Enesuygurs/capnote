@@ -357,10 +357,6 @@
     "backupTooNew": "This backup was made by a newer version of Capnote. Please update the app to import it."
   },
   "templates": {
-    "listItem1": "First item",
-    "listItem2": "Second item",
-    "listItem3": "Third item",
-    "task": "Task",
     "tableHeader": "Header {n}"
   },
   "updates": {

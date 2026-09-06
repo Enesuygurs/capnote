@@ -357,10 +357,6 @@
     "backupTooNew": "Bu yedek Capnote'un daha yeni bir sürümüyle alınmış. İçe aktarmak için uygulamayı güncelleyin."
   },
   "templates": {
-    "listItem1": "Birinci madde",
-    "listItem2": "İkinci madde",
-    "listItem3": "Üçüncü madde",
-    "task": "Görev",
     "tableHeader": "Başlık {n}"
   },
   "updates": {

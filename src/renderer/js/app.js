@@ -24,6 +24,7 @@ import { BackupFeature } from './features/backup.js';
 import { AttachmentsFeature } from './features/attachments.js';
 import { UpdatesFeature } from './features/updates.js';
 import { SelectionFeature } from './features/selection.js';
+import { EditorBlocksFeature } from './features/editor-blocks.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -330,6 +331,7 @@ export class CapnoteApp {
     this.setupReminderEvents();
     this.setupEditorEvents();
     this.setupInsertEvents();
+    this.setupBlockEvents();
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupMoodWeatherSelectors();
@@ -593,4 +595,5 @@ applyFeatures(CapnoteApp, [
   AttachmentsFeature,
   UpdatesFeature,
   SelectionFeature,
+  EditorBlocksFeature,
 ]);

@@ -1,4 +1,5 @@
-// Enter stays inside a code block, Ctrl+Enter leaves it, and pasting keeps plain text
+// Enter stays inside a code block, Ctrl+Enter leaves it, Enter in a task starts the next task,
+// and pasting keeps plain text
 
 export async function run() {
   const a = window.app;
@@ -26,7 +27,7 @@ export async function run() {
     '<div class="checklist"><div class="checklist-item"><input type="checkbox"><label>one</label></div></div>';
   caretAt(a.richEditor.querySelector('label').firstChild, 3);
   key('Enter');
-  const afterChecklist = a.richEditor.innerHTML;
+  const afterChecklist = a.richEditor.innerHTML.replace(/ (id|for)="task_[^"]+"/g, '');
   a.richEditor.innerHTML = '<pre><code>a</code></pre>';
   caretAt(a.richEditor.querySelector('code').firstChild, 1);
   const dt = new DataTransfer();
@@ -46,6 +47,6 @@ export const expected = {
   afterEnter: '"let x = 1;\\n​"',
   exited: 'P',
   afterChecklist:
-    '<div class="checklist"><div class="checklist-item"><input type="checkbox"><label>one</label></div></div><p><br></p>',
+    '<div class="checklist"><div class="checklist-item"><input type="checkbox"><label>one</label></div><div class="checklist-item"><input type="checkbox"><label><br></label></div></div>',
   pasted: '"ab\\nc"',
 };

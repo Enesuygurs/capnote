@@ -145,12 +145,8 @@ export class EditorInsertFeature {
       return;
     }
 
-    // Otherwise, insert into rich contenteditable as a <pre><code> block
-    if (this.richEditor) {
-      this.insertPreCodeForRichEditor();
-      this.trackContentChanges();
-      return;
-    }
+    // Otherwise, insert into rich contenteditable as a <pre><code> block on its own line
+    if (this.richEditor) this.insertCodeBlockInRich();
   }
 
   insertAtCursor(textarea, text) {
@@ -177,110 +173,6 @@ export class EditorInsertFeature {
     textarea.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
-  insertPreCodeForRichEditor() {
-    try {
-      const sel = window.getSelection();
-      const createPreWithZW = () => {
-        const pre = document.createElement('pre');
-        const code = document.createElement('code');
-        const textNode = document.createTextNode('\u200B');
-        code.appendChild(textNode);
-        pre.appendChild(code);
-        return { pre, code, textNode };
-      };
-
-      // No caret in the editor (e.g. it is in the title): append at the end
-      if (
-        !sel ||
-        !sel.rangeCount ||
-        !this.richEditor.contains(sel.getRangeAt(0).commonAncestorContainer)
-      ) {
-        const { pre, textNode } = createPreWithZW();
-        this.richEditor.appendChild(pre);
-        try {
-          const newSel = window.getSelection();
-          const range = document.createRange();
-          range.setStart(textNode, 1);
-          range.collapse(true);
-          newSel.removeAllRanges();
-          newSel.addRange(range);
-          this.richEditor.focus();
-        } catch (err) {}
-        return;
-      }
-
-      const range = sel.getRangeAt(0);
-
-      // determine if selection is inside an existing <pre> or <code>
-      const commonNode = range.commonAncestorContainer;
-      const elementNode =
-        commonNode.nodeType === Node.ELEMENT_NODE ? commonNode : commonNode.parentElement;
-      const ancestor = elementNode && elementNode.closest ? elementNode.closest('pre, code') : null;
-
-      if (ancestor) {
-        // If we are inside a <code> or <pre>, insert the new block after the containing <pre>
-        let preAncestor =
-          ancestor.tagName && ancestor.tagName.toLowerCase() === 'pre'
-            ? ancestor
-            : ancestor.closest
-              ? ancestor.closest('pre')
-              : null;
-        if (!preAncestor) preAncestor = ancestor.parentElement;
-
-        const { pre, textNode } = createPreWithZW();
-        if (preAncestor && preAncestor.parentNode) {
-          if (preAncestor.nextSibling)
-            preAncestor.parentNode.insertBefore(pre, preAncestor.nextSibling);
-          else preAncestor.parentNode.appendChild(pre);
-        } else {
-          // fallback: insert at current range
-          range.deleteContents();
-          range.insertNode(pre);
-        }
-
-        try {
-          const newSel = window.getSelection();
-          const newRange = document.createRange();
-          newRange.setStart(textNode, 1);
-          newRange.collapse(true);
-          newSel.removeAllRanges();
-          newSel.addRange(newRange);
-          this.richEditor.focus();
-        } catch (err) {}
-
-        return;
-      }
-
-      // Default: insert at the current range location
-      const { pre, textNode } = createPreWithZW();
-      range.deleteContents();
-      range.insertNode(pre);
-      sel.removeAllRanges();
-      const newRange = document.createRange();
-      newRange.setStart(textNode, 1);
-      newRange.collapse(true);
-      sel.addRange(newRange);
-      this.richEditor.focus();
-    } catch (e) {
-      // fallback: append
-      const pre = document.createElement('pre');
-      const code = document.createElement('code');
-      const textNode = document.createTextNode('\u200B');
-      code.appendChild(textNode);
-      pre.appendChild(code);
-      this.richEditor.appendChild(pre);
-      try {
-        const sel2 = window.getSelection();
-        const range2 = document.createRange();
-        range2.setStart(textNode, 1);
-        range2.collapse(true);
-        sel2.removeAllRanges();
-        sel2.addRange(range2);
-        this.richEditor.focus();
-      } catch (err) {}
-    }
-  }
-
   insertDateTime(type) {
     const now = new Date();
     let text;
@@ -303,8 +195,13 @@ export class EditorInsertFeature {
   }
 
   insertTextAtCursor(text) {
-    document.execCommand('insertText', false, text);
+    // The text goes where the caret was in the note, even if a button took the focus
+    this.restoreEditorSelection();
     this.richEditor.focus();
+    if (!this.caretRange()) this.placeCaretAtEnd(this.richEditor);
+    document.execCommand('insertText', false, text);
+    this.captureEditorSelection();
+    this.trackContentChanges();
   }
 
   handlePaste(e) {
@@ -362,32 +259,6 @@ export class EditorInsertFeature {
     this.trackContentChanges();
   }
 
-  // Insert HTML at the stored editor selection (or at current caret)
-  insertHtmlAtSavedSelection(html) {
-    try {
-      // Attempt to restore stored selection
-      this.restoreEditorSelection();
-      // Use execCommand as a fallback for inserting HTML
-      if (document.queryCommandSupported && document.queryCommandSupported('insertHTML')) {
-        document.execCommand('insertHTML', false, html);
-      } else {
-        const sel = window.getSelection();
-        if (!sel || sel.rangeCount === 0) {
-          // Append at end
-          this.richEditor.insertAdjacentHTML('beforeend', html);
-          return;
-        }
-        const range = sel.getRangeAt(0);
-        range.deleteContents();
-        const frag = document.createRange().createContextualFragment(html);
-        range.insertNode(frag);
-      }
-    } catch (e) {
-      // As a last resort, append to editor
-      this.richEditor.insertAdjacentHTML('beforeend', html);
-    }
-  }
-
   handleInsertTable() {
     // Read values from modal
     const rows = Math.max(1, parseInt(this.tableRowsInput?.value || '2', 10));
@@ -406,13 +277,15 @@ export class EditorInsertFeature {
     html += '<tbody>';
     for (let r = 0; r < rows; r++) {
       html += '<tr>';
-      for (let c = 0; c < cols; c++) html += `<td style="padding:6px">&nbsp;</td>`;
+      for (let c = 0; c < cols; c++) html += `<td style="padding:6px"><br></td>`;
       html += '</tr>';
     }
-    html += '</tbody></table><p></p>';
+    html += '</tbody></table>';
 
-    // Insert into editor at caret/selection
-    this.insertHtmlAtSavedSelection(html);
+    // Insert on its own line at the caret, with a line below it, and start in the first cell
+    const table = this.insertBlockAtCaret(html);
+    const firstCell = table?.querySelector('td');
+    if (firstCell) this.placeCaret(firstCell, 0);
 
     // Update word/char counts and mark note dirty
     this.captureEditorSelection();
@@ -421,32 +294,7 @@ export class EditorInsertFeature {
     this.hideModal(this.tableModal);
   }
 
-  // List insertion methods
-  insertList(type) {
-    this.restoreEditorSelection();
-    this.richEditor.focus();
-    const items = ['templates.listItem1', 'templates.listItem2', 'templates.listItem3']
-      .map((key) => `<li>${this.escapeHtml(i18n.t(key))}</li>`)
-      .join('');
-    const listHtml = `<${type}>${items}</${type}><p><br></p>`;
-
-    document.execCommand('insertHTML', false, listHtml);
-    this.trackContentChanges();
-    this.captureEditorSelection();
-  }
-
-  insertChecklist() {
-    this.restoreEditorSelection();
-    this.richEditor.focus();
-    const uniqueId = 'task_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    const checklistHtml = `<div class="checklist"><div class="checklist-item"><input type="checkbox" id="${uniqueId}"><label for="${uniqueId}">${this.escapeHtml(i18n.t('templates.task'))}</label></div></div><p><br></p>`;
-
-    document.execCommand('insertHTML', false, checklistHtml);
-    this.trackContentChanges();
-    this.captureEditorSelection();
-  }
-
-  // Enter inside code blocks and checklists, pasting and dropping files
+  // Enter inside code blocks, pasting and dropping files
   setupInsertEvents() {
     if (this.insertCodeBlockBtn)
       this.insertCodeBlockBtn.addEventListener('click', () => this.insertCodeBlock());
@@ -688,39 +536,6 @@ export class EditorInsertFeature {
           this.trackContentChanges();
         } catch (err) {
           console.error('Drop handling failed for', f, err);
-        }
-      }
-    });
-
-    // Handle Enter key in checklist items
-    this.richEditor.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const selection = window.getSelection();
-        if (selection.rangeCount > 0) {
-          const range = selection.getRangeAt(0);
-          const checklistItem = range.startContainer.closest
-            ? range.startContainer.closest('.checklist-item')
-            : range.startContainer.parentElement?.closest('.checklist-item');
-
-          if (checklistItem) {
-            e.preventDefault();
-
-            // Create a new paragraph after the checklist
-            const newParagraph = document.createElement('p');
-            newParagraph.innerHTML = '<br>';
-
-            const checklist = checklistItem.closest('.checklist');
-            checklist.parentNode.insertBefore(newParagraph, checklist.nextSibling);
-
-            // Move cursor to the new paragraph
-            const newRange = document.createRange();
-            newRange.setStart(newParagraph, 0);
-            newRange.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(newRange);
-
-            this.trackContentChanges();
-          }
         }
       }
     });
