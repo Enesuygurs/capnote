@@ -102,6 +102,7 @@ export class EditorFormattingFeature {
     if (this.notificationsNav) {
       this.notificationsNav.addEventListener('click', () => this.showNotificationsScreen());
     }
+    this.remindersNav?.addEventListener('click', () => this.showRemindersScreen());
 
     // Mark all as read button
     if (this.markAllReadBtn) {

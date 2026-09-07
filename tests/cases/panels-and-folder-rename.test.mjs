@@ -1,5 +1,4 @@
-// A double-click renames a folder in place, the emoji panel closes on a click outside it, and
-// without upcoming reminders the notifications section starts at the top of the page
+// A double-click renames a folder in place and the emoji panel closes on a click outside it
 
 export async function run() {
   const a = window.app;
@@ -27,18 +26,7 @@ export async function run() {
   const closed = a.emojiPanel.classList.contains('hidden');
   a.cancelEdit();
 
-  // No upcoming reminders: the notifications section is the first thing in the page body
-  a.reminders = [];
-  a.showNotificationsScreen();
-  const body = a.notificationsList.closest('.page-body');
-  const section = a.notificationsList.closest('.page-section');
-  const offset = Math.round(
-    section.getBoundingClientRect().top -
-      body.getBoundingClientRect().top -
-      parseFloat(getComputedStyle(body).paddingTop)
-  );
-
-  return { renamed, shown, opened, closed, offset };
+  return { renamed, shown, opened, closed };
 }
 
 export const expected = {
@@ -46,5 +34,4 @@ export const expected = {
   shown: 'New name',
   opened: true,
   closed: true,
-  offset: 0,
 };

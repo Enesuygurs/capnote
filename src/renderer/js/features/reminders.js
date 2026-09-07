@@ -104,12 +104,8 @@ export class RemindersFeature {
       (r) => !r.dismissed && new Date(r.datetime) > new Date()
     );
 
-    // The upcoming section shows only while there is something coming up
-    this.remindersList
-      .closest('.page-section')
-      ?.classList.toggle('hidden', !activeReminders.length);
     if (activeReminders.length === 0) {
-      this.remindersList.innerHTML = '';
+      this.remindersList.innerHTML = `<div class="empty-state empty-state-large"><i class="fas fa-bell-slash"></i><p>${i18n.t('messages.noActiveReminders')}</p></div>`;
       return;
     }
 
@@ -364,7 +360,6 @@ export class RemindersFeature {
 
       // Add to notifications list and show a toast that references the notification id
       const nid = this.addNotification(reminder.noteId, noteTitle, kind, reminder.datetime);
-      const body = this.notificationMessage({ kind, at: reminder.datetime });
       this.showNotification(`${i18n.t('messages.reminderPrefix')} ${noteTitle}`, 'info', {
         notificationId: nid,
       });
@@ -380,8 +375,8 @@ export class RemindersFeature {
         ) {
           window.electronAPI
             .showNativeNotification({
-              title: `${i18n.t('messages.reminderNotification')} ${noteTitle}`,
-              body,
+              title: this.notificationTitle({ kind, noteId: reminder.noteId, noteTitle }),
+              body: '',
               silent: false,
               notificationId: nid,
             })

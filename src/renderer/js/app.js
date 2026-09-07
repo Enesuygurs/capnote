@@ -157,6 +157,8 @@ export class CapnoteApp {
 
     // Reminders elements
     this.remindersList = document.getElementById('remindersList');
+    this.remindersScreen = document.getElementById('remindersScreen');
+    this.remindersNav = document.getElementById('remindersNav');
     this.activeRemindersCount = document.getElementById('activeRemindersCount');
     this.reminderDatetime = document.getElementById('reminderDatetime');
     this.reminderRecurrence = document.getElementById('reminderRecurrence');

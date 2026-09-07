@@ -23,6 +23,9 @@ export class NotesFeature {
       case 'todos':
         this.showTodosScreen();
         return;
+      case 'reminders':
+        this.showRemindersScreen();
+        return;
       case 'notifications':
         this.showNotificationsScreen();
         return;

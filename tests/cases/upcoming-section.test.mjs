@@ -1,21 +1,24 @@
-// The notifications screen shows the upcoming reminders section only while a reminder is coming up
+// The reminders page lists the reminders still to come, or says there are none
 
 export async function run() {
   const a = window.app;
-  const section = () => a.remindersList.closest('.page-section');
   a.reminders = [];
-  a.showNotificationsScreen();
-  const withoutReminders = section().classList.contains('hidden');
+  a.showRemindersScreen();
+  const empty = !!a.remindersList.querySelector('.empty-state');
+  const visible = !a.remindersScreen.classList.contains('hidden');
+  const navActive = a.remindersNav.classList.contains('active');
 
   a.reminders = [
     { id: 'r1', noteId: null, noteTitle: 'Soon', datetime: '2099-01-01T09:00:00.000Z' },
   ];
-  a.showNotificationsScreen();
-  const withReminder = section().classList.contains('hidden');
-  return { withoutReminders, withReminder };
+  a.showRemindersScreen();
+  const listed = a.remindersList.querySelectorAll('.reminder-card').length;
+  return { empty, visible, navActive, listed };
 }
 
 export const expected = {
-  withoutReminders: true,
-  withReminder: false,
+  empty: true,
+  visible: true,
+  navActive: true,
+  listed: 1,
 };
