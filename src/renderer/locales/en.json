@@ -216,9 +216,8 @@
   },
   "notifications": {
     "title": "Notifications",
-    "subtitle": "Reminders and notifications",
-    "history": "Notifications",
-    "remindersTitle": "Upcoming reminders",
+    "subtitle": "Reminders that came due",
+    "remindersTitle": "Reminders",
     "remindersSubtitle": "Reminders set for your notes"
   },
   "todos": {

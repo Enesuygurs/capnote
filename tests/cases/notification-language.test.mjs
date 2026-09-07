@@ -1,4 +1,5 @@
-// Notifications are worded in the current language; older stored texts stay as they were
+// Notifications are worded in the current language; a reminder's is titled "Reminder: <note>"
+// with no text below it; older stored texts stay as they were
 
 export async function run() {
   const a = window.app;
@@ -31,7 +32,7 @@ export async function run() {
       (c) =>
         c.querySelector('.notification-note-title').textContent.trim() +
         ' | ' +
-        c.querySelector('.notification-message').textContent.trim()
+        (c.querySelector('.notification-message')?.textContent.trim() || '-')
     );
   const tr = read();
   a.languageSelect.value = 'en';
@@ -47,12 +48,12 @@ export async function run() {
 export const expected = {
   tr: [
     'Test bildirimi | Bu bir test bildirimidir.',
-    /^Dentist \| Hatırlatma zamanı geldi: \d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2}$/,
+    'Hatırlatma: Dentist | -',
     'Legacy | Eski metin',
   ],
   en: [
     'Test notification | This is a test notification.',
-    /^Dentist \| Reminder time: \d{1,2}\/\d{1,2}\/\d{4}, \d{1,2}:\d{2}:\d{2} [AP]M$/,
+    'Reminder: Dentist | -',
     'Legacy | Eski metin',
   ],
   stored: [

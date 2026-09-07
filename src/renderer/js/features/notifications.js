@@ -22,17 +22,19 @@ export class NotificationsFeature {
     return notification.id;
   }
 
+  // A reminder's notification is titled "Reminder: <note>" ("Missed reminder: <note>")
   notificationTitle(n) {
     if (n.kind === 'test') return i18n.t('messages.testNotificationTitle');
-    return this.titleForNote(n.noteId, n.noteTitle);
+    const title = this.titleForNote(n.noteId, n.noteTitle);
+    if (n.kind === 'reminderDue') return `${i18n.t('messages.reminderPrefix')} ${title}`;
+    if (n.kind === 'reminderMissed') return `${i18n.t('messages.reminderMissed')} ${title}`;
+    return title;
   }
 
-  // Older notifications stored their text in the language of the time; it is shown as it was
+  // A reminder needs no text below its title; older notifications keep the text they stored
   notificationMessage(n) {
     if (n.kind === 'test') return i18n.t('messages.testNotificationBody');
-    if (n.kind === 'reminderDue' || n.kind === 'reminderMissed') {
-      return `${i18n.t(`messages.${n.kind}`)} ${new Date(n.at).toLocaleString(this.getLocale())}`;
-    }
+    if (n.kind === 'reminderDue' || n.kind === 'reminderMissed') return '';
     return n.message || '';
   }
 
@@ -61,7 +63,7 @@ export class NotificationsFeature {
               minute: '2-digit',
             })}</span>
           </div>
-          <div class="list-card-text notification-message">${this.escapeHtml(this.notificationMessage(n))}</div>
+          ${this.notificationMessage(n) ? `<div class="list-card-text notification-message">${this.escapeHtml(this.notificationMessage(n))}</div>` : ''}
         </div>
         <div class="list-card-actions">
           ${
