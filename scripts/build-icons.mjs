@@ -9,14 +9,13 @@ import { app, BrowserWindow } from 'electron';
 const ICONS_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'icons');
 const SOURCE_DIR = path.join(ICONS_DIR, 'source');
 
-// The detailed icon from 48 px up; the simplified one below that, where detail turns into noise
-const SMALL_SOURCE_MAX = 32;
+// Every size is drawn from the one app icon, the same one the app shows on its home page
 const ICO_SIZES = [16, 24, 32, 48, 64, 128, 256];
 
 const PNG_OUTPUTS = [
   { file: 'capnote-512.png', source: 'capnote.svg', size: 512 },
-  { file: 'capnote-32.png', source: 'capnote-small.svg', size: 32 },
-  { file: 'capnote-16.png', source: 'capnote-small.svg', size: 16 },
+  { file: 'capnote-32.png', source: 'capnote.svg', size: 32 },
+  { file: 'capnote-16.png', source: 'capnote.svg', size: 16 },
   // macOS loads the @2x file automatically on Retina screens
   { file: 'trayTemplate.png', source: 'tray-template.svg', size: 16 },
   { file: 'trayTemplate@2x.png', source: 'tray-template.svg', size: 32 },
@@ -69,8 +68,7 @@ app.whenReady().then(async () => {
 
   const icoImages = [];
   for (const size of ICO_SIZES) {
-    const source = size <= SMALL_SOURCE_MAX ? 'capnote-small.svg' : 'capnote.svg';
-    icoImages.push({ size, png: await rasterize(win, source, size) });
+    icoImages.push({ size, png: await rasterize(win, 'capnote.svg', size) });
   }
   fs.writeFileSync(path.join(ICONS_DIR, 'capnote.ico'), buildIco(icoImages));
   console.log(`capnote.ico (${ICO_SIZES.join(', ')}px)`);
