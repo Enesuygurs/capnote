@@ -1,6 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <!-- Capnote app icon: a journal page with a bookmark ribbon on an amber tile.
-       Rendered to PNG/ICO by scripts/build-icons.mjs; capnote-small.svg is the 16-32 px version. -->
+       The one Capnote icon: the app, the installer, the tray and the app's own pages all use it.
+       Rendered to PNG/ICO by scripts/build-icons.mjs. -->
   <defs>
     <linearGradient id="tile" x1="0" y1="0" x2="0.3" y2="1">
       <stop offset="0" stop-color="#FCD34D" />
