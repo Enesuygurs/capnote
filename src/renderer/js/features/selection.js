@@ -10,8 +10,16 @@ export class SelectionFeature {
   }
 
   // Ctrl/Cmd+click adds or removes a note or folder; the open note starts the selection
+  // A selection holds notes or folders, never both: picking the other kind starts a new selection
   toggleSelection(kind, id) {
-    if (!this.hasSelection && this.currentNote && this.notes.includes(this.currentNote)) {
+    const other = kind === 'folder' ? this.selectedNoteIds : this.selectedFolderIds;
+    other.clear();
+    if (
+      kind === 'note' &&
+      !this.selectedNoteIds.size &&
+      this.currentNote &&
+      this.notes.includes(this.currentNote)
+    ) {
       this.selectedNoteIds.add(this.currentNote.id);
     }
     const set = kind === 'folder' ? this.selectedFolderIds : this.selectedNoteIds;

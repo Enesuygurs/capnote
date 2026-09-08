@@ -10,8 +10,9 @@
   height: var(--control-lg);
 }
 
-/* The app mark doubles as the home button */
+/* The app mark doubles as the home button; it takes the header's width up to the tools */
 .app-brand {
+  flex: 1;
   min-width: 0;
   display: flex;
   align-items: center;
@@ -34,11 +35,15 @@
   flex-shrink: 0;
 }
 
+/* The name in a dark tone warmed by the accent, the color of the icon, instead of plain black */
 .app-brand-name {
   font-size: var(--fs-xl);
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: var(--text-strong);
+  color: color-mix(in srgb, var(--text-strong) 72%, var(--accent-color));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .sidebar-header-actions {

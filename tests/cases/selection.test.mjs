@@ -16,6 +16,7 @@ export async function run() {
   const three = make('Three');
   const inside = make('Inside');
   a.folders.push({ id: 'fs', name: 'Box', color: '#3b82f6', expanded: true });
+  a.folders.push({ id: 'fs2', name: 'Box 2', color: '#ef4444', expanded: true });
   inside.folderId = 'fs';
   a.selectNote(three);
   a.updateNotesList();
@@ -24,9 +25,15 @@ export async function run() {
   const row = (id) => document.querySelector(`.note-item[data-note-id="${id}"]`);
   const ctrlClick = (el) =>
     el.dispatchEvent(new MouseEvent('click', { bubbles: true, ctrlKey: true }));
+  const folderRow = (id) => document.querySelector(`.folder-item[data-folder-id="${id}"]`);
+  const selectedRows = () => [...document.querySelectorAll('.is-selected')].length;
+  // Notes and folders are never selected together: picking a folder starts a new selection
   ctrlClick(row(one.id));
-  ctrlClick(document.querySelector('.folder-item[data-folder-id="fs"]'));
-  const selected = [...document.querySelectorAll('.is-selected')].length;
+  const notesSelected = selectedRows();
+  ctrlClick(folderRow('fs'));
+  const afterFolder = { rows: selectedRows(), notes: a.selectedNoteIds.size };
+  ctrlClick(row(one.id));
+  const backToNotes = { notes: a.selectedNoteIds.size, folders: a.selectedFolderIds.size };
 
   // Right-click on a selected row opens the selection menu
   row(one.id).dispatchEvent(
@@ -34,6 +41,15 @@ export async function run() {
   );
   const menuOpen = !a.selectionMenu.classList.contains('hidden');
   const deleteLabel = a.selectionMenu.querySelector('[data-action="delete"] span').textContent;
+  a.selectionMenu.querySelector('[data-action="delete"]').click();
+  a.confirmBtn.click();
+  await wait(50);
+  // Two folders selected and deleted together, with the note inside
+  ctrlClick(folderRow('fs'));
+  ctrlClick(folderRow('fs2'));
+  folderRow('fs').dispatchEvent(
+    new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 50, clientY: 200 })
+  );
   a.selectionMenu.querySelector('[data-action="delete"]').click();
   a.confirmBtn.click();
   await wait(50);
@@ -60,13 +76,26 @@ export async function run() {
   await wait(300);
   const closed = body.style.display === 'none';
 
-  return { selected, menuOpen, deleteLabel, left, folders, renamed, animating, closed };
+  return {
+    notesSelected,
+    afterFolder,
+    backToNotes,
+    menuOpen,
+    deleteLabel,
+    left,
+    folders,
+    renamed,
+    animating,
+    closed,
+  };
 }
 
 export const expected = {
-  selected: 3,
+  notesSelected: 2,
+  afterFolder: { rows: 1, notes: 0 },
+  backToNotes: { notes: 2, folders: 0 },
   menuOpen: true,
-  deleteLabel: 'Seçilenleri sil (3)',
+  deleteLabel: 'Seçilenleri sil (2)',
   left: ['Two'],
   folders: 0,
   renamed: 'Renamed',

@@ -295,20 +295,19 @@ body {
   -webkit-app-region: drag;
 }
 
-.titlebar-drag {
+/* The sidebar toggle with a margin of its own that is not part of the drag area: a drag area
+   swallows the mouse, so a toggle right at its edge was sometimes not hovered or clicked */
+.titlebar-start {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
-  height: 100%;
-}
-
-.hamburger-btn {
+  padding: var(--space-1);
+  margin-left: calc(var(--space-1) * -1);
   -webkit-app-region: no-drag;
 }
 
 .hamburger-btn {
-  width: var(--control-xs);
-  height: var(--control-xs);
+  width: var(--control-sm);
+  height: var(--control-sm);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
   cursor: pointer;

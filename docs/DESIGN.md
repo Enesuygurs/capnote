@@ -25,8 +25,8 @@ The window has two layers:
 
 **Sidebar** (`--sidebar-width`, 12px side padding), in three parts:
 
-1. Fixed top, 8px apart: the header (44px: the app mark and name on the left, also the home button; to-dos and notifications as 32px neutral icon buttons on the right, with the count on the corner and the name as a tooltip), the new note button, the search field and the list filter (a segmented control).
-2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons. Dragging a note onto another places it before or after it (an insertion line shows where) and switches the list to the custom order. A double-click renames a note or a folder in place (the row becomes the field; Enter or leaving it saves, Escape cancels). Ctrl/Cmd+click selects notes and folders; right-click on the selection opens its menu, which shows only the actions that fit what is selected (notes: favorite, pin, duplicate, take out of folder; folders: pin; both: delete). Dragging a selected note moves the whole selection. Escape or a click on an empty part of the list clears it. Pinned folders sit above the notes, with a small gold pin. Pinned notes and folders cannot be dragged: the drag is refused and the row shakes (320ms, none with reduced motion); a dragged selection leaves its pinned notes in place. A folder opens and closes with a 200ms height and fade transition.
+1. Fixed top, 8px apart: the header (44px: the app mark and name on the left, also the home button, filling the width up to the tools, its name in a dark tone warmed by the accent; to-dos, reminders and notifications as 32px neutral icon buttons on the right, with the count on the corner and the name as a tooltip), the new note button, the search field and the list filter (a segmented control).
+2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons. Dragging a note onto another places it before or after it (an insertion line shows where) and switches the list to the custom order. A double-click renames a note or a folder in place (the row becomes the field; Enter or leaving it saves, Escape cancels). Ctrl/Cmd+click selects notes or folders, never both (picking the other kind starts a new selection); right-click on the selection opens its menu, which shows only the actions that fit what is selected (notes: favorite, pin, duplicate, take out of folder; folders: pin; both: delete). Dragging a selected note moves the whole selection. Escape or a click on an empty part of the list clears it. Pinned folders sit above the notes, with a small gold pin. Pinned notes and folders cannot be dragged: the drag is refused and the row shakes (320ms, none with reduced motion); a dragged selection leaves its pinned notes in place. A folder opens and closes with a 200ms height and fade transition.
 3. Fixed bottom: settings, one full-width row, left-aligned with the list rows.
 
 **Every screen in the panel** has the same structure:
@@ -135,21 +135,23 @@ A container's inner items are rounded less than the container by its padding (a 
 | Descriptions, chips, stats | `--fs-sm` 12 / 16                   | 400–500                              |
 | Section labels, counts     | `--fs-xs` 11 / 16, uppercase labels | 600                                  |
 
+Alignment moves the whole line: an aligned task keeps its box next to its text, and an aligned list item keeps its bullet or number with it.
+
 Text colors: `--text-strong` for titles, `--text-primary` for text, `--text-secondary` for meta and descriptions, `--text-muted` for icons, hints and placeholders.
 
 ## 8. Color
 
-- The accent (`--accent-color`) marks only: the active item, the primary action, "on" states (toggles, checkboxes, the chosen mood and weather) and focus. Text on an accent tint uses `--accent-text`.
+- The accent (`--accent-color`) marks only: the active item, the primary action, "on" states (toggles, checkboxes) and focus. The chosen mood and weather keep their hover look (a tint of their own tone), not the accent. Text on an accent tint uses `--accent-text`.
 - Red (`--error-color`) is only for destructive actions and errors.
 - **Tones** give a kind of thing its own icon color, the same everywhere it appears. An element takes one with a `.tone-*` class (`rose`, `red`, `amber`, `green`, `teal`, `sky`, `blue`, `violet`, `slate`), which sets `--tone`; each theme has its own values.
 
-| Thing                                  | Tone                                                                       |
-| -------------------------------------- | -------------------------------------------------------------------------- |
-| Favorite (sidebar heart, menu, viewer) | rose                                                                       |
-| Pin                                    | `--tone-gold`, the yellow of the default accent                            |
-| To-dos / notifications (page icon)     | blue / amber                                                               |
-| Settings tabs                          | a tile each: blue, rose, amber, slate, green, violet                       |
-| Moods and weather                      | one per value (`05-editor.css`): on hover in the editor, and in the viewer |
+| Thing                                  | Tone                                                                                       |
+| -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| Favorite (sidebar heart, menu, viewer) | rose                                                                                       |
+| Pin                                    | `--tone-gold`, the yellow of the default accent                                            |
+| To-dos / notifications (page icon)     | blue / amber                                                                               |
+| Settings tabs                          | a tile each: blue, rose, amber, slate, green, violet                                       |
+| Moods and weather                      | one per value (`05-editor.css`): on hover and when chosen in the editor, and in the viewer |
 
 - A group of icons (mood and weather pickers, toolbars) is never colored all at once: its icons are neutral and only the hovered one shows its tone.
 - Other icons are neutral (`--text-muted` / `--text-secondary`), never the accent: lock, copy, edit and the sidebar tools among them. A tone is only for a state that must stand out (favorite, pin) or a choice that is its own thing (mood, weather, settings tabs).

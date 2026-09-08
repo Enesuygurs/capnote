@@ -69,3 +69,26 @@ td {
   align-items: center;
   gap: 6px;
 }
+
+/* An aligned task or list item keeps its box, bullet or number next to the text: the alignment
+   moves the whole line, not only the text */
+.checklist-item:has(> label[style*='text-align: center']),
+.checklist-item[style*='text-align: center'],
+.checklist[style*='text-align: center'] .checklist-item {
+  justify-content: center;
+}
+
+.checklist-item:has(> label[style*='text-align: right']),
+.checklist-item[style*='text-align: right'],
+.checklist[style*='text-align: right'] .checklist-item {
+  justify-content: flex-end;
+}
+
+li[style*='text-align: center'],
+li[style*='text-align: right'],
+ul[style*='text-align: center'] li,
+ul[style*='text-align: right'] li,
+ol[style*='text-align: center'] li,
+ol[style*='text-align: right'] li {
+  list-style-position: inside;
+}
