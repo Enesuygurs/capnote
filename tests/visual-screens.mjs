@@ -31,6 +31,14 @@ export async function seed() {
     note('2', 'Shopping list'),
     note('3', 'Project notes', { folderId: '100' }),
     note('4', 'Meeting summary', { folderId: '100' }),
+    note('6', 'Aligned', {
+      content:
+        '<p style="text-align: center;">Centered line</p>' +
+        '<div class="checklist"><div class="checklist-item"><input type="checkbox" id="a1"><label for="a1" style="text-align: center;">Centered task</label></div></div>' +
+        '<ul><li style="text-align: center;">Centered bullet</li></ul>' +
+        '<ol><li style="text-align: right;">Right number</li></ol>' +
+        '<div class="checklist"><div class="checklist-item"><input type="checkbox" id="a2" checked="checked"><label for="a2" style="text-align: right;">Right task</label></div></div>',
+    }),
     note('5', 'Private diary', {
       folderId: '200',
       isLocked: true,
@@ -140,6 +148,8 @@ export async function run() {
     a.toggleSidebar();
     await shot(theme + '-02-viewer-sidebar-hidden');
     a.toggleSidebar();
+    a.selectNote(byTitle('Aligned'));
+    await shot(theme + '-02-viewer-aligned');
     a.openNote(byTitle('Private diary'));
     await shot(theme + '-03-viewer-locked');
     a.selectNote(byTitle('Weekly plan'));
@@ -222,6 +232,8 @@ export async function run() {
     await closeAll();
     a.showTodosScreen();
     await shot(theme + '-19-todos');
+    a.showRemindersScreen();
+    await shot(theme + '-20-reminders');
     a.showNotificationsScreen();
     await shot(theme + '-21-notifications');
     a.selectNote(byTitle('Weekly plan'));
