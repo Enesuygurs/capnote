@@ -4,19 +4,11 @@ export const allowedErrors = [/newer version|daha yeni/];
 
 export async function run() {
   const a = window.app;
-  // capture what exportAllData downloads
-  let exported = null;
-  const origCreate = URL.createObjectURL;
-  URL.createObjectURL = (blob) => {
-    blob.text().then((t) => (exported = JSON.parse(t)));
-    return 'blob:x';
-  };
   a.todoSectionInput.value = 'Errands';
   a.addTodoSection();
   a.addTodoToSection(a.todoSections[0].id, 'Buy milk');
-  a.exportAllData();
-  await new Promise((r) => setTimeout(r, 200));
-  URL.createObjectURL = origCreate;
+  // What the backup file holds (the exports test checks that the file is written)
+  const exported = JSON.parse(JSON.stringify(await a.buildBackupData()));
   const runImport = async (payload, opts) => {
     a.showImportOptionsDialog = async () => opts;
     const orig = document.createElement.bind(document);

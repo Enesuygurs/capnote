@@ -5,6 +5,7 @@
 //   CAPNOTE_TEST_SCRIPT    file with the page script (an expression that evaluates to a promise)
 //   CAPNOTE_TEST_USERDATA  data folder for this run
 //   CAPNOTE_TEST_SAVE_PATH answer for the save dialog (PDF export)
+//   CAPNOTE_TEST_SAVE_DIR  folder the save dialog answers with, keeping the suggested file name
 //   CAPNOTE_TEST_SHOTS     folder for screenshots taken with console.log('__SHOT__:name')
 //
 // The page script can also print these markers:
@@ -32,6 +33,14 @@ shell.openExternal = async (url) => console.log('[openExternal] ' + url);
 shell.openPath = async (file) => console.log('[openPath] ' + file);
 if (env.CAPNOTE_TEST_SAVE_PATH) {
   dialog.showSaveDialog = async () => ({ canceled: false, filePath: env.CAPNOTE_TEST_SAVE_PATH });
+}
+if (env.CAPNOTE_TEST_SAVE_DIR) {
+  // showSaveDialog(options) or showSaveDialog(window, options)
+  dialog.showSaveDialog = async (...args) => {
+    const options = args[args.length - 1] || {};
+    const name = path.basename(String(options.defaultPath || 'file'));
+    return { canceled: false, filePath: path.join(env.CAPNOTE_TEST_SAVE_DIR, name) };
+  };
 }
 
 const logs = [];

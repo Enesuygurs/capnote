@@ -22,6 +22,12 @@ async function runCase(file, scratch) {
   const extraEnv = {};
   if (test.savePath)
     extraEnv.CAPNOTE_TEST_SAVE_PATH = path.join(scratch, `${name}-${test.savePath}`);
+  // saveDir: every save lands in a folder; checkFiles(files) then gets { name: text } of it
+  const saveDir = test.checkFiles && path.join(scratch, `${name}-saved`);
+  if (saveDir) {
+    fs.mkdirSync(saveDir, { recursive: true });
+    extraEnv.CAPNOTE_TEST_SAVE_DIR = saveDir;
+  }
 
   if (test.seed) {
     const seeded = await launch({ script: asScript(test.seed), userData, extraEnv });
@@ -36,6 +42,12 @@ async function runCase(file, scratch) {
   const problems = [];
   if (!result.ok) problems.push('threw: ' + result.error.split('\n').slice(0, 3).join(' | '));
   else compare(test.expected, result.value, 'result', problems);
+  if (saveDir) {
+    const files = Object.fromEntries(
+      fs.readdirSync(saveDir).map((f) => [f, fs.readFileSync(path.join(saveDir, f))])
+    );
+    compare(test.expectedFiles, test.checkFiles(files), 'files', problems);
+  }
 
   const allowed = test.allowedErrors || [];
   logs

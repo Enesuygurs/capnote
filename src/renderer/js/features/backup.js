@@ -5,8 +5,9 @@ import { i18n } from '../i18n.js';
 import { toMoodKey, toWeatherKey } from '../data/moods.js';
 
 export class BackupFeature {
-  // New: export ALL data (notes, folders, reminders, notifications, settings)
-  async exportAllData() {
+  // Everything in one object: notes, folders, reminders, notifications, to-dos, portable settings
+  // and the uploaded files the notes use
+  async buildBackupData() {
     const exportData = {
       exportDate: new Date().toISOString(),
       version: SCHEMA_VERSION,
@@ -31,18 +32,25 @@ export class BackupFeature {
     if (attachmentNames.size > 0) {
       exportData.attachments = await window.electronAPI.uploads.read([...attachmentNames]);
     }
+    return exportData;
+  }
 
-    const dataStr = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `capnote-all-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    this.showNotification(i18n.t('messages.dataExported'), 'success');
+  // Save the full backup where the user picks
+  async exportAllData() {
+    const exportData = await this.buildBackupData();
+
+    let result;
+    try {
+      result = await window.electronAPI.saveFile({
+        fileName: `capnote-all-${new Date().toISOString().split('T')[0]}.json`,
+        content: JSON.stringify(exportData, null, 2),
+        type: 'json',
+      });
+    } catch (err) {
+      console.error('Data export failed:', err);
+      result = { ok: false };
+    }
+    this.reportSave(result, 'messages.dataExported');
     // Refresh reminder/notification UI and counters in case data changed
     this.updateRemindersView();
     this.updateNotificationsView();
