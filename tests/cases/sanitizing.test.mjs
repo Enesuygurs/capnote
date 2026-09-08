@@ -23,7 +23,7 @@ export async function run() {
   a.addTag("it's");
   a.tagsList.querySelector('.tag-remove').click();
   await new Promise((r) => setTimeout(r, 300));
-  const html = a.generateHTMLExport({ ...a.currentNote, title: '<b>t</b>' });
+  const html = a.buildExportBody({ ...a.currentNote, title: '<b>t</b>' });
   return {
     pwned: window.__pwned,
     checkboxKept: !!a.viewerText.querySelector('input[type=checkbox][checked]'),

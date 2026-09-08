@@ -9,69 +9,101 @@ export class ExportFeature {
     this.showModal(this.exportModal);
   }
 
-  exportNote(type) {
-    if (!this.currentNote || this.isNoteLockedForView(this.currentNote)) return;
+  // A file name from a title: characters Windows does not allow become "_"
+  exportFileName(title, extension) {
+    const base =
+      String(title || '')
+        .replace(/[\\/:*?"<>|]+/g, '_')
+        .trim() || 'note';
+    return `${base}.${extension}`;
+  }
 
-    let content, filename, mimeType;
+  // Tell how a save went: saved, cancelled (nothing to say) or failed
+  reportSave(result, successKey) {
+    if (result && result.ok) this.showNotification(i18n.t(successKey), 'success');
+    else if (!result || !result.canceled)
+      this.showNotification(i18n.t('messages.exportFailed'), 'error');
+  }
 
-    switch (type) {
-      case 'txt':
-        content = this.getPlainText(this.currentNote.content);
-        filename = `${this.currentNote.title}.txt`;
-        mimeType = 'text/plain';
-        break;
-      case 'html':
-        content = this.generateHTMLExport(this.currentNote);
-        filename = `${this.currentNote.title}.html`;
-        mimeType = 'text/html';
-        break;
-      case 'json':
-        content = JSON.stringify(this.currentNote, null, 2);
-        filename = `${this.currentNote.title}.json`;
-        mimeType = 'application/json';
-        break;
-      case 'pdf':
-        this.exportToPDF();
-        return;
+  async exportNote(type) {
+    const note = this.currentNote;
+    if (!note || this.isNoteLockedForView(note)) return;
+    if (type === 'pdf') return this.exportToPDF();
+
+    let result;
+    try {
+      if (type === 'html') {
+        result = await window.electronAPI.exportHtml({
+          title: note.title,
+          bodyHtml: this.buildExportBody(note),
+          fileName: this.exportFileName(note.title, 'html'),
+        });
+      } else {
+        const content = type === 'json' ? JSON.stringify(note, null, 2) : this.noteAsText(note);
+        result = await window.electronAPI.saveFile({
+          fileName: this.exportFileName(note.title, type),
+          content,
+          type,
+        });
+      }
+    } catch (err) {
+      console.error('Export failed:', err);
+      result = { ok: false };
     }
-
-    this.downloadFile(content, filename, mimeType);
-    this.showNotification(i18n.t('messages.noteExported'), 'success');
+    this.reportSave(result, 'messages.noteExported');
   }
 
-  generateHTMLExport(note) {
-    return `<!DOCTYPE html>
-<html lang="${i18n.currentLanguage}">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${this.escapeHtml(note.title || '')}</title>
-  <style>
-    body { font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif; color: #111827; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 24px; }
-    .export-header { border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 20px; }
-    .export-meta { color: #6b7280; font-size: 12px; margin: 2px 0; }
-    .export-tags { margin-top: 24px; }
-    .export-tag { display: inline-block; background: #f3f4f6; border-radius: 4px; padding: 2px 8px; margin-right: 6px; font-size: 12px; }
-    img { max-width: 100%; height: auto; }
-    pre { background: #f6f8fa; border-radius: 6px; padding: 12px; white-space: pre-wrap; }
-  </style>
-</head>
-<body>
-${this.buildExportBody(note)}
-</body>
-</html>`;
+  // The note as plain text: its title, then its text line by line (markdown notes keep their
+  // markdown). Tasks read "[x] done" / "[ ] open", list items get a dash or their number and
+  // table cells are separated by tabs.
+  noteAsText(note) {
+    const body = note.isMarkdown ? note.content || '' : this.htmlToText(note.content);
+    return `${note.title || ''}\n\n${body}`.trim() + '\n';
   }
 
-  downloadFile(content, filename, mimeType) {
-    const blob = new Blob([content], { type: mimeType });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  htmlToText(html) {
+    const lines = [];
+    let line = '';
+    const end = () => {
+      if (line.trim()) lines.push(line.replace(/\s+$/, ''));
+      line = '';
+    };
+    const BLOCK = /^(P|DIV|H[1-6]|LI|TR|PRE|BLOCKQUOTE|UL|OL|TABLE|HR)$/;
+    const walk = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        line += node.nodeValue.replace(/\u200B/g, '');
+        return;
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
+      const tag = node.tagName;
+      if (tag === 'BR') return end();
+      if (tag === 'INPUT' && node.type === 'checkbox') {
+        line += node.hasAttribute('checked') ? '[x] ' : '[ ] ';
+        return;
+      }
+      if (tag === 'PRE') {
+        end();
+        node.textContent
+          .replace(/\u200B/g, '')
+          .split('\n')
+          .forEach((l) => lines.push(l));
+        return;
+      }
+      const block = BLOCK.test(tag) || node.classList.contains('checklist-item');
+      if (block) end();
+      if (tag === 'LI') {
+        const list = node.parentElement;
+        line += list && list.tagName === 'OL' ? `${[...list.children].indexOf(node) + 1}. ` : '- ';
+      }
+      [...node.childNodes].forEach((child, i) => {
+        if ((child.tagName === 'TD' || child.tagName === 'TH') && i > 0) line += '\t';
+        walk(child);
+      });
+      if (block) end();
+    };
+    walk(this.parseInertHtml(this.sanitizeHtml(html || '')));
+    end();
+    return lines.join('\n');
   }
 
   // Shared markup for exported notes (PDF and HTML exports)
@@ -110,11 +142,10 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
     if (!note) return this.showNotification(i18n.t('messages.noNoteSelected'), 'warning');
 
     try {
-      const safeName = (note.title || 'note').replace(/[\\/:*?"<>|]+/g, '_').trim() || 'note';
       const result = await window.electronAPI.exportPdf({
         title: note.title,
         bodyHtml: this.buildExportBody(note),
-        fileName: `${safeName}.pdf`,
+        fileName: this.exportFileName(note.title, 'pdf'),
       });
       if (result && result.ok) {
         this.showNotification(i18n.t('messages.pdfCreated'), 'success');

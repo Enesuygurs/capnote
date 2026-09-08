@@ -33,6 +33,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveDroppedFile: (file) => ipcRenderer.invoke('save-dropped-file', webUtils.getPathForFile(file)),
   // Export a note body to PDF (main process shows the save dialog)
   exportPdf: (payload) => ipcRenderer.invoke('export-pdf', payload),
+  exportHtml: (payload) => ipcRenderer.invoke('export-html', payload),
+  // Save a text file (note text or JSON, the full backup) where the user picks
+  saveFile: (payload) => ipcRenderer.invoke('save-file', payload),
   // Native OS notifications via main process
   showNativeNotification: (opts) => ipcRenderer.invoke('show-native-notification', opts),
   // Listen for native notification clicks forwarded from main

@@ -54,16 +54,8 @@ export async function seed() {
 
 export async function run() {
   const a = window.app;
-  let exported = null;
-  const orig = URL.createObjectURL;
-  URL.createObjectURL = (blob) => {
-    blob.text().then((t) => (exported = t));
-    return 'blob:x';
-  };
-  await a.exportAllData();
-  await new Promise((r) => setTimeout(r, 300));
-  URL.createObjectURL = orig;
-  const backup = JSON.parse(exported);
+  // What the backup file holds (the exports test checks that the file is written)
+  const backup = JSON.parse(JSON.stringify(await a.buildBackupData()));
   const files = Object.keys(backup.attachments || {}).sort();
   const noteFiles = (title) => a.notes.find((n) => n.title === title).attachments;
   const locked = backup.notes.find((n) => n.title === 'Locked image');

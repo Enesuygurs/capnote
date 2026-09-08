@@ -353,7 +353,8 @@
     "unknownFolder": "Unknown folder",
     "testNotificationTitle": "Test notification",
     "testNotificationBody": "This is a test notification.",
-    "backupTooNew": "This backup was made by a newer version of Capnote. Please update the app to import it."
+    "backupTooNew": "This backup was made by a newer version of Capnote. Please update the app to import it.",
+    "exportFailed": "Export failed"
   },
   "templates": {
     "tableHeader": "Header {n}"

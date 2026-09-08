@@ -353,7 +353,8 @@
     "unknownFolder": "Bilinmeyen klasör",
     "testNotificationTitle": "Test bildirimi",
     "testNotificationBody": "Bu bir test bildirimidir.",
-    "backupTooNew": "Bu yedek Capnote'un daha yeni bir sürümüyle alınmış. İçe aktarmak için uygulamayı güncelleyin."
+    "backupTooNew": "Bu yedek Capnote'un daha yeni bir sürümüyle alınmış. İçe aktarmak için uygulamayı güncelleyin.",
+    "exportFailed": "Dışa aktarma başarısız oldu"
   },
   "templates": {
     "tableHeader": "Başlık {n}"
