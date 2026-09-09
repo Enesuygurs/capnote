@@ -26,6 +26,7 @@ import { UpdatesFeature } from './features/updates.js';
 import { SelectionFeature } from './features/selection.js';
 import { EditorBlocksFeature } from './features/editor-blocks.js';
 import { EditorHistoryFeature } from './features/editor-history.js';
+import { EditorToolsFeature } from './features/editor-tools.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -245,6 +246,15 @@ export class CapnoteApp {
     // Table modal elements (editor table insertion)
     this.insertTableBtn = document.getElementById('insertTableBtn');
     this.tableModal = document.getElementById('tableModal');
+    this.linkModal = document.getElementById('linkModal');
+    this.linkTextInput = document.getElementById('linkTextInput');
+    this.linkUrlInput = document.getElementById('linkUrlInput');
+    this.applyLinkBtn = document.getElementById('applyLinkBtn');
+    this.removeLinkBtn = document.getElementById('removeLinkBtn');
+    this.cancelLinkBtn = document.getElementById('cancelLinkBtn');
+    this.insertLinkBtn = document.getElementById('insertLinkBtn');
+    this.insertQuoteBtn = document.getElementById('insertQuoteBtn');
+    this.insertDividerBtn = document.getElementById('insertDividerBtn');
     this.closeTableModal = document.getElementById('closeTableModal');
     this.tableRowsInput = document.getElementById('tableRows');
     this.tableColsInput = document.getElementById('tableCols');
@@ -336,6 +346,7 @@ export class CapnoteApp {
     this.setupInsertEvents();
     this.setupBlockEvents();
     this.setupEditorHistory();
+    this.setupEditorTools();
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupMoodWeatherSelectors();
@@ -601,4 +612,5 @@ applyFeatures(CapnoteApp, [
   SelectionFeature,
   EditorBlocksFeature,
   EditorHistoryFeature,
+  EditorToolsFeature,
 ]);
