@@ -4,7 +4,7 @@ import { i18n } from '../i18n.js';
 
 export class ViewerFeature {
   displayNote(note) {
-    this.viewerTitle.textContent = note.title;
+    this.viewerTitle.textContent = this.displayTitle(note);
 
     // Check if note is locked and not temporarily unlocked
     if (this.isNoteLockedForView(note)) {

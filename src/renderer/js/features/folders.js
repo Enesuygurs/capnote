@@ -497,7 +497,6 @@ export class FoldersFeature {
 
     notes.forEach((n) => {
       n.folderId = targetFolderId;
-      n.updatedAt = new Date().toISOString();
       // Its custom place belonged to the other list; it starts at the top of the new one
       delete n.order;
     });
@@ -517,7 +516,7 @@ export class FoldersFeature {
     const folderName = !folderId
       ? i18n.t('nav.notes')
       : this.folders.find((f) => f.id === folderId)?.name || i18n.t('messages.unknownFolder');
-    const noteTitle = note.title || i18n.t('messages.untitledNote');
+    const noteTitle = this.displayTitle(note);
     this.showNotification(
       notes.length > 1
         ? i18n.t('selection.moved', { count: notes.length, folder: folderName })
@@ -621,34 +620,9 @@ export class FoldersFeature {
     const folderIdToDelete = this.selectedFolderId;
 
     this.confirmCallback = () => {
-      // Delete all notes that truly belong to the folder (ignore folderless notes)
-      const notesToRemove = this.notes
-        .filter((note) => note.folderId && String(note.folderId) === String(folderIdToDelete))
-        .map((n) => n.id);
-
-      // Keep notes that are NOT in the selected folder (preserve folderless notes and other folders)
-      this.notes = this.notes.filter(
-        (note) => !(note.folderId && String(note.folderId) === String(folderIdToDelete))
-      );
-
-      // Delete the folder
-      this.folders = this.folders.filter((f) => f.id !== folderIdToDelete);
-
-      this.removeNoteReferences(notesToRemove);
-
-      // Save and update
-      this.saveNotes();
-      this.saveFolders();
-      this.updateFoldersList();
-      this.updateNotesList();
-      this.updateStats();
-
-      // Clear selection if current note was in deleted folder
-      if (this.currentNote && this.currentNote.folderId === folderIdToDelete) {
-        this.currentNote = null;
-        this.showWelcome();
-      }
-
+      // Locked notes of the folder stay, in the root list
+      const { kept } = this.removeNotesAndFolders([], [folderIdToDelete]);
+      if (kept) return;
       this.showNotification(i18n.t('messages.folderDeleted', { name: folder.name }), 'success');
     };
 

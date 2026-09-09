@@ -130,6 +130,8 @@ export class EditorFeature {
     } else {
       this.showRichEditor();
     }
+    // Undo starts from the note as it was opened
+    this.resetEditorHistory?.();
   }
 
   restoreCheckboxStates() {
@@ -153,6 +155,8 @@ export class EditorFeature {
 
   // Content tracking for save button state
   trackContentChanges() {
+    // Every change made by a tool is an undo step
+    this.recordEditorHistory?.('step');
     const currentContent = this.getCurrentNoteContent();
     this.currentNoteContent = currentContent;
     this.updateSaveButtonState();

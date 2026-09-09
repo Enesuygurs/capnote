@@ -4,6 +4,11 @@ import { HISTORY_MERGE_MS, HISTORY_LIMIT, MAX_PINNED_NOTES } from '../constants.
 import { i18n } from '../i18n.js';
 
 export class NotesFeature {
+  // A note's title as shown: an untitled note is named in the current language
+  displayTitle(note) {
+    return (note && note.title) || i18n.t('messages.untitledNote');
+  }
+
   saveLastViewedNote(noteId) {
     if (this.settings.lastViewedNoteId !== noteId) this.setSetting('lastViewedNoteId', noteId);
   }
@@ -160,7 +165,8 @@ export class NotesFeature {
     // Sync checkbox states before saving
     this.syncCheckboxStates();
 
-    const title = this.noteTitle.value.trim() || i18n.t('messages.untitledNote');
+    // An untitled note keeps an empty title; it is named in the current language when shown
+    const title = this.noteTitle.value.trim();
     // If markdown editor is visible, save raw markdown; otherwise save HTML from rich editor
     // If the markdown editor is visible (editing markdown), save raw markdown; otherwise save HTML from rich editor
     // A markdown note stays markdown even while a preview hides its editor
@@ -269,7 +275,7 @@ export class NotesFeature {
 
   deleteCurrentNote() {
     if (!this.currentNote) return;
-    this.deleteNoteById(this.currentNote.id);
+    return this.deleteNoteById(this.currentNote.id);
   }
 
   // Duplicate a note (the open one by default) and open the copy
@@ -308,7 +314,7 @@ export class NotesFeature {
     const duplicate = {
       ...note,
       id: this.newId(),
-      title: note.title + i18n.t('messages.noteCopySuffix'),
+      title: this.displayTitle(note) + i18n.t('messages.noteCopySuffix'),
       tags: [...(note.tags || [])],
       formatting: { ...(note.formatting || this.getDefaultFormatting()) },
       attachments: [...(note.attachments || [])],
@@ -344,7 +350,7 @@ export class NotesFeature {
 
     // Mirror behavior of other favorite toggles
     this.currentNote.isFavorite = !this.currentNote.isFavorite;
-    this.currentNote.updatedAt = new Date().toISOString();
+    // Not an edit: "last edited" stays as it was
 
     try {
       await this.saveNotes();
@@ -411,11 +417,13 @@ export class NotesFeature {
     note.history = [...created, ...updates];
   }
 
-  deleteNoteById(noteId) {
+  async deleteNoteById(noteId) {
     const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
+    // A locked note is deleted only with its password (or while it is unlocked)
+    if (!(await this.confirmLockedNotePassword(note))) return;
 
-    this.showConfirm(`"${note.title}" ${i18n.t('messages.confirmDelete')}`, () =>
+    this.showConfirm(`"${this.displayTitle(note)}" ${i18n.t('messages.confirmDelete')}`, () =>
       this.performNoteDeletion(note)
     );
   }
@@ -469,7 +477,7 @@ export class NotesFeature {
     if (!note) return;
 
     note.isFavorite = !note.isFavorite;
-    note.updatedAt = new Date().toISOString();
+    // Not an edit: "last edited" stays as it was
 
     await this.saveNotes();
     if (this.currentNote?.id === noteId) this.updateFavoriteButtons();
@@ -506,7 +514,7 @@ export class NotesFeature {
     }
 
     note.isPinned = !note.isPinned;
-    note.updatedAt = new Date().toISOString();
+    // Not an edit: "last edited" stays as it was
 
     await this.saveNotes();
 

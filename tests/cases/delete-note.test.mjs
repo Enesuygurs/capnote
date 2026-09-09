@@ -41,7 +41,7 @@ export async function run() {
   });
   // with confirmation
   a.selectNote(n1);
-  a.deleteCurrentNote();
+  await a.deleteCurrentNote();
   a.confirmBtn.click();
   const r1 = {
     notes: a.notes.map((n) => n.title),
@@ -50,7 +50,7 @@ export async function run() {
     current: a.currentNote?.title,
   };
   // a second delete asks again
-  a.deleteNoteById(n2.id);
+  await a.deleteNoteById(n2.id);
   a.confirmBtn.click();
   return {
     r1,

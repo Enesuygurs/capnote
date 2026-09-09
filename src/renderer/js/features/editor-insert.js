@@ -290,6 +290,7 @@ export class EditorInsertFeature {
     // Update word/char counts and mark note dirty
     this.captureEditorSelection();
     this.updateWordCount();
+    this.trackContentChanges();
     // Close modal
     this.hideModal(this.tableModal);
   }

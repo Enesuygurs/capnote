@@ -34,14 +34,14 @@ export class ExportFeature {
     try {
       if (type === 'html') {
         result = await window.electronAPI.exportHtml({
-          title: note.title,
+          title: this.displayTitle(note),
           bodyHtml: this.buildExportBody(note),
-          fileName: this.exportFileName(note.title, 'html'),
+          fileName: this.exportFileName(this.displayTitle(note), 'html'),
         });
       } else {
         const content = type === 'json' ? JSON.stringify(note, null, 2) : this.noteAsText(note);
         result = await window.electronAPI.saveFile({
-          fileName: this.exportFileName(note.title, type),
+          fileName: this.exportFileName(this.displayTitle(note), type),
           content,
           type,
         });
@@ -58,7 +58,7 @@ export class ExportFeature {
   // table cells are separated by tabs.
   noteAsText(note) {
     const body = note.isMarkdown ? note.content || '' : this.htmlToText(note.content);
-    return `${note.title || ''}\n\n${body}`.trim() + '\n';
+    return `${this.displayTitle(note)}\n\n${body}`.trim() + '\n';
   }
 
   htmlToText(html) {
@@ -128,7 +128,7 @@ export class ExportFeature {
       ? `<p class="export-meta">${i18n.t('sections.weather')}: ${this.escapeHtml(weatherName)}</p>`
       : '';
     return `<div class="export-header">
-  <h1>${this.escapeHtml(note.title || '')}</h1>
+  <h1>${this.escapeHtml(this.displayTitle(note))}</h1>
   <p class="export-meta">${i18n.t('viewer.createdLabel')} ${new Date(note.createdAt).toLocaleString(locale)}</p>
   <p class="export-meta">${i18n.t('viewer.updatedLabel')} ${new Date(note.updatedAt).toLocaleString(locale)}</p>
   ${mood}${weather}
@@ -143,9 +143,9 @@ ${tags ? `<div class="export-tags">${tags}</div>` : ''}`;
 
     try {
       const result = await window.electronAPI.exportPdf({
-        title: note.title,
+        title: this.displayTitle(note),
         bodyHtml: this.buildExportBody(note),
-        fileName: this.exportFileName(note.title, 'pdf'),
+        fileName: this.exportFileName(this.displayTitle(note), 'pdf'),
       });
       if (result && result.ok) {
         this.showNotification(i18n.t('messages.pdfCreated'), 'success');

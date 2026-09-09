@@ -62,6 +62,16 @@ export class LockFeature {
     }
   }
 
+  // For a locked note that is not open: ask its password. True when it is right (or not needed).
+  async confirmLockedNotePassword(note) {
+    if (!this.isNoteLockedForView(note)) return true;
+    const password = await this.showPasswordModal(i18n.t('messages.passwordToDelete'));
+    if (password === null) return false;
+    if ((await this.decryptNote(note, password)) !== null) return true;
+    this.showNotification(i18n.t('messages.wrongPassword'), 'error');
+    return false;
+  }
+
   async unlockNoteForViewing(note) {
     const password = await this.showPasswordModal(i18n.t('messages.noteIsLocked'));
     const plain = password === null ? null : await this.decryptNote(note, password);
