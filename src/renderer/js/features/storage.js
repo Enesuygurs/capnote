@@ -52,8 +52,11 @@ export class StorageFeature {
       this.notes = Array.isArray(this.storedData.notes) ? this.storedData.notes : [];
 
       // Fill in fields that older notes do not have
+      // Older versions saved untitled notes with the name in the language of the time
+      const untitled = ['Başlıksız Not', 'Untitled Note'];
       this.notes.forEach((note) => {
         note.id = String(note.id);
+        if (untitled.includes(note.title)) note.title = '';
         if (!note.isLocked) {
           note.content = this.toPortableUploadUrls(note.content);
           note.attachments = this.extractUploadNames(note.content);

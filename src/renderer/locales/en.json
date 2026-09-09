@@ -354,7 +354,8 @@
     "testNotificationTitle": "Test notification",
     "testNotificationBody": "This is a test notification.",
     "backupTooNew": "This backup was made by a newer version of Capnote. Please update the app to import it.",
-    "exportFailed": "Export failed"
+    "exportFailed": "Export failed",
+    "passwordToDelete": "Enter the password to delete this locked note"
   },
   "templates": {
     "tableHeader": "Header {n}"
@@ -379,7 +380,8 @@
     "confirmDeleteWithFolders": "{notes} notes and {folders} folders will be deleted, including the notes inside the folders. Are you sure?",
     "deleted": "{count} items deleted",
     "moved": "{count} notes moved to \"{folder}\"",
-    "duplicated": "{count} notes duplicated"
+    "duplicated": "{count} notes duplicated",
+    "lockedKept": "{count} locked notes were kept; unlock them to delete them"
   },
   "folders": {
     "pin": "Pin folder",

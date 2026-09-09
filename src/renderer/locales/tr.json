@@ -354,7 +354,8 @@
     "testNotificationTitle": "Test bildirimi",
     "testNotificationBody": "Bu bir test bildirimidir.",
     "backupTooNew": "Bu yedek Capnote'un daha yeni bir sürümüyle alınmış. İçe aktarmak için uygulamayı güncelleyin.",
-    "exportFailed": "Dışa aktarma başarısız oldu"
+    "exportFailed": "Dışa aktarma başarısız oldu",
+    "passwordToDelete": "Kilitli notu silmek için şifresini girin"
   },
   "templates": {
     "tableHeader": "Başlık {n}"
@@ -379,7 +380,8 @@
     "confirmDeleteWithFolders": "{notes} not ve {folders} klasör silinecek; klasörlerin içindeki notlar da silinir. Emin misiniz?",
     "deleted": "{count} öğe silindi",
     "moved": "{count} not \"{folder}\" klasörüne taşındı",
-    "duplicated": "{count} not çoğaltıldı"
+    "duplicated": "{count} not çoğaltıldı",
+    "lockedKept": "{count} kilitli not silinmedi; silmek için önce kilidini açın"
   },
   "folders": {
     "pin": "Klasörü sabitle",

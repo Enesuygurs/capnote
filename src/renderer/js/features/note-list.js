@@ -229,7 +229,7 @@ export class NoteListFeature {
     div.classList.toggle('pinned', !!note.isPinned);
     div.classList.toggle('locked', !!note.isLocked);
 
-    const title = note.title || i18n.t('messages.untitledNote');
+    const title = this.displayTitle(note);
     // Long titles are shortened by CSS; the full title shows as a tooltip
     div.title = title;
 
@@ -326,10 +326,8 @@ export class NoteListFeature {
 
     const folderId = target.folderId || null;
     sources.forEach((source) => {
-      if ((source.folderId || null) !== folderId) {
-        source.folderId = folderId;
-        source.updatedAt = new Date().toISOString();
-      }
+      // Moving is not an edit: "last edited" stays as it was
+      if ((source.folderId || null) !== folderId) source.folderId = folderId;
     });
     const moving = this.getSortedNotes([...sources]);
     // Number the notes of that list in the order they are shown now, with the notes in their new place

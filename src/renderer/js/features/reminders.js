@@ -182,7 +182,7 @@ export class RemindersFeature {
     const reminder = {
       id: this.newId(),
       noteId: this.currentNote.id,
-      noteTitle: this.currentNote.title || i18n.t('messages.untitledNote'),
+      noteTitle: this.currentNote.title,
       datetime: reminderDate.toISOString(),
       recurrence:
         this.reminderRecurrence && this.reminderRecurrence.value
@@ -433,7 +433,7 @@ export class RemindersFeature {
   // for notes that no longer exist
   titleForNote(noteId, storedTitle) {
     const note = noteId ? this.notes.find((n) => n.id === noteId) : null;
-    return note ? note.title : storedTitle;
+    return note ? this.displayTitle(note) : storedTitle || i18n.t('messages.untitledNote');
   }
 
   // Weekday picker for weekly reminders

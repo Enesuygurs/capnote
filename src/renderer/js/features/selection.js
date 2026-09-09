@@ -155,6 +155,44 @@ export class SelectionFeature {
   }
 
   // Delete the selected notes and folders (with the notes inside them), after a confirmation
+  // Delete notes and folders with the notes in them. A locked note that is not open is not deleted
+  // without its password: it stays, and if its folder goes it moves to the root list.
+  removeNotesAndFolders(noteIdList, folderIdList) {
+    const folderIds = new Set(folderIdList);
+    const noteIds = new Set(noteIdList);
+    this.notes.forEach((n) => {
+      if (n.folderId && folderIds.has(n.folderId)) noteIds.add(n.id);
+    });
+    const kept = this.notes.filter((n) => noteIds.has(n.id) && this.isNoteLockedForView(n));
+    kept.forEach((n) => {
+      noteIds.delete(n.id);
+      if (n.folderId && folderIds.has(n.folderId)) n.folderId = null;
+    });
+
+    this.notes = this.notes.filter((n) => !noteIds.has(n.id));
+    this.folders = this.folders.filter((f) => !folderIds.has(f.id));
+    this.removeNoteReferences([...noteIds]);
+    noteIds.forEach((id) => this.unlockedNotes.delete(String(id)));
+    this.selectedNoteIds.clear();
+    this.selectedFolderIds.clear();
+    this.saveNotes();
+    this.saveFolders();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+
+    if (this.currentNote && noteIds.has(this.currentNote.id)) {
+      this.currentNote = null;
+      const next = this.getSortedNotes(this.getFilteredNotes())[0] || this.notes[0];
+      if (this.settings.onNoteDelete !== 'home' && next) this.openNote(next);
+      else this.showWelcome();
+    }
+    if (kept.length) {
+      this.showNotification(i18n.t('selection.lockedKept', { count: kept.length }), 'warning');
+    }
+    return { deleted: noteIds.size + folderIds.size, kept: kept.length };
+  }
+
   deleteSelection() {
     const folderIds = new Set(this.selectedFolderIds);
     const noteIds = new Set(this.selectedNoteIds);
@@ -170,28 +208,8 @@ export class SelectionFeature {
       : i18n.t('selection.confirmDeleteNotes', { count: noteIds.size });
 
     this.showConfirm(message, () => {
-      this.notes = this.notes.filter((n) => !noteIds.has(n.id));
-      this.folders = this.folders.filter((f) => !folderIds.has(f.id));
-      this.removeNoteReferences([...noteIds]);
-      noteIds.forEach((id) => this.unlockedNotes.delete(String(id)));
-      this.selectedNoteIds.clear();
-      this.selectedFolderIds.clear();
-      this.saveNotes();
-      this.saveFolders();
-      this.updateNotesList();
-      this.updateFoldersList();
-      this.updateStats();
-
-      if (this.currentNote && noteIds.has(this.currentNote.id)) {
-        this.currentNote = null;
-        const next = this.getSortedNotes(this.getFilteredNotes())[0] || this.notes[0];
-        if (this.settings.onNoteDelete !== 'home' && next) this.openNote(next);
-        else this.showWelcome();
-      }
-      this.showNotification(
-        i18n.t('selection.deleted', { count: noteIds.size + folderIds.size }),
-        'success'
-      );
+      const { deleted, kept } = this.removeNotesAndFolders([...noteIds], [...folderIds]);
+      if (!kept) this.showNotification(i18n.t('selection.deleted', { count: deleted }), 'success');
     });
   }
 
