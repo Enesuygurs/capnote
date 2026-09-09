@@ -30,7 +30,8 @@
     "import": "İçe Aktar",
     "duplicate": "Çoğalt",
     "markAllRead": "Tümünü okundu işaretle",
-    "testNotifications": "Bildirimleri test et"
+    "testNotifications": "Bildirimleri test et",
+    "removeLink": "Bağlantıyı kaldır"
   },
   "titles": {
     "home": "Ana Sayfa",
@@ -79,7 +80,11 @@
     "appleGreen": "Elma Yeşili",
     "purple": "Mor",
     "blue": "Mavi",
-    "options": "Seçenekler"
+    "options": "Seçenekler",
+    "strikethrough": "Üstü çizili",
+    "link": "Bağlantı ekle (Ctrl+K)",
+    "quote": "Alıntı",
+    "divider": "Ayırıcı çizgi"
   },
   "placeholders": {
     "noteTitle": "Not başlığı...",
@@ -191,7 +196,10 @@
     "tableHeader": "Başlık satırı ekle",
     "importOptions": "İçe Aktarma Seçenekleri",
     "mergeWithExisting": "Mevcut verilerle birleştir",
-    "folders": "Klasörler"
+    "folders": "Klasörler",
+    "link": "Bağlantı",
+    "linkText": "Metin",
+    "linkUrl": "Adres"
   },
   "export": {
     "plainText": "Düz Metin (.txt)",
@@ -355,7 +363,8 @@
     "testNotificationBody": "Bu bir test bildirimidir.",
     "backupTooNew": "Bu yedek Capnote'un daha yeni bir sürümüyle alınmış. İçe aktarmak için uygulamayı güncelleyin.",
     "exportFailed": "Dışa aktarma başarısız oldu",
-    "passwordToDelete": "Kilitli notu silmek için şifresini girin"
+    "passwordToDelete": "Kilitli notu silmek için şifresini girin",
+    "invalidLink": "Geçerli bir web ya da e-posta adresi girin"
   },
   "templates": {
     "tableHeader": "Başlık {n}"
@@ -388,5 +397,11 @@
     "unpin": "Sabitlemeyi kaldır",
     "pinned": "Klasör sabitlendi",
     "unpinned": "Klasörün sabitlemesi kaldırıldı"
+  },
+  "blockStyle": {
+    "p": "Normal metin",
+    "h1": "Başlık 1",
+    "h2": "Başlık 2",
+    "h3": "Başlık 3"
   }
 }

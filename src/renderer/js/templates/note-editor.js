@@ -20,6 +20,21 @@ export const NOTE_EDITOR = /* HTML */ `
         </div>
       </div>
       <div class="page-actions editor-actions">
+        <div class="editor-view-tools">
+          <button
+            class="format-btn"
+            id="toggleMarkdownBtn"
+            data-i18n-title="titles.markdownPreview"
+          >
+            <i class="fas fa-file-code"></i>
+          </button>
+          <button class="format-btn" id="toggleHtmlBtn" data-i18n-title="titles.htmlPreview">
+            <i class="fas fa-code"></i>
+          </button>
+          <button class="format-btn" id="toggleSidebar" data-i18n-title="titles.toggleSidebar">
+            <i class="fas fa-columns"></i>
+          </button>
+        </div>
         <button id="cancelNoteBtn" class="btn-secondary" data-i18n="buttons.cancel">İptal</button>
         <button id="saveNoteBtn" class="btn-primary">
           <i class="fas fa-check"></i>
@@ -28,9 +43,27 @@ export const NOTE_EDITOR = /* HTML */ `
       </div>
     </div>
 
-    <!-- Formatting Toolbar -->
+    <!-- Formatting Toolbar: text style and font, character styles, colors, alignment, lists and
+         things to insert (the previews and the side panel are view controls, in the header) -->
     <div class="formatting-toolbar">
       <div class="format-group">
+        <div class="custom-select format-custom-select" id="blockStyle">
+          <div class="select-selected" data-i18n="blockStyle.p">Normal metin</div>
+          <div class="select-items menu select-hide">
+            <div data-value="p" class="select-item active" data-i18n="blockStyle.p">
+              Normal metin
+            </div>
+            <div data-value="h1" class="select-item select-item-h1" data-i18n="blockStyle.h1">
+              Başlık 1
+            </div>
+            <div data-value="h2" class="select-item select-item-h2" data-i18n="blockStyle.h2">
+              Başlık 2
+            </div>
+            <div data-value="h3" class="select-item select-item-h3" data-i18n="blockStyle.h3">
+              Başlık 3
+            </div>
+          </div>
+        </div>
         <div class="custom-select format-custom-select" id="fontFamily">
           <div class="select-selected">Inter</div>
           <div class="select-items menu select-hide">
@@ -63,6 +96,13 @@ export const NOTE_EDITOR = /* HTML */ `
         </button>
         <button class="format-btn" data-format="underline" data-i18n-title="titles.underline">
           <i class="fas fa-underline"></i>
+        </button>
+        <button
+          class="format-btn"
+          data-format="strikeThrough"
+          data-i18n-title="titles.strikethrough"
+        >
+          <i class="fas fa-strikethrough"></i>
         </button>
       </div>
 
@@ -102,67 +142,45 @@ export const NOTE_EDITOR = /* HTML */ `
         <button class="format-btn" id="insertList" data-i18n-title="titles.bulletList">
           <i class="fas fa-list-ul"></i>
         </button>
-        <button class="format-btn" id="insertChecklist" data-i18n-title="titles.taskList">
-          <i class="fas fa-tasks"></i>
-        </button>
         <button class="format-btn" id="insertNumberedList" data-i18n-title="titles.numberedList">
           <i class="fas fa-list-ol"></i>
         </button>
-        <button class="format-btn" id="insertTableBtn" data-i18n-title="titles.insertTable">
-          <i class="fas fa-table"></i>
+        <button class="format-btn" id="insertChecklist" data-i18n-title="titles.taskList">
+          <i class="fas fa-tasks"></i>
         </button>
       </div>
 
       <div class="format-group">
+        <button class="format-btn" id="insertLinkBtn" data-i18n-title="titles.link">
+          <i class="fas fa-link"></i>
+        </button>
+        <button class="format-btn" id="insertQuoteBtn" data-i18n-title="titles.quote">
+          <i class="fas fa-quote-right"></i>
+        </button>
+        <button class="format-btn" id="insertDividerBtn" data-i18n-title="titles.divider">
+          <i class="fas fa-minus"></i>
+        </button>
+        <button class="format-btn" id="insertTableBtn" data-i18n-title="titles.insertTable">
+          <i class="fas fa-table"></i>
+        </button>
+        <button class="format-btn" id="insertCodeBlockBtn" data-i18n-title="titles.codeBlock">
+          <i class="fas fa-laptop-code"></i>
+        </button>
+      </div>
+
+      <div class="format-group">
+        <button class="format-btn" id="browseImageBtn" data-i18n-title="titles.insertImage">
+          <i class="fas fa-image"></i>
+        </button>
+        <input id="browseImageInput" class="hidden" type="file" accept="image/*" />
+        <button class="format-btn" id="openEmojiBtn" data-i18n-title="titles.emoji">
+          <i class="fas fa-face-smile"></i>
+        </button>
         <button class="format-btn" id="insertDate" data-i18n-title="titles.insertDate">
           <i class="fas fa-calendar-plus"></i>
         </button>
         <button class="format-btn" id="insertTime" data-i18n-title="titles.insertTime">
           <i class="fas fa-clock"></i>
-        </button>
-      </div>
-
-      <div class="format-group">
-        <button
-          class="format-btn small-toolbar-btn"
-          id="browseImageBtn"
-          data-i18n-title="titles.insertImage"
-        >
-          <i class="fas fa-file-import"></i>
-        </button>
-        <input id="browseImageInput" class="hidden" type="file" accept="image/*" />
-        <button
-          class="format-btn small-toolbar-btn"
-          id="toggleMarkdownBtn"
-          data-i18n-title="titles.markdownPreview"
-        >
-          <i class="fas fa-file-code"></i>
-        </button>
-        <button
-          class="format-btn small-toolbar-btn"
-          id="toggleHtmlBtn"
-          data-i18n-title="titles.htmlPreview"
-        >
-          <i class="fas fa-code"></i>
-        </button>
-        <button
-          class="format-btn small-toolbar-btn"
-          id="insertCodeBlockBtn"
-          data-i18n-title="titles.codeBlock"
-        >
-          <i class="fas fa-laptop-code"></i>
-        </button>
-        <button
-          class="format-btn small-toolbar-btn"
-          id="openEmojiBtn"
-          data-i18n-title="titles.emoji"
-        >
-          <i class="fas fa-face-smile"></i>
-        </button>
-      </div>
-      <div class="format-group">
-        <button class="format-btn" id="toggleSidebar" data-i18n-title="titles.toggleSidebar">
-          <i class="fas fa-columns"></i>
         </button>
       </div>
     </div>

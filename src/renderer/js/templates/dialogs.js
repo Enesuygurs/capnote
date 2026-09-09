@@ -34,6 +34,49 @@ export const NOTE_DIALOGS = /* HTML */ `
     </div>
   </div>
 
+  <!-- Link dialog -->
+  <div id="linkModal" class="modal hidden">
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <div class="modal-title">
+          <h3 data-i18n="modals.link">Bağlantı</h3>
+        </div>
+        <button class="modal-close" id="closeLinkModal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="linkTextInput" data-i18n="modals.linkText">Metin</label>
+          <input id="linkTextInput" class="form-input" type="text" />
+        </div>
+        <div class="form-group">
+          <label for="linkUrlInput" data-i18n="modals.linkUrl">Adres</label>
+          <input
+            id="linkUrlInput"
+            class="form-input"
+            type="text"
+            placeholder="https://"
+            spellcheck="false"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          id="removeLinkBtn"
+          class="btn btn-outline btn-danger hidden"
+          data-i18n="buttons.removeLink"
+        >
+          Bağlantıyı kaldır
+        </button>
+        <button id="cancelLinkBtn" class="btn btn-secondary" data-i18n="buttons.cancel">
+          İptal
+        </button>
+        <button id="applyLinkBtn" class="btn btn-primary" data-i18n="buttons.save">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Table modal -->
   <div id="tableModal" class="modal hidden">
     <div class="modal-content">

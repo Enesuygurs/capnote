@@ -471,6 +471,8 @@ export class EditorFormattingFeature {
             this.changeFontFamily(value);
           } else if (dropdownId === 'fontSize') {
             this.changeFontSize(value);
+          } else if (dropdownId === 'blockStyle') {
+            this.applyBlockStyle(value);
           }
         });
       });
