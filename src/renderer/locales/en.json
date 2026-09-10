@@ -12,7 +12,8 @@
     "today": "Today",
     "favorites": "Favorites",
     "notes": "Notes",
-    "settings": "Settings"
+    "settings": "Settings",
+    "tags": "Tags"
   },
   "buttons": {
     "save": "Save",
@@ -408,5 +409,11 @@
     "noMatch": "No matching note",
     "missing": "This note no longer exists",
     "backlinks": "Notes that link here"
+  },
+  "tags": {
+    "subtitle": "Pick a tag to see its notes here and in the list",
+    "empty": "No tags yet. Add tags to notes from the editor's side panel.",
+    "notesCount": "{count} notes",
+    "clearFilter": "Remove the tag filter"
   }
 }

@@ -28,6 +28,7 @@ import { EditorBlocksFeature } from './features/editor-blocks.js';
 import { EditorHistoryFeature } from './features/editor-history.js';
 import { EditorToolsFeature } from './features/editor-tools.js';
 import { NoteLinksFeature } from './features/note-links.js';
+import { TagsFeature } from './features/tags.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -39,6 +40,8 @@ export class CapnoteApp {
     this.notifications = []; // Array of {id, noteId, noteTitle, message, time, read}
     this.todoSections = []; // Array of {id, name, todos: [{id, text, completed, createdAt}]}
     this.currentFilter = 'all';
+    // The tag the list is filtered by (lower case), or null
+    this.currentTag = null;
     this.currentSort = 'date-desc';
     this.selectedMood = null;
     this.selectedWeather = null;
@@ -249,6 +252,14 @@ export class CapnoteApp {
     this.tableModal = document.getElementById('tableModal');
     this.linkModal = document.getElementById('linkModal');
     this.noteLinkMenu = document.getElementById('noteLinkMenu');
+    this.tagsScreen = document.getElementById('tagsScreen');
+    this.tagsNavBtn = document.getElementById('tagsNavBtn');
+    this.tagFilter = document.getElementById('tagFilter');
+    this.clearTagFilterBtn = document.getElementById('clearTagFilterBtn');
+    this.tagsCloud = document.getElementById('tagsCloud');
+    this.tagNotesSection = document.getElementById('tagNotesSection');
+    this.tagNotesLabel = document.getElementById('tagNotesLabel');
+    this.tagNotesList = document.getElementById('tagNotesList');
     this.viewerBacklinks = document.getElementById('viewerBacklinks');
     this.linkTextInput = document.getElementById('linkTextInput');
     this.linkUrlInput = document.getElementById('linkUrlInput');
@@ -351,6 +362,7 @@ export class CapnoteApp {
     this.setupEditorHistory();
     this.setupEditorTools();
     this.setupNoteLinks();
+    this.setupTags();
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupMoodWeatherSelectors();
@@ -618,4 +630,5 @@ applyFeatures(CapnoteApp, [
   EditorHistoryFeature,
   EditorToolsFeature,
   NoteLinksFeature,
+  TagsFeature,
 ]);

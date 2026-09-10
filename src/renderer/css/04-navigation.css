@@ -117,6 +117,37 @@
   color: var(--text-strong);
 }
 
+/* The tag the list is filtered by, under the list filter */
+.tag-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  height: var(--control-xs);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--accent-tint);
+  color: var(--accent-text);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.tag-filter-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-filter-chip i {
+  font-size: var(--fs-xs);
+}
+
+.tag-filter-chip:hover {
+  background: var(--accent-tint-strong);
+}
+
 /* Search field with a leading icon */
 .search-container {
   position: relative;

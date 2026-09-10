@@ -86,6 +86,16 @@
   gap: var(--space-1);
 }
 
+.viewer-tag {
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.viewer-tag:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
 .viewer-tags:empty {
   display: none;
 }

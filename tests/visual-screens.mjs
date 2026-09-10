@@ -249,6 +249,9 @@ export async function run() {
     await shot(theme + '-20-reminders');
     a.showNotificationsScreen();
     await shot(theme + '-21-notifications');
+    a.showTagsScreen('work');
+    await shot(theme + '-21-tags');
+    a.setTagFilter(null);
     a.selectNote(byTitle('Weekly plan'));
     a.showNotification('Note saved!', 'success');
     await shot(theme + '-22-toast', { keepToast: true });
