@@ -12,7 +12,8 @@
     "today": "Bugün",
     "favorites": "Favoriler",
     "notes": "Notlar",
-    "settings": "Ayarlar"
+    "settings": "Ayarlar",
+    "tags": "Etiketler"
   },
   "buttons": {
     "save": "Kaydet",
@@ -408,5 +409,11 @@
     "noMatch": "Eşleşen not yok",
     "missing": "Bu not artık yok",
     "backlinks": "Bu nota bağlanan notlar"
+  },
+  "tags": {
+    "subtitle": "Bir etiket seçin, notları listede ve burada görün",
+    "empty": "Henüz etiket yok. Notlara editörün sağ panelinden etiket ekleyebilirsiniz.",
+    "notesCount": "{count} not",
+    "clearFilter": "Etiket filtresini kaldır"
   }
 }

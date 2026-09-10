@@ -114,6 +114,18 @@
               Favoriler
             </button>
           </div>
+          <!-- The tag the list is filtered by; a click removes the filter -->
+          <div class="tag-filter hidden" id="tagFilter">
+            <button
+              class="tag-filter-chip"
+              id="clearTagFilterBtn"
+              data-i18n-title="tags.clearFilter"
+            >
+              <i class="fas fa-hashtag"></i>
+              <span></span>
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
         </div>
 
         <!-- Scrolling middle: notes and folders -->
@@ -132,6 +144,9 @@
                     data-i18n-title="titles.addFolder"
                   >
                     <i class="fas fa-plus"></i>
+                  </button>
+                  <button class="nav-control-btn" id="tagsNavBtn" data-i18n-title="nav.tags">
+                    <i class="fas fa-tags"></i>
                   </button>
                   <button class="nav-control-btn" id="sortBtn" data-i18n-title="titles.sort">
                     <i class="fas fa-sort-amount-down"></i>
@@ -263,6 +278,28 @@
             <div id="remindersList" class="card-list">
               <!-- Upcoming reminders are rendered here -->
             </div>
+          </div>
+        </div>
+
+        <!-- Tags screen: every tag, and the notes of the chosen one -->
+        <div id="tagsScreen" class="screen tags-screen hidden">
+          <div class="page-header">
+            <span class="page-icon tone-teal"><i class="fas fa-tags"></i></span>
+            <div class="page-heading">
+              <h2 class="page-title" data-i18n="nav.tags">Etiketler</h2>
+              <p class="page-subtitle" data-i18n="tags.subtitle">
+                Bir etiket seçin, notları listede ve burada görün
+              </p>
+            </div>
+          </div>
+          <div class="page-body">
+            <section class="page-section">
+              <div id="tagsCloud" class="tag-cloud"></div>
+            </section>
+            <section class="page-section hidden" id="tagNotesSection">
+              <h3 class="section-label page-section-label" id="tagNotesLabel"></h3>
+              <div id="tagNotesList" class="card-list"></div>
+            </section>
           </div>
         </div>
 

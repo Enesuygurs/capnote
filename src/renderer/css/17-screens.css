@@ -210,3 +210,74 @@
   font-weight: 600;
   color: var(--text-secondary);
 }
+
+/* ============ Tags ============ */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* A tag on the tags page: name and count; the chosen one in the accent */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-sm);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--field);
+  color: var(--text-primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.tag-chip i {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.tag-chip:hover {
+  background: var(--field-hover);
+}
+
+.tag-chip-count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--tint-strong);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+}
+
+.tag-chip.active {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+.tag-chip.active i,
+.tag-chip.active .tag-chip-count {
+  color: var(--accent-text);
+}
+
+/* A note of the chosen tag: the whole card opens it */
+.list-card.tag-note {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.list-card.tag-note:hover {
+  background: var(--field-hover);
+}
+
+.tag-note-open {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}

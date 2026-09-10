@@ -12,6 +12,7 @@ export class ScreensFeature {
       viewer: this.noteViewer,
       notifications: this.notificationsScreen,
       reminders: this.remindersScreen,
+      tags: this.tagsScreen,
       todos: this.todosScreen,
     };
     Object.entries(screens).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
@@ -19,6 +20,7 @@ export class ScreensFeature {
     const navItems = {
       notifications: this.notificationsNav,
       reminders: this.remindersNav,
+      tags: this.tagsNavBtn,
       todos: this.todosNav,
     };
     Object.entries(navItems).forEach(([key, el]) => el?.classList.toggle('active', key === name));

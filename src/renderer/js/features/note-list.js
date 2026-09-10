@@ -125,12 +125,13 @@ export class NoteListFeature {
   matchesCurrentView(note, searchTerm = this.currentSearchTerm()) {
     if (this.currentFilter === 'today' && !this.isCreatedToday(note)) return false;
     if (this.currentFilter === 'favorites' && !note.isFavorite) return false;
+    if (this.currentTag && !this.noteHasTag(note, this.currentTag)) return false;
     return !searchTerm || this.noteMatchesSearch(note, searchTerm);
   }
 
   // While filtering or searching, folders without matching notes are hidden
   isViewFiltered() {
-    return this.currentFilter !== 'all' || !!this.currentSearchTerm();
+    return this.currentFilter !== 'all' || !!this.currentTag || !!this.currentSearchTerm();
   }
 
   // Notes shown in the root list (folderless ones)

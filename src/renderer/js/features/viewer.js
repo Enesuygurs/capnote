@@ -114,7 +114,9 @@ export class ViewerFeature {
   displayViewerTags(tags) {
     this.viewerTags.innerHTML = '';
     tags.forEach((tag) => {
-      const tagElement = document.createElement('span');
+      // A tag opens the tags page with its notes
+      const tagElement = document.createElement('button');
+      tagElement.type = 'button';
       tagElement.className = 'chip viewer-tag';
       tagElement.textContent = tag;
       this.viewerTags.appendChild(tagElement);
