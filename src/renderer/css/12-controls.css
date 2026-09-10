@@ -292,6 +292,27 @@ input:focus-visible + .toggle-slider {
   background: var(--tint-hover);
 }
 
+/* The item a keyboard choice lands on (note link suggestions) */
+.menu-item.active {
+  background: var(--tint-hover);
+}
+
+/* A menu with nothing to choose */
+.menu-empty {
+  padding: var(--space-2) var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.note-link-menu {
+  max-width: 320px;
+}
+
+.note-link-menu .menu-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .menu-item:disabled {
   opacity: 0.45;
   cursor: default;

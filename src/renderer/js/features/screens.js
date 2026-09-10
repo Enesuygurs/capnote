@@ -4,6 +4,7 @@ export class ScreensFeature {
   // Show exactly one of the main screens and highlight its sidebar entry (if it has one)
   showScreen(name) {
     this.hideEmojiPanel();
+    this.hideNoteLinkMenu?.();
 
     const screens = {
       welcome: this.welcomeScreen,

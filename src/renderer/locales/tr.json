@@ -403,5 +403,10 @@
     "h1": "Başlık 1",
     "h2": "Başlık 2",
     "h3": "Başlık 3"
+  },
+  "noteLinks": {
+    "noMatch": "Eşleşen not yok",
+    "missing": "Bu not artık yok",
+    "backlinks": "Bu nota bağlanan notlar"
   }
 }

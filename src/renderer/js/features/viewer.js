@@ -29,7 +29,10 @@ export class ViewerFeature {
       }
       // Attach copy buttons to code blocks in the viewer
       this.attachCopyButtonsToPre(this.viewerText);
+      // Links to other notes show their current titles
+      this.refreshNoteLinks(this.viewerText);
     }
+    this.renderBacklinks(note);
 
     this.applyViewerFormatting(note.formatting);
 

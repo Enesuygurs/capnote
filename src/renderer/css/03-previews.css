@@ -158,6 +158,59 @@ ol[style*='text-align: right'] li {
   color: var(--text-muted);
 }
 
+/* A link to another note: a tinted label in the accent; a link to a deleted note is crossed out */
+.formatted-content a.note-link,
+.rich-editor a.note-link {
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-sm);
+  background: var(--accent-tint);
+  color: var(--accent-text);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.formatted-content a.note-link:hover {
+  background: var(--accent-tint-strong);
+}
+
+.formatted-content a.note-link.is-broken,
+.rich-editor a.note-link.is-broken {
+  background: var(--field);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+/* Under a note: the notes that link to it */
+.backlinks {
+  margin-top: var(--space-8);
+}
+
+.backlinks .section-label {
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+.backlinks-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.chip.backlink {
+  gap: var(--space-1);
+  cursor: pointer;
+}
+
+.chip.backlink i {
+  color: var(--text-muted);
+}
+
+.chip.backlink:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
 /* Quotes and rules are part of the content, so they keep their lines */
 .formatted-content blockquote,
 .rich-editor blockquote,
