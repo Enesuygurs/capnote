@@ -34,6 +34,9 @@ export const NOTE_DIALOGS = /* HTML */ `
     </div>
   </div>
 
+  <!-- Notes suggested while typing "[[" in the editor -->
+  <div id="noteLinkMenu" class="context-menu menu note-link-menu hidden" role="listbox"></div>
+
   <!-- Link dialog -->
   <div id="linkModal" class="modal hidden">
     <div class="modal-content modal-sm">

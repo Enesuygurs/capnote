@@ -31,6 +31,10 @@ export async function seed() {
     note('2', 'Shopping list'),
     note('3', 'Project notes', { folderId: '100' }),
     note('4', 'Meeting summary', { folderId: '100' }),
+    note('7', 'Reading list', {
+      content:
+        '<p>Follow up on <a class="note-link" data-note-id="1" href="#">Weekly plan</a>.</p>',
+    }),
     note('6', 'Aligned', {
       content:
         '<p style="text-align: center;">Centered line</p>' +
@@ -170,6 +174,15 @@ export async function run() {
     });
     await shot(theme + '-07-html-preview');
     a.toggleHtmlMode();
+    a.cancelEdit();
+    // Suggestions while typing "[[" for a link to another note
+    a.createNewNote();
+    a.richEditor.innerHTML = '<p><br></p>';
+    a.richEditor.focus();
+    a.placeCaret(a.richEditor.querySelector('p'), 0);
+    ['S', 'e', 'e', ' ', '[', '['].forEach((c) => document.execCommand('insertText', false, c));
+    await shot(theme + '-07-note-link-menu', { keepFocus: true });
+    a.hideNoteLinkMenu();
     a.cancelEdit();
     a.showNoteContextMenu(120, 236, byTitle('Weekly plan').id);
     await shot(theme + '-08-note-menu');

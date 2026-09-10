@@ -27,6 +27,7 @@ import { SelectionFeature } from './features/selection.js';
 import { EditorBlocksFeature } from './features/editor-blocks.js';
 import { EditorHistoryFeature } from './features/editor-history.js';
 import { EditorToolsFeature } from './features/editor-tools.js';
+import { NoteLinksFeature } from './features/note-links.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -247,6 +248,8 @@ export class CapnoteApp {
     this.insertTableBtn = document.getElementById('insertTableBtn');
     this.tableModal = document.getElementById('tableModal');
     this.linkModal = document.getElementById('linkModal');
+    this.noteLinkMenu = document.getElementById('noteLinkMenu');
+    this.viewerBacklinks = document.getElementById('viewerBacklinks');
     this.linkTextInput = document.getElementById('linkTextInput');
     this.linkUrlInput = document.getElementById('linkUrlInput');
     this.applyLinkBtn = document.getElementById('applyLinkBtn');
@@ -347,6 +350,7 @@ export class CapnoteApp {
     this.setupBlockEvents();
     this.setupEditorHistory();
     this.setupEditorTools();
+    this.setupNoteLinks();
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupMoodWeatherSelectors();
@@ -613,4 +617,5 @@ applyFeatures(CapnoteApp, [
   EditorBlocksFeature,
   EditorHistoryFeature,
   EditorToolsFeature,
+  NoteLinksFeature,
 ]);
