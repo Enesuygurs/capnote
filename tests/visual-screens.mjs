@@ -138,6 +138,7 @@ export async function run() {
     a.hideEmojiPanel();
     a.hideContextMenu();
     a.hideSelectionMenu();
+    a.templateMenu.classList.add('hidden');
     a.closeAllDropdowns();
     a.hideNoteContextMenu();
     a.sortDropdown.classList.add('hidden');
@@ -153,6 +154,9 @@ export async function run() {
     await shot(theme + '-01-welcome');
     a.selectNote(byTitle('Weekly plan'));
     await shot(theme + '-02-viewer');
+    a.showTemplateMenu();
+    await shot(theme + '-02-template-menu');
+    a.templateMenu.classList.add('hidden');
     a.toggleSidebar();
     await shot(theme + '-02-viewer-sidebar-hidden');
     a.toggleSidebar();

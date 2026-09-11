@@ -89,8 +89,27 @@
   box-shadow: 0 0 0 2px var(--chrome);
 }
 
+/* New note with the template button joined to its right edge */
+.new-note-split {
+  display: flex;
+  gap: var(--stack-gap);
+}
+
 .sidebar-new-note {
-  width: 100%;
+  flex: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.new-note-more {
+  width: var(--control-md);
+  padding: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.new-note-more i {
+  font-size: var(--fs-sm);
 }
 
 /* Settings: one full-width row at the bottom, aligned with the list rows */

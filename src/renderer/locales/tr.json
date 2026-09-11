@@ -432,5 +432,25 @@
     "words": "kelime",
     "no_mood": "Henüz ruh hali seçilmiş not yok",
     "no_weather": "Henüz hava durumu seçilmiş not yok"
+  },
+  "noteTemplates": {
+    "choose": "Şablondan yeni not",
+    "blank": "Boş not",
+    "journal": "Günlük",
+    "meeting": "Toplantı notu",
+    "weekly": "Haftalık plan",
+    "journalTitle": "Günlük · {date}",
+    "journalHow": "Bugün nasıldı?",
+    "journalGrateful": "Minnettar olduğum üç şey",
+    "journalTomorrow": "Yarın için",
+    "meetingTitle": "Toplantı · {date}",
+    "meetingPeople": "Katılımcılar",
+    "meetingAgenda": "Gündem",
+    "meetingNotes": "Notlar",
+    "meetingDecisions": "Kararlar",
+    "meetingActions": "Yapılacaklar",
+    "weeklyTitle": "Haftalık plan · {from} – {to}",
+    "weeklyGoals": "Bu haftanın hedefleri",
+    "weeklyNotes": "Notlar"
   }
 }

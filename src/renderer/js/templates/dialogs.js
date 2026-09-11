@@ -34,6 +34,26 @@ export const NOTE_DIALOGS = /* HTML */ `
     </div>
   </div>
 
+  <!-- Templates to start a new note from -->
+  <div id="templateMenu" class="context-menu menu hidden" role="menu">
+    <button class="menu-item" data-template="blank" role="menuitem">
+      <i class="fas fa-file"></i>
+      <span data-i18n="noteTemplates.blank">Boş not</span>
+    </button>
+    <button class="menu-item" data-template="journal" role="menuitem">
+      <i></i>
+      <span data-i18n="noteTemplates.journal">Günlük</span>
+    </button>
+    <button class="menu-item" data-template="meeting" role="menuitem">
+      <i></i>
+      <span data-i18n="noteTemplates.meeting">Toplantı notu</span>
+    </button>
+    <button class="menu-item" data-template="weekly" role="menuitem">
+      <i></i>
+      <span data-i18n="noteTemplates.weekly">Haftalık plan</span>
+    </button>
+  </div>
+
   <!-- Notes suggested while typing "[[" in the editor -->
   <div id="noteLinkMenu" class="context-menu menu note-link-menu hidden" role="listbox"></div>
 

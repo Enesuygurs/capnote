@@ -432,5 +432,25 @@
     "words": "words",
     "no_mood": "No note has a mood yet",
     "no_weather": "No note has the weather yet"
+  },
+  "noteTemplates": {
+    "choose": "New note from a template",
+    "blank": "Blank note",
+    "journal": "Journal",
+    "meeting": "Meeting notes",
+    "weekly": "Weekly plan",
+    "journalTitle": "Journal · {date}",
+    "journalHow": "How was today?",
+    "journalGrateful": "Three things I am grateful for",
+    "journalTomorrow": "For tomorrow",
+    "meetingTitle": "Meeting · {date}",
+    "meetingPeople": "Attendees",
+    "meetingAgenda": "Agenda",
+    "meetingNotes": "Notes",
+    "meetingDecisions": "Decisions",
+    "meetingActions": "Action items",
+    "weeklyTitle": "Weekly plan · {from} – {to}",
+    "weeklyGoals": "Goals this week",
+    "weeklyNotes": "Notes"
   }
 }

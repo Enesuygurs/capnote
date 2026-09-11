@@ -89,10 +89,20 @@
               </button>
             </div>
           </div>
-          <button class="btn-primary sidebar-new-note" id="newNoteNav">
-            <i class="fas fa-plus"></i>
-            <span data-i18n="nav.newNote">Yeni Not</span>
-          </button>
+          <!-- New note, and beside it the templates to start one from -->
+          <div class="new-note-split">
+            <button class="btn-primary sidebar-new-note" id="newNoteNav">
+              <i class="fas fa-plus"></i>
+              <span data-i18n="nav.newNote">Yeni Not</span>
+            </button>
+            <button
+              class="btn-primary new-note-more"
+              id="newNoteTemplatesBtn"
+              data-i18n-title="noteTemplates.choose"
+            >
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
           <div class="search-container" id="searchContainer">
             <i class="fas fa-search search-icon"></i>
             <input
