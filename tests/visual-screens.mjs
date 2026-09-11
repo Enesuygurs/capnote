@@ -112,6 +112,10 @@ export async function run() {
   document.head.appendChild(still);
   const a = window.app;
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  // The overview counts from "today": a fixed day keeps its screenshot the same
+  a.dashboardToday = '2026-03-02T12:00:00';
+  a.calendarDate = null;
+  a.calendarSelectedDay = '2026-03-01';
   // Things that change with the clock
   const freeze = () => {
     if (a.noteDate) a.noteDate.textContent = 'Sunday, March 1, 2026';

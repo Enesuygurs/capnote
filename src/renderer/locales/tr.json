@@ -415,5 +415,22 @@
     "empty": "Henüz etiket yok. Notlara editörün sağ panelinden etiket ekleyebilirsiniz.",
     "notesCount": "{count} not",
     "clearFilter": "Etiket filtresini kaldır"
+  },
+  "dashboard": {
+    "title": "Genel bakış",
+    "notes": "Not",
+    "activeDays": "Yazılan gün",
+    "streak": "Süren seri (gün)",
+    "longestStreak": "En uzun seri (gün)",
+    "wordsThisMonth": "Bu ay yazılan kelime",
+    "today": "Bugün",
+    "prevMonth": "Önceki ay",
+    "nextMonth": "Sonraki ay",
+    "moods": "Ruh hali dağılımı",
+    "weather": "Hava durumu",
+    "wordsPerMonth": "Aylık kelime sayısı",
+    "words": "kelime",
+    "no_mood": "Henüz ruh hali seçilmiş not yok",
+    "no_weather": "Henüz hava durumu seçilmiş not yok"
   }
 }

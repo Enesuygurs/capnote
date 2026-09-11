@@ -415,5 +415,22 @@
     "empty": "No tags yet. Add tags to notes from the editor's side panel.",
     "notesCount": "{count} notes",
     "clearFilter": "Remove the tag filter"
+  },
+  "dashboard": {
+    "title": "Overview",
+    "notes": "Notes",
+    "activeDays": "Days written",
+    "streak": "Current streak (days)",
+    "longestStreak": "Longest streak (days)",
+    "wordsThisMonth": "Words this month",
+    "today": "Today",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "moods": "Moods",
+    "weather": "Weather",
+    "wordsPerMonth": "Words per month",
+    "words": "words",
+    "no_mood": "No note has a mood yet",
+    "no_weather": "No note has the weather yet"
   }
 }
