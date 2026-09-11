@@ -30,6 +30,7 @@ import { EditorToolsFeature } from './features/editor-tools.js';
 import { NoteLinksFeature } from './features/note-links.js';
 import { TagsFeature } from './features/tags.js';
 import { DashboardFeature } from './features/dashboard.js';
+import { TemplatesFeature } from './features/templates.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -269,6 +270,8 @@ export class CapnoteApp {
     this.tableModal = document.getElementById('tableModal');
     this.linkModal = document.getElementById('linkModal');
     this.noteLinkMenu = document.getElementById('noteLinkMenu');
+    this.templateMenu = document.getElementById('templateMenu');
+    this.newNoteTemplatesBtn = document.getElementById('newNoteTemplatesBtn');
     this.tagsScreen = document.getElementById('tagsScreen');
     this.tagsNavBtn = document.getElementById('tagsNavBtn');
     this.tagFilter = document.getElementById('tagFilter');
@@ -381,6 +384,7 @@ export class CapnoteApp {
     this.setupNoteLinks();
     this.setupTags();
     this.setupDashboard();
+    this.setupTemplates();
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupMoodWeatherSelectors();
@@ -654,4 +658,5 @@ applyFeatures(CapnoteApp, [
   NoteLinksFeature,
   TagsFeature,
   DashboardFeature,
+  TemplatesFeature,
 ]);
