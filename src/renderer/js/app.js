@@ -29,6 +29,7 @@ import { EditorHistoryFeature } from './features/editor-history.js';
 import { EditorToolsFeature } from './features/editor-tools.js';
 import { NoteLinksFeature } from './features/note-links.js';
 import { TagsFeature } from './features/tags.js';
+import { DashboardFeature } from './features/dashboard.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -109,6 +110,22 @@ export class CapnoteApp {
   initializeElements() {
     // Main screens
     this.welcomeScreen = document.getElementById('welcomeScreen');
+    this.dashboard = document.getElementById('dashboard');
+    this.welcomeContent = document.getElementById('welcomeContent');
+    this.dashboardDate = document.getElementById('dashboardDate');
+    this.statTiles = document.getElementById('statTiles');
+    this.calendarTitle = document.getElementById('calendarTitle');
+    this.calendarPrevBtn = document.getElementById('calendarPrevBtn');
+    this.calendarNextBtn = document.getElementById('calendarNextBtn');
+    this.calendarTodayBtn = document.getElementById('calendarTodayBtn');
+    this.calendarWeekdays = document.getElementById('calendarWeekdays');
+    this.calendarGrid = document.getElementById('calendarGrid');
+    this.calendarDayNotes = document.getElementById('calendarDayNotes');
+    this.calendarDayLabel = document.getElementById('calendarDayLabel');
+    this.calendarDayList = document.getElementById('calendarDayList');
+    this.moodChart = document.getElementById('moodChart');
+    this.weatherChart = document.getElementById('weatherChart');
+    this.wordsChart = document.getElementById('wordsChart');
     this.noteEditor = document.getElementById('noteEditor');
     this.noteViewer = document.getElementById('noteViewer');
     this.notesList = document.getElementById('notesList');
@@ -363,6 +380,7 @@ export class CapnoteApp {
     this.setupEditorTools();
     this.setupNoteLinks();
     this.setupTags();
+    this.setupDashboard();
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupMoodWeatherSelectors();
@@ -529,10 +547,14 @@ export class CapnoteApp {
     if (this.totalNotes) this.totalNotes.textContent = totalNotesCount;
     if (this.daysActive) this.daysActive.textContent = activeDaysCount;
     if (this.totalWords) this.totalWords.textContent = totalWordsCount;
+    // The overview on the home page follows the notes
+    if (this.welcomeScreen && !this.welcomeScreen.classList.contains('hidden'))
+      this.renderDashboard();
   }
 
   // Re-render everything that builds translated text in JS (static markup is handled by i18n.js)
   updateDynamicTranslations() {
+    if (!this.welcomeScreen.classList.contains('hidden')) this.renderDashboard();
     this.updateNotesList();
     this.updateFoldersList();
     this.updateRemindersView();
@@ -631,4 +653,5 @@ applyFeatures(CapnoteApp, [
   EditorToolsFeature,
   NoteLinksFeature,
   TagsFeature,
+  DashboardFeature,
 ]);

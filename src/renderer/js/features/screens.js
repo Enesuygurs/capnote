@@ -49,6 +49,7 @@ export class ScreensFeature {
 
   showWelcome() {
     this.showScreen('welcome');
+    this.renderDashboard();
     this.clearSavedSelection();
   }
 

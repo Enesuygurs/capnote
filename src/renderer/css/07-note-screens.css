@@ -68,6 +68,308 @@
   color: var(--text-secondary);
 }
 
+/* ============ Overview (home with notes) ============ */
+.welcome-screen.has-notes {
+  padding: 0;
+  align-items: stretch;
+  justify-content: stretch;
+  overflow: hidden;
+}
+
+.stat-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+/* A number with its label: the headline figures, no chart */
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+}
+
+.stat-tile i {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}
+
+.stat-tile[data-stat='streak'] i {
+  color: var(--tone-amber);
+}
+
+.stat-tile-value {
+  font-size: var(--fs-3xl);
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--text-strong);
+}
+
+.stat-tile-label {
+  font-size: var(--fs-sm);
+  line-height: 16px;
+  color: var(--text-secondary);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-4);
+  align-items: start;
+}
+
+.dashboard-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.chart-card .section-label {
+  display: block;
+  margin-bottom: var(--space-3);
+}
+
+/* ============ Calendar ============ */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.calendar-title {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--text-strong);
+  text-transform: capitalize;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--stack-gap);
+}
+
+.calendar-weekdays span {
+  padding-bottom: var(--space-1);
+  text-align: center;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* A day: its number, and the mood of the day (or a dot when no note has a mood) */
+.calendar-day {
+  aspect-ratio: 1;
+  min-height: var(--control-md);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+  cursor: default;
+  transition: var(--transition-fast);
+}
+
+.calendar-day.has-notes {
+  color: var(--text-strong);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.calendar-day.has-notes:hover {
+  background: var(--tint-hover);
+}
+
+.calendar-day.is-other-month {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.calendar-day.is-today {
+  box-shadow: inset 0 0 0 2px var(--accent-color);
+}
+
+.calendar-day.is-selected,
+.calendar-day.is-selected:hover {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+.calendar-day-mark {
+  font-size: var(--fs-sm);
+  line-height: 1;
+  color: var(--tone, var(--text-muted));
+}
+
+.calendar-day-mark.is-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: var(--accent-color);
+}
+
+.calendar-day-notes {
+  margin-top: var(--space-4);
+}
+
+.calendar-day-notes .section-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--fs-sm);
+}
+
+.calendar-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: var(--control-sm);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.calendar-note:hover {
+  background: var(--tint-hover);
+}
+
+.calendar-note-mood {
+  width: 16px;
+  text-align: center;
+  color: var(--tone, var(--text-muted));
+}
+
+.calendar-note-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calendar-note-time {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* ============ Charts ============ */
+.chart-empty {
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}
+
+.bar-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* One row: icon in the mood's own color, its name, a bar in one shared color, the count */
+.bar-row {
+  display: grid;
+  grid-template-columns: 16px minmax(64px, 96px) 1fr auto;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--fs-md);
+}
+
+.bar-icon {
+  text-align: center;
+  color: var(--tone, var(--text-muted));
+}
+
+.bar-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.bar-track {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--field);
+  overflow: hidden;
+}
+
+.bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--accent-color);
+}
+
+.bar-value {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Words per month: thin columns on one baseline, rounded at the top */
+.column-chart {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-2);
+  height: 136px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.column-value {
+  height: 16px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.column-track {
+  flex: 1;
+  width: 100%;
+  max-width: 28px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.column-fill {
+  display: block;
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: var(--accent-color);
+}
+
+.column-label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
 /* ============ Viewer ============ */
 #viewerMood,
 #viewerWeather {
