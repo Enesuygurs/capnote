@@ -100,6 +100,7 @@ export const expected = {
     nativeNotifications: true,
     editorSidebarVisible: false,
     closeToTray: true,
+    quickNoteShortcut: true,
     lastViewedNoteId: '1',
   },
   uiLanguage: 'en',

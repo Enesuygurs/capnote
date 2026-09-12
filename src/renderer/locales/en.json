@@ -175,7 +175,9 @@
     "startupPageDesc": "What Capnote shows when it opens",
     "startupLastNote": "Last opened note",
     "startupHome": "Home page",
-    "startupNewNote": "New note"
+    "startupNewNote": "New note",
+    "quickNoteShortcut": "Quick note shortcut",
+    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a new note, even while Capnote is in the background or the tray"
   },
   "modals": {
     "exportNote": "Export Note",
@@ -365,7 +367,8 @@
     "backupTooNew": "This backup was made by a newer version of Capnote. Please update the app to import it.",
     "exportFailed": "Export failed",
     "passwordToDelete": "Enter the password to delete this locked note",
-    "invalidLink": "Enter a valid web or e-mail address"
+    "invalidLink": "Enter a valid web or e-mail address",
+    "shortcutInUse": "Ctrl+Alt+N is used by another app"
   },
   "templates": {
     "tableHeader": "Header {n}"

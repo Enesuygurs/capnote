@@ -22,6 +22,8 @@ export const DEFAULT_SETTINGS = {
   nativeNotifications: true,
   editorSidebarVisible: true,
   closeToTray: true,
+  // Ctrl+Alt+N anywhere in the system opens a new note
+  quickNoteShortcut: true,
   lastViewedNoteId: null,
 };
 

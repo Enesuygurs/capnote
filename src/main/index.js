@@ -4,7 +4,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, globalShortcut, ipcMain } from 'electron';
 import { JsonStore } from './storage.js';
 import { registerUploadScheme, handleUploadProtocol, registerUploadIpc } from './uploads.js';
 import {
@@ -22,6 +22,7 @@ import { registerNotificationIpc } from './notifications.js';
 import { registerAutostartIpc } from './autostart.js';
 import { registerExportIpc } from './export-pdf.js';
 import { startUpdater, registerUpdateIpc } from './updater.js';
+import { setQuickNoteShortcut, registerQuickNoteIpc } from './quick-note.js';
 
 // Development mode is 'npm run dev' from a source checkout: hot reload and DevTools
 const isDev = !app.isPackaged && process.argv.includes('--dev');
@@ -60,6 +61,12 @@ function readCloseToTrayPreference() {
     }
   } catch {}
   return true;
+}
+
+// The quick note shortcut is on unless it was turned off in the settings
+function readQuickNotePreference() {
+  const settings = getDataStore().read('settings');
+  return !(settings && settings.quickNoteShortcut === false);
 }
 
 function readDarkModePreference() {
@@ -104,6 +111,7 @@ registerNotificationIpc();
 registerAutostartIpc();
 registerExportIpc();
 registerUpdateIpc();
+registerQuickNoteIpc();
 
 app.whenReady().then(() => {
   if (!isPrimaryInstance) return;
@@ -111,6 +119,7 @@ app.whenReady().then(() => {
   setCloseToTray(readCloseToTrayPreference());
   createMainWindow({ darkMode: readDarkModePreference(), devTools: isDev });
   createTray();
+  setQuickNoteShortcut(readQuickNotePreference());
   startUpdater((state) => getMainWindow()?.webContents.send('updates:status', state));
 
   app.on('activate', () => {
@@ -132,6 +141,8 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   markQuitting();
 });
+
+app.on('will-quit', () => globalShortcut.unregisterAll());
 
 // Hot reload comes last: awaiting the import lets the app become ready, and the setup above
 // (such as registering the upload scheme) has to happen before that
