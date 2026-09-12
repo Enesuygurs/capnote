@@ -455,5 +455,15 @@
     "weeklyTitle": "Haftalık plan · {from} – {to}",
     "weeklyGoals": "Bu haftanın hedefleri",
     "weeklyNotes": "Notlar"
+  },
+  "markdown": {
+    "exportLabel": "Markdown olarak dışa aktar",
+    "exportDesc": "Her not bir .md dosyası olur; klasörler klasör, resimler \"attachments\" klasörüne",
+    "importLabel": "Markdown dosyalarını içe aktar",
+    "importDesc": "Seçtiğiniz .md dosyaları düzenlenebilir notlar olur",
+    "exported": "{count} not \"{folder}\" klasörüne aktarıldı",
+    "lockedSkipped": "{count} kilitli not dışa aktarılmadı",
+    "imported": "{count} not içe aktarıldı",
+    "importFailed": "Markdown dosyaları içe aktarılamadı"
   }
 }

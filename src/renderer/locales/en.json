@@ -455,5 +455,15 @@
     "weeklyTitle": "Weekly plan · {from} – {to}",
     "weeklyGoals": "Goals this week",
     "weeklyNotes": "Notes"
+  },
+  "markdown": {
+    "exportLabel": "Export as Markdown",
+    "exportDesc": "Each note becomes a .md file; folders become folders, images go to \"attachments\"",
+    "importLabel": "Import Markdown files",
+    "importDesc": "The .md files you pick become notes you can edit",
+    "exported": "{count} notes exported to \"{folder}\"",
+    "lockedSkipped": "{count} locked notes were not exported",
+    "imported": "{count} notes imported",
+    "importFailed": "The Markdown files could not be imported"
   }
 }

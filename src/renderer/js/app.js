@@ -31,6 +31,7 @@ import { NoteLinksFeature } from './features/note-links.js';
 import { TagsFeature } from './features/tags.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
+import { MarkdownIoFeature } from './features/markdown-io.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -250,6 +251,8 @@ export class CapnoteApp {
     // System settings toggles
     this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
     this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
+    this.exportMarkdownBtn = document.getElementById('exportMarkdownBtn');
+    this.importMarkdownBtn = document.getElementById('importMarkdownBtn');
     this.quickNoteShortcutToggle = document.getElementById('quickNoteShortcutToggle');
     // General settings
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
@@ -386,6 +389,7 @@ export class CapnoteApp {
     this.setupTags();
     this.setupDashboard();
     this.setupTemplates();
+    this.setupMarkdownIo();
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupMoodWeatherSelectors();
@@ -660,4 +664,5 @@ applyFeatures(CapnoteApp, [
   TagsFeature,
   DashboardFeature,
   TemplatesFeature,
+  MarkdownIoFeature,
 ]);

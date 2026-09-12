@@ -43,9 +43,15 @@ async function runCase(file, scratch) {
   if (!result.ok) problems.push('threw: ' + result.error.split('\n').slice(0, 3).join(' | '));
   else compare(test.expected, result.value, 'result', problems);
   if (saveDir) {
-    const files = Object.fromEntries(
-      fs.readdirSync(saveDir).map((f) => [f, fs.readFileSync(path.join(saveDir, f))])
-    );
+    // Every file under the folder, by its path inside it ("Folder/Note.md")
+    const files = {};
+    const walk = (dir) =>
+      fs.readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else files[path.relative(saveDir, full).split(path.sep).join('/')] = fs.readFileSync(full);
+      });
+    walk(saveDir);
     compare(test.expectedFiles, test.checkFiles(files), 'files', problems);
   }
 

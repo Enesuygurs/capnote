@@ -298,6 +298,31 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <span data-i18n="buttons.export">Dışa Aktar</span>
                 </button>
               </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="markdown.exportLabel">Markdown olarak dışa aktar</label>
+                  <small data-i18n="markdown.exportDesc"
+                    >Her not bir .md dosyası olur; klasörler klasör, resimler "attachments"
+                    klasörüne</small
+                  >
+                </div>
+                <button id="exportMarkdownBtn" class="btn-tinted btn-small">
+                  <i class="fas fa-file-export"></i>
+                  <span data-i18n="buttons.export">Dışa Aktar</span>
+                </button>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="markdown.importLabel">Markdown dosyalarını içe aktar</label>
+                  <small data-i18n="markdown.importDesc"
+                    >Seçtiğiniz .md dosyaları düzenlenebilir notlar olur</small
+                  >
+                </div>
+                <button id="importMarkdownBtn" class="btn-tinted btn-small">
+                  <i class="fas fa-file-import"></i>
+                  <span data-i18n="buttons.import">İçe Aktar</span>
+                </button>
+              </div>
             </div>
           </section>
 
