@@ -239,6 +239,18 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
+                  <label data-i18n="settings.quickNoteShortcut">Hızlı not kısayolu</label>
+                  <small data-i18n="settings.quickNoteShortcutDesc"
+                    >Ctrl+Alt+N, Capnote arka planda ya da tepsideyken bile yeni not açar</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="quickNoteShortcutToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
                   <label data-i18n="settings.closeToTray">Pencereyi kapatınca tepsiye küçült</label>
                   <small data-i18n="settings.closeToTrayDesc"
                     >Kapat düğmesine basınca uygulama sistem tepsisinde çalışmaya devam etsin</small

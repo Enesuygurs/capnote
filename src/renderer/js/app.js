@@ -250,6 +250,7 @@ export class CapnoteApp {
     // System settings toggles
     this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
     this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
+    this.quickNoteShortcutToggle = document.getElementById('quickNoteShortcutToggle');
     // General settings
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
     this.startupPageSelect = document.getElementById('startupPageSelect');

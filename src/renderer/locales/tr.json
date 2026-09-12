@@ -175,7 +175,9 @@
     "startupPageDesc": "Capnote açıldığında ilk ne görünsün",
     "startupLastNote": "Son açılan not",
     "startupHome": "Giriş sayfası",
-    "startupNewNote": "Yeni not"
+    "startupNewNote": "Yeni not",
+    "quickNoteShortcut": "Hızlı not kısayolu",
+    "quickNoteShortcutDesc": "Ctrl+Alt+N, Capnote arka planda ya da tepsideyken bile yeni not açar"
   },
   "modals": {
     "exportNote": "Notu Dışa Aktar",
@@ -365,7 +367,8 @@
     "backupTooNew": "Bu yedek Capnote'un daha yeni bir sürümüyle alınmış. İçe aktarmak için uygulamayı güncelleyin.",
     "exportFailed": "Dışa aktarma başarısız oldu",
     "passwordToDelete": "Kilitli notu silmek için şifresini girin",
-    "invalidLink": "Geçerli bir web ya da e-posta adresi girin"
+    "invalidLink": "Geçerli bir web ya da e-posta adresi girin",
+    "shortcutInUse": "Ctrl+Alt+N başka bir uygulama tarafından kullanılıyor"
   },
   "templates": {
     "tableHeader": "Başlık {n}"

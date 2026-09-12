@@ -90,6 +90,8 @@ export class SettingsFeature {
     if (this.startupPageSelect) this.startupPageSelect.value = settings.startupPage;
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
+    if (this.quickNoteShortcutToggle)
+      this.quickNoteShortcutToggle.checked = settings.quickNoteShortcut;
 
     // Query start-at-login from main (async, best-effort)
     try {
@@ -137,6 +139,19 @@ export class SettingsFeature {
     });
 
     // On note delete behavior change
+    // The quick note shortcut; another app may already use the keys, then it stays off
+    this.quickNoteShortcutToggle?.addEventListener('change', async (e) => {
+      const enabled = e.target.checked;
+      const result = await window.electronAPI?.setQuickNoteShortcut?.(enabled);
+      if (result && !result.ok) {
+        e.target.checked = false;
+        this.setSetting('quickNoteShortcut', false);
+        this.showNotification(i18n.t('messages.shortcutInUse'), 'warning');
+        return;
+      }
+      this.setSetting('quickNoteShortcut', enabled);
+    });
+
     if (this.startupPageSelect) {
       this.startupPageSelect.addEventListener('change', (e) => {
         this.setSetting('startupPage', e.target.value);
