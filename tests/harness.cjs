@@ -41,6 +41,22 @@ if (env.CAPNOTE_TEST_SAVE_DIR) {
     const name = path.basename(String(options.defaultPath || 'file'));
     return { canceled: false, filePath: path.join(env.CAPNOTE_TEST_SAVE_DIR, name) };
   };
+  // Choosing a folder answers the save folder; choosing files answers every .md file in it
+  dialog.showOpenDialog = async (...args) => {
+    const options = args[args.length - 1] || {};
+    if ((options.properties || []).includes('openDirectory')) {
+      return { canceled: false, filePaths: [env.CAPNOTE_TEST_SAVE_DIR] };
+    }
+    const found = [];
+    const walk = (dir) =>
+      fs.readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) walk(full);
+        else if (/\.md$/i.test(entry.name)) found.push(full);
+      });
+    walk(env.CAPNOTE_TEST_SAVE_DIR);
+    return { canceled: false, filePaths: found };
+  };
 }
 
 const logs = [];

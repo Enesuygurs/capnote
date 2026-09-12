@@ -36,6 +36,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   exportHtml: (payload) => ipcRenderer.invoke('export-html', payload),
   // Save a text file (note text or JSON, the full backup) where the user picks
   saveFile: (payload) => ipcRenderer.invoke('save-file', payload),
+  // All notes as Markdown files into a folder the user picks; Markdown files read to import
+  exportMarkdown: (payload) => ipcRenderer.invoke('markdown:export', payload),
+  importMarkdown: () => ipcRenderer.invoke('markdown:import'),
   // Native OS notifications via main process
   showNativeNotification: (opts) => ipcRenderer.invoke('show-native-notification', opts),
   // Listen for native notification clicks forwarded from main
