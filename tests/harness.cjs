@@ -11,6 +11,9 @@
 // The page script can also print these markers:
 //   __PICK__:["#selector", "path"]   fill an <input type=file> like the user picking that file
 //   __FORCE__:["hover", "focus"]     force pseudo-classes on every element ([] clears them)
+//   __KEYS__:["# Title", "^z"]       type through the real input path, like a keyboard: text is
+//                                    typed key by key, "^z" is Ctrl+Z, "{Enter}" a key; then
+//                                    window.__keysDone is set
 
 const fs = require('fs');
 const path = require('path');
@@ -93,6 +96,34 @@ function handleMarker(win, message) {
       const { nodeId } = await send('DOM.querySelector', { nodeId: root.nodeId, selector });
       await send('DOM.setFileInputFiles', { nodeId, files: [file] });
     }).catch((err) => logs.push({ level: 'error', message: 'pick failed: ' + err }));
+    return true;
+  }
+  if (message.startsWith('__KEYS__:')) {
+    const steps = JSON.parse(message.slice(9));
+    (async () => {
+      win.focus();
+      wc.focus();
+      for (const step of steps) {
+        const ctrl = step.match(/^\^(.+)$/);
+        const named = step.match(/^\{(\w+)\}$/);
+        if (ctrl || named) {
+          const keyCode = ctrl ? ctrl[1].toUpperCase() : named[1];
+          const modifiers = ctrl ? ['control'] : [];
+          wc.sendInputEvent({ type: 'keyDown', keyCode, modifiers });
+          if (named && named[1] === 'Enter') wc.sendInputEvent({ type: 'char', keyCode: '\r' });
+          wc.sendInputEvent({ type: 'keyUp', keyCode, modifiers });
+        } else {
+          for (const ch of step) {
+            wc.sendInputEvent({ type: 'keyDown', keyCode: ch });
+            wc.sendInputEvent({ type: 'char', keyCode: ch });
+            wc.sendInputEvent({ type: 'keyUp', keyCode: ch });
+          }
+        }
+        await new Promise((r) => setTimeout(r, 60));
+      }
+      await new Promise((r) => setTimeout(r, 100));
+      await wc.executeJavaScript('window.__keysDone = true');
+    })().catch((err) => logs.push({ level: 'error', message: 'keys failed: ' + err }));
     return true;
   }
   if (message.startsWith('__FORCE__:')) {
