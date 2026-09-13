@@ -4,25 +4,30 @@ Capnote is a desktop app for notes and journaling. Everything stays on your comp
 
 ## Features
 
-- **Rich text and Markdown:** headings, lists, checklists, tables, code blocks, links, images and file attachments, plus Markdown notes with a live preview and an HTML preview.
-- **Organizing:** folders with colors, tags, favorites, pinned notes, a Today view, sorting and search.
-- **Journaling:** mood and weather for each note, word and character counts, reading time and an edit history.
+- **Rich text and Markdown:** headings, lists, task lists, quotes, dividers, tables, code blocks, links, strikethrough, images and file attachments, Markdown shortcuts while typing ("## ", "- ", "[] ", "```"), undo for every tool, plus Markdown notes with a live preview and an HTML preview.
+- **Links between notes:** type `[[` to link to another note; a note lists the notes that link to it.
+- **Organizing:** folders with colors, tags with a tags page and a tag filter, favorites, pinned notes and folders, a Today view, a custom order by dragging, selecting several notes at once, sorting and search.
+- **Templates:** start a note as a journal entry, meeting notes or a weekly plan.
+- **Journaling:** mood and weather for each note, an overview with a mood calendar, the writing streak, how moods and weather are spread and the words per month, word and character counts, reading time and an edit history.
 - **Reminders and to-dos:** reminders with desktop notifications, and a to-do list grouped into sections.
 - **Locked notes:** a locked note is encrypted with its password (PBKDF2-SHA256 and AES-GCM). If you forget the password, the note cannot be recovered.
-- **Export and backup:** export a note as PDF, HTML, plain text or JSON, and back up or restore all data as a JSON file.
-- **Desktop integration:** tray icon, close to tray (Windows), start at login, light and dark themes, accent colors, and English and Turkish.
+- **Export and backup:** export a note as PDF, HTML, plain text or JSON, export every note as Markdown files and import Markdown files, and back up or restore all data as a JSON file.
+- **Desktop integration:** a quick note shortcut that works from any app, tray icon, close to tray (Windows), start at login, a chosen start page, light and dark themes, accent colors, and English and Turkish.
 
 ### Keyboard shortcuts
 
-| Shortcut         | Action                           |
-| ---------------- | -------------------------------- |
-| Ctrl/Cmd + N     | New note                         |
-| Ctrl/Cmd + S     | Save the note being edited       |
-| Ctrl/Cmd + E     | Edit the open note               |
-| Ctrl/Cmd + D     | Duplicate the open note          |
-| Ctrl/Cmd + F     | Search notes                     |
-| Ctrl/Cmd + Enter | Leave a code block in the editor |
-| Esc              | Close the open dialog or editor  |
+| Shortcut           | Action                             |
+| ------------------ | ---------------------------------- |
+| Ctrl/Cmd + N       | New note                           |
+| Ctrl/Cmd + S       | Save the note being edited         |
+| Ctrl/Cmd + E       | Edit the open note                 |
+| Ctrl/Cmd + D       | Duplicate the open note            |
+| Ctrl/Cmd + F       | Search notes                       |
+| Ctrl/Cmd + K       | Add or edit a link in the editor   |
+| Ctrl/Cmd + Z / Y   | Undo / redo in the editor          |
+| Ctrl/Cmd + Enter   | Leave a code block in the editor   |
+| Ctrl/Cmd + Alt + N | New note from any app (quick note) |
+| Esc                | Close the open dialog or editor    |
 
 ## Where your data lives
 
