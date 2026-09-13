@@ -450,7 +450,28 @@ export class EditorBlocksFeature {
     this.placeCaret(p, 0);
   }
 
+  // Text typed straight into the note (an empty note, or older notes) goes into a paragraph, so
+  // every line is a block the line tools and shortcuts can work on
+  wrapLooseLineAtCaret() {
+    const range = this.caretRange();
+    if (!range || this.topBlockOf(range.startContainer)) return;
+    const offset = this.textOffsetIn(this.richEditor, range);
+    this.wrapLooseText();
+    this.placeCaretAtTextOffset(this.richEditor, offset);
+  }
+
   setupBlockEvents() {
+    // New lines are paragraphs (the browser's default is <div>)
+    document.execCommand('defaultParagraphSeparator', false, 'p');
+    // The first keystroke in an empty note goes into a paragraph
+    this.richEditor.addEventListener('beforeinput', (e) => {
+      if (!e.inputType.startsWith('insert') || this.richEditor.firstElementChild) return;
+      if (this.richEditor.textContent.trim()) return;
+      this.richEditor.innerHTML = '<p><br></p>';
+      this.placeCaret(this.richEditor.firstChild, 0);
+    });
+    this.richEditor.addEventListener('input', () => this.wrapLooseLineAtCaret(), true);
+
     // Toolbar buttons keep the caret in the note (a pressed button would take the focus)
     document.querySelectorAll('.formatting-toolbar button').forEach((btn) => {
       btn.addEventListener('mousedown', (e) => e.preventDefault());

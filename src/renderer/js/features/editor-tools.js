@@ -177,7 +177,7 @@ export class EditorToolsFeature {
     if (e.inputType !== 'insertText' || (e.data !== ' ' && e.data !== '`')) return;
     const line = this.styledLine();
     const range = this.caretRange();
-    if (!line || !range || !range.collapsed || line.tagName !== 'P') return;
+    if (!line || !range || !range.collapsed || !/^(P|DIV)$/.test(line.tagName)) return;
     const before = line.textContent
       .slice(0, this.textOffsetIn(line, range))
       .replace(/\u00a0/g, ' ');
@@ -236,7 +236,7 @@ export class EditorToolsFeature {
   handleDividerEnter(e) {
     if (e.key !== 'Enter' || e.shiftKey) return;
     const line = this.styledLine();
-    if (!line || line.tagName !== 'P' || line.textContent.trim() !== '---') return;
+    if (!line || !/^(P|DIV)$/.test(line.tagName) || line.textContent.trim() !== '---') return;
     e.preventDefault();
     e.stopImmediatePropagation();
     const hr = document.createElement('hr');

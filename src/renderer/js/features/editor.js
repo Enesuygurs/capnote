@@ -224,7 +224,10 @@ export class EditorFeature {
   isCurrentNoteEmpty() {
     const content = this.getCurrentNoteContent();
     const hasTitle = content.title && content.title.trim();
-    const hasContent = content.content && content.content.trim() && content.content !== '<br>';
+    const body = this.parseInertHtml(content.content || '');
+    const hasContent =
+      !!body.textContent.replace(/\u200B/g, '').trim() ||
+      !!body.querySelector('img, table, hr, input, pre, iframe');
     const hasMood = content.mood;
     const hasWeather = content.weather;
     const hasTags = content.tags && content.tags.length > 0;

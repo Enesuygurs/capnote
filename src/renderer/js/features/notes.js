@@ -127,6 +127,7 @@ export class NotesFeature {
 
     this.showEditor();
     this.clearEditor();
+    this.resetEditorHistory?.();
     this.updateCurrentDate();
     this.noteTitle.focus();
 
