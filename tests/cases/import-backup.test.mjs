@@ -24,23 +24,9 @@ export async function run() {
   };
   const runImport = async (opts) => {
     a.showImportOptionsDialog = async () => opts;
-    const orig = document.createElement.bind(document);
-    // feed the file to the hidden input created by importAllData
-    document.createElement = (tag) => {
-      const el = orig(tag);
-      if (tag === 'input') {
-        el.click = () => {
-          Object.defineProperty(el, 'files', {
-            value: [new File([JSON.stringify(backup)], 'b.json')],
-          });
-          el.dispatchEvent(new Event('change'));
-        };
-      }
-      return el;
-    };
-    a.importAllData();
-    document.createElement = orig;
-    await new Promise((r) => setTimeout(r, 300));
+    // The text of the picked backup file goes through the same import as the Import button
+    await a.importBackupText(JSON.stringify(backup));
+    await new Promise((r) => setTimeout(r, 100));
   };
   await runImport({
     merge: true,

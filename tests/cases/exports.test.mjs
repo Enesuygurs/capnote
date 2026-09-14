@@ -40,7 +40,7 @@ export async function run() {
 
   // Full backup from the settings
   a.showSettingsModal();
-  document.getElementById('exportAllDataBtn').click();
+  document.getElementById('exportDataBtn').click();
   await wait(500);
   a.hideAllModals();
 
@@ -73,12 +73,12 @@ export const expected = {
 export function checkFiles(files) {
   const names = Object.keys(files).sort();
   const text = (name) => files[name]?.toString('utf8') || '';
-  const backupName = names.find((n) => n.startsWith('capnote-all-'));
+  const backupName = names.find((n) => /^capnote-\d{4}-\d{2}-\d{2}\.json$/.test(n));
   const html = text('Plan_ A_B.html');
   const note = JSON.parse(text('Plan_ A_B.json') || '{}');
   const backup = JSON.parse(text(backupName) || '{}');
   return {
-    names: names.map((n) => (n === backupName ? 'capnote-all-<date>.json' : n)),
+    names: names.map((n) => (n === backupName ? 'capnote-<date>.json' : n)),
     txt: text('Plan_ A_B.txt'),
     html: {
       title: html.includes('<h1>Plan: A/B</h1>'),
@@ -103,7 +103,7 @@ export const expectedFiles = {
     'Plan_ A_B.json',
     'Plan_ A_B.pdf',
     'Plan_ A_B.txt',
-    'capnote-all-<date>.json',
+    'capnote-<date>.json',
   ],
   txt: 'Plan: A/B\n\nBaşlık ğüşıöç\nSome bold text\n[x] Done task\n- Item\nconst x = 1;\ncell\ttwo\n1. first\n2. second\n',
   html: { title: true, stylesInside: true, task: true, code: true, tag: true },

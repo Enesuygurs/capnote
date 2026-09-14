@@ -152,10 +152,6 @@
     "systemNotificationsDesc": "Hatırlatmalar için işletim sistemi bildirimlerini göster",
     "testNotification": "Test bildirimi gönder",
     "testNotificationDesc": "Hemen bir test bildirimi göster",
-    "importData": "Verileri İçe Aktar",
-    "importDataDesc": "JSON dosyasından tüm verileri (notlar, klasörler, hatırlatmalar, bildirimler, ayarlar) içe aktarın",
-    "exportData": "Verileri Dışa Aktar",
-    "exportDataDesc": "Tüm verilerin bir yedeğini JSON olarak dışa aktarın",
     "deleteAllNotes": "Tüm Notları Sil",
     "deleteAllNotesDesc": "Tüm kayıtlı notlarınızı kalıcı olarak siler",
     "deleteAllFolders": "Tüm Klasörleri Sil",
@@ -457,13 +453,18 @@
     "weeklyNotes": "Notlar"
   },
   "markdown": {
-    "exportLabel": "Markdown olarak dışa aktar",
-    "exportDesc": "Her not bir .md dosyası olur; klasörler klasör, resimler \"attachments\" klasörüne",
-    "importLabel": "Markdown dosyalarını içe aktar",
-    "importDesc": "Seçtiğiniz .md dosyaları düzenlenebilir notlar olur",
     "exported": "{count} not \"{folder}\" klasörüne aktarıldı",
     "lockedSkipped": "{count} kilitli not dışa aktarılmadı",
     "imported": "{count} not içe aktarıldı",
     "importFailed": "Markdown dosyaları içe aktarılamadı"
+  },
+  "transfer": {
+    "exportLabel": "Dışa aktar",
+    "exportDesc": "Kaydederken türü seçin: tüm verilerin Capnote yedeği (.json) ya da her notun ayrı bir Markdown (.md) dosyası olduğu bir klasör",
+    "importLabel": "İçe aktar",
+    "importDesc": "Capnote yedekleri (.json) ve Markdown dosyaları (.md) türlerine göre tanınır; birlikte de seçilebilir",
+    "backupType": "Capnote yedeği (tüm veriler)",
+    "markdownType": "Markdown (her not ayrı dosya)",
+    "importType": "Capnote yedeği veya Markdown"
   }
 }

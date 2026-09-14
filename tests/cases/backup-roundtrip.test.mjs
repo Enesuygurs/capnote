@@ -11,22 +11,9 @@ export async function run() {
   const exported = JSON.parse(JSON.stringify(await a.buildBackupData()));
   const runImport = async (payload, opts) => {
     a.showImportOptionsDialog = async () => opts;
-    const orig = document.createElement.bind(document);
-    document.createElement = (tag) => {
-      const el = orig(tag);
-      if (tag === 'input') {
-        el.click = () => {
-          Object.defineProperty(el, 'files', {
-            value: [new File([JSON.stringify(payload)], 'b.json')],
-          });
-          el.dispatchEvent(new Event('change'));
-        };
-      }
-      return el;
-    };
-    a.importAllData();
-    document.createElement = orig;
-    await new Promise((r) => setTimeout(r, 400));
+    // The text of the picked backup file goes through the same import as the Import button
+    await a.importBackupText(JSON.stringify(payload));
+    await new Promise((r) => setTimeout(r, 100));
   };
   await runImport(exported, {
     merge: true,

@@ -28,6 +28,8 @@ async function runCase(file, scratch) {
     fs.mkdirSync(saveDir, { recursive: true });
     extraEnv.CAPNOTE_TEST_SAVE_DIR = saveDir;
   }
+  // saveAs: the file type the save dialog picks ("md" instead of the suggested one)
+  if (test.saveAs) extraEnv.CAPNOTE_TEST_SAVE_AS = test.saveAs;
 
   if (test.seed) {
     const seeded = await launch({ script: asScript(test.seed), userData, extraEnv });

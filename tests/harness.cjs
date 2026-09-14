@@ -41,10 +41,13 @@ if (env.CAPNOTE_TEST_SAVE_DIR) {
   // showSaveDialog(options) or showSaveDialog(window, options)
   dialog.showSaveDialog = async (...args) => {
     const options = args[args.length - 1] || {};
-    const name = path.basename(String(options.defaultPath || 'file'));
+    let name = path.basename(String(options.defaultPath || 'file'));
+    // CAPNOTE_TEST_SAVE_AS picks another file type in the dialog
+    if (env.CAPNOTE_TEST_SAVE_AS)
+      name = name.replace(/\.[^.]*$/, '') + '.' + env.CAPNOTE_TEST_SAVE_AS;
     return { canceled: false, filePath: path.join(env.CAPNOTE_TEST_SAVE_DIR, name) };
   };
-  // Choosing a folder answers the save folder; choosing files answers every .md file in it
+  // Choosing a folder answers the save folder; choosing files answers every .md and .json in it
   dialog.showOpenDialog = async (...args) => {
     const options = args[args.length - 1] || {};
     if ((options.properties || []).includes('openDirectory')) {
@@ -55,7 +58,7 @@ if (env.CAPNOTE_TEST_SAVE_DIR) {
       fs.readdirSync(dir, { withFileTypes: true }).forEach((entry) => {
         const full = path.join(dir, entry.name);
         if (entry.isDirectory()) walk(full);
-        else if (/\.md$/i.test(entry.name)) found.push(full);
+        else if (/\.(md|json)$/i.test(entry.name)) found.push(full);
       });
     walk(env.CAPNOTE_TEST_SAVE_DIR);
     return { canceled: false, filePaths: found };

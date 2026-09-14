@@ -1,6 +1,10 @@
-// Markdown round trip: every note exported as a .md file (folders as folders, images in
+// Markdown round trip through the single export and import: Markdown picked as the file type,
+// every note exported as a .md file (folders as folders, images in
 // "attachments", links between notes as [[Title]], locked notes left out), then the files
 // imported back as notes with their headings, tasks, tables, code, tags, mood, image and links
+
+// The save dialog answers with the Markdown file type
+export const saveAs = 'md';
 
 export async function seed() {
   const a = window.app;
@@ -48,7 +52,7 @@ export async function seed() {
   make('Secret', '<p>hidden</p>', { fields: { isLocked: true } });
   await a.saveNotes();
   await a.saveFolders();
-  await a.exportMarkdown();
+  await a.exportData();
   await wait(300);
   return 'seeded';
 }
@@ -58,7 +62,7 @@ export async function run() {
   // Import into an empty app: the notes come back from the files alone
   a.notes = [];
   a.folders = [];
-  await a.importMarkdown();
+  await a.importData();
   const diary = a.notes.find((n) => n.title === 'Diary');
   const plan = a.notes.find((n) => n.title === 'Plan');
   const doc = new DOMParser().parseFromString(diary.content, 'text/html');
@@ -108,7 +112,7 @@ export function checkFiles(files) {
   const read = (rel) => files[`${folder}/${rel}`]?.toString('utf8') || '';
   const diary = read('Diary.md');
   return {
-    folderName: /^Capnote \d{4}-\d{2}-\d{2}$/.test(folder),
+    folderName: /^capnote-\d{4}-\d{2}-\d{2}$/.test(folder),
     files: names.map((n) =>
       n.slice(folder.length + 1).replace(/^attachments\/.+$/, 'attachments/<image>')
     ),

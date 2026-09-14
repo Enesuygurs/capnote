@@ -35,310 +35,328 @@ export class BackupFeature {
     return exportData;
   }
 
-  // Save the full backup where the user picks
-  async exportAllData() {
-    const exportData = await this.buildBackupData();
-
+  // Export everything: the save dialog's file type picks a Capnote backup (.json) or Markdown files
+  async exportData() {
+    let choice;
+    try {
+      choice = await window.electronAPI.chooseExport({
+        defaultName: `capnote-${new Date().toISOString().split('T')[0]}`,
+        labels: {
+          backup: i18n.t('transfer.backupType'),
+          markdown: i18n.t('transfer.markdownType'),
+        },
+      });
+    } catch (err) {
+      console.error('Export failed:', err);
+      choice = { ok: false };
+    }
+    if (!choice || !choice.ok) {
+      if (!choice || !choice.canceled)
+        this.showNotification(i18n.t('messages.exportFailed'), 'error');
+      return;
+    }
+    if (choice.format === 'markdown') {
+      await this.writeMarkdownExport();
+      return;
+    }
     let result;
     try {
-      result = await window.electronAPI.saveFile({
-        fileName: `capnote-all-${new Date().toISOString().split('T')[0]}.json`,
-        content: JSON.stringify(exportData, null, 2),
-        type: 'json',
-      });
+      result = await window.electronAPI.writeBackup(
+        JSON.stringify(await this.buildBackupData(), null, 2)
+      );
     } catch (err) {
       console.error('Data export failed:', err);
       result = { ok: false };
     }
     this.reportSave(result, 'messages.dataExported');
-    // Refresh reminder/notification UI and counters in case data changed
-    this.updateRemindersView();
-    this.updateNotificationsView();
-    this.updateActiveRemindersCount();
-    this.updateActiveNotificationsCount();
   }
 
-  // New: import ALL data and offer merge/replace behaviour
-  importAllData() {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
-    input.style.display = 'none';
+  // Import the files the user picks: each backup (.json) as a backup, the Markdown files as notes
+  async importData() {
+    let result;
+    try {
+      result = await window.electronAPI.importData({ label: i18n.t('transfer.importType') });
+    } catch (err) {
+      console.error('Import failed:', err);
+      result = { ok: false };
+    }
+    if (!result || !result.ok) {
+      if (!result || !result.canceled)
+        this.showNotification(i18n.t('messages.dataImportError'), 'error');
+      return;
+    }
+    for (const file of result.files.filter((f) => f.kind === 'backup')) {
+      await this.importBackupText(file.content);
+    }
+    const markdown = result.files.filter((f) => f.kind === 'markdown');
+    if (markdown.length) {
+      const notes = await this.importMarkdownFiles(markdown);
+      this.showNotification(i18n.t('markdown.imported', { count: notes.length }), 'success');
+      if (notes.length) this.selectNote(notes[0]);
+    }
+  }
 
-    input.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      try {
-        const text = await file.text();
-        let data = JSON.parse(text || '{}');
+  // Import a backup's text, asking which parts to take and whether to merge or replace
+  async importBackupText(text) {
+    try {
+      let data = JSON.parse(text || '{}');
 
-        // Validate structure
-        if (!data || typeof data !== 'object')
-          throw new Error(i18n.t('messages.invalidFileFormat'));
+      // Validate structure
+      if (!data || typeof data !== 'object') throw new Error(i18n.t('messages.invalidFileFormat'));
 
-        // Normalize common single-note or array exports into { notes: [...] }
-        // Support: a single note object (exported via exportNote json) or an array of notes
-        if (Array.isArray(data)) {
-          data = { notes: data };
-        } else if (
-          !data.notes &&
-          (data.content !== undefined || data.title !== undefined || data.id !== undefined)
-        ) {
-          // Looks like a single note object
-          data = { notes: [data] };
-        }
-
-        // Backups from a newer version may use a layout this version does not understand
-        if (typeof data.version === 'number' && data.version > SCHEMA_VERSION) {
-          throw new Error(i18n.t('messages.backupTooNew'));
-        }
-
-        // Count items
-        const notesCount = Array.isArray(data.notes) ? data.notes.length : 0;
-        const foldersCount = Array.isArray(data.folders) ? data.folders.length : 0;
-        const remindersCount = Array.isArray(data.reminders) ? data.reminders.length : 0;
-        const notifsCount = Array.isArray(data.notifications) ? data.notifications.length : 0;
-        const todosCount = Array.isArray(data.todos) ? data.todos.length : 0;
-
-        // Ask user which types to import and whether to merge or replace
-        const importOptions = await this.showImportOptionsDialog({
-          notes: notesCount > 0,
-          folders: foldersCount > 0,
-          reminders: remindersCount > 0,
-          notifications: notifsCount > 0,
-          todos: todosCount > 0,
-          settings: !!data.settings,
-        });
-
-        if (!importOptions) {
-          this.showNotification(i18n.t('messages.importCancelled'), 'warning');
-          return;
-        }
-
-        const merge = importOptions.merge;
-
-        if (!merge) {
-          // clear only the types the user chose to import (replace behaviour per-type)
-          if (importOptions.notes) this.notes = [];
-          if (importOptions.folders) this.folders = [];
-          if (importOptions.reminders) this.reminders = [];
-          if (importOptions.notifications) this.notifications = [];
-          if (importOptions.todos) this.todoSections = [];
-        }
-
-        // Remap folder IDs to avoid collisions when merging
-        const folderIdMap = {};
-        if (Array.isArray(data.folders) && importOptions.folders) {
-          data.folders.forEach((f) => {
-            // A folder with the same name takes the imported notes instead of a copy of it
-            const sameName = this.folders.find(
-              (existing) =>
-                String(existing.name || '').toLowerCase() === String(f.name || '').toLowerCase()
-            );
-            if (sameName) {
-              folderIdMap[f.id] = sameName.id;
-              return;
-            }
-            const newId = this.newId();
-            folderIdMap[f.id] = newId;
-            const newFolder = { ...f, id: newId };
-            newFolder.expanded = newFolder.expanded !== undefined ? newFolder.expanded : true;
-            this.folders.push(newFolder);
-          });
-        }
-
-        // Import notes and remap folderId + build noteId map
-        const noteIdMap = {};
-        let skippedDuplicates = 0;
-        if (Array.isArray(data.notes) && importOptions.notes) {
-          data.notes.forEach((note) => {
-            const oldId = note.id;
-            // Re-importing the same backup must not duplicate notes
-            const existing = this.notes.find(
-              (n) =>
-                n.createdAt === note.createdAt &&
-                n.title === note.title &&
-                n.content === note.content
-            );
-            if (existing) {
-              skippedDuplicates++;
-              if (oldId !== undefined && oldId !== null) noteIdMap[oldId] = existing.id;
-              return;
-            }
-            const newNoteId = this.newId();
-            // A folder reference that was not imported would make the note invisible
-            const mappedFolderId =
-              note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : null;
-            const newNote = {
-              ...note,
-              id: newNoteId,
-              folderId: mappedFolderId,
-              mood: toMoodKey(note.mood),
-              weather: toWeatherKey(note.weather),
-              createdAt: note.createdAt || new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            };
-            // Compute word/char counts for imported note so stats reflect correctly
-            try {
-              const counts = this.countWordsAndCharsFromHtml(newNote.content || '');
-              newNote.wordCount = counts.words;
-              newNote.charCount = counts.chars;
-            } catch (e) {
-              newNote.wordCount = note.wordCount || 0;
-              newNote.charCount = note.charCount || 0;
-            }
-
-            this.notes.push(newNote);
-            if (oldId !== undefined && oldId !== null) noteIdMap[oldId] = newNoteId;
-          });
-        }
-
-        // Import reminders and notifications with noteId remapping
-        if (Array.isArray(data.reminders) && importOptions.reminders) {
-          data.reminders.forEach((r) => {
-            const newR = { ...r };
-            newR.id = this.newId();
-            if (newR.noteId) {
-              // remap if possible
-              if (noteIdMap[newR.noteId]) {
-                newR.noteId = noteIdMap[newR.noteId];
-              } else {
-                // unknown note reference -> null it
-                newR.noteId = null;
-              }
-            }
-            const exists = this.reminders.some(
-              (r2) => r2.noteId === newR.noteId && r2.datetime === newR.datetime
-            );
-            if (!exists) this.reminders.push(newR);
-          });
-        }
-
-        if (Array.isArray(data.notifications) && importOptions.notifications) {
-          data.notifications.forEach((n) => {
-            const newN = { ...n };
-            newN.id = this.newId();
-            if (newN.noteId) {
-              if (noteIdMap[newN.noteId]) {
-                newN.noteId = noteIdMap[newN.noteId];
-              } else {
-                newN.noteId = null;
-              }
-            }
-            const exists = this.notifications.some(
-              (n2) =>
-                n2.noteId === newN.noteId &&
-                n2.kind === newN.kind &&
-                n2.at === newN.at &&
-                n2.time === newN.time
-            );
-            if (!exists) this.notifications.push(newN);
-          });
-        }
-
-        // Import settings (merge by default)
-        if (importOptions.settings && data.settings && typeof data.settings === 'object') {
-          // Accept known settings with the expected type; older backups stored strings
-          const defaults = DEFAULT_SETTINGS;
-          const legacyNames = {
-            syncFolderAccent: 'syncFolderAccent',
-            darkMode: 'darkMode',
-            accentColor: 'accentColor',
-          };
-          Object.entries(data.settings).forEach(([key, value]) => {
-            const name = legacyNames[key] || key;
-            if (!(name in defaults) || LOCAL_ONLY_SETTINGS.includes(name)) return;
-            const expected = typeof defaults[name];
-            if (expected === 'boolean' && typeof value === 'string')
-              value = value === 'true' || value === '1';
-            if (expected === 'number' && typeof value === 'string') value = parseInt(value, 10);
-            if (defaults[name] !== null && typeof value !== expected) return;
-            this.settings[name] = value;
-          });
-          await this.persist('settings', this.settings);
-        }
-
-        // Todo sections are merged by name, skipping tasks that already exist, so re-importing
-        // a backup does not duplicate them; imported records get fresh ids
-        if (Array.isArray(data.todos) && importOptions.todos) {
-          data.todos.forEach((section) => {
-            const name = String(section.name || '');
-            let target = this.todoSections.find((existing) => existing.name === name);
-            if (!target) {
-              target = { id: this.newId(), name, todos: [] };
-              this.todoSections.push(target);
-            }
-            (Array.isArray(section.todos) ? section.todos : []).forEach((todo) => {
-              const text = String(todo.text || '');
-              if (target.todos.some((existing) => existing.text === text)) return;
-              target.todos.push({ ...todo, id: this.newId(), text, completed: !!todo.completed });
-            });
-          });
-        }
-
-        // Restore the files referenced by the imported notes
-        if (importOptions.notes && data.attachments && typeof data.attachments === 'object') {
-          await window.electronAPI.uploads.write(data.attachments);
-        }
-
-        // Encrypt locked notes coming from old backups that still carry a plain password
-        await this.migrateLegacyLockedNotes();
-
-        // Nothing may point at what a replace removed: notes in missing folders go to the root
-        // list, reminders and notifications of missing notes go, the open note closes
-        const folderIds = new Set(this.folders.map((f) => f.id));
-        this.notes.forEach((n) => {
-          if (n.folderId && !folderIds.has(n.folderId)) n.folderId = null;
-        });
-        const noteIds = new Set(this.notes.map((n) => n.id));
-        this.reminders = this.reminders.filter((r) => !r.noteId || noteIds.has(r.noteId));
-        this.notifications = this.notifications.filter((n) => !n.noteId || noteIds.has(n.noteId));
-        if (this.currentNote && !noteIds.has(this.currentNote.id)) {
-          this.currentNote = null;
-          this.showWelcome();
-        }
-
-        // Persist everything
-        // Each save reports its own failures
-        await this.saveFolders();
-        await this.saveNotes();
-        await this.saveReminders();
-        await this.saveNotifications();
-        await this.saveTodos();
-
-        // Reload UI/state
-        this.loadSettings();
-        this.loadSidebarPreference();
-        this.updateFoldersList();
-        this.updateNotesList();
-        this.updateFolderNotes();
-        // Refresh reminders/notifications UI and counters
-        this.updateRemindersView();
-        this.updateNotificationsView();
-        this.updateActiveRemindersCount();
-        this.updateActiveNotificationsCount();
-        this.renderTodosSections();
-        this.updateTodosCount();
-
-        this.updateStats();
-
-        if (skippedDuplicates > 0)
-          console.info(`Import skipped ${skippedDuplicates} duplicate note(s)`);
-        this.showNotification(i18n.t('messages.dataImported'), 'success');
-        this.settingsModal.classList.remove('show');
-        this.settingsModal.classList.add('hidden');
-      } catch (err) {
-        console.error('Import all data error', err);
-        this.showNotification(
-          `${i18n.t('messages.dataImportError')} ${err.message || err}`,
-          'error'
-        );
+      // Normalize common single-note or array exports into { notes: [...] }
+      // Support: a single note object (exported via exportNote json) or an array of notes
+      if (Array.isArray(data)) {
+        data = { notes: data };
+      } else if (
+        !data.notes &&
+        (data.content !== undefined || data.title !== undefined || data.id !== undefined)
+      ) {
+        // Looks like a single note object
+        data = { notes: [data] };
       }
-    });
 
-    document.body.appendChild(input);
-    input.click();
-    document.body.removeChild(input);
+      // Backups from a newer version may use a layout this version does not understand
+      if (typeof data.version === 'number' && data.version > SCHEMA_VERSION) {
+        throw new Error(i18n.t('messages.backupTooNew'));
+      }
+
+      // Count items
+      const notesCount = Array.isArray(data.notes) ? data.notes.length : 0;
+      const foldersCount = Array.isArray(data.folders) ? data.folders.length : 0;
+      const remindersCount = Array.isArray(data.reminders) ? data.reminders.length : 0;
+      const notifsCount = Array.isArray(data.notifications) ? data.notifications.length : 0;
+      const todosCount = Array.isArray(data.todos) ? data.todos.length : 0;
+
+      // Ask user which types to import and whether to merge or replace
+      const importOptions = await this.showImportOptionsDialog({
+        notes: notesCount > 0,
+        folders: foldersCount > 0,
+        reminders: remindersCount > 0,
+        notifications: notifsCount > 0,
+        todos: todosCount > 0,
+        settings: !!data.settings,
+      });
+
+      if (!importOptions) {
+        this.showNotification(i18n.t('messages.importCancelled'), 'warning');
+        return;
+      }
+
+      const merge = importOptions.merge;
+
+      if (!merge) {
+        // clear only the types the user chose to import (replace behaviour per-type)
+        if (importOptions.notes) this.notes = [];
+        if (importOptions.folders) this.folders = [];
+        if (importOptions.reminders) this.reminders = [];
+        if (importOptions.notifications) this.notifications = [];
+        if (importOptions.todos) this.todoSections = [];
+      }
+
+      // Remap folder IDs to avoid collisions when merging
+      const folderIdMap = {};
+      if (Array.isArray(data.folders) && importOptions.folders) {
+        data.folders.forEach((f) => {
+          // A folder with the same name takes the imported notes instead of a copy of it
+          const sameName = this.folders.find(
+            (existing) =>
+              String(existing.name || '').toLowerCase() === String(f.name || '').toLowerCase()
+          );
+          if (sameName) {
+            folderIdMap[f.id] = sameName.id;
+            return;
+          }
+          const newId = this.newId();
+          folderIdMap[f.id] = newId;
+          const newFolder = { ...f, id: newId };
+          newFolder.expanded = newFolder.expanded !== undefined ? newFolder.expanded : true;
+          this.folders.push(newFolder);
+        });
+      }
+
+      // Import notes and remap folderId + build noteId map
+      const noteIdMap = {};
+      let skippedDuplicates = 0;
+      if (Array.isArray(data.notes) && importOptions.notes) {
+        data.notes.forEach((note) => {
+          const oldId = note.id;
+          // Re-importing the same backup must not duplicate notes
+          const existing = this.notes.find(
+            (n) =>
+              n.createdAt === note.createdAt && n.title === note.title && n.content === note.content
+          );
+          if (existing) {
+            skippedDuplicates++;
+            if (oldId !== undefined && oldId !== null) noteIdMap[oldId] = existing.id;
+            return;
+          }
+          const newNoteId = this.newId();
+          // A folder reference that was not imported would make the note invisible
+          const mappedFolderId =
+            note.folderId && folderIdMap[note.folderId] ? folderIdMap[note.folderId] : null;
+          const newNote = {
+            ...note,
+            id: newNoteId,
+            folderId: mappedFolderId,
+            mood: toMoodKey(note.mood),
+            weather: toWeatherKey(note.weather),
+            createdAt: note.createdAt || new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          // Compute word/char counts for imported note so stats reflect correctly
+          try {
+            const counts = this.countWordsAndCharsFromHtml(newNote.content || '');
+            newNote.wordCount = counts.words;
+            newNote.charCount = counts.chars;
+          } catch (e) {
+            newNote.wordCount = note.wordCount || 0;
+            newNote.charCount = note.charCount || 0;
+          }
+
+          this.notes.push(newNote);
+          if (oldId !== undefined && oldId !== null) noteIdMap[oldId] = newNoteId;
+        });
+      }
+
+      // Import reminders and notifications with noteId remapping
+      if (Array.isArray(data.reminders) && importOptions.reminders) {
+        data.reminders.forEach((r) => {
+          const newR = { ...r };
+          newR.id = this.newId();
+          if (newR.noteId) {
+            // remap if possible
+            if (noteIdMap[newR.noteId]) {
+              newR.noteId = noteIdMap[newR.noteId];
+            } else {
+              // unknown note reference -> null it
+              newR.noteId = null;
+            }
+          }
+          const exists = this.reminders.some(
+            (r2) => r2.noteId === newR.noteId && r2.datetime === newR.datetime
+          );
+          if (!exists) this.reminders.push(newR);
+        });
+      }
+
+      if (Array.isArray(data.notifications) && importOptions.notifications) {
+        data.notifications.forEach((n) => {
+          const newN = { ...n };
+          newN.id = this.newId();
+          if (newN.noteId) {
+            if (noteIdMap[newN.noteId]) {
+              newN.noteId = noteIdMap[newN.noteId];
+            } else {
+              newN.noteId = null;
+            }
+          }
+          const exists = this.notifications.some(
+            (n2) =>
+              n2.noteId === newN.noteId &&
+              n2.kind === newN.kind &&
+              n2.at === newN.at &&
+              n2.time === newN.time
+          );
+          if (!exists) this.notifications.push(newN);
+        });
+      }
+
+      // Import settings (merge by default)
+      if (importOptions.settings && data.settings && typeof data.settings === 'object') {
+        // Accept known settings with the expected type; older backups stored strings
+        const defaults = DEFAULT_SETTINGS;
+        const legacyNames = {
+          syncFolderAccent: 'syncFolderAccent',
+          darkMode: 'darkMode',
+          accentColor: 'accentColor',
+        };
+        Object.entries(data.settings).forEach(([key, value]) => {
+          const name = legacyNames[key] || key;
+          if (!(name in defaults) || LOCAL_ONLY_SETTINGS.includes(name)) return;
+          const expected = typeof defaults[name];
+          if (expected === 'boolean' && typeof value === 'string')
+            value = value === 'true' || value === '1';
+          if (expected === 'number' && typeof value === 'string') value = parseInt(value, 10);
+          if (defaults[name] !== null && typeof value !== expected) return;
+          this.settings[name] = value;
+        });
+        await this.persist('settings', this.settings);
+      }
+
+      // Todo sections are merged by name, skipping tasks that already exist, so re-importing
+      // a backup does not duplicate them; imported records get fresh ids
+      if (Array.isArray(data.todos) && importOptions.todos) {
+        data.todos.forEach((section) => {
+          const name = String(section.name || '');
+          let target = this.todoSections.find((existing) => existing.name === name);
+          if (!target) {
+            target = { id: this.newId(), name, todos: [] };
+            this.todoSections.push(target);
+          }
+          (Array.isArray(section.todos) ? section.todos : []).forEach((todo) => {
+            const text = String(todo.text || '');
+            if (target.todos.some((existing) => existing.text === text)) return;
+            target.todos.push({ ...todo, id: this.newId(), text, completed: !!todo.completed });
+          });
+        });
+      }
+
+      // Restore the files referenced by the imported notes
+      if (importOptions.notes && data.attachments && typeof data.attachments === 'object') {
+        await window.electronAPI.uploads.write(data.attachments);
+      }
+
+      // Encrypt locked notes coming from old backups that still carry a plain password
+      await this.migrateLegacyLockedNotes();
+
+      // Nothing may point at what a replace removed: notes in missing folders go to the root
+      // list, reminders and notifications of missing notes go, the open note closes
+      const folderIds = new Set(this.folders.map((f) => f.id));
+      this.notes.forEach((n) => {
+        if (n.folderId && !folderIds.has(n.folderId)) n.folderId = null;
+      });
+      const noteIds = new Set(this.notes.map((n) => n.id));
+      this.reminders = this.reminders.filter((r) => !r.noteId || noteIds.has(r.noteId));
+      this.notifications = this.notifications.filter((n) => !n.noteId || noteIds.has(n.noteId));
+      if (this.currentNote && !noteIds.has(this.currentNote.id)) {
+        this.currentNote = null;
+        this.showWelcome();
+      }
+
+      // Persist everything
+      // Each save reports its own failures
+      await this.saveFolders();
+      await this.saveNotes();
+      await this.saveReminders();
+      await this.saveNotifications();
+      await this.saveTodos();
+
+      // Reload UI/state
+      this.loadSettings();
+      this.loadSidebarPreference();
+      this.updateFoldersList();
+      this.updateNotesList();
+      this.updateFolderNotes();
+      // Refresh reminders/notifications UI and counters
+      this.updateRemindersView();
+      this.updateNotificationsView();
+      this.updateActiveRemindersCount();
+      this.updateActiveNotificationsCount();
+      this.renderTodosSections();
+      this.updateTodosCount();
+
+      this.updateStats();
+
+      if (skippedDuplicates > 0)
+        console.info(`Import skipped ${skippedDuplicates} duplicate note(s)`);
+      this.showNotification(i18n.t('messages.dataImported'), 'success');
+      this.settingsModal.classList.remove('show');
+      this.settingsModal.classList.add('hidden');
+    } catch (err) {
+      console.error('Import all data error', err);
+      this.showNotification(`${i18n.t('messages.dataImportError')} ${err.message || err}`, 'error');
+    }
   }
 
   // Show a small modal dialog letting user pick which types to import and merge vs replace
