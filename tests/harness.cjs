@@ -12,8 +12,8 @@
 //   __PICK__:["#selector", "path"]   fill an <input type=file> like the user picking that file
 //   __FORCE__:["hover", "focus"]     force pseudo-classes on every element ([] clears them)
 //   __KEYS__:["# Title", "^z"]       type through the real input path, like a keyboard: text is
-//                                    typed key by key, "^z" is Ctrl+Z, "{Enter}" a key; then
-//                                    window.__keysDone is set
+//                                    typed key by key, "^z" is Ctrl+Z, "{Enter}" a key,
+//                                    {"click": [x, y]} a mouse click; then window.__keysDone is set
 
 const fs = require('fs');
 const path = require('path');
@@ -107,6 +107,13 @@ function handleMarker(win, message) {
       win.focus();
       wc.focus();
       for (const step of steps) {
+        if (step.click) {
+          const [x, y] = step.click;
+          wc.sendInputEvent({ type: 'mouseDown', x, y, button: 'left', clickCount: 1 });
+          wc.sendInputEvent({ type: 'mouseUp', x, y, button: 'left', clickCount: 1 });
+          await new Promise((r) => setTimeout(r, 60));
+          continue;
+        }
         const ctrl = step.match(/^\^(.+)$/);
         const named = step.match(/^\{(\w+)\}$/);
         if (ctrl || named) {

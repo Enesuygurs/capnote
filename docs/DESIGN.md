@@ -190,11 +190,11 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Overview** (`07-note-screens.css`, the home page once there are notes): `.stat-tile`s (a muted icon, a 24/32 number, a 12px label; no chart for a single number), then a `.calendar-card` and the chart cards side by side (`minmax(300px, 1fr)`). Calendar days are 36px+ squares 2px apart: today has an inset accent ring, the chosen day an accent tint, a day with notes shows its mood icon in the mood's tone (or an accent dot). Charts follow one rule: one measure, one color (`--accent-color`); a bar's identity comes from its icon and name, never from its color alone. Bars are 8px tall and fully rounded; the month columns are rounded at the top only, with the current month labelled; every bar and column has a tooltip with its exact value.
 
-**Note links** (`a.note-link`): an accent-tinted label (`--accent-tint`, `--accent-text`, `--radius-sm`); a link to a deleted note is `--field` with muted, crossed-out text. "Notes that link here" is a section label and `.chip.backlink` buttons under the note.
+**Note links** (`a.note-link`): an accent-tinted label (`--accent-tint`, `--accent-text`, `--radius-sm`); a link to a deleted note is `--field` with muted, crossed-out text. "Notes that link here" is a fixed bar between the note and its numbers (a divider above, a muted label with a link icon, then `.chip.backlink` buttons that scroll sideways); it shows only when another note links here.
 
 **Tags page**: `.tag-chip` (32px, name, a count pill; the chosen tag in the accent tint) in a wrapping cloud, then the chosen tag's notes as whole-card buttons. The tag the list is filtered by shows under the list filter as a removable `.tag-filter-chip`.
 
-**Split button**: "New note" and its template button share one control: 2px apart, the inner corners square.
+**Split button**: "New note" and its template button share one control at the small size (32px): 2px apart, the inner corners square.
 
 **Editor header**: the view controls (Markdown and HTML preview, the side panel) sit with Cancel and Save, so the formatting toolbar holds only content tools (two rows at the smallest window).
 

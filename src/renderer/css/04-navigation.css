@@ -102,14 +102,14 @@
 }
 
 .new-note-more {
-  width: var(--control-md);
+  width: var(--control-sm);
   padding: 0;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
 
 .new-note-more i {
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
 }
 
 /* Settings: one full-width row at the bottom, aligned with the list rows */
