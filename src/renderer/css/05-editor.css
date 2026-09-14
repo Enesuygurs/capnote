@@ -149,6 +149,11 @@
   color: var(--text-muted);
 }
 
+/* An empty task's text keeps some width, so the caret shows when the text is clicked into */
+.rich-editor .checklist-item label {
+  min-width: 1ch;
+}
+
 .markdown-editor {
   width: 100%;
   min-height: 100%;

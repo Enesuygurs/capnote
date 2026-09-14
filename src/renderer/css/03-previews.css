@@ -182,22 +182,40 @@ ol[style*='text-align: right'] li {
 }
 
 /* Under a note: the notes that link to it */
+/* "Notes that link here": a bar under the note, above its numbers; the notes scroll sideways */
 .backlinks {
-  margin-top: var(--space-8);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  padding: var(--space-2) var(--gutter);
+  border-top: 1px solid var(--divider);
 }
 
-.backlinks .section-label {
-  display: block;
-  margin-bottom: var(--space-2);
+.backlinks-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.backlinks-label i {
+  color: var(--text-muted);
 }
 
 .backlinks-list {
   display: flex;
-  flex-wrap: wrap;
   gap: var(--space-1);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .chip.backlink {
+  flex-shrink: 0;
   gap: var(--space-1);
   cursor: pointer;
 }

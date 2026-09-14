@@ -91,12 +91,12 @@
           </div>
           <!-- New note, and beside it the templates to start one from -->
           <div class="new-note-split">
-            <button class="btn-primary sidebar-new-note" id="newNoteNav">
+            <button class="btn-primary btn-small sidebar-new-note" id="newNoteNav">
               <i class="fas fa-plus"></i>
               <span data-i18n="nav.newNote">Yeni Not</span>
             </button>
             <button
-              class="btn-primary new-note-more"
+              class="btn-primary btn-small new-note-more"
               id="newNoteTemplatesBtn"
               data-i18n-title="noteTemplates.choose"
             >
@@ -449,11 +449,15 @@
           </div>
           <div class="viewer-content">
             <div id="viewerText" class="formatted-content"></div>
-            <!-- The notes that link to this one -->
-            <div id="viewerBacklinks" class="backlinks hidden">
-              <h3 class="section-label" data-i18n="noteLinks.backlinks">Bu nota bağlanan notlar</h3>
-              <div class="backlinks-list"></div>
-            </div>
+          </div>
+
+          <!-- The notes that link to this one: a bar that stays in place above the numbers -->
+          <div id="viewerBacklinks" class="backlinks hidden">
+            <span class="backlinks-label">
+              <i class="fas fa-link"></i>
+              <span data-i18n="noteLinks.backlinks">Bu nota bağlanan notlar</span>
+            </span>
+            <div class="backlinks-list"></div>
           </div>
 
           <div class="viewer-stats">
