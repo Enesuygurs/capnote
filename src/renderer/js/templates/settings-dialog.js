@@ -276,51 +276,27 @@ export const SETTINGS_DIALOG = /* HTML */ `
             <div class="settings-group">
               <div class="setting-item">
                 <div class="setting-info">
-                  <label data-i18n="settings.importData">Verileri İçe Aktar</label>
-                  <small data-i18n="settings.importDataDesc"
-                    >JSON dosyasından tüm verileri (notlar, klasörler, hatırlatmalar, bildirimler,
-                    ayarlar) içe aktarın</small
+                  <label data-i18n="transfer.exportLabel">Dışa aktar</label>
+                  <small data-i18n="transfer.exportDesc"
+                    >Kaydederken türü seçin: tüm verilerin Capnote yedeği (.json) ya da her notun
+                    ayrı bir Markdown (.md) dosyası olduğu bir klasör</small
                   >
                 </div>
-                <button id="importAllDataBtn" class="btn-tinted btn-small">
-                  <i class="fas fa-upload"></i> <span data-i18n="buttons.import">İçe Aktar</span>
-                </button>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="settings.exportData">Verileri Dışa Aktar</label>
-                  <small data-i18n="settings.exportDataDesc"
-                    >Tüm verilerin bir yedeğini JSON olarak dışa aktarın</small
-                  >
-                </div>
-                <button id="exportAllDataBtn" class="btn-tinted btn-small">
+                <button id="exportDataBtn" class="btn-tinted btn-small">
                   <i class="fas fa-download"></i>
                   <span data-i18n="buttons.export">Dışa Aktar</span>
                 </button>
               </div>
               <div class="setting-item">
                 <div class="setting-info">
-                  <label data-i18n="markdown.exportLabel">Markdown olarak dışa aktar</label>
-                  <small data-i18n="markdown.exportDesc"
-                    >Her not bir .md dosyası olur; klasörler klasör, resimler "attachments"
-                    klasörüne</small
+                  <label data-i18n="transfer.importLabel">İçe aktar</label>
+                  <small data-i18n="transfer.importDesc"
+                    >Capnote yedekleri (.json) ve Markdown dosyaları (.md) türlerine göre tanınır;
+                    birlikte de seçilebilir</small
                   >
                 </div>
-                <button id="exportMarkdownBtn" class="btn-tinted btn-small">
-                  <i class="fas fa-file-export"></i>
-                  <span data-i18n="buttons.export">Dışa Aktar</span>
-                </button>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="markdown.importLabel">Markdown dosyalarını içe aktar</label>
-                  <small data-i18n="markdown.importDesc"
-                    >Seçtiğiniz .md dosyaları düzenlenebilir notlar olur</small
-                  >
-                </div>
-                <button id="importMarkdownBtn" class="btn-tinted btn-small">
-                  <i class="fas fa-file-import"></i>
-                  <span data-i18n="buttons.import">İçe Aktar</span>
+                <button id="importDataBtn" class="btn-tinted btn-small">
+                  <i class="fas fa-upload"></i> <span data-i18n="buttons.import">İçe Aktar</span>
                 </button>
               </div>
             </div>

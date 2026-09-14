@@ -1,7 +1,8 @@
-// Markdown export and import. Export writes every note as a .md file (folders become folders) with
-// its details in a front matter block, images in "attachments" and links between notes as
-// [[Title]]. Import turns .md files into notes that edit like any other: headings, lists, task
-// lists, tables, code, quotes, links and [[Title]] links to existing notes, with their images.
+// Markdown export and import (chosen through Settings > Data, export and import). Export writes
+// every note as a .md file (folders become folders) with its details in a front matter block,
+// images in "attachments" and links between notes as [[Title]]. Import turns .md files into notes
+// that edit like any other: headings, lists, task lists, tables, code, quotes, links and [[Title]]
+// links to existing notes, with their images.
 
 import { i18n } from '../i18n.js';
 import { toMoodKey, toWeatherKey } from '../data/moods.js';
@@ -227,7 +228,8 @@ export class MarkdownIoFeature {
     return { files, attachments: [...this.markdownAttachments], locked };
   }
 
-  async exportMarkdown() {
+  // Write every readable note as Markdown where the export was chosen
+  async writeMarkdownExport() {
     const { files, attachments, locked } = this.markdownFiles();
     let result;
     try {
@@ -243,7 +245,7 @@ export class MarkdownIoFeature {
       );
       if (locked)
         this.showNotification(i18n.t('markdown.lockedSkipped', { count: locked }), 'warning');
-    } else if (!result || !result.canceled) {
+    } else {
       this.showNotification(i18n.t('messages.exportFailed'), 'error');
     }
   }
@@ -390,28 +392,5 @@ export class MarkdownIoFeature {
     this.updateFoldersList();
     this.updateStats();
     return created;
-  }
-
-  async importMarkdown() {
-    let result;
-    try {
-      result = await window.electronAPI.importMarkdown();
-    } catch (err) {
-      console.error('Markdown import failed:', err);
-      result = { ok: false };
-    }
-    if (!result || !result.ok) {
-      if (!result || !result.canceled)
-        this.showNotification(i18n.t('markdown.importFailed'), 'error');
-      return;
-    }
-    const notes = await this.importMarkdownFiles(result.files);
-    this.showNotification(i18n.t('markdown.imported', { count: notes.length }), 'success');
-    if (notes.length) this.selectNote(notes[0]);
-  }
-
-  setupMarkdownIo() {
-    this.exportMarkdownBtn?.addEventListener('click', () => this.exportMarkdown());
-    this.importMarkdownBtn?.addEventListener('click', () => this.importMarkdown());
   }
 }

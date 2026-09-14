@@ -251,8 +251,6 @@ export class CapnoteApp {
     // System settings toggles
     this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
     this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
-    this.exportMarkdownBtn = document.getElementById('exportMarkdownBtn');
-    this.importMarkdownBtn = document.getElementById('importMarkdownBtn');
     this.quickNoteShortcutToggle = document.getElementById('quickNoteShortcutToggle');
     // General settings
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
@@ -267,8 +265,8 @@ export class CapnoteApp {
     this.cancelFolderBtn = document.getElementById('cancelFolderBtn');
     this.foldersList = document.getElementById('foldersList');
     this.pinnedFoldersList = document.getElementById('pinnedFoldersList');
-    this.importAllDataBtn = document.getElementById('importAllDataBtn');
-    this.exportAllDataBtn = document.getElementById('exportAllDataBtn');
+    this.importDataBtn = document.getElementById('importDataBtn');
+    this.exportDataBtn = document.getElementById('exportDataBtn');
     // Table modal elements (editor table insertion)
     this.insertTableBtn = document.getElementById('insertTableBtn');
     this.tableModal = document.getElementById('tableModal');
@@ -389,7 +387,6 @@ export class CapnoteApp {
     this.setupTags();
     this.setupDashboard();
     this.setupTemplates();
-    this.setupMarkdownIo();
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupMoodWeatherSelectors();

@@ -23,7 +23,7 @@ import { registerAutostartIpc } from './autostart.js';
 import { registerExportIpc } from './export-pdf.js';
 import { startUpdater, registerUpdateIpc } from './updater.js';
 import { setQuickNoteShortcut, registerQuickNoteIpc } from './quick-note.js';
-import { registerMarkdownIpc } from './markdown-files.js';
+import { registerDataTransferIpc } from './data-transfer.js';
 
 // Development mode is 'npm run dev' from a source checkout: hot reload and DevTools
 const isDev = !app.isPackaged && process.argv.includes('--dev');
@@ -113,7 +113,7 @@ registerAutostartIpc();
 registerExportIpc();
 registerUpdateIpc();
 registerQuickNoteIpc();
-registerMarkdownIpc();
+registerDataTransferIpc();
 
 app.whenReady().then(() => {
   if (!isPrimaryInstance) return;

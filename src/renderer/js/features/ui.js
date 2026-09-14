@@ -28,10 +28,8 @@ export class UiFeature {
     });
 
     // New combined import/export handlers
-    if (this.exportAllDataBtn)
-      this.exportAllDataBtn.addEventListener('click', () => this.exportAllData());
-    if (this.importAllDataBtn)
-      this.importAllDataBtn.addEventListener('click', () => this.importAllData());
+    this.exportDataBtn?.addEventListener('click', () => this.exportData());
+    this.importDataBtn?.addEventListener('click', () => this.importData());
     // Table modal events
     if (this.insertTableBtn)
       this.insertTableBtn.addEventListener('click', () => this.showModal(this.tableModal));

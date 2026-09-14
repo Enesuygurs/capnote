@@ -152,10 +152,6 @@
     "systemNotificationsDesc": "Show operating system notifications for reminders",
     "testNotification": "Send test notification",
     "testNotificationDesc": "Show a test notification immediately",
-    "importData": "Import Data",
-    "importDataDesc": "Import all data (notes, folders, reminders, notifications, settings) from JSON file",
-    "exportData": "Export Data",
-    "exportDataDesc": "Export a backup of all data as JSON",
     "deleteAllNotes": "Delete All Notes",
     "deleteAllNotesDesc": "Permanently delete all your saved notes",
     "deleteAllFolders": "Delete All Folders",
@@ -457,13 +453,18 @@
     "weeklyNotes": "Notes"
   },
   "markdown": {
-    "exportLabel": "Export as Markdown",
-    "exportDesc": "Each note becomes a .md file; folders become folders, images go to \"attachments\"",
-    "importLabel": "Import Markdown files",
-    "importDesc": "The .md files you pick become notes you can edit",
     "exported": "{count} notes exported to \"{folder}\"",
     "lockedSkipped": "{count} locked notes were not exported",
     "imported": "{count} notes imported",
     "importFailed": "The Markdown files could not be imported"
+  },
+  "transfer": {
+    "exportLabel": "Export",
+    "exportDesc": "Pick the type when saving: a Capnote backup of all data (.json), or a folder with each note as a Markdown (.md) file",
+    "importLabel": "Import",
+    "importDesc": "Capnote backups (.json) and Markdown files (.md) are recognised by their type; pick both at once if you like",
+    "backupType": "Capnote backup (all data)",
+    "markdownType": "Markdown (one file per note)",
+    "importType": "Capnote backup or Markdown"
   }
 }
