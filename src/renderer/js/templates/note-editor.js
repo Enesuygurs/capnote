@@ -395,57 +395,146 @@ export const NOTE_EDITOR = /* HTML */ `
         <div class="sidebar-section">
           <h4 class="panel-label" data-i18n="sections.reminder">Hatırlatma</h4>
           <div class="reminder-container">
-            <input
-              type="datetime-local"
-              id="reminderDatetime"
-              class="form-input form-input-sm reminder-datetime-input"
-            />
-            <select
-              id="reminderRecurrence"
-              class="select-small select-block"
-              data-i18n-aria-label="reminder.recurrence"
-              aria-label="Tekrarlama"
-            >
-              <option value="none" data-i18n="reminder.none">Yok</option>
-              <option value="daily" data-i18n="reminder.daily">Günlük</option>
-              <option value="weekly" data-i18n="reminder.weekly">Haftalık</option>
-              <option value="monthly" data-i18n="reminder.monthly">Aylık</option>
+            <div id="reminderPresets" class="reminder-presets">
+              <button type="button" class="reminder-preset" data-preset="hour">
+                <i class="fas fa-hourglass-half"></i>
+                <span data-i18n="reminder.presetHour">1 saat sonra</span>
+                <small></small>
+              </button>
+              <button type="button" class="reminder-preset" data-preset="evening">
+                <i class="fas fa-moon"></i>
+                <span data-i18n="reminder.presetEvening">Bu akşam</span>
+                <small></small>
+              </button>
+              <button type="button" class="reminder-preset" data-preset="tomorrow">
+                <i class="fas fa-sun"></i>
+                <span data-i18n="reminder.presetTomorrow">Yarın sabah</span>
+                <small></small>
+              </button>
+              <button type="button" class="reminder-preset" data-preset="nextWeek">
+                <i class="fas fa-calendar-week"></i>
+                <span data-i18n="reminder.presetNextWeek">Gelecek hafta</span>
+                <small></small>
+              </button>
+            </div>
+            <div class="reminder-when">
+              <label class="reminder-field">
+                <i class="fas fa-calendar-day"></i>
+                <input
+                  type="date"
+                  id="reminderDateInput"
+                  class="reminder-datetime-input"
+                  data-i18n-aria-label="reminder.date"
+                  aria-label="Tarih"
+                />
+              </label>
+              <label class="reminder-field reminder-field-time">
+                <i class="fas fa-clock"></i>
+                <input
+                  type="time"
+                  id="reminderTimeInput"
+                  class="reminder-datetime-input"
+                  data-i18n-aria-label="reminder.time"
+                  aria-label="Saat"
+                />
+              </label>
+            </div>
+            <input type="hidden" id="reminderDatetime" class="reminder-datetime-input" />
+            <div class="reminder-repeat">
+              <span class="reminder-repeat-label">
+                <i class="fas fa-repeat"></i>
+                <span data-i18n="reminder.recurrence">Tekrarlama</span>
+              </span>
+              <div
+                id="reminderRepeat"
+                class="segmented reminder-repeat-options"
+                role="radiogroup"
+                data-i18n-aria-label="reminder.recurrence"
+                aria-label="Tekrarlama"
+              >
+                <button
+                  type="button"
+                  class="segment"
+                  role="radio"
+                  data-value="none"
+                  data-i18n="reminder.none"
+                >
+                  Yok
+                </button>
+                <button
+                  type="button"
+                  class="segment"
+                  role="radio"
+                  data-value="daily"
+                  data-i18n="reminder.daily"
+                >
+                  Günlük
+                </button>
+                <button
+                  type="button"
+                  class="segment"
+                  role="radio"
+                  data-value="weekly"
+                  data-i18n="reminder.weekly"
+                >
+                  Haftalık
+                </button>
+                <button
+                  type="button"
+                  class="segment"
+                  role="radio"
+                  data-value="monthly"
+                  data-i18n="reminder.monthly"
+                >
+                  Aylık
+                </button>
+              </div>
+            </div>
+            <select id="reminderRecurrence" hidden aria-hidden="true" tabindex="-1">
+              <option value="none">none</option>
+              <option value="daily">daily</option>
+              <option value="weekly">weekly</option>
+              <option value="monthly">monthly</option>
             </select>
             <div id="reminderWeekdays" class="reminder-weekdays hidden" aria-hidden="true">
-              <label for="reminderWeekdays" data-i18n="reminder.days">Günler</label>
-              <div class="weekday-list">
-                <label
+              <div
+                class="weekday-list"
+                role="group"
+                data-i18n-aria-label="reminder.days"
+                aria-label="Günler"
+              >
+                <label class="weekday-pill"
                   ><input type="checkbox" value="1" class="weekday-checkbox" />
                   <span data-i18n="reminder.mon">Pzt</span></label
                 >
-                <label
+                <label class="weekday-pill"
                   ><input type="checkbox" value="2" class="weekday-checkbox" />
                   <span data-i18n="reminder.tue">Sal</span></label
                 >
-                <label
+                <label class="weekday-pill"
                   ><input type="checkbox" value="3" class="weekday-checkbox" />
                   <span data-i18n="reminder.wed">Çar</span></label
                 >
-                <label
+                <label class="weekday-pill"
                   ><input type="checkbox" value="4" class="weekday-checkbox" />
                   <span data-i18n="reminder.thu">Per</span></label
                 >
-                <label
+                <label class="weekday-pill"
                   ><input type="checkbox" value="5" class="weekday-checkbox" />
                   <span data-i18n="reminder.fri">Cum</span></label
                 >
-                <label
+                <label class="weekday-pill"
                   ><input type="checkbox" value="6" class="weekday-checkbox" />
                   <span data-i18n="reminder.sat">Cmt</span></label
                 >
-                <label
+                <label class="weekday-pill"
                   ><input type="checkbox" value="0" class="weekday-checkbox" />
                   <span data-i18n="reminder.sun">Paz</span></label
                 >
               </div>
             </div>
-            <button id="setReminderBtn" class="btn-primary btn-small">
-              <i class="fas fa-plus"></i> <span data-i18n="buttons.add">Ekle</span>
+            <button id="setReminderBtn" class="btn-primary btn-small reminder-add">
+              <i class="fas fa-bell"></i> <span data-i18n="reminder.add">Hatırlatma kur</span>
             </button>
             <div id="noteRemindersList" class="note-reminders-list"></div>
           </div>

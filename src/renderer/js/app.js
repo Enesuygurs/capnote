@@ -16,6 +16,7 @@ import { EmojiFeature } from './features/emoji.js';
 import { NoteListFeature } from './features/note-list.js';
 import { FoldersFeature } from './features/folders.js';
 import { RemindersFeature } from './features/reminders.js';
+import { ReminderFormFeature } from './features/reminder-form.js';
 import { NotificationsFeature } from './features/notifications.js';
 import { TodosFeature } from './features/todos.js';
 import { UiFeature } from './features/ui.js';
@@ -187,6 +188,10 @@ export class CapnoteApp {
     this.activeRemindersCount = document.getElementById('activeRemindersCount');
     this.reminderDatetime = document.getElementById('reminderDatetime');
     this.reminderRecurrence = document.getElementById('reminderRecurrence');
+    this.reminderDateInput = document.getElementById('reminderDateInput');
+    this.reminderTimeInput = document.getElementById('reminderTimeInput');
+    this.reminderPresets = document.getElementById('reminderPresets');
+    this.reminderRepeat = document.getElementById('reminderRepeat');
     this.setReminderBtn = document.getElementById('setReminderBtn');
     this.noteRemindersList = document.getElementById('noteRemindersList');
 
@@ -378,6 +383,7 @@ export class CapnoteApp {
     this.setupSelectionEvents();
     this.setupEmojiOutsideClose();
     this.setupReminderEvents();
+    this.setupReminderForm();
     this.setupEditorEvents();
     this.setupInsertEvents();
     this.setupBlockEvents();
@@ -646,6 +652,7 @@ applyFeatures(CapnoteApp, [
   NoteListFeature,
   FoldersFeature,
   RemindersFeature,
+  ReminderFormFeature,
   NotificationsFeature,
   TodosFeature,
   UiFeature,

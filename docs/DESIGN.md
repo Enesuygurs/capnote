@@ -196,6 +196,8 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Split button**: "New note" and its template button share one control at the small size (32px): 2px apart, the inner corners square.
 
+**Reminder form** (editor side panel): quick choices first, as 2-column tiles (`--field`; the name on top, a muted icon and the time it would ring under it; the chosen one in the accent tint; "this evening" is hidden once it is evening). Then a date and a time field side by side (a muted icon inside each; clicking the field opens the picker), "Repeat" as a small `.segmented`, the weekdays as seven round toggles (the chosen ones `--accent-color`) and a full-width primary button. The note's reminders are cards: an accent-tinted icon (a bell, or arrows when it repeats), the day in bold and the time and repeat in muted text.
+
 **Editor header**: the view controls (Markdown and HTML preview, the side panel) sit with Cancel and Save, so the formatting toolbar holds only content tools (two rows at the smallest window).
 
 **Toast**: `--surface-raised`, bottom center, its icon colored by kind.
