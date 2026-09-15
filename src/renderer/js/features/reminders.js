@@ -225,7 +225,7 @@ export class RemindersFeature {
 
     this.reminders.push(reminder);
     await this.saveReminders();
-    this.reminderDatetime.value = '';
+    this.resetReminderForm();
     this.updateRemindersView();
     this.updateNoteRemindersDisplay();
     this.updateActiveRemindersCount();
@@ -264,15 +264,23 @@ export class RemindersFeature {
       .map(
         (r) => `
         <div class="note-reminder-item">
+          <span class="note-reminder-icon"><i class="fas ${r.recurrence && r.recurrence !== 'none' ? 'fa-repeat' : 'fa-bell'}"></i></span>
           <div class="note-reminder-time">
-              <i class="fas fa-bell"></i>
-              ${new Date(r.datetime).toLocaleString(this.getLocale(), {
+            <span class="note-reminder-date">${new Date(r.datetime).toLocaleDateString(
+              this.getLocale(),
+              {
+                weekday: 'short',
                 month: 'short',
                 day: 'numeric',
+              }
+            )}</span>
+            <span class="note-reminder-meta">${new Date(r.datetime).toLocaleTimeString(
+              this.getLocale(),
+              {
                 hour: '2-digit',
                 minute: '2-digit',
-              })}
-              ${r.recurrence && r.recurrence !== 'none' ? ` <span class="chip reminder-recurrence">${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? ': ' + r.recurrenceDays.map((d) => this._weekdayShort(d)).join(', ') : ''}</span>` : ''}
+              }
+            )}${r.recurrence && r.recurrence !== 'none' ? ` · ${this._recurrenceLabel(r.recurrence)}${r.recurrence === 'weekly' && Array.isArray(r.recurrenceDays) && r.recurrenceDays.length ? ': ' + r.recurrenceDays.map((d) => this._weekdayShort(d)).join(', ') : ''}` : ''}</span>
           </div>
           <button class="btn-icon btn-icon-xs note-reminder-remove" data-reminder-id="${r.id}" title="${i18n.t('buttons.delete')}">
             <i class="fas fa-times"></i>

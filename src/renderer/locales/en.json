@@ -219,7 +219,14 @@
     "fri": "Fri",
     "sat": "Sat",
     "sun": "Sun",
-    "recurrence": "Recurrence"
+    "recurrence": "Recurrence",
+    "presetHour": "In an hour",
+    "presetEvening": "Tonight",
+    "presetTomorrow": "Tomorrow",
+    "presetNextWeek": "Next week",
+    "date": "Date",
+    "time": "Time",
+    "add": "Set reminder"
   },
   "notifications": {
     "title": "Notifications",
