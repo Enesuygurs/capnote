@@ -174,8 +174,27 @@ export class NoteListFeature {
     return words.map((word) => this.normalizeForSearch(word || '')).filter(Boolean);
   }
 
-  // Decide if a note matches searchTerm, including mood/weather keyword mapping
+  // "#word" in the search must match one of the note's tags (a tag starting with the word, so "#wo"
+  // finds "work") or a "#word" written in its text; the rest of the search is matched as usual
   noteMatchesSearch(note, searchTerm) {
+    const words = searchTerm.split(/\s+/).filter(Boolean);
+    const hashtags = words.filter((w) => w.length > 1 && w.startsWith('#'));
+    const rest = words.filter((w) => !w.startsWith('#')).join(' ');
+    if (!hashtags.every((tag) => this.noteMatchesHashtag(note, tag))) return false;
+    return !rest || this.noteMatchesText(note, rest);
+  }
+
+  noteMatchesHashtag(note, hashtag) {
+    const word = hashtag.slice(1);
+    return (
+      (note.tags || []).some((tag) =>
+        this.normalizeForSearch(tag).replace(/^#/, '').startsWith(word)
+      ) || this.searchableText(note).includes(hashtag)
+    );
+  }
+
+  // Decide if a note matches searchTerm, including mood/weather keyword mapping
+  noteMatchesText(note, searchTerm) {
     if (this.normalizeForSearch(note.title).includes(searchTerm)) return true;
     if (this.searchableText(note).includes(searchTerm)) return true;
     if ((note.tags || []).some((tag) => this.normalizeForSearch(tag).includes(searchTerm)))
