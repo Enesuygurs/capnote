@@ -414,7 +414,7 @@
   "noteLinks": {
     "noMatch": "Eşleşen not yok",
     "missing": "Bu not artık yok",
-    "backlinks": "Bu nota bağlanan notlar"
+    "backlinks": "Bağlı Notlar:"
   },
   "tags": {
     "subtitle": "Bir etiket seçin, notları listede ve burada görün",
