@@ -414,7 +414,7 @@
   "noteLinks": {
     "noMatch": "No matching note",
     "missing": "This note no longer exists",
-    "backlinks": "Notes that link here"
+    "backlinks": "Linked notes:"
   },
   "tags": {
     "subtitle": "Pick a tag to see its notes here and in the list",
