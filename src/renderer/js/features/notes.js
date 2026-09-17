@@ -68,6 +68,7 @@ export class NotesFeature {
   // was unlocked. Opening the same note again keeps it unlocked.
   leaveCurrentNote(next = null) {
     this.cancelAutoSave?.();
+    if (next !== this.currentNote && this.discardFreshEmptyNote()) return;
     if (
       this.currentNote &&
       this.isEditorOpen() &&
@@ -122,8 +123,14 @@ export class NotesFeature {
     // Save last viewed note (new note)
     this.saveLastViewedNote(this.currentNote.id);
 
-    // Clear active note in list when creating new note
-    this.clearActiveNoteInList();
+    // A new note is saved right away, so it is in the list while it is being written
+    this.notes.unshift(this.currentNote);
+    this.freshNoteId = this.currentNote.id;
+    this.saveNotes();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+    this.setActiveNoteInList(this.currentNote.id);
 
     this.showEditor();
     this.clearEditor();
@@ -142,6 +149,33 @@ export class NotesFeature {
     // Keep the color inputs in sync
     if (this.textColor) this.textColor.value = '#000000';
     if (this.bgColor) this.bgColor.value = '#ffffff';
+  }
+
+  // A new note left as empty as it was created is removed again (leaving it, or cancelling it)
+  discardFreshEmptyNote() {
+    const note = this.currentNote;
+    if (!note || note.id !== this.freshNoteId) return false;
+    this.freshNoteId = null;
+    const empty = this.isEditorOpen() ? this.isCurrentNoteEmpty() : this.isStoredNoteEmpty(note);
+    if (!empty || !this.notes.includes(note)) return false;
+    this.notes = this.notes.filter((n) => n !== note);
+    this.saveNotes();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+    return true;
+  }
+
+  isStoredNoteEmpty(note) {
+    const body = this.parseInertHtml(note.content || '');
+    return (
+      !(note.title || '').trim() &&
+      !body.textContent.replace(/\u200B/g, '').trim() &&
+      !body.querySelector('img, table, hr, input, pre, iframe') &&
+      !note.mood &&
+      !note.weather &&
+      !(note.tags || []).length
+    );
   }
 
   // Store currentNote in the notes array while keeping one shared object,
@@ -174,8 +208,11 @@ export class NotesFeature {
     const isMarkdownMode = this.isMarkdownEditing();
     const content = isMarkdownMode ? this.markdownEditor.value : this.richEditor.innerHTML;
 
-    // Saved notes get a history entry when their title or text actually changed
-    const isStored = this.notes.includes(this.currentNote);
+    // Saved notes get a history entry when their title or text actually changed; the first
+    // writing in a new note (stored empty when it was created) is not an edit
+    const isStored =
+      this.notes.includes(this.currentNote) &&
+      !(this.currentNote.id === this.freshNoteId && this.isStoredNoteEmpty(this.currentNote));
     if (isStored && (this.currentNote.title !== title || this.currentNote.content !== content)) {
       this.recordHistory(this.currentNote);
     }
@@ -250,7 +287,18 @@ export class NotesFeature {
 
   cancelEdit() {
     this.cancelAutoSave?.();
-    // A brand-new note that was never saved must not be shown as if it existed
+    // A new note cancelled with nothing saved in it is removed; then the note before it opens
+    const fresh = this.currentNote && this.currentNote.id === this.freshNoteId;
+    if (fresh) {
+      this.freshNoteId = null;
+      if (this.isStoredNoteEmpty(this.currentNote)) {
+        this.notes = this.notes.filter((n) => n !== this.currentNote);
+        this.saveNotes();
+        this.updateNotesList();
+        this.updateFoldersList();
+        this.updateStats();
+      }
+    }
     if (this.currentNote && !this.notes.includes(this.currentNote)) {
       const previous =
         this.noteBeforeNew && this.notes.includes(this.noteBeforeNew) ? this.noteBeforeNew : null;
