@@ -1,36 +1,52 @@
-// The reminder form: a quick choice fills the date and time, the repeat segments and weekday
-// toggles fill what the reminder is saved with, and the form is empty again afterwards
+// The reminder form: the picker's day, hour and minute fill the reminder's time, days before today
+// cannot be picked, the repeat segments and weekday toggles fill what the reminder is saved with,
+// and the form is empty again afterwards
 export async function run() {
   const a = window.app;
   a.createNewNote();
   a.noteTitle.value = 'Plan';
-  await a.saveNote(true);
-  await a.editCurrentNote();
+  a.saveNote(true);
   const r = {};
-  const preset = (name) => a.reminderPresets.querySelector(`[data-preset="${name}"]`);
+  const picker = a.reminderPicker;
+  const day = (key) => picker.querySelector(`.date-picker-day[data-day="${key}"]`);
+  const time = (unit, value) =>
+    picker.querySelector(`.time-column[data-unit="${unit}"] [data-value="${value}"]`);
 
-  // A fixed "now": Monday 2 March 2026, 12:00 (this evening is still ahead)
+  // A fixed "now": Monday 2 March 2026, 12:00
   a.dashboardToday = '2026-03-02T12:00:00';
-  a.refreshReminderPresets();
-  r.eveningAtNoon = !preset('evening').hidden;
-  preset('tomorrow').click();
-  r.tomorrow = [a.reminderDateInput.value, a.reminderTimeInput.value, a.reminderDatetime.value];
-  r.tomorrowMarked = preset('tomorrow').classList.contains('active');
-  preset('nextWeek').click();
-  r.nextWeek = a.reminderDatetime.value;
-  // Typing a time drops the mark; a date without a time means 09:00
-  a.reminderTimeInput.value = '';
-  a.reminderTimeInput.dispatchEvent(new Event('input'));
-  r.noTime = a.reminderDatetime.value;
-  r.markDropped = !a.reminderPresets.querySelector('.reminder-preset.active');
-  a.dashboardToday = '2026-03-02T20:30:00';
-  a.refreshReminderPresets();
-  r.eveningAtNight = !preset('evening').hidden;
+  a.reminderWhenBtn.click();
+  r.open = a.isReminderPickerOpen();
+  r.yesterdayDisabled = day('2026-03-01').disabled;
+  r.todayMarked = day('2026-03-02').classList.contains('is-today');
+  // A time before a day: it goes on the next time it comes (10:00 has passed today)
+  time('hour', 10).click();
+  r.timeFirst = a.reminderDatetime.value;
+  day('2026-03-05').click();
+  time('hour', 18).click();
+  time('minute', 45).click();
+  r.chosen = a.reminderDatetime.value;
+  r.selected = picker.querySelector('.date-picker-day.is-selected').dataset.day;
+  r.buttonShowsIt = a.reminderWhenBtn.classList.contains('has-value');
+  // Next month
+  picker.querySelector('[data-month="1"]').click();
+  r.nextMonthFirst = picker.querySelector('.date-picker-day:not(.is-other-month)').dataset.day;
+  picker.querySelector('[data-action="done"]').click();
+  r.closed = !a.isReminderPickerOpen();
+  // Clear empties it
+  a.reminderWhenBtn.click();
+  picker.querySelector('[data-action="clear"]').click();
+  r.cleared = a.reminderDatetime.value;
+  // A click elsewhere closes it
+  a.reminderWhenBtn.click();
+  document.body.click();
+  r.outsideCloses = !a.isReminderPickerOpen();
   a.dashboardToday = null;
 
-  // A real reminder: tomorrow, weekly on Monday and Friday
-  a.refreshReminderPresets();
-  preset('tomorrow').click();
+  // A real reminder: weekly on Monday and Friday, from tomorrow
+  const tomorrow = new Date(Date.now() + 86400000);
+  a.setReminderMoment(
+    new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate(), 9, 0)
+  );
   a.reminderRepeat.querySelector('[data-value="weekly"]').click();
   r.recurrence = a.reminderRecurrence.value;
   r.weekdaysShown = !document.getElementById('reminderWeekdays').classList.contains('hidden');
@@ -43,26 +59,30 @@ export async function run() {
   r.cards = a.noteRemindersList.querySelectorAll('.note-reminder-item').length;
   r.reset = {
     datetime: a.reminderDatetime.value,
+    button: a.reminderWhenBtn.classList.contains('has-value'),
     recurrence: a.reminderRecurrence.value,
     weekdaysHidden: document.getElementById('reminderWeekdays').classList.contains('hidden'),
     checked: document.querySelectorAll('#reminderWeekdays .weekday-checkbox:checked').length,
-    active: a.reminderRepeat.querySelector('.segment.active').dataset.value,
   };
   a.cancelEdit();
   return r;
 }
 
 export const expected = {
-  eveningAtNoon: true,
-  tomorrow: ['2026-03-03', '09:00', '2026-03-03T09:00'],
-  tomorrowMarked: true,
-  nextWeek: '2026-03-09T09:00',
-  noTime: '2026-03-09T09:00',
-  markDropped: true,
-  eveningAtNight: false,
+  open: true,
+  yesterdayDisabled: true,
+  todayMarked: true,
+  timeFirst: '2026-03-03T10:00',
+  chosen: '2026-03-05T18:45',
+  selected: '2026-03-05',
+  buttonShowsIt: true,
+  nextMonthFirst: '2026-04-01',
+  closed: true,
+  cleared: '',
+  outsideCloses: true,
   recurrence: 'weekly',
   weekdaysShown: true,
   saved: { recurrence: 'weekly', days: [1, 5] },
   cards: 1,
-  reset: { datetime: '', recurrence: 'none', weekdaysHidden: true, checked: 0, active: 'none' },
+  reset: { datetime: '', button: false, recurrence: 'none', weekdaysHidden: true, checked: 0 },
 };

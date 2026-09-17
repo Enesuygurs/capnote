@@ -188,9 +188,9 @@ export class CapnoteApp {
     this.activeRemindersCount = document.getElementById('activeRemindersCount');
     this.reminderDatetime = document.getElementById('reminderDatetime');
     this.reminderRecurrence = document.getElementById('reminderRecurrence');
-    this.reminderDateInput = document.getElementById('reminderDateInput');
-    this.reminderTimeInput = document.getElementById('reminderTimeInput');
-    this.reminderPresets = document.getElementById('reminderPresets');
+    this.reminderWhenBtn = document.getElementById('reminderWhenBtn');
+    this.reminderWhenText = document.getElementById('reminderWhenText');
+    this.reminderPicker = document.getElementById('reminderPicker');
     this.reminderRepeat = document.getElementById('reminderRepeat');
     this.setReminderBtn = document.getElementById('setReminderBtn');
     this.noteRemindersList = document.getElementById('noteRemindersList');
@@ -581,6 +581,7 @@ export class CapnoteApp {
         this.updateWordCount();
         this.updateCurrentDate();
         this.updateNoteRemindersDisplay();
+        this.renderReminderWhen();
       }
       if (this.noteHistoryModal && !this.noteHistoryModal.classList.contains('hidden')) {
         this.openNoteHistory();

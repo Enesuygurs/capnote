@@ -395,50 +395,17 @@ export const NOTE_EDITOR = /* HTML */ `
         <div class="sidebar-section">
           <h4 class="panel-label" data-i18n="sections.reminder">Hatırlatma</h4>
           <div class="reminder-container">
-            <div id="reminderPresets" class="reminder-presets">
-              <button type="button" class="reminder-preset" data-preset="hour">
-                <i class="fas fa-hourglass-half"></i>
-                <span data-i18n="reminder.presetHour">1 saat sonra</span>
-                <small></small>
-              </button>
-              <button type="button" class="reminder-preset" data-preset="evening">
-                <i class="fas fa-moon"></i>
-                <span data-i18n="reminder.presetEvening">Bu akşam</span>
-                <small></small>
-              </button>
-              <button type="button" class="reminder-preset" data-preset="tomorrow">
-                <i class="fas fa-sun"></i>
-                <span data-i18n="reminder.presetTomorrow">Yarın sabah</span>
-                <small></small>
-              </button>
-              <button type="button" class="reminder-preset" data-preset="nextWeek">
-                <i class="fas fa-calendar-week"></i>
-                <span data-i18n="reminder.presetNextWeek">Gelecek hafta</span>
-                <small></small>
-              </button>
-            </div>
-            <div class="reminder-when">
-              <label class="reminder-field">
-                <i class="fas fa-calendar-day"></i>
-                <input
-                  type="date"
-                  id="reminderDateInput"
-                  class="reminder-datetime-input"
-                  data-i18n-aria-label="reminder.date"
-                  aria-label="Tarih"
-                />
-              </label>
-              <label class="reminder-field reminder-field-time">
-                <i class="fas fa-clock"></i>
-                <input
-                  type="time"
-                  id="reminderTimeInput"
-                  class="reminder-datetime-input"
-                  data-i18n-aria-label="reminder.time"
-                  aria-label="Saat"
-                />
-              </label>
-            </div>
+            <button
+              type="button"
+              id="reminderWhenBtn"
+              class="reminder-when-btn"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+            >
+              <i class="fas fa-calendar-day"></i>
+              <span id="reminderWhenText" class="reminder-when-text">Tarih ve saat seçin</span>
+              <i class="fas fa-chevron-down reminder-when-chevron"></i>
+            </button>
             <input type="hidden" id="reminderDatetime" class="reminder-datetime-input" />
             <div class="reminder-repeat">
               <span class="reminder-repeat-label">

@@ -220,13 +220,15 @@
     "sat": "Cmt",
     "sun": "Paz",
     "recurrence": "Tekrarlama",
-    "presetHour": "1 saat sonra",
-    "presetEvening": "Bu akşam",
-    "presetTomorrow": "Yarın sabah",
-    "presetNextWeek": "Gelecek hafta",
-    "date": "Tarih",
     "time": "Saat",
-    "add": "Hatırlatma kur"
+    "add": "Hatırlatma kur",
+    "pick": "Tarih ve saat seçin",
+    "hour": "Saat",
+    "minute": "Dakika",
+    "prevMonth": "Önceki ay",
+    "nextMonth": "Sonraki ay",
+    "clear": "Temizle",
+    "done": "Tamam"
   },
   "notifications": {
     "title": "Bildirimler",
