@@ -281,119 +281,217 @@
 }
 
 /* ============ Reminder form ============
-   Quick choices first, then an exact date and time, how often, on which days, and the button */
-.reminder-presets {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-1);
-}
-
-.reminder-preset {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+   The day and time (a button that opens the picker), how often, on which days, and the button */
+.reminder-when-btn {
+  display: flex;
   align-items: center;
-  gap: 2px var(--space-1);
-  padding: var(--space-2);
+  gap: var(--space-2);
+  width: 100%;
+  height: var(--control-md);
+  padding: 0 var(--space-3);
   border-radius: var(--radius-md);
   background: var(--field);
-  color: var(--text-primary);
-  font-size: var(--fs-sm);
-  font-weight: 500;
+  color: var(--text-muted);
+  font-size: var(--fs-md);
   text-align: left;
   cursor: pointer;
   transition: var(--transition-fast);
 }
 
-/* The name on top, the icon and the time under it */
-.reminder-preset span {
-  grid-column: 1 / -1;
-  grid-row: 1;
+.reminder-when-btn:hover {
+  background: var(--field-hover);
 }
 
-.reminder-preset i {
-  grid-row: 2;
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-  transition: var(--transition-fast);
+.reminder-when-btn[aria-expanded='true'] {
+  box-shadow: var(--focus-ring);
 }
 
-.reminder-preset span,
-.reminder-preset small {
+.reminder-when-text {
+  flex: 1;
   min-width: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.reminder-preset small {
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-  font-weight: 400;
-  font-variant-numeric: tabular-nums;
+.reminder-when-btn.has-value {
+  color: var(--text-strong);
+  font-weight: 500;
 }
 
-.reminder-preset:hover {
-  background: var(--field-hover);
-}
-
-.reminder-preset:hover i {
+.reminder-when-btn.has-value > i:first-child {
   color: var(--accent-color);
 }
 
-.reminder-preset.active {
-  background: var(--accent-tint);
-  color: var(--accent-text);
+.reminder-when-chevron {
+  font-size: var(--fs-xs);
+  transition: transform var(--transition-fast);
 }
 
-.reminder-preset.active i,
-.reminder-preset.active small {
-  color: var(--accent-text);
+.reminder-when-btn[aria-expanded='true'] .reminder-when-chevron {
+  transform: rotate(180deg);
 }
 
-/* Date and time: one field each, with an icon */
-.reminder-when {
-  display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-  gap: var(--space-1);
+/* ============ Date and time picker ============
+   A month (weeks from Monday), then the hour and minute as scrolling columns */
+.date-picker {
+  width: 264px;
+  gap: var(--space-2);
+  padding: var(--space-3);
 }
 
-.reminder-field {
+.date-picker-header {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-  height: var(--control-sm);
-  padding: 0 var(--space-2);
-  border-radius: var(--radius-md);
-  background: var(--field);
+  justify-content: space-between;
+  padding-left: var(--space-1);
+}
+
+.date-picker-title {
+  color: var(--text-strong);
+  font-size: var(--fs-base);
+  font-weight: 600;
+}
+
+.date-picker-title::first-letter {
+  text-transform: uppercase;
+}
+
+.date-picker-nav {
+  display: flex;
+  gap: 2px;
+}
+
+.date-picker-weekdays,
+.date-picker-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.date-picker-weekdays span {
   color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.date-picker-day {
+  justify-self: center;
+  width: var(--control-xs);
+  height: var(--control-xs);
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
   font-size: var(--fs-sm);
-  cursor: text;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
   transition: var(--transition-fast);
 }
 
-.reminder-field:hover {
-  background: var(--field-hover);
+.date-picker-day:hover:not(:disabled) {
+  background: var(--tint-hover);
 }
 
-.reminder-field:focus-within {
-  box-shadow: var(--focus-ring);
+.date-picker-day.is-other-month {
+  color: var(--text-muted);
 }
 
-.reminder-field input {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  background: none;
-  color: var(--text-primary);
+.date-picker-day:disabled {
+  color: var(--text-muted);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.date-picker-day.is-today {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.date-picker-day.is-selected,
+.date-picker-day.is-selected:hover {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+
+.date-picker-time {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) 0 0 var(--space-1);
+  border-top: 1px solid var(--divider);
+}
+
+.date-picker-time-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.date-picker-time-label i {
+  color: var(--text-muted);
+}
+
+.time-columns {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.time-separator {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Three options tall; the list scrolls without a bar */
+.time-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 52px;
+  height: calc(var(--control-xs) * 3 + 4px);
+  padding: 0 2px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  border-radius: var(--radius-md);
+  background: var(--field);
+}
+
+.time-column::-webkit-scrollbar {
+  display: none;
+}
+
+.time-option {
+  flex: none;
+  height: var(--control-xs);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
   font-size: var(--fs-md);
   font-variant-numeric: tabular-nums;
-  outline: none;
+  cursor: pointer;
 }
 
-/* The field's own icon opens the picker (clicking the field does too), so the browser's is hidden */
-.reminder-field input::-webkit-calendar-picker-indicator {
-  display: none;
+.time-option:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+.time-option.is-selected {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+
+.date-picker-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
 }
 
 /* How often: a small segmented control under its label */

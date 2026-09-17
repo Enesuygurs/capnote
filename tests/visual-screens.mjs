@@ -120,7 +120,7 @@ export async function run() {
   const freeze = () => {
     if (a.noteDate) a.noteDate.textContent = 'Sunday, March 1, 2026';
     document.querySelectorAll('.reminder-datetime-input').forEach((i) => (i.value = ''));
-    a.refreshReminderPresets();
+    a.renderReminderWhen();
   };
   const shot = async (name, { keepToast = false, keepFocus = false } = {}) => {
     freeze();

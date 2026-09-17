@@ -220,13 +220,15 @@
     "sat": "Sat",
     "sun": "Sun",
     "recurrence": "Recurrence",
-    "presetHour": "In an hour",
-    "presetEvening": "Tonight",
-    "presetTomorrow": "Tomorrow",
-    "presetNextWeek": "Next week",
-    "date": "Date",
     "time": "Time",
-    "add": "Set reminder"
+    "add": "Set reminder",
+    "pick": "Pick a date and time",
+    "hour": "Hour",
+    "minute": "Minute",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "clear": "Clear",
+    "done": "Done"
   },
   "notifications": {
     "title": "Notifications",

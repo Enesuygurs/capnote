@@ -54,6 +54,69 @@ export const NOTE_DIALOGS = /* HTML */ `
     </button>
   </div>
 
+  <!-- The day and time of a reminder: a month calendar, then hour and minute columns -->
+  <div
+    id="reminderPicker"
+    class="context-menu menu date-picker hidden"
+    role="dialog"
+    data-i18n-aria-label="reminder.pick"
+    aria-label="Tarih ve saat seçin"
+  >
+    <div class="date-picker-header">
+      <span class="date-picker-title"></span>
+      <div class="date-picker-nav">
+        <button
+          type="button"
+          class="btn-icon btn-icon-xs"
+          data-month="-1"
+          data-i18n-title="reminder.prevMonth"
+          title="Önceki ay"
+        >
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <button
+          type="button"
+          class="btn-icon btn-icon-xs"
+          data-month="1"
+          data-i18n-title="reminder.nextMonth"
+          title="Sonraki ay"
+        >
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+    <div class="date-picker-weekdays"></div>
+    <div class="date-picker-days"></div>
+    <div class="date-picker-time">
+      <span class="date-picker-time-label">
+        <i class="fas fa-clock"></i> <span data-i18n="reminder.time">Saat</span>
+      </span>
+      <div class="time-columns">
+        <div
+          class="time-column"
+          data-unit="hour"
+          data-i18n-aria-label="reminder.hour"
+          aria-label="Saat"
+        ></div>
+        <span class="time-separator">:</span>
+        <div
+          class="time-column"
+          data-unit="minute"
+          data-i18n-aria-label="reminder.minute"
+          aria-label="Dakika"
+        ></div>
+      </div>
+    </div>
+    <div class="date-picker-footer">
+      <button type="button" class="btn-secondary btn-small" data-action="clear">
+        <span data-i18n="reminder.clear">Temizle</span>
+      </button>
+      <button type="button" class="btn-primary btn-small" data-action="done">
+        <span data-i18n="reminder.done">Tamam</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Notes suggested while typing "[[" in the editor -->
   <div id="noteLinkMenu" class="context-menu menu note-link-menu hidden" role="listbox"></div>
 

@@ -196,7 +196,9 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Split button**: "New note" and its template button share one control at the small size (32px): 2px apart, the inner corners square.
 
-**Reminder form** (editor side panel): quick choices first, as 2-column tiles (`--field`; the name on top, a muted icon and the time it would ring under it; the chosen one in the accent tint; "this evening" is hidden once it is evening). Then a date and a time field side by side (a muted icon inside each; clicking the field opens the picker), "Repeat" as a small `.segmented`, the weekdays as seven round toggles (the chosen ones `--accent-color`) and a full-width primary button. The note's reminders are cards: an accent-tinted icon (a bell, or arrows when it repeats), the day in bold and the time and repeat in muted text.
+**Reminder form** (editor side panel): a field-style button with the chosen day and time ("Thu 5 March · 18:30", or a muted "Pick a date and time") opens the **date picker**; then "Repeat" as a small `.segmented`, the weekdays as seven round toggles (the chosen ones `--accent-color`) and a full-width primary button. The note's reminders are cards: an accent-tinted icon (a bell, or arrows when it repeats), the day in bold and the time and repeat in muted text.
+
+**Date picker** (`.date-picker`, a popover under its button, or above it when there is no room): the month and year with previous/next buttons, a Monday-first month of 28px round days (today in bold `--accent-text`, the chosen day `--accent-color`, days before today faded and disabled), then a divider and the time as two scrolling columns, hours and minutes in 5-minute steps, three options tall, the chosen one `--accent-color` and kept in the middle. Clear and Done close it; so do a click outside, Escape and scrolling the panel.
 
 **Editor header**: the view controls (Markdown and HTML preview, the side panel) sit with Cancel and Save, so the formatting toolbar holds only content tools (two rows at the smallest window).
 
