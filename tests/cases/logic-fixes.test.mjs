@@ -22,15 +22,17 @@ export async function run() {
   a.selectNote(second);
   const editKept = first.content === '<p>edited</p>';
 
-  // A pending autosave does not turn a new blank note into "Untitled"
+  // A pending autosave of the previous note does not write into the new blank note, and the
+  // blank note is gone once it is cancelled
   await a.editCurrentNote();
   a.richEditor.innerHTML = '<p>typing</p>';
   a.scheduleAutoSave();
   const before = a.notes.length;
   a.createNewNote();
   await wait(2300);
-  const noEmptyNote = a.notes.length === before;
+  const blank = a.notes.length === before + 1 && a.currentNote.content === '';
   a.cancelEdit();
+  const noEmptyNote = blank && a.notes.length === before;
 
   // Folders hidden by a filter come back when it is cleared
   a.folders.push({ id: 'f9', name: 'Hidden', color: '#3b82f6', expanded: true });
