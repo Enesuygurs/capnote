@@ -284,9 +284,10 @@ export class FoldersFeature {
     notesContainer.setAttribute('data-folder-id', folder.id);
 
     // Add expandable functionality - only expand/collapse, no filtering
-    // Initialize expanded state from folder.expanded
+    // Initialize expanded state from folder.expanded; while searching, a folder (shown only when
+    // it holds results) is open without changing its saved state
     const chevron = folderHeader.querySelector('.nav-expand');
-    if (folder.expanded) {
+    if (folder.expanded || this.currentSearchTerm()) {
       folderHeader.classList.add('expanded');
       notesContainer.style.display = 'block';
       if (chevron) chevron.style.transform = 'rotate(0deg)';
