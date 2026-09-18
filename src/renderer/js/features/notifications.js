@@ -68,18 +68,9 @@ export class NotificationsFeature {
         <div class="list-card-actions">
           ${
             n.noteId && this.notes.some((note) => note.id === n.noteId)
-              ? `<button class="btn-secondary btn-small view-notification-note-btn" data-note-id="${n.noteId}">
+              ? `<button class="btn-secondary btn-small view-notification-note-btn" data-note-id="${n.noteId}" data-notification-id="${n.id}">
             <i class="fas fa-eye"></i> ${i18n.t('messages.view')}
           </button>`
-              : ''
-          }
-          ${
-            !n.read
-              ? `
-            <button class="btn-tinted btn-small mark-read-btn" data-notification-id="${n.id}">
-              <i class="fas fa-check"></i> ${i18n.t('messages.markAsRead')}
-            </button>
-          `
               : ''
           }
           <button class="btn-outline btn-danger btn-small delete-notification-btn" data-notification-id="${n.id}">
@@ -91,19 +82,13 @@ export class NotificationsFeature {
       )
       .join('');
 
-    // Add event listeners
+    // Viewing the note also marks the notification read
     this.notificationsList.querySelectorAll('.view-notification-note-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        const noteId = e.currentTarget.dataset.noteId;
+        const { noteId, notificationId } = e.currentTarget.dataset;
         const note = this.notes.find((n) => n.id === noteId);
-        if (note) this.openNote(note);
-      });
-    });
-
-    this.notificationsList.querySelectorAll('.mark-read-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        const notificationId = e.currentTarget.dataset.notificationId;
         this.markNotificationAsRead(notificationId);
+        if (note) this.openNote(note);
       });
     });
 
