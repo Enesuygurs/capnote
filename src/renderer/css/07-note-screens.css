@@ -95,11 +95,7 @@
 
 .stat-tile i {
   font-size: var(--fs-md);
-  color: var(--text-muted);
-}
-
-.stat-tile[data-stat='streak'] i {
-  color: var(--tone-amber);
+  color: var(--tone, var(--text-muted));
 }
 
 .stat-tile-value {
