@@ -207,7 +207,7 @@
 /* Today is filled with the accent, chosen or not */
 .calendar-day.is-today,
 .calendar-day.is-today:hover {
-  background: color-mix(in srgb, var(--accent-color) 75%, transparent);
+  background: color-mix(in srgb, var(--accent-color) 90%, transparent);
   color: var(--text-on-accent);
 }
 
