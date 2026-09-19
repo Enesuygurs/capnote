@@ -114,19 +114,20 @@ export class DashboardFeature {
         return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
       })
       .reduce((sum, n) => sum + (n.wordCount || 0), 0);
+    // Each figure has its own icon color
     const tiles = [
-      ['notes', this.notes.length, 'fa-file-lines'],
-      ['activeDays', days.size, 'fa-calendar-check'],
-      ['streak', current, 'fa-fire'],
-      ['longestStreak', longest, 'fa-trophy'],
-      ['wordsThisMonth', wordsThisMonth, 'fa-pen-nib'],
+      ['notes', this.notes.length, 'fa-file-lines', 'blue'],
+      ['activeDays', days.size, 'fa-calendar-check', 'green'],
+      ['streak', current, 'fa-fire', 'amber'],
+      ['longestStreak', longest, 'fa-trophy', 'violet'],
+      ['wordsThisMonth', wordsThisMonth, 'fa-pen-nib', 'rose'],
     ];
     this.statTiles.innerHTML = '';
-    tiles.forEach(([key, value, icon]) => {
+    tiles.forEach(([key, value, icon, tone]) => {
       const tile = document.createElement('div');
       tile.className = 'stat-tile';
       tile.dataset.stat = key;
-      tile.innerHTML = `<i class="fas ${icon}"></i><span class="stat-tile-value"></span><span class="stat-tile-label"></span>`;
+      tile.innerHTML = `<i class="fas ${icon} tone-${tone}"></i><span class="stat-tile-value"></span><span class="stat-tile-label"></span>`;
       tile.querySelector('.stat-tile-value').textContent = value.toLocaleString(this.getLocale());
       tile.querySelector('.stat-tile-label').textContent = i18n.t(`dashboard.${key}`);
       this.statTiles.appendChild(tile);
