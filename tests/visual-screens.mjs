@@ -168,6 +168,19 @@ export async function run() {
     a.selectNote(byTitle('Weekly plan'));
     await a.editCurrentNote();
     await shot(theme + '-04-editor');
+    // The reminder's date and time picker, open under its button
+    const side = document.querySelector('.editor-sidebar');
+    a.reminderWhenBtn.scrollIntoView({ block: 'end' });
+    await wait(200);
+    a.reminderWhenBtn.click();
+    a.reminderPicker.querySelector('[data-day="2026-03-05"]').click();
+    a.reminderPicker.querySelector('.time-column[data-unit="hour"] [data-value="18"]').click();
+    a.reminderPicker.querySelector('.time-column[data-unit="minute"] [data-value="30"]').click();
+    a.scrollTimeColumns();
+    await shot(theme + '-04-reminder-picker');
+    a.resetReminderForm();
+    side.scrollTop = 0;
+    await wait(200);
     a.toggleEmojiPanel();
     await wait(600);
     await shot(theme + '-05-emoji');
@@ -177,10 +190,13 @@ export async function run() {
     await shot(theme + '-06-markdown-preview');
     a.toggleMarkdownMode();
     a.toggleHtmlMode();
-    await new Promise((r) => {
-      document.querySelector('iframe.preview-iframe').addEventListener('load', r, { once: true });
-      setTimeout(r, 1500);
-    });
+    // The preview is shown once its text has arrived (its load event can come before that)
+    for (let i = 0; i < 60; i++) {
+      const doc = document.querySelector('iframe.preview-iframe')?.contentDocument;
+      if (doc?.body?.textContent.trim()) break;
+      await wait(50);
+    }
+    await wait(150);
     await shot(theme + '-07-html-preview');
     a.toggleHtmlMode();
     a.cancelEdit();
