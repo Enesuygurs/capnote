@@ -58,7 +58,8 @@ export class ReminderFormFeature {
       below + height <= window.innerHeight - margin
         ? below
         : Math.max(margin, rect.top - 4 - height);
-    picker.style.left = `${Math.max(margin, Math.min(rect.left, window.innerWidth - width - margin))}px`;
+    // Its right edge lines up with the button's
+    picker.style.left = `${Math.max(margin, Math.min(rect.right - width, window.innerWidth - width - margin))}px`;
     picker.style.top = `${top}px`;
     this.reminderWhenBtn.setAttribute('aria-expanded', 'true');
     this.scrollTimeColumns();

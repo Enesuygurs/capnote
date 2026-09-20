@@ -334,7 +334,7 @@
 
 /* ============ Date and time picker ============
    A month (weeks from Monday), then the hour and minute as scrolling columns */
-.date-picker {
+.menu.date-picker {
   width: 264px;
   gap: var(--space-2);
   padding: var(--space-3);
@@ -455,8 +455,8 @@
   flex-direction: column;
   gap: 2px;
   width: 52px;
-  height: calc(var(--control-xs) * 3 + 4px);
-  padding: 0 2px;
+  height: calc(var(--control-xs) * 3 + 8px);
+  padding: 2px;
   overflow-y: auto;
   scrollbar-width: none;
   border-radius: var(--radius-md);
