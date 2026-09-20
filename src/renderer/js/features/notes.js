@@ -317,6 +317,7 @@ export class NotesFeature {
     if (this.currentNote) {
       this.showViewer();
       this.displayNote(this.currentNote);
+      this.showTitleInList(this.currentNote.title);
     } else {
       this.showWelcome();
     }

@@ -67,6 +67,7 @@ export class TemplatesFeature {
     if (!template) return;
     const now = new Date();
     this.noteTitle.value = template.title(now);
+    this.showTitleInList();
     this.richEditor.innerHTML = template.html();
     this.restoreCheckboxStates();
     this.updateWordCount();
