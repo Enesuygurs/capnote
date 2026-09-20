@@ -236,6 +236,19 @@ export class NoteListFeature {
     });
   }
 
+  // The open note's entry in the list follows its title as it is typed, before it is saved
+  showTitleInList(title = this.noteTitle.value.trim()) {
+    if (!this.currentNote) return;
+    const text = title || i18n.t('messages.untitledNote');
+    document
+      .querySelectorAll(`.note-item[data-note-id="${CSS.escape(this.currentNote.id)}"]`)
+      .forEach((item) => {
+        item.title = text;
+        const label = item.querySelector('.note-item-title');
+        if (label) label.textContent = text;
+      });
+  }
+
   // One sidebar entry for a note, used by the root list and inside folders.
   // The icon shows a locked or pinned note; a heart on the right marks a favorite.
   createNoteItem(note, inFolder = false) {

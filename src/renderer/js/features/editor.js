@@ -458,6 +458,7 @@ export class EditorFeature {
     this.noteTitle.addEventListener('input', () => {
       this.updateCurrentDate();
       this.trackContentChanges();
+      this.showTitleInList();
     });
 
     this.noteTitle.addEventListener('keydown', (e) => {
