@@ -36,12 +36,14 @@
   </head>
   <body>
     <div class="titlebar">
+      <!-- The title spans the whole bar and is part of the drag area. It comes first: the window
+           sets drag areas in page order, so the buttons after it stay clickable on top of it -->
+      <span class="titlebar-title">Capnote</span>
       <div class="titlebar-start">
         <button class="hamburger-btn" id="hamburgerBtn" data-i18n-title="titles.toggleSidebar">
           <i class="fas fa-bars"></i>
         </button>
       </div>
-      <span class="titlebar-title">Capnote</span>
       <div class="titlebar-controls">
         <button class="titlebar-button minimize" id="minimizeBtn">
           <svg class="titlebar-icon" viewBox="0 0 14 14" aria-hidden="true">
