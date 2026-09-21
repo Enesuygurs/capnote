@@ -4,7 +4,7 @@
 import { i18n } from '../i18n.js';
 
 export class TemplatesFeature {
-  // name -> { icon, title(date), html() }
+  // name -> { icon, tone (the icon's color), title(date), html() }
   noteTemplates() {
     const t = (key, params) => this.escapeHtml(i18n.t(`noteTemplates.${key}`, params));
     const locale = this.getLocale();
@@ -17,6 +17,7 @@ export class TemplatesFeature {
     return {
       journal: {
         icon: 'fa-book',
+        tone: 'violet',
         title: (d) => i18n.t('noteTemplates.journalTitle', { date: longDate(d) }),
         html: () =>
           `<h2>${t('journalHow')}</h2><p><br></p>` +
@@ -25,6 +26,7 @@ export class TemplatesFeature {
       },
       meeting: {
         icon: 'fa-people-group',
+        tone: 'amber',
         title: (d) => i18n.t('noteTemplates.meetingTitle', { date: longDate(d) }),
         html: () =>
           `<h3>${t('meetingPeople')}</h3><ul><li><br></li></ul>` +
@@ -35,6 +37,7 @@ export class TemplatesFeature {
       },
       weekly: {
         icon: 'fa-calendar-week',
+        tone: 'green',
         title: (d) => {
           // The week from Monday to Sunday that holds the day
           const monday = new Date(
@@ -90,12 +93,13 @@ export class TemplatesFeature {
   }
 
   setupTemplates() {
-    // Item labels come from the translations; the icons are fixed
+    // Item labels come from the translations; the icons and their colors are fixed
     const templates = this.noteTemplates();
     this.templateMenu.querySelectorAll('[data-template]').forEach((item) => {
       const icon = item.querySelector('i');
       if (icon && templates[item.dataset.template]) {
-        icon.className = `fas ${templates[item.dataset.template].icon}`;
+        const { icon: name, tone } = templates[item.dataset.template];
+        icon.className = `fas ${name} tone-${tone}`;
       }
       item.addEventListener('click', (e) => {
         e.stopPropagation();

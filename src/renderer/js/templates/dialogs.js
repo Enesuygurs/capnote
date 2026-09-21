@@ -37,7 +37,7 @@ export const NOTE_DIALOGS = /* HTML */ `
   <!-- Templates to start a new note from -->
   <div id="templateMenu" class="context-menu menu hidden" role="menu">
     <button class="menu-item" data-template="blank" role="menuitem">
-      <i class="fas fa-file"></i>
+      <i class="fas fa-file tone-blue"></i>
       <span data-i18n="noteTemplates.blank">Boş not</span>
     </button>
     <button class="menu-item" data-template="journal" role="menuitem">
