@@ -252,6 +252,8 @@ export class NotesFeature {
     this.updateFavoriteButtons();
 
     if (!silent) {
+      // Saved with the Save button: no longer a new note that cancelling removes
+      this.freshNoteId = null;
       this.showNotification(i18n.t('messages.noteSaved'), 'success');
       this.showViewer();
       this.displayNote(this.currentNote);
@@ -287,17 +289,17 @@ export class NotesFeature {
 
   cancelEdit() {
     this.cancelAutoSave?.();
-    // A new note cancelled with nothing saved in it is removed; then the note before it opens
+    // Cancelling a new note (one never saved with the Save button) removes it, with what was
+    // written and saved automatically in it; then the note before it opens
     const fresh = this.currentNote && this.currentNote.id === this.freshNoteId;
     if (fresh) {
       this.freshNoteId = null;
-      if (this.isStoredNoteEmpty(this.currentNote)) {
-        this.notes = this.notes.filter((n) => n !== this.currentNote);
-        this.saveNotes();
-        this.updateNotesList();
-        this.updateFoldersList();
-        this.updateStats();
-      }
+      this.notes = this.notes.filter((n) => n !== this.currentNote);
+      this.saveNotes();
+      this.removeNoteReferences([this.currentNote.id]);
+      this.updateNotesList();
+      this.updateFoldersList();
+      this.updateStats();
     }
     if (this.currentNote && !this.notes.includes(this.currentNote)) {
       const previous =
