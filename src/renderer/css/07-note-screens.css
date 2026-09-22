@@ -1,78 +1,9 @@
-/* Welcome screen and the note viewer */
+/* Home (the overview) and the note viewer */
 
-/* ============ Welcome ============ */
+/* ============ Home: the overview ============ */
 .welcome-screen {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-10) var(--gutter);
-  overflow-y: auto;
-}
-
-.welcome-content {
-  max-width: 560px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.welcome-mark {
-  width: 64px;
-  height: 64px;
-  margin-bottom: var(--space-6);
-}
-
-.welcome-content h2 {
-  font-size: var(--fs-4xl);
-  font-weight: 600;
-  line-height: 36px;
-  color: var(--text-strong);
-  margin-bottom: var(--space-2);
-}
-
-.welcome-content p {
-  font-size: var(--fs-base);
-  color: var(--text-secondary);
-  margin-bottom: var(--space-8);
-}
-
-.quick-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 128px);
-  gap: var(--space-3);
-  margin-bottom: var(--space-8);
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-4);
-  background: var(--card);
-  border-radius: var(--radius-lg);
-}
-
-.stat-item span {
-  font-size: var(--fs-3xl);
-  font-weight: 600;
-  line-height: 32px;
-  color: var(--text-strong);
-}
-
-.stat-item small {
-  font-size: var(--fs-sm);
-  line-height: 16px;
-  color: var(--text-secondary);
-}
-
-/* ============ Overview (home with notes) ============ */
-.welcome-screen.has-notes {
-  padding: 0;
-  align-items: stretch;
-  justify-content: stretch;
   overflow: hidden;
 }
 

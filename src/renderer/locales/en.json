@@ -1,8 +1,5 @@
 {
-  "app": {
-    "welcome": "Welcome to Capnote",
-    "welcomeSubtext": "Write your thoughts, save your memories, and document your life"
-  },
+  "app": {},
   "nav": {
     "newNote": "New Note",
     "notifications": "Notifications",
@@ -26,7 +23,6 @@
     "create": "Create",
     "add": "Add",
     "addSection": "Add Section",
-    "start": "Start Writing",
     "export": "Export",
     "import": "Import",
     "duplicate": "Duplicate",
@@ -104,9 +100,6 @@
     "delete": "Delete"
   },
   "stats": {
-    "totalNotes": "Total Notes",
-    "daysActive": "Active Days",
-    "totalWords": "Total Words",
     "words": "words",
     "characters": "characters",
     "readingTime": "min read",

@@ -26,7 +26,6 @@ export async function run() {
     notifTitle,
     storedDatetime: a.reminders[0].datetime,
     isIso: /Z$/.test(a.reminders[0].datetime),
-    totalWords: a.totalWords.textContent,
   };
 }
 
@@ -35,5 +34,4 @@ export const expected = {
   notifTitle: 'After',
   storedDatetime: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:00\.000Z$/,
   isIso: true,
-  totalWords: '3',
 };
