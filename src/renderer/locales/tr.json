@@ -1,8 +1,5 @@
 {
-  "app": {
-    "welcome": "Capnote'a Hoş Geldiniz",
-    "welcomeSubtext": "Düşüncelerinizi yazın, anılarınızı kaydedin ve hayatınızı belgelendirin"
-  },
+  "app": {},
   "nav": {
     "newNote": "Yeni Not",
     "notifications": "Bildirimler",
@@ -26,7 +23,6 @@
     "create": "Oluştur",
     "add": "Ekle",
     "addSection": "Bölüm Ekle",
-    "start": "Yazmaya Başlayın",
     "export": "Dışa Aktar",
     "import": "İçe Aktar",
     "duplicate": "Çoğalt",
@@ -104,9 +100,6 @@
     "delete": "Sil"
   },
   "stats": {
-    "totalNotes": "Toplam Not",
-    "daysActive": "Aktif Gün",
-    "totalWords": "Toplam Kelime",
     "words": "kelime",
     "characters": "karakter",
     "readingTime": "dk okuma",

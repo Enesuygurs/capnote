@@ -80,12 +80,6 @@ export class DashboardFeature {
   }
 
   renderDashboard() {
-    const hasNotes = this.notes.length > 0;
-    this.welcomeScreen.classList.toggle('has-notes', hasNotes);
-    this.dashboard.classList.toggle('hidden', !hasNotes);
-    this.welcomeContent.classList.toggle('hidden', hasNotes);
-    if (!hasNotes) return;
-
     const locale = this.getLocale();
     this.dashboardDate.textContent = this.dashboardNow().toLocaleDateString(locale, {
       weekday: 'long',

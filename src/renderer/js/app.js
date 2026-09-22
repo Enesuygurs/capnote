@@ -114,7 +114,6 @@ export class CapnoteApp {
     // Main screens
     this.welcomeScreen = document.getElementById('welcomeScreen');
     this.dashboard = document.getElementById('dashboard');
-    this.welcomeContent = document.getElementById('welcomeContent');
     this.dashboardDate = document.getElementById('dashboardDate');
     this.statTiles = document.getElementById('statTiles');
     this.calendarTitle = document.getElementById('calendarTitle');
@@ -135,7 +134,6 @@ export class CapnoteApp {
 
     // Butonlar
     this.homeBtn = document.getElementById('homeBtn');
-    this.startFirstNoteBtn = document.getElementById('startFirstNote');
     this.saveNoteBtn = document.getElementById('saveNoteBtn');
     this.cancelNoteBtn = document.getElementById('cancelNoteBtn');
     this.editNoteBtn = document.getElementById('editNoteBtn');
@@ -326,9 +324,6 @@ export class CapnoteApp {
     this.notificationIcon = document.getElementById('notificationIcon');
 
     // Stats
-    this.totalNotes = document.getElementById('totalNotes');
-    this.daysActive = document.getElementById('daysActive');
-    this.totalWords = document.getElementById('totalWords');
 
     // Mood and weather buttons
     this.moodBtns = document.querySelectorAll('.mood-btn');
@@ -431,8 +426,6 @@ export class CapnoteApp {
     window.electronAPI.onOpenNotifications(() => this.showNotificationsScreen());
     window.electronAPI.onNewNote(() => this.createNewNote());
     window.electronAPI.onOpenSettings(() => this.showSettingsModal());
-
-    this.startFirstNoteBtn.addEventListener('click', () => this.createNewNote());
 
     // New note navigation item
     document.getElementById('newNoteNav')?.addEventListener('click', () => this.createNewNote());
@@ -548,18 +541,8 @@ export class CapnoteApp {
     this.updateFoldersList();
   }
 
+  // The overview on the home page follows the notes
   updateStats() {
-    const totalNotesCount = this.notes.length;
-    const totalWordsCount = this.notes.reduce((sum, note) => sum + (note.wordCount || 0), 0);
-
-    // Calculate active days
-    const uniqueDays = new Set(this.notes.map((note) => new Date(note.createdAt).toDateString()));
-    const activeDaysCount = uniqueDays.size;
-
-    if (this.totalNotes) this.totalNotes.textContent = totalNotesCount;
-    if (this.daysActive) this.daysActive.textContent = activeDaysCount;
-    if (this.totalWords) this.totalWords.textContent = totalWordsCount;
-    // The overview on the home page follows the notes
     if (this.welcomeScreen && !this.welcomeScreen.classList.contains('hidden'))
       this.renderDashboard();
   }

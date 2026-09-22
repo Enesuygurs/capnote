@@ -126,7 +126,6 @@ A container's inner items are rounded less than the container by its padding (a 
 
 | Role                       | Size / line height                  | Weight                               |
 | -------------------------- | ----------------------------------- | ------------------------------------ |
-| Welcome title              | `--fs-4xl` 28 / 36                  | 600                                  |
 | Page title                 | `--fs-3xl` 24 / 32                  | 600                                  |
 | Dialog and settings title  | `--fs-xl` 18 / 32                   | 600                                  |
 | Note text                  | `--fs-lg` 16 / 1.75                 | 400                                  |
@@ -188,7 +187,7 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Empty states** (`.empty-state`, `-large`): a centered muted icon, an optional title and a line of text.
 
-**Overview** (`07-note-screens.css`, the home page once there are notes): `.stat-tile`s (an icon in its own tone: notes blue, days green, streak amber, longest streak violet, words rose; a 24/32 number, a 12px label; no chart for a single number), then a `.calendar-card` and the chart cards side by side (`minmax(300px, 1fr)`). Calendar days are 36px+ squares 2px apart: today is filled with `--accent-color` at 90% (its text and mood icon in `--text-on-accent`), the chosen day an accent tint, a day with notes shows its mood icon in the mood's tone (or an accent dot). Charts follow one rule: one measure, one color (`--accent-color`); a bar's identity comes from its icon and name, never from its color alone. Bars are 8px tall and fully rounded; the month columns are rounded at the top only, with the current month labelled; every bar and column has a tooltip with its exact value.
+**Overview** (`07-note-screens.css`, the home page, also when there are no notes yet): `.stat-tile`s (an icon in its own tone: notes blue, days green, streak amber, longest streak violet, words rose; a 24/32 number, a 12px label; no chart for a single number), then a `.calendar-card` and the chart cards side by side (`minmax(300px, 1fr)`). Calendar days are 36px+ squares 2px apart: today is filled with `--accent-color` at 90% (its text and mood icon in `--text-on-accent`), the chosen day an accent tint, a day with notes shows its mood icon in the mood's tone (or an accent dot). Charts follow one rule: one measure, one color (`--accent-color`); a bar's identity comes from its icon and name, never from its color alone. Bars are 8px tall and fully rounded; the month columns are rounded at the top only, with the current month labelled; every bar and column has a tooltip with its exact value.
 
 **Note links** (`a.note-link`): an accent-tinted label (`--accent-tint`, `--accent-text`, `--radius-sm`); a link to a deleted note is `--field` with muted, crossed-out text. "Notes that link here" is a fixed bar between the note and its numbers (a divider above, the muted label "Linked notes:" with a link icon, then `.chip.backlink` buttons that scroll sideways); it shows only when another note links here.
 

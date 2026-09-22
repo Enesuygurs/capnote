@@ -223,35 +223,9 @@
 
       <!-- Main content -->
       <div class="main-content">
-        <!-- Welcome screen -->
-        <!-- Home: a welcome while there are no notes, an overview once there are -->
+        <!-- Home: the overview -->
         <div id="welcomeScreen" class="welcome-screen">
-          <div class="welcome-content" id="welcomeContent">
-            <img class="welcome-mark" src="../../assets/icons/source/capnote.svg" alt="" />
-            <h2 data-i18n="app.welcome">Capnote'a Hoş Geldiniz</h2>
-            <p data-i18n="app.welcomeSubtext">
-              Düşüncelerinizi yazın, anılarınızı kaydedin ve hayatınızı belgelendirin
-            </p>
-            <div class="quick-stats">
-              <div class="stat-item">
-                <span id="totalNotes">0</span>
-                <small data-i18n="stats.totalNotes">Toplam Not</small>
-              </div>
-              <div class="stat-item">
-                <span id="daysActive">0</span>
-                <small data-i18n="stats.daysActive">Aktif Gün</small>
-              </div>
-              <div class="stat-item">
-                <span id="totalWords">0</span>
-                <small data-i18n="stats.totalWords">Toplam Kelime</small>
-              </div>
-            </div>
-            <button id="startFirstNote" class="btn-primary btn-large">
-              <i class="fas fa-pen"></i> <span data-i18n="buttons.start">Yazmaya Başlayın</span>
-            </button>
-          </div>
-
-          <div id="dashboard" class="screen dashboard hidden">
+          <div id="dashboard" class="screen dashboard">
             <div class="page-header">
               <span class="page-icon tone-amber"><i class="fas fa-chart-simple"></i></span>
               <div class="page-heading">
