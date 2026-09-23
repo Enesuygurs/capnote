@@ -211,6 +211,54 @@ input:focus-visible + .toggle-slider {
   color: var(--text-strong);
 }
 
+/* ============ Checkboxes ============
+   A soft border instead of the browser's black one; a ticked box is filled with the accent and
+   carries a white tick. The settings switches and the weekday toggles hide theirs. */
+input[type='checkbox']:not(.toggle-switch input, .weekday-pill input) {
+  appearance: none;
+  flex: none;
+  display: inline-grid;
+  place-content: center;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  border: 1.5px solid color-mix(in srgb, var(--text-primary) 28%, transparent);
+  border-radius: 4px;
+  background: transparent;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):hover {
+  border-color: color-mix(in srgb, var(--accent-color) 70%, transparent);
+}
+
+input[type='checkbox']:not(.toggle-switch input, .weekday-pill input)::after {
+  content: '';
+  width: 8px;
+  height: 4px;
+  margin-top: -2px;
+  border: solid var(--text-on-accent);
+  border-width: 0 0 2px 2px;
+  transform: rotate(-45deg) scale(0);
+  transition: transform var(--transition-fast);
+}
+
+input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):checked {
+  border-color: var(--accent-color);
+  background: var(--accent-color);
+}
+
+input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):checked::after {
+  transform: rotate(-45deg) scale(1);
+}
+
+input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
 /* ============ Segmented control ============
    One choice out of a few; the chosen one is a raised segment */
 .segmented {
