@@ -35,12 +35,12 @@
   flex-shrink: 0;
 }
 
-/* The name in a dark tone warmed by the accent, the color of the icon, instead of plain black */
+/* The name in a soft tone warmed by the accent (the color of the icon), not black or white */
 .app-brand-name {
   font-size: var(--fs-xl);
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: color-mix(in srgb, var(--text-strong) 72%, var(--accent-color));
+  color: color-mix(in srgb, var(--text-secondary) 65%, var(--accent-color));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
