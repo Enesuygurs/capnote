@@ -301,7 +301,7 @@ export class UiFeature {
           this.hideContextMenu();
           this.sortDropdown?.classList.add('hidden');
           this.closeAllDropdowns?.();
-          this.hideReminderPicker?.();
+          this.hideReminderPickers?.();
           return;
         }
         // In the search or another field outside the note, Escape only leaves that field

@@ -215,13 +215,14 @@
     "recurrence": "Recurrence",
     "time": "Time",
     "add": "Set reminder",
-    "pick": "Pick a date and time",
     "hour": "Hour",
     "minute": "Minute",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
-    "clear": "Clear",
-    "done": "Done"
+    "done": "Done",
+    "date": "Date",
+    "pickDate": "Pick a date",
+    "pickTime": "Pick a time"
   },
   "notifications": {
     "title": "Notifications",

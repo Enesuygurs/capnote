@@ -168,16 +168,21 @@ export async function run() {
     a.selectNote(byTitle('Weekly plan'));
     await a.editCurrentNote();
     await shot(theme + '-04-editor');
-    // The reminder's date and time picker, open under its button
+    // The reminder's date picker, then its time picker, each open under its button
     const side = document.querySelector('.editor-sidebar');
-    a.reminderWhenBtn.scrollIntoView({ block: 'end' });
+    a.reminderDateBtn.scrollIntoView({ block: 'end' });
     await wait(200);
-    a.reminderWhenBtn.click();
+    a.reminderDateBtn.click();
     a.reminderPicker.querySelector('[data-day="2026-03-05"]').click();
-    a.reminderPicker.querySelector('.time-column[data-unit="hour"] [data-value="18"]').click();
-    a.reminderPicker.querySelector('.time-column[data-unit="minute"] [data-value="30"]').click();
+    a.reminderDateBtn.click();
+    await shot(theme + '-04-reminder-date');
+    a.reminderTimeBtn.click();
+    a.reminderTimePicker.querySelector('.time-column[data-unit="hour"] [data-value="18"]').click();
+    a.reminderTimePicker
+      .querySelector('.time-column[data-unit="minute"] [data-value="30"]')
+      .click();
     a.scrollTimeColumns();
-    await shot(theme + '-04-reminder-picker');
+    await shot(theme + '-04-reminder-time');
     a.resetReminderForm();
     side.scrollTop = 0;
     await wait(200);

@@ -395,17 +395,28 @@ export const NOTE_EDITOR = /* HTML */ `
         <div class="sidebar-section">
           <h4 class="panel-label" data-i18n="sections.reminder">Hatırlatma</h4>
           <div class="reminder-container">
-            <button
-              type="button"
-              id="reminderWhenBtn"
-              class="reminder-when-btn"
-              aria-haspopup="dialog"
-              aria-expanded="false"
-            >
-              <i class="fas fa-calendar-day"></i>
-              <span id="reminderWhenText" class="reminder-when-text">Tarih ve saat seçin</span>
-              <i class="fas fa-chevron-down reminder-when-chevron"></i>
-            </button>
+            <div class="reminder-when">
+              <button
+                type="button"
+                id="reminderDateBtn"
+                class="reminder-when-btn"
+                aria-haspopup="dialog"
+                aria-expanded="false"
+              >
+                <i class="fas fa-calendar-day"></i>
+                <span id="reminderDateText" class="reminder-when-text">Tarih</span>
+              </button>
+              <button
+                type="button"
+                id="reminderTimeBtn"
+                class="reminder-when-btn"
+                aria-haspopup="dialog"
+                aria-expanded="false"
+              >
+                <i class="fas fa-clock"></i>
+                <span id="reminderTimeText" class="reminder-when-text">Saat</span>
+              </button>
+            </div>
             <input type="hidden" id="reminderDatetime" class="reminder-datetime-input" />
             <div class="reminder-repeat">
               <span class="reminder-repeat-label">

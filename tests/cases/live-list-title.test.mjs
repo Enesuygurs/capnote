@@ -12,7 +12,7 @@ export async function run() {
   a.noteTitle.value = 'Typed';
   a.noteTitle.dispatchEvent(new Event('input'));
   r.typed = listTitle();
-  a.saveNote(true);
+  a.saveNote();
   await a.editCurrentNote();
   a.noteTitle.value = 'Changed';
   a.noteTitle.dispatchEvent(new Event('input'));
@@ -21,13 +21,13 @@ export async function run() {
 
   await a.editCurrentNote();
   a.dashboardToday = '2026-03-02T12:00:00';
-  a.reminderWhenBtn.click();
+  a.reminderDateBtn.click();
   a.reminderPicker.querySelector('[data-day="2026-03-05"]').click();
   a.dashboardToday = null;
   a.createNoteFromTemplate('weekly');
   r.pickerClosed = a.reminderPicker.classList.contains('hidden');
   r.formEmpty =
-    a.reminderDatetime.value === '' && !a.reminderWhenBtn.classList.contains('has-value');
+    a.reminderDatetime.value === '' && !a.reminderDateBtn.classList.contains('has-value');
   a.cancelEdit();
   return r;
 }

@@ -195,9 +195,13 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Split button**: "New note" and its template button share one control at the small size (32px): 2px apart, the inner corners square.
 
-**Reminder form** (editor side panel): a field-style button with the chosen day and time ("Thu 5 March · 18:30", or a muted "Pick a date and time") opens the **date picker**; then "Repeat" as a small `.segmented`, the weekdays as seven round toggles (the chosen ones `--accent-color`) and a full-width primary button. The note's reminders are cards: an accent-tinted icon (a bell, or arrows when it repeats), the day in bold and the time and repeat in muted text.
+**Reminder form** (editor side panel): two field-style buttons side by side, the day ("Thu 5 March", or a muted "Date") and the time ("18:30", or a muted "Time", as wide as its text), each opening its own picker; then "Repeat" as a small `.segmented`, the weekdays as seven round toggles (the chosen ones `--accent-color`) and a full-width primary button. A day alone rings at 09:00; a time alone goes on its next occurrence. The note's reminders are cards: an accent-tinted icon (a bell, or arrows when it repeats), the day in bold and the time and repeat in muted text.
 
-**Date picker** (`.date-picker`, a popover under its button, or above it when there is no room): the month and year with previous/next buttons, a Monday-first month of 28px round days (today in bold `--accent-text`, the chosen day `--accent-color`, days before today faded and disabled), then a divider and the time as two scrolling columns, hours and minutes in 5-minute steps, three options tall, the chosen one `--accent-color` and kept in the middle. Clear and Done close it; so do a click outside, Escape and scrolling the panel.
+**Date picker** (`.date-picker`) and **time picker** (`.time-picker`): popovers under their button (above it when there is no room), their right edge on the button's; one open at a time, closed by a click outside, Escape and scrolling the panel. The date picker: the month and year with previous/next buttons and a Monday-first month of 28px round days (today in bold `--accent-text`, the chosen day `--accent-color`, days before today faded and disabled); choosing a day closes it. The time picker: hour and minute columns (5-minute steps) under small labels, five options tall, the chosen one `--accent-color` and kept in the middle, then a full-width Done button.
+
+**Checkboxes** (every one except the settings switches and the weekday toggles): 16px, a 1.5px border in the text color at 28% (not the browser's black), 4px corners; ticked, filled with `--accent-color` with a white tick.
+
+**App name** (sidebar, next to the icon): `--text-secondary` warmed with 35% of the accent, a soft tone instead of black or white.
 
 **Editor header**: the view controls (Markdown and HTML preview, the side panel) sit with Cancel and Save, so the formatting toolbar holds only content tools (two rows at the smallest window).
 

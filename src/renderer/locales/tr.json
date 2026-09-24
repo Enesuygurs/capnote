@@ -215,13 +215,14 @@
     "recurrence": "Tekrarlama",
     "time": "Saat",
     "add": "Hatırlatma kur",
-    "pick": "Tarih ve saat seçin",
     "hour": "Saat",
     "minute": "Dakika",
     "prevMonth": "Önceki ay",
     "nextMonth": "Sonraki ay",
-    "clear": "Temizle",
-    "done": "Tamam"
+    "done": "Tamam",
+    "date": "Tarih",
+    "pickDate": "Tarih seçin",
+    "pickTime": "Saat seçin"
   },
   "notifications": {
     "title": "Bildirimler",

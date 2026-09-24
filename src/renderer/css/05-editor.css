@@ -281,12 +281,20 @@
 }
 
 /* ============ Reminder form ============
-   The day and time (a button that opens the picker), how often, on which days, and the button */
+   The day and the time (each a button that opens its picker), how often, on which days, and the
+   button */
+.reminder-when {
+  display: grid;
+  /* The time takes what "00:00" needs; the day the rest */
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-1);
+}
+
 .reminder-when-btn {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  width: 100%;
+  min-width: 0;
   height: var(--control-md);
   padding: 0 var(--space-3);
   border-radius: var(--radius-md);
@@ -312,6 +320,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
 }
 
 .reminder-when-btn.has-value {
@@ -319,21 +328,12 @@
   font-weight: 500;
 }
 
-.reminder-when-btn.has-value > i:first-child {
+.reminder-when-btn.has-value > i {
   color: var(--accent-color);
 }
 
-.reminder-when-chevron {
-  font-size: var(--fs-xs);
-  transition: transform var(--transition-fast);
-}
-
-.reminder-when-btn[aria-expanded='true'] .reminder-when-chevron {
-  transform: rotate(180deg);
-}
-
-/* ============ Date and time picker ============
-   A month (weeks from Monday), then the hour and minute as scrolling columns */
+/* ============ Date picker ============
+   A month, weeks from Monday; choosing a day closes it */
 .menu.date-picker {
   width: 264px;
   gap: var(--space-2);
@@ -415,47 +415,48 @@
   font-weight: 600;
 }
 
-.date-picker-time {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-  padding: var(--space-2) 0 0 var(--space-1);
-  border-top: 1px solid var(--divider);
-}
-
-.date-picker-time-label {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--text-secondary);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-}
-
-.date-picker-time-label i {
-  color: var(--text-muted);
+/* ============ Time picker ============
+   The hour and the minute as scrolling columns, five options tall, then Done */
+.menu.time-picker {
+  gap: var(--space-3);
+  padding: var(--space-3);
 }
 
 .time-columns {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: var(--space-1);
 }
 
+.time-column-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.time-column-label {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .time-separator {
+  align-self: center;
+  margin-top: var(--space-4);
   color: var(--text-muted);
   font-weight: 600;
 }
 
-/* Three options tall; the list scrolls without a bar */
+/* The list scrolls without a bar */
 .time-column {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  width: 52px;
-  height: calc(var(--control-xs) * 3 + 8px);
+  width: 64px;
+  height: calc(var(--control-xs) * 5 + 12px);
   padding: 2px;
   overflow-y: auto;
   scrollbar-width: none;
@@ -488,10 +489,8 @@
   font-weight: 600;
 }
 
-.date-picker-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--space-2);
+.time-picker .btn-primary {
+  width: 100%;
 }
 
 /* How often: a small segmented control under its label */
