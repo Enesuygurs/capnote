@@ -89,7 +89,7 @@ export const NOTE_DIALOGS = /* HTML */ `
     <div class="date-picker-days"></div>
   </div>
 
-  <!-- The time of a reminder: hour and minute columns -->
+  <!-- The time of a reminder: the chosen time large, then the hours and the minutes as grids -->
   <div
     id="reminderTimePicker"
     class="context-menu menu time-picker hidden"
@@ -97,20 +97,27 @@ export const NOTE_DIALOGS = /* HTML */ `
     data-i18n-aria-label="reminder.pickTime"
     aria-label="Saat seçin"
   >
-    <div class="time-columns">
-      <div class="time-column-group">
-        <span class="time-column-label" data-i18n="reminder.hour">Saat</span>
-        <div class="time-column" data-unit="hour"></div>
-      </div>
-      <span class="time-separator">:</span>
-      <div class="time-column-group">
-        <span class="time-column-label" data-i18n="reminder.minute">Dakika</span>
-        <div class="time-column" data-unit="minute"></div>
-      </div>
+    <div class="time-display" aria-live="polite">
+      <span class="time-display-part" data-unit="hour">--</span>
+      <span class="time-display-colon">:</span>
+      <span class="time-display-part" data-unit="minute">--</span>
     </div>
-    <button type="button" class="btn-primary btn-small" data-action="done">
-      <span data-i18n="reminder.done">Tamam</span>
-    </button>
+    <div class="time-section">
+      <span class="time-section-label" data-i18n="reminder.hour">Saat</span>
+      <div class="time-grid" data-unit="hour"></div>
+    </div>
+    <div class="time-section">
+      <span class="time-section-label" data-i18n="reminder.minute">Dakika</span>
+      <div class="time-grid" data-unit="minute"></div>
+    </div>
+    <div class="time-picker-footer">
+      <button type="button" class="btn-secondary btn-small" data-action="clear">
+        <span data-i18n="reminder.clear">Temizle</span>
+      </button>
+      <button type="button" class="btn-primary btn-small" data-action="done">
+        <span data-i18n="reminder.done">Tamam</span>
+      </button>
+    </div>
   </div>
 
   <!-- Notes suggested while typing "[[" in the editor -->
