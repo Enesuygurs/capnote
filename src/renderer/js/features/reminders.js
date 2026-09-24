@@ -158,8 +158,19 @@ export class RemindersFeature {
   }
 
   async addReminder() {
-    if (!this.currentNote || !this.reminderDatetime?.value) {
-      this.showNotification(i18n.t('messages.selectDateTime'), 'error');
+    if (!this.currentNote) return;
+    // Both the day and the time must be chosen; say which is missing and point at it
+    if (!this.reminderDatetime?.value) {
+      const noDay = !this.reminderDay;
+      const noTime = !this.reminderTimeValue?.();
+      const key =
+        noDay && noTime
+          ? 'messages.selectDateTime'
+          : noDay
+            ? 'reminder.needDate'
+            : 'reminder.needTime';
+      this.showNotification(i18n.t(key), 'warning');
+      this.flagMissingReminderParts?.();
       return;
     }
 

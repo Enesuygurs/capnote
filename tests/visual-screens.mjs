@@ -177,11 +177,8 @@ export async function run() {
     a.reminderDateBtn.click();
     await shot(theme + '-04-reminder-date');
     a.reminderTimeBtn.click();
-    a.reminderTimePicker.querySelector('.time-column[data-unit="hour"] [data-value="18"]').click();
-    a.reminderTimePicker
-      .querySelector('.time-column[data-unit="minute"] [data-value="30"]')
-      .click();
-    a.scrollTimeColumns();
+    a.reminderTimePicker.querySelector('.time-grid[data-unit="hour"] [data-value="18"]').click();
+    a.reminderTimePicker.querySelector('.time-grid[data-unit="minute"] [data-value="30"]').click();
     await shot(theme + '-04-reminder-time');
     a.resetReminderForm();
     side.scrollTop = 0;

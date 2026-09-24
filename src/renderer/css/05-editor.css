@@ -416,81 +416,93 @@
 }
 
 /* ============ Time picker ============
-   The hour and the minute as scrolling columns, five options tall, then Done */
+   The chosen time large on top ("--" for a part still to choose), then the hours and the minutes
+   as grids of chips, then Clear and Done */
 .menu.time-picker {
+  width: 264px;
   gap: var(--space-3);
   padding: var(--space-3);
 }
 
-.time-columns {
+.time-display {
   display: flex;
-  align-items: flex-end;
+  align-items: baseline;
+  justify-content: center;
   gap: var(--space-1);
+  padding: var(--space-2) 0;
+  border-radius: var(--radius-md);
+  background: var(--accent-tint);
+  color: var(--accent-text);
+  font-size: var(--fs-5xl);
+  font-weight: 600;
+  line-height: 40px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
 }
 
-.time-column-group {
+.time-display-part.is-empty,
+.time-display-colon {
+  opacity: 0.45;
+}
+
+.time-section {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
 }
 
-.time-column-label {
+.time-section-label {
+  padding-left: 2px;
   color: var(--text-muted);
   font-size: var(--fs-xs);
   font-weight: 600;
-  text-align: center;
   text-transform: uppercase;
 }
 
-.time-separator {
-  align-self: center;
-  margin-top: var(--space-4);
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-/* The list scrolls without a bar */
-.time-column {
-  position: relative;
-  display: flex;
-  flex-direction: column;
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 2px;
-  width: 64px;
-  height: calc(var(--control-xs) * 5 + 12px);
-  padding: 2px;
-  overflow-y: auto;
-  scrollbar-width: none;
-  border-radius: var(--radius-md);
-  background: var(--field);
-}
-
-.time-column::-webkit-scrollbar {
-  display: none;
 }
 
 .time-option {
-  flex: none;
   height: var(--control-xs);
   border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  font-size: var(--fs-md);
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
   font-variant-numeric: tabular-nums;
   cursor: pointer;
+  transition: var(--transition-fast);
 }
 
-.time-option:hover {
-  background: var(--field-hover);
+.time-option:hover:not(:disabled) {
+  background: var(--tint-hover);
   color: var(--text-strong);
 }
 
-.time-option.is-selected {
+.time-option:disabled {
+  color: var(--text-muted);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.time-option.is-selected,
+.time-option.is-selected:hover {
   background: var(--accent-color);
   color: var(--text-on-accent);
   font-weight: 600;
 }
 
-.time-picker .btn-primary {
-  width: 100%;
+.time-picker-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+/* A part still to choose when the reminder is set: a red ring for a moment */
+.reminder-when-btn.is-missing {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--error-color) 60%, transparent);
+  animation: row-shake 0.4s ease;
 }
 
 /* How often: a small segmented control under its label */

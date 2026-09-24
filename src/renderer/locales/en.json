@@ -222,7 +222,10 @@
     "done": "Done",
     "date": "Date",
     "pickDate": "Pick a date",
-    "pickTime": "Pick a time"
+    "pickTime": "Pick a time",
+    "clear": "Clear",
+    "needDate": "Please pick a date",
+    "needTime": "Please pick a time"
   },
   "notifications": {
     "title": "Notifications",
