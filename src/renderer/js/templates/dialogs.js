@@ -54,13 +54,13 @@ export const NOTE_DIALOGS = /* HTML */ `
     </button>
   </div>
 
-  <!-- The day and time of a reminder: a month calendar, then hour and minute columns -->
+  <!-- The day of a reminder: a month calendar -->
   <div
     id="reminderPicker"
     class="context-menu menu date-picker hidden"
     role="dialog"
-    data-i18n-aria-label="reminder.pick"
-    aria-label="Tarih ve saat seçin"
+    data-i18n-aria-label="reminder.pickDate"
+    aria-label="Tarih seçin"
   >
     <div class="date-picker-header">
       <span class="date-picker-title"></span>
@@ -87,34 +87,30 @@ export const NOTE_DIALOGS = /* HTML */ `
     </div>
     <div class="date-picker-weekdays"></div>
     <div class="date-picker-days"></div>
-    <div class="date-picker-time">
-      <span class="date-picker-time-label">
-        <i class="fas fa-clock"></i> <span data-i18n="reminder.time">Saat</span>
-      </span>
-      <div class="time-columns">
-        <div
-          class="time-column"
-          data-unit="hour"
-          data-i18n-aria-label="reminder.hour"
-          aria-label="Saat"
-        ></div>
-        <span class="time-separator">:</span>
-        <div
-          class="time-column"
-          data-unit="minute"
-          data-i18n-aria-label="reminder.minute"
-          aria-label="Dakika"
-        ></div>
+  </div>
+
+  <!-- The time of a reminder: hour and minute columns -->
+  <div
+    id="reminderTimePicker"
+    class="context-menu menu time-picker hidden"
+    role="dialog"
+    data-i18n-aria-label="reminder.pickTime"
+    aria-label="Saat seçin"
+  >
+    <div class="time-columns">
+      <div class="time-column-group">
+        <span class="time-column-label" data-i18n="reminder.hour">Saat</span>
+        <div class="time-column" data-unit="hour"></div>
+      </div>
+      <span class="time-separator">:</span>
+      <div class="time-column-group">
+        <span class="time-column-label" data-i18n="reminder.minute">Dakika</span>
+        <div class="time-column" data-unit="minute"></div>
       </div>
     </div>
-    <div class="date-picker-footer">
-      <button type="button" class="btn-secondary btn-small" data-action="clear">
-        <span data-i18n="reminder.clear">Temizle</span>
-      </button>
-      <button type="button" class="btn-primary btn-small" data-action="done">
-        <span data-i18n="reminder.done">Tamam</span>
-      </button>
-    </div>
+    <button type="button" class="btn-primary btn-small" data-action="done">
+      <span data-i18n="reminder.done">Tamam</span>
+    </button>
   </div>
 
   <!-- Notes suggested while typing "[[" in the editor -->

@@ -1,6 +1,6 @@
-// The reminder form in the editor's side panel: one button that opens a date and time picker (a
-// month calendar with hour and minute columns), how often it repeats and on which days. It fills
-// the hidden #reminderDatetime and #reminderRecurrence fields that addReminder reads.
+// The reminder form in the editor's side panel: a date button (a month calendar) and a time button
+// (hour and minute columns), how often it repeats and on which days. It fills the hidden
+// #reminderDatetime and #reminderRecurrence fields that addReminder reads.
 
 import { i18n } from '../i18n.js';
 
@@ -12,45 +12,76 @@ export class ReminderFormFeature {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
   }
 
-  // The chosen moment as a Date, or null
-  reminderMoment() {
-    const value = this.reminderDatetime.value;
-    return value ? new Date(value) : null;
-  }
-
-  setReminderMoment(date) {
-    this.reminderDatetime.value = date
-      ? `${this.dateKey(date)}T${pad(date.getHours())}:${pad(date.getMinutes())}`
-      : '';
+  // The hidden field addReminder reads: the chosen day at the chosen time
+  syncReminderDatetime() {
+    const { reminderDay: day, reminderTime: time } = this;
+    this.reminderDatetime.value = day && time ? `${day}T${pad(time.hour)}:${pad(time.minute)}` : '';
     this.renderReminderWhen();
   }
 
-  // The button shows the chosen day and time ("Tue 3 March · 09:00")
-  renderReminderWhen() {
-    const moment = this.reminderMoment();
-    const locale = this.getLocale();
-    this.reminderWhenText.textContent = moment
-      ? `${moment.toLocaleDateString(locale, { weekday: 'short', day: 'numeric', month: 'long' })} · ${moment.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}`
-      : i18n.t('reminder.pick');
-    this.reminderWhenBtn.classList.toggle('has-value', !!moment);
+  setReminderMoment(date) {
+    this.reminderDay = date ? this.dateKey(date) : null;
+    this.reminderTime = date ? { hour: date.getHours(), minute: date.getMinutes() } : null;
+    this.syncReminderDatetime();
   }
 
-  // ============ The picker ============
+  // The buttons show the chosen day ("Thu 5 March") and time ("18:30")
+  renderReminderWhen() {
+    const { reminderDay: day, reminderTime: time } = this;
+    const date = day ? new Date(`${day}T00:00`) : null;
+    this.reminderDateBtn.querySelector('.reminder-when-text').textContent = date
+      ? date.toLocaleDateString(this.getLocale(), {
+          weekday: 'short',
+          day: 'numeric',
+          month: 'long',
+        })
+      : i18n.t('reminder.date');
+    this.reminderTimeBtn.querySelector('.reminder-when-text').textContent = time
+      ? `${pad(time.hour)}:${pad(time.minute)}`
+      : i18n.t('reminder.time');
+    this.reminderDateBtn.classList.toggle('has-value', !!day);
+    this.reminderTimeBtn.classList.toggle('has-value', !!time);
+  }
 
-  showReminderPicker() {
-    const moment = this.reminderMoment();
-    const now = this.dashboardNow();
-    this.pickerDay = moment ? this.dateKey(moment) : null;
-    this.pickerHour = moment ? moment.getHours() : 9;
-    this.pickerMinute = moment ? moment.getMinutes() : 0;
-    const shown = moment || now;
-    this.pickerMonth = new Date(shown.getFullYear(), shown.getMonth(), 1);
-    this.renderReminderPicker();
+  // A day without a time rings at 09:00
+  chooseReminderDay(key) {
+    this.reminderDay = key;
+    if (!this.reminderTime) this.reminderTime = { hour: 9, minute: 0 };
+    this.syncReminderDatetime();
+    this.hideReminderPickers();
+  }
 
-    // Under the button, or above it when there is no room below
-    const picker = this.reminderPicker;
+  // A time without a day goes on the next time it comes (today, or tomorrow when it has passed)
+  chooseReminderTime(unit, value) {
+    this.reminderTime = { hour: 9, minute: 0, ...this.reminderTime, [unit]: value };
+    if (!this.reminderDay) {
+      const now = this.dashboardNow();
+      const { hour, minute } = this.reminderTime;
+      const at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute);
+      if (at <= now) at.setDate(at.getDate() + 1);
+      this.reminderDay = this.dateKey(at);
+    }
+    this.renderTimePicker();
+    this.syncReminderDatetime();
+  }
+
+  // ============ The pickers ============
+
+  // Open a picker under its button (above it when there is no room), its right edge on the
+  // button's; a second click on the button closes it
+  toggleReminderPicker(picker, button) {
+    const wasOpen = !picker.classList.contains('hidden');
+    this.hideReminderPickers();
+    if (wasOpen) return;
+    if (picker === this.reminderPicker) {
+      const shown = this.reminderDay ? new Date(`${this.reminderDay}T00:00`) : this.dashboardNow();
+      this.pickerMonth = new Date(shown.getFullYear(), shown.getMonth(), 1);
+      this.renderDatePicker();
+    } else {
+      this.renderTimePicker();
+    }
     picker.classList.remove('hidden');
-    const rect = this.reminderWhenBtn.getBoundingClientRect();
+    const rect = button.getBoundingClientRect();
     const { width, height } = picker.getBoundingClientRect();
     const margin = 8;
     const below = rect.bottom + 4;
@@ -58,24 +89,24 @@ export class ReminderFormFeature {
       below + height <= window.innerHeight - margin
         ? below
         : Math.max(margin, rect.top - 4 - height);
-    // Its right edge lines up with the button's
     picker.style.left = `${Math.max(margin, Math.min(rect.right - width, window.innerWidth - width - margin))}px`;
     picker.style.top = `${top}px`;
-    this.reminderWhenBtn.setAttribute('aria-expanded', 'true');
-    this.scrollTimeColumns();
+    button.setAttribute('aria-expanded', 'true');
+    if (picker === this.reminderTimePicker) this.scrollTimeColumns();
   }
 
-  hideReminderPicker() {
-    if (!this.reminderPicker || this.reminderPicker.classList.contains('hidden')) return;
-    this.reminderPicker.classList.add('hidden');
-    this.reminderWhenBtn.setAttribute('aria-expanded', 'false');
+  hideReminderPickers() {
+    [
+      [this.reminderPicker, this.reminderDateBtn],
+      [this.reminderTimePicker, this.reminderTimeBtn],
+    ].forEach(([picker, button]) => {
+      if (!picker || picker.classList.contains('hidden')) return;
+      picker.classList.add('hidden');
+      button.setAttribute('aria-expanded', 'false');
+    });
   }
 
-  isReminderPickerOpen() {
-    return !this.reminderPicker.classList.contains('hidden');
-  }
-
-  renderReminderPicker() {
+  renderDatePicker() {
     const locale = this.getLocale();
     const picker = this.reminderPicker;
     const month = this.pickerMonth;
@@ -109,18 +140,22 @@ export class ReminderFormFeature {
       day.textContent = date.getDate();
       day.classList.toggle('is-other-month', date.getMonth() !== month.getMonth());
       day.classList.toggle('is-today', key === today);
-      day.classList.toggle('is-selected', key === this.pickerDay);
+      day.classList.toggle('is-selected', key === this.reminderDay);
       // A reminder rings in the future: days before today cannot be chosen
       day.disabled = key < today;
       days.appendChild(day);
     }
+  }
 
-    this.renderTimeColumn('hour', 24, 1, this.pickerHour);
-    this.renderTimeColumn('minute', 60 / MINUTE_STEP, MINUTE_STEP, this.pickerMinute);
+  renderTimePicker() {
+    const time = this.reminderTime;
+    this.renderTimeColumn('hour', 24, 1, time ? time.hour : null);
+    this.renderTimeColumn('minute', 60 / MINUTE_STEP, MINUTE_STEP, time ? time.minute : null);
   }
 
   renderTimeColumn(unit, count, step, chosen) {
-    const column = this.reminderPicker.querySelector(`.time-column[data-unit="${unit}"]`);
+    const column = this.reminderTimePicker.querySelector(`.time-column[data-unit="${unit}"]`);
+    const scroll = column.scrollTop;
     column.innerHTML = '';
     for (let i = 0; i < count; i++) {
       const value = i * step;
@@ -132,52 +167,18 @@ export class ReminderFormFeature {
       item.classList.toggle('is-selected', value === chosen);
       column.appendChild(item);
     }
+    column.scrollTop = scroll;
   }
 
-  // The chosen hour and minute sit in the middle of their columns
+  // The chosen hour and minute (09:00 when nothing is chosen) sit in the middle of their columns
   scrollTimeColumns() {
-    this.reminderPicker.querySelectorAll('.time-column').forEach((column) => {
-      const item = column.querySelector('.is-selected');
+    const anchor = this.reminderTime || { hour: 9, minute: 0 };
+    this.reminderTimePicker.querySelectorAll('.time-column').forEach((column) => {
+      const item = column.querySelector(
+        `.time-option[data-value="${anchor[column.dataset.unit]}"]`
+      );
       if (item) column.scrollTop = item.offsetTop - (column.clientHeight - item.offsetHeight) / 2;
     });
-  }
-
-  // Write the picker's day and time to the form; a time picked before a day goes on the next
-  // time it comes (today, or tomorrow when it has passed)
-  applyReminderPicker() {
-    if (!this.pickerDay) {
-      const now = this.dashboardNow();
-      const at = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        this.pickerHour,
-        this.pickerMinute
-      );
-      if (at <= now) at.setDate(at.getDate() + 1);
-      this.pickerDay = this.dateKey(at);
-    }
-    const [y, m, d] = this.pickerDay.split('-').map(Number);
-    this.setReminderMoment(new Date(y, m - 1, d, this.pickerHour, this.pickerMinute));
-  }
-
-  chooseReminderDay(key) {
-    this.pickerDay = key;
-    this.reminderPicker.querySelectorAll('.date-picker-day').forEach((day) => {
-      day.classList.toggle('is-selected', day.dataset.day === key);
-    });
-    this.applyReminderPicker();
-  }
-
-  chooseReminderTime(unit, value) {
-    if (unit === 'hour') this.pickerHour = value;
-    else this.pickerMinute = value;
-    this.reminderPicker
-      .querySelectorAll(`.time-column[data-unit="${unit}"] .time-option`)
-      .forEach((item) =>
-        item.classList.toggle('is-selected', Number(item.dataset.value) === value)
-      );
-    this.applyReminderPicker();
   }
 
   // ============ Repeat ============
@@ -194,7 +195,7 @@ export class ReminderFormFeature {
 
   // An empty form for the next reminder
   resetReminderForm() {
-    this.hideReminderPicker();
+    this.hideReminderPickers();
     this.setReminderMoment(null);
     this.setReminderRecurrence('none');
     document.querySelectorAll('#reminderWeekdays .weekday-checkbox').forEach((box) => {
@@ -203,37 +204,39 @@ export class ReminderFormFeature {
   }
 
   setupReminderForm() {
-    const picker = this.reminderPicker;
-    this.reminderWhenBtn.addEventListener('click', (e) => {
+    this.reminderDateBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (this.isReminderPickerOpen()) this.hideReminderPicker();
-      else this.showReminderPicker();
+      this.toggleReminderPicker(this.reminderPicker, this.reminderDateBtn);
     });
-    picker.addEventListener('click', (e) => {
+    this.reminderTimeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.toggleReminderPicker(this.reminderTimePicker, this.reminderTimeBtn);
+    });
+    this.reminderPicker.addEventListener('click', (e) => {
       e.stopPropagation();
       const day = e.target.closest('.date-picker-day');
-      const time = e.target.closest('.time-option');
       const step = e.target.closest('[data-month]');
-      const action = e.target.closest('[data-action]')?.dataset.action;
       if (day && !day.disabled) this.chooseReminderDay(day.dataset.day);
-      else if (time)
-        this.chooseReminderTime(time.parentElement.dataset.unit, Number(time.dataset.value));
       else if (step) {
         this.pickerMonth.setMonth(this.pickerMonth.getMonth() + Number(step.dataset.month));
-        this.renderReminderPicker();
-      } else if (action === 'clear') {
-        this.setReminderMoment(null);
-        this.hideReminderPicker();
-      } else if (action === 'done') {
-        this.hideReminderPicker();
+        this.renderDatePicker();
       }
     });
-    document.addEventListener('click', () => this.hideReminderPicker());
-    window.addEventListener('resize', () => this.hideReminderPicker());
-    // It stays next to its button: scrolling the panel closes it
-    this.reminderWhenBtn
+    this.reminderTimePicker.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const time = e.target.closest('.time-option');
+      if (time) {
+        this.chooseReminderTime(time.parentElement.dataset.unit, Number(time.dataset.value));
+      } else if (e.target.closest('[data-action="done"]')) {
+        this.hideReminderPickers();
+      }
+    });
+    document.addEventListener('click', () => this.hideReminderPickers());
+    window.addEventListener('resize', () => this.hideReminderPickers());
+    // They stay next to their buttons: scrolling the panel closes them
+    this.reminderDateBtn
       .closest('.editor-sidebar')
-      ?.addEventListener('scroll', () => this.hideReminderPicker());
+      ?.addEventListener('scroll', () => this.hideReminderPickers());
 
     this.reminderRepeat.querySelectorAll('.segment').forEach((segment) => {
       segment.addEventListener('click', () => this.setReminderRecurrence(segment.dataset.value));

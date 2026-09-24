@@ -1,45 +1,63 @@
-// The reminder form: the picker's day, hour and minute fill the reminder's time, days before today
-// cannot be picked, the repeat segments and weekday toggles fill what the reminder is saved with,
-// and the form is empty again afterwards
+// The reminder form: the date button opens a calendar (choosing a day closes it; days before today
+// cannot be chosen), the time button opens hour and minute columns; together they fill the
+// reminder's time. The repeat segments and weekday toggles fill what the reminder is saved with,
+// and the form is empty again afterwards.
 export async function run() {
   const a = window.app;
   a.createNewNote();
   a.noteTitle.value = 'Plan';
   a.saveNote(true);
   const r = {};
-  const picker = a.reminderPicker;
-  const day = (key) => picker.querySelector(`.date-picker-day[data-day="${key}"]`);
+  const datePicker = a.reminderPicker;
+  const timePicker = a.reminderTimePicker;
+  const open = (picker) => !picker.classList.contains('hidden');
+  const day = (key) => datePicker.querySelector(`.date-picker-day[data-day="${key}"]`);
   const time = (unit, value) =>
-    picker.querySelector(`.time-column[data-unit="${unit}"] [data-value="${value}"]`);
+    timePicker.querySelector(`.time-column[data-unit="${unit}"] [data-value="${value}"]`);
 
   // A fixed "now": Monday 2 March 2026, 12:00
   a.dashboardToday = '2026-03-02T12:00:00';
-  a.reminderWhenBtn.click();
-  r.open = a.isReminderPickerOpen();
-  r.yesterdayDisabled = day('2026-03-01').disabled;
-  r.todayMarked = day('2026-03-02').classList.contains('is-today');
+
   // A time before a day: it goes on the next time it comes (10:00 has passed today)
+  a.reminderTimeBtn.click();
+  r.timeOpen = open(timePicker) && !open(datePicker);
   time('hour', 10).click();
   r.timeFirst = a.reminderDatetime.value;
+  r.timeStaysOpen = open(timePicker);
+  timePicker.querySelector('[data-action="done"]').click();
+  r.timeClosed = !open(timePicker);
+
+  // The day: past days are disabled, choosing one closes the calendar
+  a.reminderDateBtn.click();
+  r.dateOpen = open(datePicker) && !open(timePicker);
+  r.yesterdayDisabled = day('2026-03-01').disabled;
+  r.todayMarked = day('2026-03-02').classList.contains('is-today');
   day('2026-03-05').click();
+  r.dateClosed = !open(datePicker);
+  r.afterDay = a.reminderDatetime.value;
+
+  // Changing the time keeps the day
+  a.reminderTimeBtn.click();
   time('hour', 18).click();
   time('minute', 45).click();
   r.chosen = a.reminderDatetime.value;
-  r.selected = picker.querySelector('.date-picker-day.is-selected').dataset.day;
-  r.buttonShowsIt = a.reminderWhenBtn.classList.contains('has-value');
-  // Next month
-  picker.querySelector('[data-month="1"]').click();
-  r.nextMonthFirst = picker.querySelector('.date-picker-day:not(.is-other-month)').dataset.day;
-  picker.querySelector('[data-action="done"]').click();
-  r.closed = !a.isReminderPickerOpen();
-  // Clear empties it
-  a.reminderWhenBtn.click();
-  picker.querySelector('[data-action="clear"]').click();
-  r.cleared = a.reminderDatetime.value;
-  // A click elsewhere closes it
-  a.reminderWhenBtn.click();
+  r.buttons = [
+    a.reminderDateBtn.classList.contains('has-value'),
+    a.reminderTimeBtn.querySelector('.reminder-when-text').textContent,
+  ];
+  // Opening the other picker closes this one; a click elsewhere closes it
+  a.reminderDateBtn.click();
+  r.oneAtATime = open(datePicker) && !open(timePicker);
+  datePicker.querySelector('[data-month="1"]').click();
+  r.nextMonthFirst = datePicker.querySelector('.date-picker-day:not(.is-other-month)').dataset.day;
   document.body.click();
-  r.outsideCloses = !a.isReminderPickerOpen();
+  r.outsideCloses = !open(datePicker);
+
+  // A day alone rings at 09:00
+  a.resetReminderForm();
+  a.reminderDateBtn.click();
+  day('2026-03-06').click();
+  r.dayAlone = a.reminderDatetime.value;
   a.dashboardToday = null;
 
   // A real reminder: weekly on Monday and Friday, from tomorrow
@@ -59,7 +77,10 @@ export async function run() {
   r.cards = a.noteRemindersList.querySelectorAll('.note-reminder-item').length;
   r.reset = {
     datetime: a.reminderDatetime.value,
-    button: a.reminderWhenBtn.classList.contains('has-value'),
+    buttons: [
+      a.reminderDateBtn.classList.contains('has-value'),
+      a.reminderTimeBtn.classList.contains('has-value'),
+    ],
     recurrence: a.reminderRecurrence.value,
     weekdaysHidden: document.getElementById('reminderWeekdays').classList.contains('hidden'),
     checked: document.querySelectorAll('#reminderWeekdays .weekday-checkbox:checked').length,
@@ -69,20 +90,30 @@ export async function run() {
 }
 
 export const expected = {
-  open: true,
+  timeOpen: true,
+  timeFirst: '2026-03-03T10:00',
+  timeStaysOpen: true,
+  timeClosed: true,
+  dateOpen: true,
   yesterdayDisabled: true,
   todayMarked: true,
-  timeFirst: '2026-03-03T10:00',
+  dateClosed: true,
+  afterDay: '2026-03-05T10:00',
   chosen: '2026-03-05T18:45',
-  selected: '2026-03-05',
-  buttonShowsIt: true,
+  buttons: [true, '18:45'],
+  oneAtATime: true,
   nextMonthFirst: '2026-04-01',
-  closed: true,
-  cleared: '',
   outsideCloses: true,
+  dayAlone: '2026-03-06T09:00',
   recurrence: 'weekly',
   weekdaysShown: true,
   saved: { recurrence: 'weekly', days: [1, 5] },
   cards: 1,
-  reset: { datetime: '', button: false, recurrence: 'none', weekdaysHidden: true, checked: 0 },
+  reset: {
+    datetime: '',
+    buttons: [false, false],
+    recurrence: 'none',
+    weekdaysHidden: true,
+    checked: 0,
+  },
 };

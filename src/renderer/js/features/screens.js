@@ -5,7 +5,7 @@ export class ScreensFeature {
   showScreen(name) {
     this.hideEmojiPanel();
     this.hideNoteLinkMenu?.();
-    this.hideReminderPicker?.();
+    this.hideReminderPickers?.();
 
     const screens = {
       welcome: this.welcomeScreen,
