@@ -1,5 +1,5 @@
 // The reminder form in the editor's side panel: a date button (a month calendar) and a time button
-// (the hours and the minutes as grids), how often it repeats and on which days. It fills the hidden
+// (hour and minute columns), how often it repeats and on which days. It fills the hidden
 // #reminderDatetime and #reminderRecurrence fields that addReminder reads. Nothing is filled in
 // for the user: the day, the hour and the minute are each chosen by hand.
 
@@ -106,6 +106,7 @@ export class ReminderFormFeature {
     picker.style.left = `${Math.max(margin, Math.min(rect.right - width, window.innerWidth - width - margin))}px`;
     picker.style.top = `${top}px`;
     button.setAttribute('aria-expanded', 'true');
+    if (picker === this.reminderTimePicker) this.scrollTimeColumns();
   }
 
   hideReminderPickers() {
@@ -160,17 +161,10 @@ export class ReminderFormFeature {
     }
   }
 
-  // The time large on top, then the hours (6 x 4) and the minutes (6 x 2, 5-minute steps). On
-  // today, the times that have passed cannot be chosen.
+  // The hour and minute columns (5-minute steps); on today, the times that have passed cannot be
+  // chosen. Nothing is marked until it is chosen.
   renderTimePicker() {
-    const picker = this.reminderTimePicker;
     const time = this.reminderTime || { hour: null, minute: null };
-    picker.querySelectorAll('.time-display-part').forEach((part) => {
-      const value = time[part.dataset.unit];
-      part.textContent = value === null ? '--' : pad(value);
-      part.classList.toggle('is-empty', value === null);
-    });
-
     const now = this.dashboardNow();
     const isToday = this.reminderDay === this.dateKey(now);
     const past = (unit, value) =>
@@ -184,8 +178,9 @@ export class ReminderFormFeature {
       ['hour', 24, 1],
       ['minute', 60 / MINUTE_STEP, MINUTE_STEP],
     ].forEach(([unit, count, step]) => {
-      const grid = picker.querySelector(`.time-grid[data-unit="${unit}"]`);
-      grid.innerHTML = '';
+      const column = this.reminderTimePicker.querySelector(`.time-column[data-unit="${unit}"]`);
+      const scroll = column.scrollTop;
+      column.innerHTML = '';
       for (let i = 0; i < count; i++) {
         const value = i * step;
         const item = document.createElement('button');
@@ -195,8 +190,23 @@ export class ReminderFormFeature {
         item.textContent = pad(value);
         item.classList.toggle('is-selected', value === time[unit]);
         item.disabled = past(unit, value);
-        grid.appendChild(item);
+        column.appendChild(item);
       }
+      column.scrollTop = scroll;
+    });
+  }
+
+  // On opening, the chosen hour and minute sit in the middle of their columns (with nothing
+  // chosen: the next hour, at :00)
+  scrollTimeColumns() {
+    const time = this.reminderTime || {};
+    const next = (this.dashboardNow().getHours() + 1) % 24;
+    const anchor = { hour: time.hour ?? next, minute: time.minute ?? 0 };
+    this.reminderTimePicker.querySelectorAll('.time-column').forEach((column) => {
+      const item = column.querySelector(
+        `.time-option[data-value="${anchor[column.dataset.unit]}"]`
+      );
+      if (item) column.scrollTop = item.offsetTop - (column.clientHeight - item.offsetHeight) / 2;
     });
   }
 
@@ -244,14 +254,9 @@ export class ReminderFormFeature {
     this.reminderTimePicker.addEventListener('click', (e) => {
       e.stopPropagation();
       const time = e.target.closest('.time-option');
-      const action = e.target.closest('[data-action]')?.dataset.action;
       if (time && !time.disabled) {
         this.chooseReminderTime(time.parentElement.dataset.unit, Number(time.dataset.value));
-      } else if (action === 'clear') {
-        this.reminderTime = null;
-        this.renderTimePicker();
-        this.syncReminderDatetime();
-      } else if (action === 'done') {
+      } else if (e.target.closest('[data-action="done"]')) {
         this.hideReminderPickers();
       }
     });
