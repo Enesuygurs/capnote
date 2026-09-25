@@ -1,5 +1,5 @@
 // The reminder form: the date button opens a calendar (choosing a day closes it; days before today
-// cannot be chosen), the time button opens hour and minute grids (times that have passed today
+// cannot be chosen), the time button opens hour and minute columns (times that have passed today
 // cannot be chosen). Nothing is filled in by itself: without a day, an hour and a minute, setting
 // the reminder warns and points at what is missing. The repeat segments and weekday toggles fill
 // what the reminder is saved with, and the form is empty again afterwards.
@@ -14,9 +14,9 @@ export async function run() {
   const open = (picker) => !picker.classList.contains('hidden');
   const day = (key) => datePicker.querySelector(`.date-picker-day[data-day="${key}"]`);
   const time = (unit, value) =>
-    timePicker.querySelector(`.time-grid[data-unit="${unit}"] [data-value="${value}"]`);
-  const display = () =>
-    [...timePicker.querySelectorAll('.time-display-part')].map((p) => p.textContent).join(':');
+    timePicker.querySelector(`.time-column[data-unit="${unit}"] [data-value="${value}"]`);
+  const timeText = () => a.reminderTimeBtn.querySelector('.reminder-when-text').textContent;
+  const marked = () => timePicker.querySelectorAll('.time-option.is-selected').length;
   const toast = () => a.notification?.textContent.trim();
   const count = a.reminders.length;
 
@@ -51,18 +51,16 @@ export async function run() {
   // The time: the hour alone is not enough, the minute completes it
   a.reminderTimeBtn.click();
   r.timeOpen = open(timePicker) && !open(datePicker);
-  r.emptyDisplay = display();
+  r.nothingMarked = marked();
   time('hour', 18).click();
-  r.hourAlone = { display: display(), value: a.reminderDatetime.value };
+  r.hourAlone = { text: timeText(), value: a.reminderDatetime.value };
   time('minute', 45).click();
-  r.chosen = { display: display(), value: a.reminderDatetime.value };
+  r.chosen = { text: timeText(), value: a.reminderDatetime.value, marked: marked() };
   r.buttons = [
     a.reminderDateBtn.classList.contains('has-value'),
     a.reminderTimeBtn.querySelector('.reminder-when-text').textContent,
   ];
-  // Clear empties the time; Done closes
-  timePicker.querySelector('[data-action="clear"]').click();
-  r.cleared = { display: display(), value: a.reminderDatetime.value };
+  // Done closes
   timePicker.querySelector('[data-action="done"]').click();
   r.timeClosed = !open(timePicker);
 
@@ -125,11 +123,10 @@ export const expected = {
   dayAlone: { value: '', timeButton: false },
   noTime: { toast: 'Lütfen bir saat seçin', added: 0 },
   timeOpen: true,
-  emptyDisplay: '--:--',
-  hourAlone: { display: '18:--', value: '' },
-  chosen: { display: '18:45', value: '2026-03-05T18:45' },
+  nothingMarked: 0,
+  hourAlone: { text: '18:--', value: '' },
+  chosen: { text: '18:45', value: '2026-03-05T18:45', marked: 2 },
   buttons: [true, '18:45'],
-  cleared: { display: '--:--', value: '' },
   timeClosed: true,
   todayPast: { hour11: true, hour12: false, minute0: true, minute5: false },
   oneAtATime: true,
