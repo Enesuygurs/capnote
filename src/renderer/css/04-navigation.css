@@ -35,12 +35,13 @@
   flex-shrink: 0;
 }
 
-/* The name in a soft gray, not black or white, a little bolder than the headings */
+/* The name in a dark gray, close to the text color but not black (light gray in the dark
+   theme), a little bolder than the headings */
 .app-brand-name {
   font-size: var(--fs-xl);
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--text-secondary);
+  color: color-mix(in srgb, var(--text-primary) 75%, var(--text-secondary));
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
