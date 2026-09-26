@@ -422,9 +422,11 @@
   padding: var(--space-3);
 }
 
+/* The two columns centered in the picker */
 .time-columns {
   display: flex;
   align-items: flex-end;
+  justify-content: center;
   gap: var(--space-1);
 }
 
