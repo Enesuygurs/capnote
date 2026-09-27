@@ -287,6 +287,23 @@ export class NotesFeature {
     this.loadNoteInEditor(this.currentNote);
   }
 
+  // Escape leaves the editor without losing writing: a new note with something in it is kept (the
+  // Cancel button is what deletes a new note), an empty one goes, and a note being edited drops
+  // its unsaved changes as Cancel does
+  escapeEditor() {
+    const fresh = this.currentNote && this.currentNote.id === this.freshNoteId;
+    if (!fresh || this.isCurrentNoteEmpty()) {
+      this.cancelEdit();
+      return;
+    }
+    this.cancelAutoSave?.();
+    this.saveNote(true);
+    this.freshNoteId = null;
+    this.showViewer();
+    this.displayNote(this.currentNote);
+    this.setActiveNoteInList(this.currentNote.id);
+  }
+
   cancelEdit() {
     this.cancelAutoSave?.();
     // Cancelling a new note (one never saved with the Save button) removes it, with what was
