@@ -195,13 +195,16 @@ export async function run() {
     await shot(theme + '-06-markdown-preview');
     a.toggleMarkdownMode();
     a.toggleHtmlMode();
-    // The preview is shown once its text has arrived (its load event can come before that)
-    for (let i = 0; i < 60; i++) {
-      const doc = document.querySelector('iframe.preview-iframe')?.contentDocument;
-      if (doc?.body?.textContent.trim()) break;
+    // The preview is taken once its sandboxed page has loaded (the frame marks itself). The frame
+    // is painted in a process of its own and is not always in the first capture, so the shot is
+    // taken twice: the first capture brings it in, the second (same file) keeps it.
+    for (let i = 0; i < 80; i++) {
+      if (document.querySelector('iframe.preview-iframe')?.dataset.loaded) break;
       await wait(50);
     }
-    await wait(150);
+    await wait(300);
+    await shot(theme + '-07-html-preview');
+    await wait(300);
     await shot(theme + '-07-html-preview');
     a.toggleHtmlMode();
     a.cancelEdit();

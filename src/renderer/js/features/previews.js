@@ -175,6 +175,9 @@ export class PreviewsFeature {
       `</style></head><body>${html}</body></html>`;
     // The frame element needs the same color scheme, or Chromium paints an opaque backdrop behind it
     iframe.style.colorScheme = scheme;
+    // The sandboxed frame cannot be looked into: it says itself when the page has loaded
+    delete iframe.dataset.loaded;
+    iframe.onload = () => (iframe.dataset.loaded = 'true');
     iframe.srcdoc = doc;
   }
 
