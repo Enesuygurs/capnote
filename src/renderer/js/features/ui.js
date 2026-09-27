@@ -314,7 +314,7 @@ export class UiFeature {
           active.blur();
           return;
         }
-        if (this.isEditorOpen()) this.cancelEdit();
+        if (this.isEditorOpen()) this.escapeEditor();
       }
     });
   }
