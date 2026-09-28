@@ -86,6 +86,13 @@ function registerStorageIpc() {
     getDataStore().write(key, value);
     return true;
   });
+
+  // The automatic daily backups: list them, and put one back
+  ipcMain.handle('backups:list', () => getDataStore().listBackups());
+  ipcMain.handle('backups:restore', (event, id) => {
+    getDataStore().restoreBackup(String(id));
+    return true;
+  });
 }
 
 function registerCloseToTrayIpc() {
@@ -107,7 +114,7 @@ registerWindowIpc();
 registerTrayIpc();
 registerStorageIpc();
 registerCloseToTrayIpc();
-registerUploadIpc();
+registerUploadIpc({ keepAlso: () => getDataStore().backupAttachments() });
 registerNotificationIpc();
 registerAutostartIpc();
 registerExportIpc();

@@ -128,7 +128,8 @@
     "dataImportExport": "Verileri İçe/Dışa Aktar",
     "clearData": "Verileri Temizle",
     "language": "Dil",
-    "noteSettings": "Not Ayarları"
+    "noteSettings": "Not Ayarları",
+    "autoBackups": "Otomatik Yedekler"
   },
   "settings": {
     "darkMode": "Karanlık Mod",
@@ -470,5 +471,17 @@
     "backupType": "Capnote yedeği (tüm veriler)",
     "markdownType": "Markdown (her not ayrı dosya)",
     "importType": "Capnote yedeği veya Markdown"
+  },
+  "autoBackup": {
+    "desc": "Capnote her gün ilk değişiklikten önce tüm verilerin bir kopyasını alır; son 7 gün saklanır. Geri yüklemek notları, klasörleri, hatırlatmaları ve yapılacakları o güne döndürür; ayarlar değişmez. Şu anki verileriniz de ayrıca saklanır.",
+    "empty": "Henüz otomatik yedek yok; ilk değişiklikten sonra burada görünür",
+    "beforeRestore": "Son geri yüklemeden önceki hali",
+    "dayStart": "Günün başındaki hali",
+    "notes": "{count} not",
+    "folders": "{count} klasör",
+    "restore": "Geri yükle",
+    "confirm": "\"{when}\" yedeğine dönülsün mü? Notlar, klasörler, hatırlatmalar ve yapılacaklar o haline döner. Şu anki verileriniz \"Son geri yüklemeden önceki hali\" olarak saklanır.",
+    "restored": "\"{when}\" yedeği geri yüklendi",
+    "failed": "Yedek geri yüklenemedi"
   }
 }

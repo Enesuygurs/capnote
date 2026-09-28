@@ -486,4 +486,96 @@ export class BackupFeature {
       });
     });
   }
+
+  // ============ Automatic backups ============
+  // The daily copies the app keeps by itself, listed in Settings > Data with a way back to each
+
+  async renderAutoBackups() {
+    const list = this.autoBackupsList;
+    if (!list) return;
+    let backups = [];
+    try {
+      backups = await window.electronAPI.backups.list();
+    } catch (err) {
+      console.warn('Listing the backups failed:', err);
+    }
+    list.innerHTML = '';
+    if (!backups.length) {
+      const empty = document.createElement('div');
+      empty.className = 'setting-item auto-backup-empty';
+      empty.textContent = i18n.t('autoBackup.empty');
+      list.appendChild(empty);
+      return;
+    }
+    const locale = this.getLocale();
+    backups.forEach((backup) => {
+      const beforeRestore = backup.id === 'before-restore';
+      const title = beforeRestore
+        ? i18n.t('autoBackup.beforeRestore')
+        : new Date(`${backup.id}T00:00`).toLocaleDateString(locale, {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+          });
+      const when =
+        beforeRestore && backup.takenAt
+          ? new Date(backup.takenAt).toLocaleString(locale, {
+              day: 'numeric',
+              month: 'long',
+              hour: '2-digit',
+              minute: '2-digit',
+            })
+          : i18n.t('autoBackup.dayStart');
+      const row = document.createElement('div');
+      row.className = 'setting-item auto-backup';
+      row.dataset.backupId = backup.id;
+      row.innerHTML = `<div class="setting-info"><label></label><small></small></div><button class="btn-tinted btn-small auto-backup-restore"><i class="fas fa-clock-rotate-left"></i> <span></span></button>`;
+      row.querySelector('label').textContent = title;
+      row.querySelector('small').textContent = [
+        when,
+        i18n.t('autoBackup.notes', { count: backup.notes }),
+        i18n.t('autoBackup.folders', { count: backup.folders }),
+      ].join(' · ');
+      row.querySelector('button span').textContent = i18n.t('autoBackup.restore');
+      row
+        .querySelector('button')
+        .addEventListener('click', () => this.restoreAutoBackup(backup.id, title));
+      list.appendChild(row);
+    });
+  }
+
+  // After confirming: the backup goes back in place and the app starts again on it
+  restoreAutoBackup(id, title) {
+    this.showConfirm(i18n.t('autoBackup.confirm', { when: title }), async () => {
+      this.cancelAutoSave?.();
+      try {
+        await window.electronAPI.backups.restore(id);
+      } catch (err) {
+        console.error('Restoring the backup failed:', err);
+        this.showNotification(i18n.t('autoBackup.failed'), 'error');
+        return;
+      }
+      // Nothing in memory may be written over the restored data before the reload
+      this.isRestoring = true;
+      try {
+        sessionStorage.setItem('capnote-restored', title);
+      } catch {
+        // the message after the reload is only a courtesy
+      }
+      window.location.reload();
+    });
+  }
+
+  // After a restore's reload: say what was restored
+  announceRestore() {
+    let title;
+    try {
+      title = sessionStorage.getItem('capnote-restored');
+      sessionStorage.removeItem('capnote-restored');
+    } catch {
+      return;
+    }
+    if (title) this.showNotification(i18n.t('autoBackup.restored', { when: title }), 'success');
+  }
 }

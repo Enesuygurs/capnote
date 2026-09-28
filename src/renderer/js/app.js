@@ -101,6 +101,7 @@ export class CapnoteApp {
     this.startReminderChecker();
     this.cleanupUploads();
     this.setupUpdates();
+    this.announceRestore();
 
     // Make sure the current filter (default: 'all') is applied so
     // the corresponding nav item appears active on startup
@@ -270,6 +271,7 @@ export class CapnoteApp {
     this.foldersList = document.getElementById('foldersList');
     this.pinnedFoldersList = document.getElementById('pinnedFoldersList');
     this.importDataBtn = document.getElementById('importDataBtn');
+    this.autoBackupsList = document.getElementById('autoBackupsList');
     this.exportDataBtn = document.getElementById('exportDataBtn');
     // Table modal elements (editor table insertion)
     this.insertTableBtn = document.getElementById('insertTableBtn');

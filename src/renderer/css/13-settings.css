@@ -112,6 +112,14 @@
   margin: 0 0 var(--space-2) var(--space-4);
 }
 
+/* A line about a section, under its label */
+.settings-section-desc {
+  margin: 0 var(--space-4) var(--space-3);
+  font-size: var(--fs-sm);
+  line-height: 18px;
+  color: var(--text-secondary);
+}
+
 /* A group: rows in one card, separated by space only */
 .settings-group {
   background: var(--card);

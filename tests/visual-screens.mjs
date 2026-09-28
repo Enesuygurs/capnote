@@ -121,6 +121,10 @@ export async function run() {
     if (a.noteDate) a.noteDate.textContent = 'Sunday, March 1, 2026';
     document.querySelectorAll('.reminder-datetime-input').forEach((i) => (i.value = ''));
     a.renderReminderWhen();
+    // The automatic backups are named after the real day they were taken
+    document
+      .querySelectorAll('.auto-backup label')
+      .forEach((label) => (label.textContent = 'Pazar, 1 Mart 2026'));
   };
   const shot = async (name, { keepToast = false, keepFocus = false } = {}) => {
     freeze();

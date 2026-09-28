@@ -34,6 +34,8 @@ export class StorageFeature {
 
   // Persist one collection; failures are reported instead of silently losing data
   async persist(key, value, errorKey) {
+    // A backup is being restored: the app reloads on it, nothing in memory is written
+    if (this.isRestoring) return;
     try {
       await window.electronAPI.storage.save(key, value);
     } catch (error) {

@@ -61,6 +61,7 @@ export class SettingsFeature {
 
   showSettingsModal() {
     this.showModal(this.settingsModal);
+    this.renderAutoBackups();
   }
 
   loadSettings() {
