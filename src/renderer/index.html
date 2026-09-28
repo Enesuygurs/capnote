@@ -160,6 +160,13 @@
                   <button class="nav-control-btn" id="tagsNavBtn" data-i18n-title="nav.tags">
                     <i class="fas fa-tags"></i>
                   </button>
+                  <button
+                    class="nav-control-btn"
+                    id="archiveNavBtn"
+                    data-i18n-title="archive.title"
+                  >
+                    <i class="fas fa-box-archive"></i>
+                  </button>
                   <button class="nav-control-btn" id="sortBtn" data-i18n-title="titles.sort">
                     <i class="fas fa-sort-amount-down"></i>
                   </button>
@@ -355,6 +362,22 @@
           </div>
         </div>
 
+        <!-- Archive: notes kept out of the list without deleting them -->
+        <div id="archiveScreen" class="screen archive-screen hidden">
+          <div class="page-header">
+            <span class="page-icon tone-slate"><i class="fas fa-box-archive"></i></span>
+            <div class="page-heading">
+              <h2 class="page-title" data-i18n="archive.title">Arşiv</h2>
+              <p class="page-subtitle" data-i18n="archive.subtitle">
+                Listede görünmeyen notlar; açın ya da arşivden çıkarın
+              </p>
+            </div>
+          </div>
+          <div class="page-body">
+            <div id="archiveList" class="card-list"></div>
+          </div>
+        </div>
+
         <!-- Todos Screen -->
         <div id="todosScreen" class="screen todos-screen hidden">
           <div class="page-header">
@@ -396,6 +419,10 @@
                 <span id="viewerMood"></span>
                 <span id="viewerWeather"></span>
                 <div id="viewerTags" class="viewer-tags"></div>
+                <span id="viewerArchived" class="chip viewer-archived hidden">
+                  <i class="fas fa-box-archive"></i>
+                  <span data-i18n="archive.badge">Arşivde</span>
+                </span>
               </div>
             </div>
             <div class="page-actions viewer-actions">
@@ -413,6 +440,9 @@
               </button>
               <button id="exportNoteBtn" class="btn-icon" data-i18n-title="buttons.export">
                 <i class="fas fa-download"></i>
+              </button>
+              <button id="archiveViewBtn" class="btn-icon" data-i18n-title="archive.archive">
+                <i class="fas fa-box-archive"></i>
               </button>
               <button
                 id="deleteNoteBtn"

@@ -333,6 +333,10 @@ export const APP_DIALOGS = /* HTML */ `
       <i class="fas fa-clone"></i>
       <span data-i18n="buttons.duplicate">Çoğalt</span>
     </button>
+    <button class="menu-item" data-action="archive" role="menuitem">
+      <i class="fas fa-box-archive"></i>
+      <span data-i18n="archive.archive">Arşivle</span>
+    </button>
     <div class="menu-divider" role="separator"></div>
     <button class="menu-item menu-item-danger" data-action="delete" role="menuitem">
       <i class="fas fa-trash"></i>
@@ -361,6 +365,10 @@ export const APP_DIALOGS = /* HTML */ `
     <button class="menu-item" data-action="unfile" role="menuitem">
       <i class="fas fa-folder-minus"></i>
       <span data-i18n="selection.unfile">Klasörden çıkar</span>
+    </button>
+    <button class="menu-item" data-action="archive" role="menuitem">
+      <i class="fas fa-box-archive"></i>
+      <span data-i18n="archive.archive">Arşivle</span>
     </button>
     <div class="menu-divider" role="separator"></div>
     <button class="menu-item menu-item-danger" data-action="delete" role="menuitem">

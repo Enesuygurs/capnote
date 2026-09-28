@@ -289,6 +289,13 @@ export async function run() {
     a.showTagsScreen('work');
     await shot(theme + '-21-tags');
     a.setTagFilter(null);
+    // The archive page with an archived note
+    byTitle('Reading list').isArchived = true;
+    a.updateNotesList();
+    a.showArchiveScreen();
+    await shot(theme + '-21-archive');
+    byTitle('Reading list').isArchived = false;
+    a.updateNotesList();
     a.selectNote(byTitle('Weekly plan'));
     a.showNotification('Note saved!', 'success');
     await shot(theme + '-22-toast', { keepToast: true });

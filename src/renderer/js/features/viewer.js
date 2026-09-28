@@ -5,6 +5,7 @@ import { i18n } from '../i18n.js';
 export class ViewerFeature {
   displayNote(note) {
     this.viewerTitle.textContent = this.displayTitle(note);
+    this.updateArchiveView?.();
 
     // Check if note is locked and not temporarily unlocked
     if (this.isNoteLockedForView(note)) {
