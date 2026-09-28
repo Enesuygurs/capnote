@@ -303,6 +303,16 @@ export const SETTINGS_DIALOG = /* HTML */ `
           </section>
 
           <section class="settings-section">
+            <h5 class="section-label" data-i18n="sections.autoBackups">Otomatik Yedekler</h5>
+            <p class="settings-section-desc" data-i18n="autoBackup.desc">
+              Capnote her gün ilk değişiklikten önce tüm verilerin bir kopyasını alır; son 7 gün
+              saklanır. Geri yüklemek notları, klasörleri, hatırlatmaları ve yapılacakları o güne
+              döndürür; ayarlar değişmez. Şu anki verileriniz de ayrıca saklanır.
+            </p>
+            <div class="settings-group" id="autoBackupsList"></div>
+          </section>
+
+          <section class="settings-section">
             <h5 class="section-label" data-i18n="sections.clearData">Verileri Temizle</h5>
             <div class="settings-group">
               <div class="setting-item">

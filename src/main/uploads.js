@@ -52,7 +52,8 @@ function handleUploadProtocol() {
   });
 }
 
-function registerUploadIpc() {
+// keepAlso(): more names to keep (the files the backups use), or null to delete nothing
+function registerUploadIpc({ keepAlso = () => [] } = {}) {
   // Copy a file dropped from the OS into the uploads folder and return its capnote-file URL.
   // The path comes from the renderer, so only existing regular files of a sane size are accepted.
   ipcMain.handle('save-dropped-file', (event, srcPath) => {
@@ -102,9 +103,11 @@ function registerUploadIpc() {
     return written;
   });
 
-  // Delete uploads that no note references
+  // Delete uploads that no note references, now or in a backup
   ipcMain.handle('uploads:cleanup', (event, keepNames) => {
-    const keep = new Set(Array.isArray(keepNames) ? keepNames : []);
+    const kept = keepAlso();
+    if (kept === null) return 0;
+    const keep = new Set([...(Array.isArray(keepNames) ? keepNames : []), ...kept]);
     const dir = uploadsDir();
     if (!fs.existsSync(dir)) return 0;
     let removed = 0;

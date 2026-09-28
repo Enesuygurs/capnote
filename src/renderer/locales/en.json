@@ -128,7 +128,8 @@
     "dataImportExport": "Import/Export Data",
     "clearData": "Clear Data",
     "language": "Language",
-    "noteSettings": "Note Settings"
+    "noteSettings": "Note Settings",
+    "autoBackups": "Automatic Backups"
   },
   "settings": {
     "darkMode": "Dark Mode",
@@ -470,5 +471,17 @@
     "backupType": "Capnote backup (all data)",
     "markdownType": "Markdown (one file per note)",
     "importType": "Capnote backup or Markdown"
+  },
+  "autoBackup": {
+    "desc": "Every day, before the first change, Capnote keeps a copy of all data; the last 7 days are kept. Restoring brings notes, folders, reminders and to-dos back to that day; settings stay as they are. Your current data is kept as well.",
+    "empty": "No automatic backups yet; they show here after the first change",
+    "beforeRestore": "Before the last restore",
+    "dayStart": "As at the start of the day",
+    "notes": "{count} notes",
+    "folders": "{count} folders",
+    "restore": "Restore",
+    "confirm": "Go back to the backup \"{when}\"? Notes, folders, reminders and to-dos return to how they were. Your current data is kept as \"Before the last restore\".",
+    "restored": "The backup \"{when}\" was restored",
+    "failed": "The backup could not be restored"
   }
 }

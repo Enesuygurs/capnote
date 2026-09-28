@@ -23,6 +23,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     load: () => ipcRenderer.invoke('storage:load'),
     save: (key, value) => ipcRenderer.invoke('storage:save', key, value),
   },
+  // The automatic daily backups
+  backups: {
+    list: () => ipcRenderer.invoke('backups:list'),
+    restore: (id) => ipcRenderer.invoke('backups:restore', id),
+  },
   // Files in the uploads folder: read/write for backups, cleanup of files no note uses
   uploads: {
     read: (names) => ipcRenderer.invoke('uploads:read', names),
