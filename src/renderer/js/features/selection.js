@@ -80,6 +80,7 @@ export class SelectionFeature {
       allFavorite ? 'messages.removeFromFavorites' : 'messages.addToFavorites'
     );
     item('unfile').hidden = !notes.some((n) => n.folderId);
+    item('archive').hidden = notes.length === 0;
     item('delete').querySelector('span').textContent = i18n.t('selection.delete', { count });
 
     this.positionMenu(menu, x, y);
@@ -327,6 +328,11 @@ export class SelectionFeature {
           this.duplicateNotes(this.notes.filter((n) => this.selectedNoteIds.has(n.id))),
         pinFolders: () => this.togglePinFolders([...this.selectedFolderIds]),
         unfile: () => this.unfileSelection(),
+        archive: () => {
+          const notes = this.notes.filter((n) => this.selectedNoteIds.has(n.id));
+          this.clearSelection();
+          this.setArchived(notes, true);
+        },
         delete: () => this.deleteSelection(),
       };
       actions[item.dataset.action]?.();

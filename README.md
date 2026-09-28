@@ -6,7 +6,7 @@ Capnote is a desktop app for notes and journaling. Everything stays on your comp
 
 - **Rich text and Markdown:** headings, lists, task lists, quotes, dividers, tables, code blocks, links, strikethrough, images and file attachments, Markdown shortcuts while typing ("## ", "- ", "[] ", "```"), undo for every tool, plus Markdown notes with a live preview and an HTML preview.
 - **Links between notes:** type `[[` to link to another note; a note lists the notes that link to it.
-- **Organizing:** folders with colors, tags with a tags page and a tag filter, favorites, pinned notes and folders, a Today view, a custom order by dragging, selecting several notes at once, sorting and search.
+- **Organizing:** folders with colors, tags with a tags page and a tag filter, favorites, pinned notes and folders, a Today view, a custom order by dragging, selecting several notes at once, an archive for notes kept out of the list, sorting and search.
 - **Templates:** start a note as a journal entry, meeting notes or a weekly plan.
 - **Journaling:** mood and weather for each note, an overview with a mood calendar, the writing streak, how moods and weather are spread and the words per month, word and character counts, reading time and an edit history.
 - **Reminders and to-dos:** reminders with desktop notifications, and a to-do list grouped into sections.

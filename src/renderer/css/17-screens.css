@@ -28,6 +28,11 @@
   padding: var(--space-4);
 }
 
+/* The note in the viewer is archived */
+.viewer-archived {
+  gap: var(--space-1);
+}
+
 .list-card-main {
   flex: 1 1 240px;
   min-width: 0;

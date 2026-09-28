@@ -192,6 +192,7 @@ export class MarkdownIoFeature {
     if (note.weather) front.push(`weather: ${note.weather}`);
     if (note.isFavorite) front.push('favorite: true');
     if (note.isPinned) front.push('pinned: true');
+    if (note.isArchived) front.push('archived: true');
     front.push('---', '');
     const body = note.isMarkdown ? note.content || '' : this.htmlToMarkdown(note.content);
     return `${front.join('\n')}\n# ${this.displayTitle(note)}\n\n${body}\n`;
@@ -370,6 +371,7 @@ export class MarkdownIoFeature {
         mood: toMoodKey(data.mood),
         weather: toWeatherKey(data.weather),
         isFavorite: data.favorite === 'true',
+        isArchived: data.archived === 'true',
         isPinned: false,
         isLocked: false,
         folderId: null,

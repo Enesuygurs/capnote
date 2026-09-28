@@ -123,6 +123,8 @@ export class NoteListFeature {
   // Whether a note passes the selected filter (today / favorites) and the search term.
   // Folder membership is up to the caller.
   matchesCurrentView(note, searchTerm = this.currentSearchTerm()) {
+    // Archived notes stay out of the list; the archive page shows them
+    if (note.isArchived) return false;
     if (this.currentFilter === 'today' && !this.isCreatedToday(note)) return false;
     if (this.currentFilter === 'favorites' && !note.isFavorite) return false;
     if (this.currentTag && !this.noteHasTag(note, this.currentTag)) return false;
@@ -505,6 +507,7 @@ export class NoteListFeature {
         pin: () => this.togglePin(noteId),
         lock: () => this.toggleLock(noteId),
         duplicate: () => this.duplicateNote(note),
+        archive: () => this.setArchived([note], true),
         delete: () => this.deleteNoteById(noteId),
       };
       actions[item.dataset.action]?.();

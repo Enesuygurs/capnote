@@ -193,6 +193,8 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Tags page**: `.tag-chip` (32px, name, a count pill; the chosen tag in the accent tint) in a wrapping cloud, then the chosen tag's notes as whole-card buttons. The tag the list is filtered by shows under the list filter as a removable `.tag-filter-chip`.
 
+**Archive page**: like the tags page, a `.page-header` (a slate archive icon) and one `.list-card` per archived note, the latest edited first: the title, the date and folder in muted text, then "View" (`.btn-secondary`) and "Unarchive" (`.btn-tinted`). The notes header has an archive button next to the tags button; an archived note open in the viewer shows an "Archived" `.chip` in its meta line, and its archive button turns into "Unarchive".
+
 **Automatic backups** (Settings > Data): a `.settings-section-desc` line under the section label (12px, secondary text), then one `.setting-item` per backup in a `.settings-group`: the day (or "Before the last restore") as the label, "as at the start of the day" and the note and folder counts below, and a tinted "Restore" button. Restoring asks first and reloads the app on the restored data.
 
 **Split button**: "New note" and its template button share one control at the small size (32px): 2px apart, the inner corners square.

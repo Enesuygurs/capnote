@@ -483,5 +483,15 @@
     "confirm": "\"{when}\" yedeğine dönülsün mü? Notlar, klasörler, hatırlatmalar ve yapılacaklar o haline döner. Şu anki verileriniz \"Son geri yüklemeden önceki hali\" olarak saklanır.",
     "restored": "\"{when}\" yedeği geri yüklendi",
     "failed": "Yedek geri yüklenemedi"
+  },
+  "archive": {
+    "title": "Arşiv",
+    "subtitle": "Listede görünmeyen notlar; açın ya da arşivden çıkarın",
+    "archive": "Arşivle",
+    "unarchive": "Arşivden çıkar",
+    "badge": "Arşivde",
+    "empty": "Arşivde not yok",
+    "archived": "{count} not arşivlendi",
+    "unarchived": "{count} not arşivden çıkarıldı"
   }
 }
