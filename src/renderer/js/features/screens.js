@@ -18,6 +18,7 @@ export class ScreensFeature {
       todos: this.todosScreen,
     };
     Object.entries(screens).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
+    this.currentScreen = name;
 
     const navItems = {
       notifications: this.notificationsNav,
@@ -27,6 +28,37 @@ export class ScreensFeature {
       todos: this.todosNav,
     };
     Object.entries(navItems).forEach(([key, el]) => el?.classList.toggle('active', key === name));
+  }
+
+  // A page opened from its header button (tags, archive): a second click on the button goes back
+  // to the screen it was opened from
+  toggleScreenFromButton(name, open) {
+    if (this.currentScreen !== name) {
+      this.screenBeforeToggle = this.currentScreen;
+      open();
+      return;
+    }
+    const back = this.screenBeforeToggle;
+    // The other pages are drawn again, so they show what changed meanwhile
+    const reopen = {
+      reminders: () => this.showRemindersScreen(),
+      notifications: () => this.showNotificationsScreen(),
+      todos: () => this.showTodosScreen(),
+      tags: () => this.showTagsScreen(),
+      archive: () => this.showArchiveScreen(),
+    };
+    const note =
+      this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;
+    if (back === 'editor' && this.currentNote) {
+      this.showScreen('editor');
+    } else if (back === 'viewer' && note) {
+      this.showViewer();
+      this.displayNote(note);
+    } else if (back !== name && reopen[back]) {
+      reopen[back]();
+    } else {
+      this.showWelcome();
+    }
   }
 
   showEditor() {

@@ -106,7 +106,9 @@ export class TagsFeature {
   }
 
   setupTags() {
-    this.tagsNavBtn?.addEventListener('click', () => this.showTagsScreen());
+    this.tagsNavBtn?.addEventListener('click', () =>
+      this.toggleScreenFromButton('tags', () => this.showTagsScreen())
+    );
     this.clearTagFilterBtn?.addEventListener('click', () => this.setTagFilter(null));
     // A tag on a note opens the tags page with that tag chosen
     this.viewerTags?.addEventListener('click', (e) => {

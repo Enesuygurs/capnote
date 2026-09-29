@@ -86,7 +86,9 @@ export class ArchiveFeature {
   }
 
   setupArchive() {
-    this.archiveNavBtn?.addEventListener('click', () => this.showArchiveScreen());
+    this.archiveNavBtn?.addEventListener('click', () =>
+      this.toggleScreenFromButton('archive', () => this.showArchiveScreen())
+    );
     this.archiveViewBtn?.addEventListener('click', () => {
       if (this.currentNote) this.toggleArchive(this.currentNote.id);
     });
