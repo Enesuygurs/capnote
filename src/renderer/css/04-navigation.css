@@ -242,9 +242,10 @@
   color: var(--text-muted);
 }
 
+/* Apart enough that two hovered or active buttons do not run into each other */
 .nav-section-controls {
   display: flex;
-  gap: 0;
+  gap: var(--space-1);
 }
 
 .nav-control-btn {
