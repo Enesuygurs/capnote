@@ -9,7 +9,9 @@
   background: #f2f2f2;
 }
 
-/* The dark tones are light, so the settings tab tiles take a dark icon */
-[data-theme='dark'] .settings-tab i {
+/* The dark tones are light, so the settings tab tiles take a dark icon, and the counts on the
+   sidebar tools dark text */
+[data-theme='dark'] .settings-tab i,
+[data-theme='dark'] .sidebar-tool[class*='tone-'] .nav-count {
   color: var(--chrome);
 }
