@@ -252,7 +252,7 @@
 /* Apart enough that two hovered or active buttons do not run into each other */
 .nav-section-controls {
   display: flex;
-  gap: var(--space-1);
+  gap: var(--stack-gap);
 }
 
 .nav-control-btn {
