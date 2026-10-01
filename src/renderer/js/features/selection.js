@@ -55,6 +55,7 @@ export class SelectionFeature {
     }
     this.hideNoteContextMenu();
     this.hideContextMenu();
+    this.hideListContextMenu?.();
 
     const notes = this.notes.filter((n) => this.selectedNoteIds.has(n.id));
     const folders = this.folders.filter((f) => this.selectedFolderIds.has(f.id));

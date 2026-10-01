@@ -265,6 +265,7 @@ export class CapnoteApp {
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
+    this.listContextMenu = document.getElementById('listContextMenu');
     this.folderModal = document.getElementById('folderModal');
     this.folderNameInput = document.getElementById('folderNameInput');
     this.createFolderBtn = document.getElementById('createFolderBtn');

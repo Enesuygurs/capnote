@@ -583,6 +583,7 @@ export class FoldersFeature {
   showFolderContextMenu(x, y, folderId) {
     this.hideNoteContextMenu();
     this.hideSelectionMenu?.();
+    this.hideListContextMenu?.();
     this.selectedFolderId = folderId;
     const folder = this.folders.find((f) => f.id === folderId);
     if (this.pinFolderMenuItem) {
