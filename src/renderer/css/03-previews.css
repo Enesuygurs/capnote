@@ -158,16 +158,35 @@ ol[style*='text-align: right'] li {
   color: var(--text-muted);
 }
 
-/* A link to another note: a tinted label in the accent; a link to a deleted note is crossed out */
+/* A link to another note: the chip of the "Linked notes" bar at the same size (24px, 12px text,
+   a note icon and the title), in the accent instead of gray; a link to a deleted note is
+   crossed out */
 .formatted-content a.note-link,
 .rich-editor a.note-link {
-  padding: 0 var(--space-1);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 24px;
+  padding: 0 var(--space-2);
   border-radius: var(--radius-sm);
   background: var(--accent-tint);
   color: var(--accent-text);
+  font-size: var(--fs-sm);
   font-weight: 500;
+  line-height: 1;
+  vertical-align: middle;
   text-decoration: none;
+  white-space: nowrap;
   cursor: pointer;
+}
+
+/* The bar's note icon, as large as the text, a little lighter */
+.formatted-content a.note-link::before,
+.rich-editor a.note-link::before {
+  content: '\f15c';
+  font-family: 'Font Awesome 7 Free';
+  font-weight: 900;
+  opacity: 0.75;
 }
 
 .formatted-content a.note-link:hover {
