@@ -345,6 +345,17 @@ export const APP_DIALOGS = /* HTML */ `
   </div>
 
   <!-- Menu for a selection of several notes and folders (Ctrl/Cmd+click) -->
+  <!-- Right-click on an empty spot of the notes area -->
+  <div id="listContextMenu" class="context-menu menu hidden" role="menu">
+    <button class="menu-item" data-action="newNote" role="menuitem">
+      <i class="fas fa-pen-to-square"></i>
+      <span data-i18n="listMenu.newNote">Yeni not</span>
+    </button>
+    <button class="menu-item" data-action="newFolder" role="menuitem">
+      <i class="fas fa-folder-plus"></i>
+      <span data-i18n="listMenu.newFolder">Klasör oluştur</span>
+    </button>
+  </div>
   <div id="selectionMenu" class="context-menu menu hidden" role="menu">
     <button class="menu-item" data-action="favorite" role="menuitem">
       <i class="fas fa-heart tone-rose"></i>

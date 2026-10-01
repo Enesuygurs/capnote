@@ -395,6 +395,7 @@ export class NoteListFeature {
     if (!note) return;
     this.hideContextMenu();
     this.hideSelectionMenu?.();
+    this.hideListContextMenu();
     this.contextNoteId = noteId;
 
     const label = (action, key) => {
@@ -409,6 +410,10 @@ export class NoteListFeature {
       this.isNoteLockedForView(note);
 
     this.positionMenu(this.noteContextMenu, x, y);
+  }
+
+  hideListContextMenu() {
+    this.listContextMenu?.classList.add('hidden');
   }
 
   hideNoteContextMenu() {
@@ -520,6 +525,33 @@ export class NoteListFeature {
     window.addEventListener('blur', closeNoteMenu);
     window.addEventListener('resize', closeNoteMenu);
     this.sidebarContent?.addEventListener('scroll', closeNoteMenu, { passive: true });
+
+    // Right-click on an empty spot of the notes area: a new note or a new folder
+    this.sidebarContent?.addEventListener('contextmenu', (e) => {
+      if (e.target.closest('.note-item, .folder-item, input, textarea')) return;
+      e.preventDefault();
+      this.hideNoteContextMenu();
+      this.hideContextMenu();
+      this.hideSelectionMenu?.();
+      this.positionMenu(this.listContextMenu, e.clientX, e.clientY);
+    });
+    this.listContextMenu?.addEventListener('click', (e) => {
+      const item = e.target.closest('[data-action]');
+      if (!item) return;
+      e.stopPropagation();
+      this.hideListContextMenu();
+      if (item.dataset.action === 'newNote') this.createNewNote();
+      else if (item.dataset.action === 'newFolder') this.showFolderModal();
+    });
+    const closeListMenu = () => this.hideListContextMenu();
+    document.addEventListener('click', closeListMenu);
+    document.addEventListener('contextmenu', (e) => {
+      if (!this.sidebarContent?.contains(e.target) || e.target.closest('.note-item, .folder-item'))
+        closeListMenu();
+    });
+    window.addEventListener('blur', closeListMenu);
+    window.addEventListener('resize', closeListMenu);
+    this.sidebarContent?.addEventListener('scroll', closeListMenu, { passive: true });
 
     // Search and filters
     this.searchInput.addEventListener('input', (e) => this.searchNotes(e.target.value));
