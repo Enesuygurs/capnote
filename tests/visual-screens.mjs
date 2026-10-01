@@ -157,6 +157,9 @@ export async function run() {
     await wait(1000);
     a.showWelcome();
     await shot(theme + '-01-welcome');
+    // A note with a link to another note
+    a.selectNote(byTitle('Reading list'));
+    await shot(theme + '-02-viewer-note-link');
     a.selectNote(byTitle('Weekly plan'));
     await shot(theme + '-02-viewer');
     a.showTemplateMenu();
