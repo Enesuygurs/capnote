@@ -58,7 +58,17 @@ export async function run() {
 
   // Double-click renames in place
   a.showWelcome();
-  row(two.id).dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
+  const title = row(two.id).querySelector('.note-item-title');
+  const range = document.createRange();
+  range.selectNodeContents(title);
+  const textRect = range.getBoundingClientRect();
+  title.dispatchEvent(
+    new MouseEvent('dblclick', {
+      bubbles: true,
+      clientX: textRect.left + textRect.width / 2,
+      clientY: textRect.top + textRect.height / 2,
+    })
+  );
   const input = document.querySelector('.note-rename-input');
   input.value = 'Renamed';
   input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));

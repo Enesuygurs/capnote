@@ -317,6 +317,7 @@ export class FoldersFeature {
     // Double-click renames the folder in place (its two clicks open and close it again)
     folderHeader.addEventListener('dblclick', (e) => {
       if (e.ctrlKey || e.metaKey) return;
+      if (!this.isOnTextOf(folderHeader.querySelector('.nav-text'), e)) return;
       this.startRenameFolder(folder, folderHeader);
     });
 
