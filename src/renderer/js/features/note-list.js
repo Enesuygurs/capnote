@@ -291,6 +291,7 @@ export class NoteListFeature {
     });
     div.addEventListener('dblclick', (e) => {
       if (e.ctrlKey || e.metaKey) return;
+      if (!this.isOnTextOf(div.querySelector('.note-item-title'), e)) return;
       this.startRenameNote(note, div);
     });
     div.addEventListener('contextmenu', (e) => {

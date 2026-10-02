@@ -269,6 +269,21 @@ export class SelectionFeature {
     );
   }
 
+  // Whether a pointer event landed on the text of an element, not on the empty part of it (a name
+  // fills its row up to the count and the arrow): only a double-click on a name renames
+  isOnTextOf(element, e) {
+    if (!element) return false;
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const rect = range.getBoundingClientRect();
+    return (
+      e.clientX >= rect.left &&
+      e.clientX <= rect.right &&
+      e.clientY >= rect.top &&
+      e.clientY <= rect.bottom
+    );
+  }
+
   // Double-click on a folder: edit its name in its row, like a note's title
   startRenameFolder(folder, row) {
     const nameEl = row.querySelector('.nav-text');
