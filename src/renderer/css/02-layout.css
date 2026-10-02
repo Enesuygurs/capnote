@@ -95,6 +95,15 @@
   flex-shrink: 0;
 }
 
+/* A note's header (its title, date and actions; in the editor also the formatting toolbar, down
+   to the line) a shade apart from the text under it, in a neutral gray that does not read as the
+   sidebar */
+.viewer-header,
+.editor-header,
+.formatting-toolbar {
+  background: var(--note-header);
+}
+
 /* A screen's own icon before its title (to-dos, reminders, notifications), in the screen's tone */
 .page-icon {
   width: var(--control-lg);
