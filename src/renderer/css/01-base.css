@@ -76,6 +76,8 @@ body.resizing .modal {
   --chrome: #f1f2f4;
   --surface: #ffffff;
   --surface-raised: #ffffff;
+  /* A note's header: a neutral gray a shade off the page, lighter than the sidebar */
+  --note-header: #f7f7f7;
   --panel-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
   /* Tints: one step from whatever they sit on, so they work on every surface */
   --card: rgba(15, 23, 42, 0.035);
@@ -196,6 +198,8 @@ body.resizing .modal {
   --chrome: #121212;
   --surface: #1b1b1b;
   --surface-raised: #262626;
+  /* The sidebar is darker than the page, so the note's header is a shade lighter */
+  --note-header: #222222;
   --panel-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   --card: rgba(255, 255, 255, 0.035);
   --field: rgba(255, 255, 255, 0.06);
