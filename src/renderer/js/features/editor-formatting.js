@@ -324,6 +324,7 @@ export class EditorFormattingFeature {
             const align = btn.dataset.align;
             btn.classList.toggle('active', align === textAlign);
           });
+          this.syncAlignTrigger?.();
         } catch (e) {
           // ignore alignment update errors
         }

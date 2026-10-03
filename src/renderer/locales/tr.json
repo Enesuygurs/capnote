@@ -497,5 +497,24 @@
   "listMenu": {
     "newNote": "Yeni not",
     "newFolder": "Klasör oluştur"
+  },
+  "toolbar": {
+    "font": "Yazı tipi ve boyut",
+    "fontFamily": "Yazı tipi",
+    "fontSize": "Boyut",
+    "colors": "Renkler",
+    "textColor": "Yazı rengi",
+    "bgColor": "Vurgu rengi",
+    "align": "Hizalama",
+    "lists": "Listeler",
+    "insert": "Ekle",
+    "quote": "Alıntı",
+    "divider": "Ayırıcı çizgi",
+    "table": "Tablo",
+    "codeBlock": "Kod bloğu",
+    "image": "Görsel",
+    "emoji": "Emoji",
+    "date": "Tarih",
+    "time": "Saat"
   }
 }
