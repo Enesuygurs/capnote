@@ -6,7 +6,7 @@ body {
     BlinkMacSystemFont,
     'Segoe UI',
     sans-serif;
-  color: #111827;
+  color: #363636;
   line-height: 1.6;
   max-width: 800px;
   margin: 0 auto;
@@ -21,7 +21,7 @@ body {
 .export-header h1 {
   margin: 0 0 8px;
   font-size: 26px;
-  color: #0b1220;
+  color: #2a2a2a;
 }
 .export-meta {
   color: #6b7280;
