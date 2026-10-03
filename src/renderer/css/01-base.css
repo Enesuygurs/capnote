@@ -66,11 +66,11 @@ body.resizing .modal {
   --accent-text: color-mix(in srgb, var(--accent-color) 86%, black);
   --text-on-accent: #ffffff;
 
-  /* Text */
-  --text-primary: #1f2937;
+  /* Text: neutral dark grays, close to black but not black */
+  --text-primary: #363636;
   --text-secondary: #5b6472;
   --text-muted: #8f97a3;
-  --text-strong: #111827;
+  --text-strong: #2a2a2a;
 
   /* Surfaces by role */
   --chrome: #f1f2f4;
@@ -183,7 +183,7 @@ body.resizing .modal {
 
   /* Note content: neutral code blocks and links derived from the accent */
   --code-bg: #f6f8fa;
-  --code-text: #1f2328;
+  --code-text: #333333;
   --code-inline-bg: rgba(27, 31, 35, 0.06);
   --link-color: color-mix(in srgb, var(--accent-color) 65%, black);
 }

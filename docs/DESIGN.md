@@ -136,7 +136,7 @@ A container's inner items are rounded less than the container by its padding (a 
 
 Alignment moves the whole line: an aligned task keeps its box next to its text, and an aligned list item keeps its bullet or number with it.
 
-Text colors: `--text-strong` for titles, `--text-primary` for text, `--text-secondary` for meta and descriptions, `--text-muted` for icons, hints and placeholders.
+Text colors: `--text-strong` for titles and `--text-primary` for text, neutral dark grays close to black but not black (`#2a2a2a`, `#363636` in the light theme; light grays in the dark one), `--text-secondary` for meta and descriptions, `--text-muted` for icons, hints and placeholders.
 
 ## 8. Color
 
