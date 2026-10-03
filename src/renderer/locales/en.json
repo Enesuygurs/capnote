@@ -497,5 +497,24 @@
   "listMenu": {
     "newNote": "New note",
     "newFolder": "Create folder"
+  },
+  "toolbar": {
+    "font": "Font and size",
+    "fontFamily": "Font",
+    "fontSize": "Size",
+    "colors": "Colors",
+    "textColor": "Text color",
+    "bgColor": "Highlight",
+    "align": "Alignment",
+    "lists": "Lists",
+    "insert": "Insert",
+    "quote": "Quote",
+    "divider": "Divider",
+    "table": "Table",
+    "codeBlock": "Code block",
+    "image": "Image",
+    "emoji": "Emoji",
+    "date": "Date",
+    "time": "Time"
   }
 }

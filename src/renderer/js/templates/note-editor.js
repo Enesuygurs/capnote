@@ -45,6 +45,8 @@ export const NOTE_EDITOR = /* HTML */ `
 
     <!-- Formatting Toolbar: text style and font, character styles, colors, alignment, lists and
          things to insert (the previews and the side panel are view controls, in the header) -->
+    <!-- One row: text style, bold to strikethrough, then the rarer tools in small menus (font,
+         colors, alignment, lists, insert) that open under their button -->
     <div class="formatting-toolbar">
       <div class="format-group">
         <div class="custom-select format-custom-select" id="blockStyle">
@@ -62,27 +64,6 @@ export const NOTE_EDITOR = /* HTML */ `
             <div data-value="h3" class="select-item select-item-h3" data-i18n="blockStyle.h3">
               Başlık 3
             </div>
-          </div>
-        </div>
-        <div class="custom-select format-custom-select" id="fontFamily">
-          <div class="select-selected">Inter</div>
-          <div class="select-items menu select-hide">
-            <div data-value="Inter" class="select-item active">Inter</div>
-            <div data-value="Crimson Text" class="select-item">Crimson Text</div>
-            <div data-value="Roboto Mono" class="select-item">Roboto Mono</div>
-            <div data-value="Georgia" class="select-item">Georgia</div>
-            <div data-value="Arial" class="select-item">Arial</div>
-          </div>
-        </div>
-        <div class="custom-select format-custom-select" id="fontSize">
-          <div class="select-selected">14px</div>
-          <div class="select-items menu select-hide">
-            <div data-value="12" class="select-item">12px</div>
-            <div data-value="14" class="select-item active">14px</div>
-            <div data-value="16" class="select-item">16px</div>
-            <div data-value="18" class="select-item">18px</div>
-            <div data-value="20" class="select-item">20px</div>
-            <div data-value="24" class="select-item">24px</div>
           </div>
         </div>
       </div>
@@ -107,81 +88,190 @@ export const NOTE_EDITOR = /* HTML */ `
       </div>
 
       <div class="format-group">
-        <input
-          type="color"
-          id="textColor"
-          class="color-picker"
-          value="#000000"
-          data-i18n-title="titles.textColor"
-        />
-        <input
-          type="color"
-          id="bgColor"
-          class="color-picker"
-          value="#ffffff"
-          data-i18n-title="titles.bgColor"
-        />
+        <div class="toolbar-menu" id="fontMenu">
+          <button
+            type="button"
+            class="format-btn toolbar-menu-trigger"
+            data-i18n-title="toolbar.font"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span class="toolbar-trigger-text">Aa</span>
+            <i class="fas fa-chevron-down toolbar-caret"></i>
+          </button>
+          <div class="toolbar-popover menu toolbar-popover-fields hidden">
+            <div class="toolbar-field">
+              <span class="toolbar-field-label" data-i18n="toolbar.fontFamily">Yazı tipi</span>
+              <div class="custom-select format-custom-select" id="fontFamily">
+                <div class="select-selected">Inter</div>
+                <div class="select-items menu select-hide">
+                  <div data-value="Inter" class="select-item active">Inter</div>
+                  <div data-value="Crimson Text" class="select-item">Crimson Text</div>
+                  <div data-value="Roboto Mono" class="select-item">Roboto Mono</div>
+                  <div data-value="Georgia" class="select-item">Georgia</div>
+                  <div data-value="Arial" class="select-item">Arial</div>
+                </div>
+              </div>
+            </div>
+            <div class="toolbar-field">
+              <span class="toolbar-field-label" data-i18n="toolbar.fontSize">Boyut</span>
+              <div class="custom-select format-custom-select" id="fontSize">
+                <div class="select-selected">14px</div>
+                <div class="select-items menu select-hide">
+                  <div data-value="12" class="select-item">12px</div>
+                  <div data-value="14" class="select-item active">14px</div>
+                  <div data-value="16" class="select-item">16px</div>
+                  <div data-value="18" class="select-item">18px</div>
+                  <div data-value="20" class="select-item">20px</div>
+                  <div data-value="24" class="select-item">24px</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="toolbar-menu" id="colorMenu">
+          <button
+            type="button"
+            class="format-btn toolbar-menu-trigger"
+            data-i18n-title="toolbar.colors"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="fas fa-palette"></i>
+            <i class="fas fa-chevron-down toolbar-caret"></i>
+          </button>
+          <div class="toolbar-popover menu toolbar-popover-fields hidden">
+            <label class="toolbar-field toolbar-color">
+              <input
+                type="color"
+                id="textColor"
+                class="color-picker"
+                value="#000000"
+                data-i18n-title="titles.textColor"
+              />
+              <span data-i18n="toolbar.textColor">Yazı rengi</span>
+            </label>
+            <label class="toolbar-field toolbar-color">
+              <input
+                type="color"
+                id="bgColor"
+                class="color-picker"
+                value="#ffffff"
+                data-i18n-title="titles.bgColor"
+              />
+              <span data-i18n="toolbar.bgColor">Vurgu rengi</span>
+            </label>
+          </div>
+        </div>
       </div>
 
       <div class="format-group">
-        <button class="format-btn" data-align="left" data-i18n-title="titles.alignLeft">
-          <i class="fas fa-align-left"></i>
-        </button>
-        <button class="format-btn" data-align="center" data-i18n-title="titles.alignCenter">
-          <i class="fas fa-align-center"></i>
-        </button>
-        <button class="format-btn" data-align="right" data-i18n-title="titles.alignRight">
-          <i class="fas fa-align-right"></i>
-        </button>
-        <button class="format-btn" data-align="justify" data-i18n-title="titles.alignJustify">
-          <i class="fas fa-align-justify"></i>
-        </button>
-      </div>
-
-      <div class="format-group">
-        <button class="format-btn" id="insertList" data-i18n-title="titles.bulletList">
-          <i class="fas fa-list-ul"></i>
-        </button>
-        <button class="format-btn" id="insertNumberedList" data-i18n-title="titles.numberedList">
-          <i class="fas fa-list-ol"></i>
-        </button>
-        <button class="format-btn" id="insertChecklist" data-i18n-title="titles.taskList">
-          <i class="fas fa-tasks"></i>
-        </button>
+        <div class="toolbar-menu" id="alignMenu">
+          <button
+            type="button"
+            class="format-btn toolbar-menu-trigger"
+            data-i18n-title="toolbar.align"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="fas fa-align-left"></i>
+            <i class="fas fa-chevron-down toolbar-caret"></i>
+          </button>
+          <div class="toolbar-popover menu toolbar-popover-row hidden">
+            <button class="format-btn" data-align="left" data-i18n-title="titles.alignLeft">
+              <i class="fas fa-align-left"></i>
+            </button>
+            <button class="format-btn" data-align="center" data-i18n-title="titles.alignCenter">
+              <i class="fas fa-align-center"></i>
+            </button>
+            <button class="format-btn" data-align="right" data-i18n-title="titles.alignRight">
+              <i class="fas fa-align-right"></i>
+            </button>
+            <button class="format-btn" data-align="justify" data-i18n-title="titles.alignJustify">
+              <i class="fas fa-align-justify"></i>
+            </button>
+          </div>
+        </div>
+        <div class="toolbar-menu" id="listMenu">
+          <button
+            type="button"
+            class="format-btn toolbar-menu-trigger"
+            data-i18n-title="toolbar.lists"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="fas fa-list-ul"></i>
+            <i class="fas fa-chevron-down toolbar-caret"></i>
+          </button>
+          <div class="toolbar-popover menu toolbar-popover-row hidden">
+            <button class="format-btn" id="insertList" data-i18n-title="titles.bulletList">
+              <i class="fas fa-list-ul"></i>
+            </button>
+            <button
+              class="format-btn"
+              id="insertNumberedList"
+              data-i18n-title="titles.numberedList"
+            >
+              <i class="fas fa-list-ol"></i>
+            </button>
+            <button class="format-btn" id="insertChecklist" data-i18n-title="titles.taskList">
+              <i class="fas fa-tasks"></i>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="format-group">
         <button class="format-btn" id="insertLinkBtn" data-i18n-title="titles.link">
           <i class="fas fa-link"></i>
         </button>
-        <button class="format-btn" id="insertQuoteBtn" data-i18n-title="titles.quote">
-          <i class="fas fa-quote-right"></i>
-        </button>
-        <button class="format-btn" id="insertDividerBtn" data-i18n-title="titles.divider">
-          <i class="fas fa-minus"></i>
-        </button>
-        <button class="format-btn" id="insertTableBtn" data-i18n-title="titles.insertTable">
-          <i class="fas fa-table"></i>
-        </button>
-        <button class="format-btn" id="insertCodeBlockBtn" data-i18n-title="titles.codeBlock">
-          <i class="fas fa-laptop-code"></i>
-        </button>
-      </div>
-
-      <div class="format-group">
-        <button class="format-btn" id="browseImageBtn" data-i18n-title="titles.insertImage">
-          <i class="fas fa-image"></i>
-        </button>
-        <input id="browseImageInput" class="hidden" type="file" accept="image/*" />
-        <button class="format-btn" id="openEmojiBtn" data-i18n-title="titles.emoji">
-          <i class="fas fa-face-smile"></i>
-        </button>
-        <button class="format-btn" id="insertDate" data-i18n-title="titles.insertDate">
-          <i class="fas fa-calendar-plus"></i>
-        </button>
-        <button class="format-btn" id="insertTime" data-i18n-title="titles.insertTime">
-          <i class="fas fa-clock"></i>
-        </button>
+        <div class="toolbar-menu" id="insertMenu">
+          <button
+            type="button"
+            class="format-btn toolbar-menu-trigger"
+            data-i18n-title="toolbar.insert"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="fas fa-plus"></i>
+            <i class="fas fa-chevron-down toolbar-caret"></i>
+          </button>
+          <div class="toolbar-popover menu toolbar-popover-list hidden">
+            <button class="format-btn" id="insertQuoteBtn" data-i18n-title="toolbar.quote">
+              <i class="fas fa-quote-right"></i>
+              <span data-i18n="toolbar.quote">Alıntı</span>
+            </button>
+            <button class="format-btn" id="insertDividerBtn" data-i18n-title="toolbar.divider">
+              <i class="fas fa-minus"></i>
+              <span data-i18n="toolbar.divider">Ayırıcı çizgi</span>
+            </button>
+            <button class="format-btn" id="insertTableBtn" data-i18n-title="toolbar.table">
+              <i class="fas fa-table"></i>
+              <span data-i18n="toolbar.table">Tablo</span>
+            </button>
+            <button class="format-btn" id="insertCodeBlockBtn" data-i18n-title="toolbar.codeBlock">
+              <i class="fas fa-laptop-code"></i>
+              <span data-i18n="toolbar.codeBlock">Kod bloğu</span>
+            </button>
+            <button class="format-btn" id="browseImageBtn" data-i18n-title="toolbar.image">
+              <i class="fas fa-image"></i>
+              <span data-i18n="toolbar.image">Görsel</span>
+            </button>
+            <input id="browseImageInput" class="hidden" type="file" accept="image/*" />
+            <button class="format-btn" id="openEmojiBtn" data-i18n-title="toolbar.emoji">
+              <i class="fas fa-face-smile"></i>
+              <span data-i18n="toolbar.emoji">Emoji</span>
+            </button>
+            <button class="format-btn" id="insertDate" data-i18n-title="toolbar.date">
+              <i class="fas fa-calendar-plus"></i>
+              <span data-i18n="toolbar.date">Tarih</span>
+            </button>
+            <button class="format-btn" id="insertTime" data-i18n-title="toolbar.time">
+              <i class="fas fa-clock"></i>
+              <span data-i18n="toolbar.time">Saat</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -23,7 +23,11 @@ export class EmojiFeature {
       // allow layout to update
       requestAnimationFrame(() => {
         if (this.openEmojiBtn) {
-          const btnRect = this.openEmojiBtn.getBoundingClientRect();
+          // Its button sits in the Insert menu, which is closed by now: open under that menu
+          const anchor =
+            this.openEmojiBtn.closest('.toolbar-menu')?.querySelector('.toolbar-menu-trigger') ||
+            this.openEmojiBtn;
+          const btnRect = anchor.getBoundingClientRect();
           const panelRect = this.emojiPanel.getBoundingClientRect();
           // compute left so panel centers under button when possible
           let left = Math.round(btnRect.left + btnRect.width / 2 - panelRect.width / 2);

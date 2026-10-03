@@ -31,6 +31,7 @@ import { EditorToolsFeature } from './features/editor-tools.js';
 import { NoteLinksFeature } from './features/note-links.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
+import { ToolbarMenusFeature } from './features/toolbar-menus.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
@@ -401,6 +402,7 @@ export class CapnoteApp {
     this.setupTemplates();
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
+    this.setupToolbarMenus();
     this.setupMoodWeatherSelectors();
     this.setupModalEvents();
     this.setupKeyboardShortcuts();
@@ -662,6 +664,7 @@ applyFeatures(CapnoteApp, [
   NoteLinksFeature,
   TagsFeature,
   ArchiveFeature,
+  ToolbarMenusFeature,
   DashboardFeature,
   TemplatesFeature,
   MarkdownIoFeature,

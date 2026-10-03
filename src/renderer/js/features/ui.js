@@ -294,7 +294,7 @@ export class UiFeature {
         }
         // Menus close before anything else
         const openMenu = document.querySelector(
-          '.context-menu:not(.hidden), .sort-dropdown:not(.hidden), .select-items:not(.select-hide)'
+          '.context-menu:not(.hidden), .sort-dropdown:not(.hidden), .select-items:not(.select-hide), .toolbar-popover:not(.hidden)'
         );
         if (openMenu) {
           this.hideNoteContextMenu();
@@ -303,6 +303,7 @@ export class UiFeature {
           this.closeAllDropdowns?.();
           this.hideReminderPickers?.();
           this.hideListContextMenu?.();
+          this.closeToolbarMenus?.();
           return;
         }
         // In the search or another field outside the note, Escape only leaves that field
