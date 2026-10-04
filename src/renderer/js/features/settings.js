@@ -90,6 +90,8 @@ export class SettingsFeature {
     if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
     if (this.startupPageSelect) this.startupPageSelect.value = settings.startupPage;
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
+    if (this.keepCopiesArchivedToggle)
+      this.keepCopiesArchivedToggle.checked = settings.keepCopiesArchived;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
     if (this.quickNoteShortcutToggle)
       this.quickNoteShortcutToggle.checked = settings.quickNoteShortcut;
@@ -166,6 +168,10 @@ export class SettingsFeature {
     }
 
     // Auto save toggle
+    this.keepCopiesArchivedToggle?.addEventListener('change', (e) =>
+      this.setSetting('keepCopiesArchived', e.target.checked)
+    );
+
     if (this.autoSaveToggle) {
       this.autoSaveToggle.addEventListener('change', (e) => {
         this.setSetting('autoSave', e.target.checked);

@@ -248,8 +248,9 @@ export class UiFeature {
             break;
           case 's':
             e.preventDefault();
-            // Saving reads from the editor fields, so it is only valid while editing
-            if (this.currentNote && this.isEditorOpen()) {
+            // Saving reads from the editor fields, so it is only valid while editing, and like the
+            // Save button it needs something in the note's body
+            if (this.currentNote && this.isEditorOpen() && this.noteBodyHasContent()) {
               this.saveNote();
             }
             break;

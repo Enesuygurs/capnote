@@ -157,6 +157,8 @@
     "languageDesc": "Uygulama dilini değiştir",
     "autoSave": "Otomatik Kaydetme",
     "autoSaveDesc": "Notları yazarken otomatik olarak kaydet",
+    "keepCopiesArchived": "Arşivdeki notların kopyası",
+    "keepCopiesArchivedDesc": "Arşivdeki bir notun kopyası da arşivde kalsın; kapalıyken kopya listede görünür",
     "onNoteDelete": "Not silindiğinde",
     "onNoteDeleteDesc": "Not silindiğinde ne olacağını seç",
     "openLastNote": "Son kalan notu aç",
