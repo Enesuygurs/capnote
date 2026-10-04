@@ -25,12 +25,14 @@
 }
 
 /* ============ Formatting toolbar ============ */
+/* A line above and below sets the toolbar apart from the title and from the text */
 .formatting-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2) var(--space-4);
-  padding: 0 var(--gutter) var(--space-3);
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--gutter);
+  border-top: 1px solid var(--divider);
   border-bottom: 1px solid var(--divider);
   flex-shrink: 0;
 }
@@ -38,7 +40,7 @@
 .format-group {
   display: flex;
   align-items: center;
-  gap: var(--space-1);
+  gap: 2px;
 }
 
 .format-btn {
@@ -67,9 +69,8 @@
 
 /* ============ Toolbar menus ============
    A button with a small caret; its popover opens under it (its right edge on the button's near
-   the window's edge). Rows of icons (alignment, lists), a list with names (insert) or labelled
-   fields (font, colors). The selectors carry .menu so they win over the menu styles, which
-   load later. */
+   the window's edge). A row of icons (lists) or a list with names (insert). The selectors carry
+   .menu so they win over the menu styles, which load later. */
 .toolbar-menu {
   position: relative;
 }
@@ -84,12 +85,6 @@
 .toolbar-caret {
   font-size: 8px;
   opacity: 0.6;
-}
-
-.toolbar-trigger-text {
-  font-size: var(--fs-md);
-  font-weight: 600;
-  letter-spacing: -0.02em;
 }
 
 .toolbar-menu.open .toolbar-menu-trigger {
@@ -135,50 +130,22 @@
   text-align: center;
 }
 
-.menu.toolbar-popover-fields {
-  min-width: 200px;
-  gap: var(--space-2);
-  padding: var(--space-3);
-}
-
-.toolbar-field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
-.toolbar-field-label {
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.toolbar-popover-fields .format-custom-select,
-.toolbar-popover-fields .format-custom-select#fontSize {
-  width: 100%;
-}
-
-.toolbar-color {
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-2);
-  color: var(--text-primary);
-  font-size: var(--fs-md);
-  cursor: pointer;
-}
-
-/* Font family and size */
+/* Text style, font family and size, as narrow as their longest choice allows */
 .format-custom-select {
-  width: 128px;
+  width: 116px;
 }
 
 .format-custom-select#fontSize {
-  width: 80px;
+  width: 72px;
 }
 
+/* Just wide enough for the longest style ("Heading 3"): a narrower gap for the arrow */
 .format-custom-select#blockStyle {
-  width: 136px;
+  width: 100px;
+}
+
+#blockStyle .select-selected {
+  padding-right: var(--space-6);
 }
 
 /* The text style list shows each style at its size */
