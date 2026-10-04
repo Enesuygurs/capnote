@@ -1,5 +1,5 @@
-// The formatting toolbar in one row: the rarer tools sit in small menus (font and size, colors,
-// alignment, lists, insert) that open under their button. The tools inside are the usual ones
+// The formatting toolbar in one row: the rarer tools sit in small menus (font and size, lists,
+// insert) that open under their button. The tools inside are the usual ones
 // with their own handlers; a menu only shows and hides them.
 
 export class ToolbarMenusFeature {
@@ -28,14 +28,6 @@ export class ToolbarMenusFeature {
     }
   }
 
-  // The alignment button shows the alignment in use
-  syncAlignTrigger() {
-    const icon = document.querySelector('#alignMenu .toolbar-menu-trigger i');
-    if (!icon) return;
-    const active = document.querySelector('#alignMenu .format-btn[data-align].active');
-    icon.className = `fas fa-align-${active ? active.dataset.align : 'left'}`;
-  }
-
   setupToolbarMenus() {
     document.querySelectorAll('.toolbar-menu').forEach((menu) => {
       const trigger = menu.querySelector('.toolbar-menu-trigger');
@@ -56,9 +48,7 @@ export class ToolbarMenusFeature {
       });
       // A tool runs (its own handler first), then the menu closes
       popover.addEventListener('click', (e) => {
-        if (!e.target.closest('.format-btn')) return;
-        this.closeToolbarMenus();
-        setTimeout(() => this.syncAlignTrigger());
+        if (e.target.closest('.format-btn')) this.closeToolbarMenus();
       });
     });
     // A click anywhere else closes them; inside a menu (a field, a color) it stays open
