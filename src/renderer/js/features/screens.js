@@ -6,6 +6,9 @@ export class ScreensFeature {
     this.hideEmojiPanel();
     this.hideNoteLinkMenu?.();
     this.hideReminderPickers?.();
+    // An open list (text style, font) or toolbar menu does not wait for the editor to come back
+    this.closeAllDropdowns?.();
+    this.closeToolbarMenus?.();
 
     const screens = {
       welcome: this.welcomeScreen,

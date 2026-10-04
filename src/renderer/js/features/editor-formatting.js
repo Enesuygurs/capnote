@@ -272,6 +272,24 @@ export class EditorFormattingFeature {
     this.updateFormatPanelFromSelection();
   }
 
+  // A note opening in the editor starts with a clean toolbar: nothing bold or underlined, the
+  // note's alignment, plain text, the default colors and every list and menu closed. The buttons
+  // otherwise only follow the caret, so the previous note's state would stay on them.
+  resetToolbarState() {
+    document
+      .querySelectorAll('.format-btn[data-format]')
+      .forEach((btn) => btn.classList.remove('active'));
+    const align = this.getEditorFormatting().textAlign || 'left';
+    document.querySelectorAll('.format-btn[data-align]').forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.align === align);
+    });
+    this.updateCustomDropdown('blockStyle', 'p');
+    if (this.textColor) this.textColor.value = '#363636';
+    if (this.bgColor) this.bgColor.value = '#ffffff';
+    this.closeAllDropdowns();
+    this.closeToolbarMenus?.();
+  }
+
   updateFormatButtons() {
     document.querySelectorAll('.format-btn').forEach((btn) => {
       const format = btn.dataset.format;
@@ -324,7 +342,6 @@ export class EditorFormattingFeature {
             const align = btn.dataset.align;
             btn.classList.toggle('active', align === textAlign);
           });
-          this.syncAlignTrigger?.();
         } catch (e) {
           // ignore alignment update errors
         }
@@ -348,7 +365,7 @@ export class EditorFormattingFeature {
           bgColor = this.rgbToHex(editorBg) || '#ffffff';
         }
 
-        const textHex = this.rgbToHex(computedColor) || '#000000';
+        const textHex = this.rgbToHex(computedColor) || '#363636';
 
         if (this.textColor && textHex) this.textColor.value = textHex;
         if (this.bgColor && bgColor) this.bgColor.value = bgColor;

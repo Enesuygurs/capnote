@@ -147,7 +147,7 @@ export class NotesFeature {
     // Update favorite button state for new unsaved note
     this.updateFavoriteButtons();
     // Keep the color inputs in sync
-    if (this.textColor) this.textColor.value = '#000000';
+    if (this.textColor) this.textColor.value = '#363636';
     if (this.bgColor) this.bgColor.value = '#ffffff';
   }
 
@@ -383,7 +383,9 @@ export class NotesFeature {
     const duplicate = {
       ...note,
       id: this.newId(),
-      title: this.displayTitle(note) + i18n.t('messages.noteCopySuffix'),
+      // An untitled note's copy stays untitled: "Untitled" is a label in the current language,
+      // not a title to store
+      title: note.title ? note.title + i18n.t('messages.noteCopySuffix') : '',
       tags: [...(note.tags || [])],
       formatting: { ...(note.formatting || this.getDefaultFormatting()) },
       attachments: [...(note.attachments || [])],
@@ -393,6 +395,8 @@ export class NotesFeature {
       isPinned: false, // A copy starts unpinned
       isLocked: false, // A copy starts unlocked
       isFavorite: false, // A copy is not a favorite
+      // A copy of an archived note shows in the list, unless the settings keep it archived
+      isArchived: !!note.isArchived && !!this.settings.keepCopiesArchived,
     };
     delete duplicate.encrypted;
     delete duplicate.order;

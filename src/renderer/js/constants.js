@@ -16,6 +16,8 @@ export const DEFAULT_SETTINGS = {
   folderColorsBackup: null,
   noteSort: 'date-desc',
   autoSave: true,
+  // A copy of an archived note stays in the archive (off: it shows in the list)
+  keepCopiesArchived: false,
   onNoteDelete: 'lastNote',
   // What opens when the app starts: lastNote, home, newNote, todos or notifications
   startupPage: 'lastNote',

@@ -15,12 +15,18 @@ export class EditorFeature {
       if (iframe) iframe.srcdoc = '';
       this.htmlPreview.innerHTML = '';
     }
+    // A preview left open by the previous note hid the text area: show it again
+    this.showRichEditor();
     const baseFormatting = this.currentNote?.formatting || this.getDefaultFormatting();
     this.setEditorFormatting(baseFormatting);
     this.clearSavedSelection();
     this.clearMoodWeatherSelection();
     this.clearTags();
     this.updateWordCount();
+    // Nothing of the previous note stays: its toolbar state, a half-typed tag, its reminders
+    this.resetToolbarState();
+    if (this.tagInput) this.tagInput.value = '';
+    this.updateNoteRemindersDisplay();
   }
 
   resetFormState() {
@@ -101,6 +107,9 @@ export class EditorFeature {
       if (this.markdownEditor) this.markdownEditor.value = '';
     }
     this.setEditorFormatting(note.formatting || this.getDefaultFormatting());
+    // The toolbar and the tag field start clean; the toolbar follows the caret from here
+    this.resetToolbarState();
+    if (this.tagInput) this.tagInput.value = '';
 
     // Restore checkbox states from HTML attributes
     this.restoreCheckboxStates();
@@ -192,11 +201,12 @@ export class EditorFeature {
     });
   }
 
+  // Save is open once the note's body has something in it; a title, a mood, tags or a font change
+  // alone are not enough
   updateSaveButtonState() {
     const hasChanges = this.hasUnsavedChanges();
-    const isEmpty = this.isCurrentNoteEmpty();
 
-    if (isEmpty || (!hasChanges && this.isAutoSaved)) {
+    if (!this.noteBodyHasContent() || (!hasChanges && this.isAutoSaved)) {
       this.disableSaveButton();
     } else {
       this.enableSaveButton();
@@ -221,13 +231,20 @@ export class EditorFeature {
     );
   }
 
+  // Whether the body of the note being edited has something in it: text, or an image, a table, a
+  // rule, a task, code or an embed
+  noteBodyHasContent() {
+    const body = this.parseInertHtml(this.getCurrentNoteContent().content || '');
+    return (
+      !!body.textContent.replace(/\u200B/g, '').trim() ||
+      !!body.querySelector('img, table, hr, input, pre, iframe')
+    );
+  }
+
   isCurrentNoteEmpty() {
     const content = this.getCurrentNoteContent();
     const hasTitle = content.title && content.title.trim();
-    const body = this.parseInertHtml(content.content || '');
-    const hasContent =
-      !!body.textContent.replace(/\u200B/g, '').trim() ||
-      !!body.querySelector('img, table, hr, input, pre, iframe');
+    const hasContent = this.noteBodyHasContent();
     const hasMood = content.mood;
     const hasWeather = content.weather;
     const hasTags = content.tags && content.tags.length > 0;
