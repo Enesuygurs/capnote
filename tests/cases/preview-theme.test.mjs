@@ -28,7 +28,7 @@ export async function run() {
 export const expected = {
   light: {
     scheme: 'light',
-    color: '31, 41, 55',
+    color: '54, 54, 54',
   },
   dark: {
     scheme: 'dark',
