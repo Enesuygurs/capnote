@@ -207,7 +207,7 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **App name** (sidebar, next to the icon): `--text-primary` mixed with 25% of `--text-secondary` at weight 700, a dark gray close to black but not black (a light gray in the dark theme).
 
-**Note header** (viewer and editor): the title, the date and the actions (in the editor also the formatting toolbar, down to its line) on `--note-header`, a neutral gray a shade off the page: `#f7f7f7` in the light theme (lighter than the sidebar), `#222` in the dark one (the sidebar is darker than the page, so the header goes the other way).
+**Note header** (viewer and editor): the title, the date and the actions sit on the page (`--surface`); in the editor the formatting toolbar takes a soft step of `--note-header` (55% of it over the page). With the sidebar hidden, one note on its own, the header and the editor's toolbar are `--note-header`, a neutral gray a shade off the page: `#f7f7f7` in the light theme, `#222` in the dark one.
 
 **Editor header**: the view controls (Markdown and HTML preview, the side panel) sit with Cancel and Save, so the formatting toolbar holds only content tools, in one row at the default window size: the text style, bold to strikethrough, the two colors and the four alignments in view, then the rarer tools in `.toolbar-menu`s (font and size, lists, Insert with the link), a button with a small caret whose popover opens under it (a row of icons, a list with names, or labelled fields); it wraps to a second row in a narrow window.
 
