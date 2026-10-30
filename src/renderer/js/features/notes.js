@@ -395,8 +395,7 @@ export class NotesFeature {
       isPinned: false, // A copy starts unpinned
       isLocked: false, // A copy starts unlocked
       isFavorite: false, // A copy is not a favorite
-      // A copy of an archived note shows in the list, unless the settings keep it archived
-      isArchived: !!note.isArchived && !!this.settings.keepCopiesArchived,
+      isArchived: false, // A copy shows in the list, even of an archived note
     };
     delete duplicate.encrypted;
     delete duplicate.order;
