@@ -1,0 +1,184 @@
+/* Buttons (docs/DESIGN.md: Buttons)
+   Text buttons: .btn-primary, .btn-tinted (accent tint), .btn-secondary, .btn-outline, .btn-danger,
+   .btn-outline.btn-danger (quiet destructive);
+   sizes .btn-small (32px) and .btn-large (44px), 36px otherwise. Icon buttons: .btn-icon 36px, -sm 32px, -xs 28px. */
+
+.btn,
+.btn-primary,
+.btn-tinted,
+.btn-secondary,
+.btn-outline,
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: var(--control-md);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+}
+
+.btn-primary:hover {
+  filter: brightness(0.94);
+}
+
+/* An accent action that is not the one main action: row actions, repeated buttons in a list */
+.btn-tinted {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+.btn-tinted:hover {
+  background: var(--accent-tint-strong);
+}
+
+/* Finishing something (a reminder done) */
+.btn-tinted.btn-success {
+  background: color-mix(in srgb, var(--success-color) 14%, transparent);
+  color: var(--success-color);
+}
+
+.btn-tinted.btn-success:hover {
+  background: color-mix(in srgb, var(--success-color) 22%, transparent);
+}
+
+.btn-secondary {
+  background: var(--field);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-outline:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.btn-danger {
+  background: var(--error-color);
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  filter: brightness(0.94);
+}
+
+.btn-outline.btn-danger {
+  background: var(--danger-tint);
+  color: var(--error-color);
+}
+
+.btn-outline.btn-danger:hover {
+  background: var(--danger-tint-strong);
+  filter: none;
+}
+
+.btn-small {
+  height: var(--control-sm);
+  padding: 0 var(--space-3);
+  font-size: var(--fs-md);
+}
+
+.btn-large {
+  height: var(--control-lg);
+  padding: 0 var(--space-6);
+}
+
+.btn i,
+.btn-primary i,
+.btn-tinted i,
+.btn-secondary i,
+.btn-outline i,
+.btn-danger i {
+  font-size: var(--fs-md);
+}
+
+.btn:disabled,
+.btn-primary:disabled,
+.btn-primary.disabled,
+.btn-tinted:disabled,
+.btn-secondary:disabled,
+.btn-outline:disabled,
+.btn-danger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  filter: none;
+}
+
+/* Icon buttons: transparent squares, tint on hover, accent tint when on */
+.btn-icon,
+.modal-close {
+  width: var(--control-md);
+  height: var(--control-md);
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: var(--fs-base);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.btn-icon-sm,
+.modal-close {
+  width: var(--control-sm);
+  height: var(--control-sm);
+}
+
+.btn-icon-xs {
+  width: var(--control-xs);
+  height: var(--control-xs);
+  font-size: var(--fs-md);
+}
+
+.btn-icon:hover,
+.modal-close:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.btn-icon.active,
+.btn-icon.active:hover {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+/* A favorite keeps the favorite tone (the same heart as in the sidebar and the menu) */
+.btn-icon.favorited,
+.btn-icon.favorited:hover {
+  background: color-mix(in srgb, var(--tone-rose) 14%, transparent);
+  color: var(--tone-rose);
+}
+
+.btn-icon-danger:hover {
+  background: var(--danger-tint);
+  color: var(--error-color);
+}
+
+.btn-icon:disabled,
+.btn-icon:disabled:hover {
+  background: transparent;
+  color: var(--text-muted);
+  opacity: 0.5;
+  cursor: not-allowed;
+}

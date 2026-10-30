@@ -1,0 +1,299 @@
+/* Sidebar contents: the header (app mark, to-dos, notifications), new note, search, list filter,
+   the notes section header, the counts and settings */
+
+/* Header: the app mark on the left, to-dos and notifications as icon buttons on the right */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  height: var(--control-lg);
+}
+
+/* The app mark doubles as the home button; it takes the header's width up to the tools */
+.app-brand {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  margin-left: calc(var(--space-2) * -1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.app-brand:hover {
+  background: var(--tint-hover);
+}
+
+.app-brand-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+/* The name in a dark gray, close to the text color but not black (light gray in the dark
+   theme), a little bolder than the headings */
+.app-brand-name {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: color-mix(in srgb, var(--text-primary) 75%, var(--text-secondary));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-header-actions {
+  display: flex;
+  gap: var(--space-1);
+  margin-right: calc(var(--space-1) * -1);
+}
+
+.sidebar-tool {
+  position: relative;
+  width: var(--control-sm);
+  height: var(--control-sm);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: var(--fs-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.sidebar-tool:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+/* Each tool has the tone of its page (the icon in the page's header): to-dos blue, reminders
+   amber, notifications red. The open one is tinted with it. */
+.sidebar-tool.active {
+  background: color-mix(in srgb, var(--tone, var(--accent-color)) 16%, transparent);
+  color: var(--tone, var(--accent-text));
+}
+
+/* A count on the button's top right corner, cut out from the chrome, filled with the tone */
+.sidebar-tool .nav-count {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--space-1);
+  font-size: 10px;
+  line-height: 16px;
+  box-shadow: 0 0 0 2px var(--chrome);
+}
+
+.sidebar-tool[class*='tone-'] .nav-count {
+  background: var(--tone);
+  color: #fff;
+}
+
+/* New note with the template button joined to its right edge */
+.new-note-split {
+  display: flex;
+  gap: var(--stack-gap);
+}
+
+.sidebar-new-note {
+  flex: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.new-note-more {
+  width: var(--control-sm);
+  padding: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.new-note-more i {
+  font-size: var(--fs-xs);
+}
+
+/* Settings: one full-width row at the bottom, aligned with the list rows */
+.sidebar-settings {
+  width: 100%;
+  height: var(--control-md);
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.sidebar-settings i {
+  color: var(--text-muted);
+}
+
+.sidebar-settings:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+/* The tag the list is filtered by, under the list filter */
+.tag-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: 100%;
+  height: var(--control-xs);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--accent-tint);
+  color: var(--accent-text);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.tag-filter-chip span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tag-filter-chip i {
+  font-size: var(--fs-xs);
+}
+
+.tag-filter-chip:hover {
+  background: var(--accent-tint-strong);
+}
+
+/* Search field with a leading icon */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  left: var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  height: var(--control-sm);
+  padding: 0 var(--space-3) 0 var(--space-8);
+  border-radius: var(--radius-md);
+  background: var(--field);
+  font-size: var(--fs-md);
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.search-input:hover {
+  background: var(--field-hover);
+}
+
+.search-input:focus {
+  box-shadow: var(--focus-ring);
+}
+
+.search-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Notes section: label, count and its controls on one 28px row */
+.sidebar-nav {
+  padding: 0 var(--space-3) var(--space-3);
+}
+
+.nav-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--control-xs);
+  padding: 0 var(--space-1) 0 var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.sidebar-nav .nav-section {
+  position: relative;
+}
+
+.nav-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Section labels: the sidebar's notes header, the editor panel and the settings groups */
+.section-label,
+.panel-label,
+.nav-section-title > span:first-child {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Apart enough that two hovered or active buttons do not run into each other */
+.nav-section-controls {
+  display: flex;
+  gap: var(--stack-gap);
+}
+
+.nav-control-btn {
+  width: var(--control-xs);
+  height: var(--control-xs);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.nav-control-btn:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.nav-control-btn.active {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+/* Counts: neutral pills; .is-emphasized (unread) uses the accent */
+.nav-count,
+.folder-count {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--field);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+}
+
+.nav-count.is-emphasized {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+}

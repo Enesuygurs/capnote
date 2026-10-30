@@ -1,0 +1,754 @@
+/* Note editor: header, formatting toolbar, writing area, the properties panel and images */
+
+/* The header matches the viewer's so nothing moves when switching; the toolbar closes the region */
+.editor-header {
+  border-bottom: 0;
+  padding-bottom: var(--space-4);
+}
+
+/* The previews and the side panel toggle sit with the editor's actions, a gap before Cancel */
+.editor-view-tools {
+  display: flex;
+  gap: var(--space-1);
+  margin-right: var(--space-3);
+}
+
+.note-title-input {
+  width: 100%;
+  height: 32px;
+  background: transparent;
+  outline: none;
+}
+
+.note-title-input::placeholder {
+  color: var(--text-muted);
+}
+
+/* ============ Formatting toolbar ============ */
+/* A line above and below sets the toolbar apart from the title and from the text */
+.formatting-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--gutter);
+  border-top: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
+  flex-shrink: 0;
+}
+
+.format-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.format-btn {
+  width: var(--control-sm);
+  height: var(--control-sm);
+  flex: 0 0 auto;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.format-btn:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.format-btn.active,
+.format-btn.active:hover {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+/* ============ Toolbar menus ============
+   A button with a small caret; its popover opens under it (its right edge on the button's near
+   the window's edge). A row of icons (lists) or a list with names (insert). The selectors carry
+   .menu so they win over the menu styles, which load later. */
+.toolbar-menu {
+  position: relative;
+}
+
+.toolbar-menu-trigger {
+  width: auto;
+  min-width: var(--control-sm);
+  gap: 2px;
+  padding: 0 var(--space-1) 0 var(--space-2);
+}
+
+.toolbar-caret {
+  font-size: 8px;
+  opacity: 0.6;
+}
+
+.toolbar-menu.open .toolbar-menu-trigger {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.menu.toolbar-popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: var(--z-popover);
+  min-width: 0;
+}
+
+.menu.toolbar-popover.align-end {
+  left: auto;
+  right: 0;
+}
+
+.menu.toolbar-popover-row {
+  flex-direction: row;
+  gap: 2px;
+}
+
+.menu.toolbar-popover-list {
+  min-width: 176px;
+  gap: 2px;
+}
+
+.toolbar-popover-list .format-btn {
+  width: 100%;
+  justify-content: flex-start;
+  gap: var(--space-3);
+  padding: 0 var(--space-3);
+  color: var(--text-primary);
+  font-size: var(--fs-md);
+}
+
+.toolbar-popover-list .format-btn i {
+  width: 16px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Text style, font family and size, as narrow as their longest choice allows */
+.format-custom-select {
+  width: 116px;
+}
+
+.format-custom-select#fontSize {
+  width: 72px;
+}
+
+/* Just wide enough for the longest style ("Heading 3"): a narrower gap for the arrow */
+.format-custom-select#blockStyle {
+  width: 100px;
+}
+
+#blockStyle .select-selected {
+  padding-right: var(--space-6);
+}
+
+/* The text style list shows each style at its size */
+.select-item-h1 {
+  font-size: var(--fs-xl);
+  font-weight: 600;
+}
+
+.select-item-h2 {
+  font-size: var(--fs-lg);
+  font-weight: 600;
+}
+
+.select-item-h3 {
+  font-size: var(--fs-base);
+  font-weight: 600;
+}
+
+/* Text and background color: a round swatch in a toolbar-sized button */
+.color-picker {
+  width: var(--control-sm);
+  height: var(--control-sm);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: var(--transition-fast);
+}
+
+.color-picker:hover {
+  background: var(--tint-hover);
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+  border: 0;
+  border-radius: var(--radius-full);
+  /* Keeps a white or black swatch visible on the matching background */
+  box-shadow: inset 0 0 0 1px var(--tint-strong);
+}
+
+/* ============ Writing area ============ */
+.editor-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.note-content {
+  flex: 1;
+  min-width: 0;
+  padding: var(--gutter);
+  overflow-y: auto;
+  position: relative;
+}
+
+.rich-editor {
+  min-height: 100%;
+  outline: none;
+  white-space: pre-wrap;
+}
+
+.rich-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+}
+
+/* An empty task's text keeps some width, so the caret shows when the text is clicked into */
+.rich-editor .checklist-item label {
+  min-width: 1ch;
+}
+
+.markdown-editor {
+  width: 100%;
+  min-height: 100%;
+  resize: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: var(--fs-base);
+  line-height: 1.7;
+}
+
+/* ============ Properties panel ============
+   Mood, weather, tags and reminders; a tinted column with labelled sections */
+.editor-sidebar {
+  width: 272px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: var(--space-6);
+  background: var(--card);
+}
+
+.sidebar-section + .sidebar-section {
+  margin-top: var(--space-6);
+}
+
+.panel-label {
+  margin-bottom: var(--space-2);
+}
+
+.mood-selector,
+.weather-selector {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-1);
+}
+
+/* Each mood and weather has its own icon color; the viewer's meta line uses the same ones */
+[data-mood='happy'],
+[data-tone='happy'],
+[data-weather='sunny'],
+[data-tone='sunny'],
+[data-weather='partlyCloudy'],
+[data-tone='partlyCloudy'] {
+  --tone: var(--tone-amber);
+}
+[data-mood='sad'],
+[data-tone='sad'],
+[data-weather='rainy'],
+[data-tone='rainy'] {
+  --tone: var(--tone-blue);
+}
+[data-mood='angry'],
+[data-tone='angry'] {
+  --tone: var(--tone-red);
+}
+[data-mood='tired'],
+[data-tone='tired'],
+[data-weather='stormy'],
+[data-tone='stormy'] {
+  --tone: var(--tone-violet);
+}
+[data-mood='inLove'],
+[data-tone='inLove'] {
+  --tone: var(--tone-rose);
+}
+[data-mood='thoughtful'],
+[data-tone='thoughtful'] {
+  --tone: var(--tone-teal);
+}
+[data-mood='cool'],
+[data-tone='cool'],
+[data-weather='snowy'],
+[data-tone='snowy'] {
+  --tone: var(--tone-sky);
+}
+[data-mood='bored'],
+[data-tone='bored'],
+[data-weather='cloudy'],
+[data-tone='cloudy'] {
+  --tone: var(--tone-slate);
+}
+
+/* Icons are neutral; a button shows its tone on hover, and the chosen one keeps that look */
+.mood-btn,
+.weather-btn {
+  height: var(--control-md);
+  border-radius: var(--radius-md);
+  background: var(--field);
+  color: var(--text-secondary);
+  font-size: var(--fs-lg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.mood-btn:hover,
+.weather-btn:hover {
+  background: color-mix(in srgb, var(--tone) 16%, transparent);
+  color: var(--tone);
+}
+
+.mood-btn.active,
+.weather-btn.active {
+  background: color-mix(in srgb, var(--tone) 16%, transparent);
+  color: var(--tone);
+}
+
+.tags-container,
+.reminder-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.tags-list:empty {
+  display: none;
+}
+
+/* ============ Reminder form ============
+   The day and the time (each a button that opens its picker), how often, on which days, and the
+   button */
+.reminder-when {
+  display: grid;
+  /* The time takes what "00:00" needs; the day the rest */
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-1);
+}
+
+.reminder-when-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--field);
+  color: var(--text-muted);
+  font-size: var(--fs-md);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.reminder-when-btn:hover {
+  background: var(--field-hover);
+}
+
+.reminder-when-btn[aria-expanded='true'] {
+  box-shadow: var(--focus-ring);
+}
+
+.reminder-when-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+
+.reminder-when-btn.has-value {
+  color: var(--text-strong);
+  font-weight: 500;
+}
+
+.reminder-when-btn.has-value > i {
+  color: var(--accent-color);
+}
+
+/* ============ Date picker ============
+   A month, weeks from Monday; choosing a day closes it */
+.menu.date-picker {
+  width: 264px;
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.date-picker-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: var(--space-1);
+}
+
+.date-picker-title {
+  color: var(--text-strong);
+  font-size: var(--fs-base);
+  font-weight: 600;
+}
+
+.date-picker-title::first-letter {
+  text-transform: uppercase;
+}
+
+.date-picker-nav {
+  display: flex;
+  gap: 2px;
+}
+
+.date-picker-weekdays,
+.date-picker-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.date-picker-weekdays span {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.date-picker-day {
+  justify-self: center;
+  width: var(--control-xs);
+  height: var(--control-xs);
+  border-radius: var(--radius-full);
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.date-picker-day:hover:not(:disabled) {
+  background: var(--tint-hover);
+}
+
+.date-picker-day.is-other-month {
+  color: var(--text-muted);
+}
+
+.date-picker-day:disabled {
+  color: var(--text-muted);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.date-picker-day.is-today {
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.date-picker-day.is-selected,
+.date-picker-day.is-selected:hover {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+
+/* ============ Time picker ============
+   The hour and the minute as scrolling columns, five options tall, then Done */
+.menu.time-picker {
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+/* The two columns centered in the picker */
+.time-columns {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.time-column-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.time-column-label {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.time-separator {
+  align-self: center;
+  margin-top: var(--space-4);
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* The list scrolls without a bar */
+.time-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 64px;
+  height: calc(var(--control-xs) * 5 + 12px);
+  padding: 2px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  border-radius: var(--radius-md);
+  background: var(--field);
+}
+
+.time-column::-webkit-scrollbar {
+  display: none;
+}
+
+.time-option {
+  flex: none;
+  height: var(--control-xs);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+
+.time-option:hover:not(:disabled) {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+/* On today, the times that have passed */
+.time-option:disabled {
+  color: var(--text-muted);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.time-option.is-selected {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+
+.time-picker .btn-primary {
+  width: 100%;
+}
+
+/* A part still to choose when the reminder is set: a red ring for a moment */
+.reminder-when-btn.is-missing {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--error-color) 60%, transparent);
+  animation: row-shake 0.4s ease;
+}
+
+/* How often: a small segmented control under its label */
+.reminder-repeat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.reminder-repeat-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.reminder-repeat-label i {
+  width: 16px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.reminder-repeat-options .segment {
+  padding: 0;
+  font-size: var(--fs-sm);
+}
+
+/* Weekdays for a weekly reminder: round toggles in one row */
+.reminder-weekdays {
+  display: flex;
+  flex-direction: column;
+}
+
+.weekday-list {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+}
+
+.weekday-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--control-xs);
+  border-radius: var(--radius-full);
+  background: var(--field);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.weekday-pill input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.weekday-pill:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+.weekday-pill:has(input:checked) {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+  font-weight: 600;
+}
+
+.weekday-pill:has(input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.reminder-add {
+  width: 100%;
+}
+
+/* The note's reminders, below the form */
+.note-reminders-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+}
+
+.note-reminder-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--field);
+}
+
+.note-reminder-icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-xs);
+  height: var(--control-xs);
+  border-radius: var(--radius-sm);
+  background: var(--accent-tint);
+  color: var(--accent-text);
+  font-size: var(--fs-sm);
+}
+
+.note-reminder-time {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.note-reminder-date {
+  color: var(--text-strong);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.note-reminder-meta {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.note-no-reminder {
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* ============ Images in the editor ============ */
+.embedded-image {
+  max-width: 100%;
+  height: auto;
+  display: inline-block;
+}
+
+.img-wrap {
+  display: inline-block;
+  position: relative;
+}
+
+.img-wrap img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Selection feedback while editing: transient, so a dashed outline is fine */
+#noteContentEditable .img-wrap.selected {
+  outline: 1px dashed var(--text-muted);
+  outline-offset: 2px;
+}
+
+/* Resize handle, only while editing (so it never shows in a preview) */
+.img-handle {
+  display: none;
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  right: var(--space-1);
+  bottom: var(--space-1);
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 2px;
+  cursor: se-resize;
+  z-index: 5;
+}
+
+#noteContentEditable .img-wrap .img-handle {
+  display: block;
+}
