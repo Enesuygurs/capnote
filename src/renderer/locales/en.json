@@ -157,8 +157,6 @@
     "languageDesc": "Change application language",
     "autoSave": "Auto Save",
     "autoSaveDesc": "Automatically save notes while typing",
-    "keepCopiesArchived": "Copies of archived notes",
-    "keepCopiesArchivedDesc": "A copy of an archived note stays in the archive; when off, the copy shows in the list",
     "onNoteDelete": "On note deletion",
     "onNoteDeleteDesc": "Choose what happens when a note is deleted",
     "openLastNote": "Open last remaining note",

@@ -263,7 +263,6 @@ export class CapnoteApp {
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
     this.startupPageSelect = document.getElementById('startupPageSelect');
     this.autoSaveToggle = document.getElementById('autoSaveToggle');
-    this.keepCopiesArchivedToggle = document.getElementById('keepCopiesArchivedToggle');
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
