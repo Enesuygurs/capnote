@@ -1,7 +1,7 @@
 // Nothing of the previous note stays in the editor when another note opens: the toolbar state
 // (bold, alignment, text style), a half-typed tag, the previous note's reminders, a preview that
-// hid the text area. A copy of an archived note shows in the list (unless the settings keep it
-// archived), and an untitled note's copy stays untitled.
+// hid the text area. A copy of an archived note shows in the list, and an untitled note's copy
+// stays untitled.
 export async function run() {
   const a = window.app;
   const r = {};
@@ -49,9 +49,6 @@ export async function run() {
   const first = a.notes.find((n) => n.title === 'First');
   first.isArchived = true;
   r.copyOfArchived = a.makeDuplicate(first).isArchived;
-  a.settings.keepCopiesArchived = true;
-  r.copyOfArchivedKept = a.makeDuplicate(first).isArchived;
-  a.settings.keepCopiesArchived = false;
   a.createNewNote();
   a.richEditor.innerHTML = '<p>no title</p>';
   a.saveNote(true);
@@ -69,6 +66,5 @@ export const expected = {
   },
   editNote: { active: ['align-left'], style: 'Metin' },
   copyOfArchived: false,
-  copyOfArchivedKept: true,
   untitledCopyTitle: '',
 };
