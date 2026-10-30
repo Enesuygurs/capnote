@@ -1,0 +1,385 @@
+/* Note content: one typography for the editor, the viewer and the markdown preview; the HTML preview */
+
+.rich-editor,
+.formatted-content,
+.markdown-preview {
+  font-size: var(--fs-lg);
+  line-height: 1.75;
+  color: var(--text-primary);
+  word-wrap: break-word;
+}
+
+.formatted-content h1,
+.formatted-content h2,
+.formatted-content h3,
+.formatted-content h4,
+.rich-editor h1,
+.rich-editor h2,
+.rich-editor h3,
+.rich-editor h4,
+.markdown-preview h1,
+.markdown-preview h2,
+.markdown-preview h3,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-strong);
+  margin: 1.2em 0 0.5em;
+}
+
+.formatted-content > :first-child,
+.rich-editor > :first-child,
+.markdown-preview > :first-child {
+  margin-top: 0;
+}
+
+.formatted-content h1,
+.rich-editor h1,
+.markdown-preview h1 {
+  font-size: var(--fs-4xl);
+}
+.formatted-content h2,
+.rich-editor h2,
+.markdown-preview h2 {
+  font-size: var(--fs-3xl);
+}
+.formatted-content h3,
+.rich-editor h3,
+.markdown-preview h3 {
+  font-size: var(--fs-2xl);
+}
+.formatted-content h4,
+.rich-editor h4,
+.markdown-preview h4,
+.markdown-preview h5,
+.markdown-preview h6 {
+  font-size: var(--fs-lg);
+}
+
+.markdown-preview p {
+  margin: 0 0 1em;
+}
+
+.markdown-preview a,
+.formatted-content a,
+.rich-editor a {
+  color: var(--link-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Lists */
+.formatted-content ul,
+.formatted-content ol,
+.rich-editor ul,
+.rich-editor ol,
+.markdown-preview ul,
+.markdown-preview ol {
+  margin: var(--space-2) 0;
+  padding-left: var(--space-6);
+}
+
+.rich-editor ul {
+  list-style-type: disc;
+}
+
+.rich-editor ol {
+  list-style-type: decimal;
+}
+
+.formatted-content li,
+.rich-editor li,
+.markdown-preview li {
+  margin-bottom: var(--space-1);
+}
+
+.markdown-preview .task-list-item {
+  list-style: none;
+}
+
+.markdown-preview input[type='checkbox'] {
+  margin-right: var(--space-2);
+  accent-color: var(--accent-color);
+}
+
+/* Checklists inserted from the toolbar */
+.checklist {
+  margin: var(--space-2) 0;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--control-sm);
+}
+
+.checklist-item input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.checklist-item label {
+  flex: 0 1 auto;
+  min-width: 0;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+/* An aligned task or list item keeps its box, bullet or number next to the text: the alignment
+   moves the whole line, not only the text */
+.checklist-item:has(> label[style*='text-align: center']),
+.checklist-item[style*='text-align: center'],
+.checklist[style*='text-align: center'] .checklist-item {
+  justify-content: center;
+}
+
+.checklist-item:has(> label[style*='text-align: right']),
+.checklist-item[style*='text-align: right'],
+.checklist[style*='text-align: right'] .checklist-item {
+  justify-content: flex-end;
+}
+
+li[style*='text-align: center'],
+li[style*='text-align: right'],
+ul[style*='text-align: center'] li,
+ul[style*='text-align: right'] li,
+ol[style*='text-align: center'] li,
+ol[style*='text-align: right'] li {
+  list-style-position: inside;
+}
+
+.checklist-item input[type='checkbox']:checked + label {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+/* A link to another note: the chip of the "Linked notes" bar at the same size (24px, 12px text,
+   a note icon and the title), in the accent instead of gray; a link to a deleted note is
+   crossed out */
+.formatted-content a.note-link,
+.rich-editor a.note-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 24px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--accent-tint);
+  color: var(--accent-text);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1;
+  vertical-align: middle;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* The bar's note icon, as large as the text, a little lighter */
+.formatted-content a.note-link::before,
+.rich-editor a.note-link::before {
+  content: '\f15c';
+  font-family: 'Font Awesome 7 Free';
+  font-weight: 900;
+  opacity: 0.75;
+}
+
+.formatted-content a.note-link:hover {
+  background: var(--accent-tint-strong);
+}
+
+.formatted-content a.note-link.is-broken,
+.rich-editor a.note-link.is-broken {
+  background: var(--field);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+/* Under a note: the notes that link to it */
+/* "Notes that link here": a bar under the note, above its numbers; the notes scroll sideways */
+.backlinks {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  padding: var(--space-2) var(--gutter);
+  border-top: 1px solid var(--divider);
+}
+
+.backlinks-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.backlinks-label i {
+  color: var(--text-muted);
+}
+
+.backlinks-list {
+  display: flex;
+  gap: var(--space-1);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.chip.backlink {
+  flex-shrink: 0;
+  gap: var(--space-1);
+  cursor: pointer;
+}
+
+.chip.backlink i {
+  color: var(--text-muted);
+}
+
+.chip.backlink:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+/* Quotes and rules are part of the content, so they keep their lines */
+.formatted-content blockquote,
+.rich-editor blockquote,
+.markdown-preview blockquote {
+  border-left: 3px solid var(--divider);
+  padding: 0 var(--space-4);
+  margin: var(--space-3) 0;
+  color: var(--text-secondary);
+}
+
+.formatted-content hr,
+.rich-editor hr,
+.markdown-preview hr {
+  border: 0;
+  border-top: 1px solid var(--divider);
+  margin: var(--space-6) 0;
+}
+
+.markdown-preview img,
+.formatted-content img {
+  max-width: 100%;
+  border-radius: var(--radius-md);
+}
+
+/* Code */
+.markdown-preview pre,
+.markdown-preview code,
+.note-content pre,
+.note-content code,
+.formatted-content pre,
+.formatted-content code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-md);
+}
+
+.markdown-preview pre,
+.note-content pre,
+.formatted-content pre {
+  position: relative;
+  background: var(--code-bg);
+  color: var(--code-text);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  overflow: auto;
+  line-height: 1.6;
+  margin: var(--space-3) 0;
+}
+
+.markdown-preview :not(pre) > code,
+.note-content :not(pre) > code,
+.formatted-content :not(pre) > code {
+  background: var(--code-inline-bg);
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-sm);
+}
+
+/* Copy button in the top right of a code block */
+.code-copy-btn {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  width: var(--control-xs);
+  height: var(--control-xs);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: var(--field);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  z-index: 2;
+}
+
+.code-copy-btn:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+.code-copy-btn.copied {
+  background: var(--accent-tint-strong);
+  color: var(--accent-text);
+}
+
+/* Tables: cells keep their lines, they are content */
+.rich-editor table,
+.formatted-content table,
+.markdown-preview table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--space-4) 0;
+  font-size: var(--fs-base);
+}
+
+.rich-editor th,
+.rich-editor td,
+.formatted-content th,
+.formatted-content td,
+.markdown-preview th,
+.markdown-preview td {
+  border: 1px solid var(--divider);
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  vertical-align: top;
+}
+
+.rich-editor th,
+.formatted-content th,
+.markdown-preview th {
+  background: var(--card);
+  font-weight: 600;
+  color: var(--text-strong);
+}
+
+/* Inserted tables carry inline padding from older versions; the design decides the cell padding */
+.rich-editor .inserted-table th,
+.rich-editor .inserted-table td,
+.formatted-content .inserted-table th,
+.formatted-content .inserted-table td {
+  padding: var(--space-2) var(--space-3) !important;
+}
+
+/* Previews cover the writing area, inset by the page gutter */
+.markdown-preview,
+.html-preview {
+  position: absolute;
+  inset: var(--gutter);
+  overflow: auto;
+  background: var(--surface);
+}
+
+.html-preview {
+  font-size: var(--fs-base);
+}

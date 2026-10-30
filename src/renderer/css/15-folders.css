@@ -1,0 +1,144 @@
+/* Folders in the sidebar, and dragging notes and folders */
+
+/* A folder is a sidebar row (.nav-item) with its color, count and a chevron; its notes are indented
+   so their icons line up with the folder name */
+.folder-item .folder-count {
+  margin-left: auto;
+}
+
+/* A pinned folder: a small gold pin before its count */
+.folder-pin {
+  margin-left: auto;
+  font-size: var(--fs-xs);
+  color: var(--tone);
+}
+
+.folder-pin + .folder-count {
+  margin-left: 0;
+}
+
+.nav-expand {
+  width: 16px;
+  flex-shrink: 0;
+  text-align: center;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  transition: transform var(--transition-fast);
+}
+
+.nav-expandable:not(.expanded) .nav-expand {
+  transform: rotate(-90deg);
+}
+
+.folder-notes-container {
+  margin-left: var(--space-6);
+}
+
+/* ============ Drag and drop (transient feedback) ============ */
+
+/* A pinned note or folder cannot be dragged: it shakes instead */
+@keyframes row-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+.note-item.shake,
+.folder-item.shake {
+  animation: row-shake 320ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-item.shake,
+  .folder-item.shake {
+    animation: none;
+  }
+}
+.note-item.dragging {
+  opacity: 0.5;
+}
+
+.folder-item.drag-over:not(.insert-before):not(.insert-after),
+.default-folder.drag-over:not(.insert-before):not(.insert-after) {
+  background: var(--accent-tint);
+  outline: 2px dashed var(--accent-color);
+  outline-offset: -2px;
+}
+
+.folder-item.drag-over .nav-icon,
+.default-folder.drag-over .nav-icon {
+  color: var(--accent-color) !important;
+}
+
+/* Where a dragged folder or note will be placed */
+.folder-item.insert-before::before,
+.default-folder.insert-before::before,
+.note-item.insert-before::before,
+.folder-item.insert-after::after,
+.default-folder.insert-after::after,
+.note-item.insert-after::after {
+  content: '';
+  position: absolute;
+  left: var(--space-2);
+  right: var(--space-2);
+  height: 2px;
+  background: var(--accent-color);
+  border-radius: var(--radius-full);
+  z-index: 10;
+}
+
+.folder-item.insert-before::before,
+.default-folder.insert-before::before,
+.note-item.insert-before::before {
+  top: -2px;
+}
+
+.folder-item.insert-after::after,
+.default-folder.insert-after::after,
+.note-item.insert-after::after {
+  bottom: -2px;
+}
+
+/* Dropping a note back into the root list: while a folder note is dragged the list has room
+   for the drop even when it is empty */
+.dragging-folder-note .notes-list-container {
+  min-height: var(--control-lg);
+}
+
+.notes-list-container.drag-over {
+  background: var(--accent-tint);
+  outline: 2px dashed var(--accent-color);
+  outline-offset: -2px;
+  border-radius: var(--radius-md);
+  min-height: var(--control-lg);
+}
+
+.notes-list-container.drag-over::before {
+  content: attr(data-drop-label);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-popover);
+  color: var(--accent-text);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  white-space: nowrap;
+  max-width: calc(100% - var(--space-4));
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+  z-index: 10;
+}

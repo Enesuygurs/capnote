@@ -1,0 +1,186 @@
+/* Window layout: the chrome (titlebar + sidebar), the content panel and the page structure every screen shares */
+
+.app {
+  display: flex;
+  height: 100vh;
+  padding-top: var(--titlebar-height);
+}
+
+/* ============ Sidebar ============
+   Three parts: a fixed top (header, new note, search, filter), the scrolling list and a fixed
+   bottom (settings) */
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition:
+    width var(--transition-normal),
+    opacity var(--transition-normal);
+  z-index: var(--z-sidebar);
+  position: relative;
+}
+
+.sidebar.hidden {
+  display: flex !important;
+  width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.sidebar-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-3) var(--space-3);
+  flex-shrink: 0;
+}
+
+.sidebar-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.sidebar-content::-webkit-scrollbar {
+  display: none;
+}
+
+.sidebar-footer {
+  padding: var(--space-2) var(--space-3) var(--space-3);
+  flex-shrink: 0;
+}
+
+/* ============ Content panel ============
+   One rounded panel on the chrome; the sidebar and titlebar need no divider */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--panel-shadow);
+  margin: 0 var(--space-2) var(--space-2) 0;
+}
+
+.sidebar.hidden + .main-content {
+  margin-left: var(--space-2);
+}
+
+/* A full screen inside the panel: page header on top, scrolling page body below */
+.screen,
+.note-viewer,
+.note-editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ============ Page header ============
+   The same on every screen: title + subtitle or meta on the left, actions on the right */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--gutter);
+  border-bottom: 1px solid var(--divider);
+  flex-shrink: 0;
+}
+
+/* A note's header (its title, date and actions) sits on the page; in the editor only the toolbar
+   takes a soft step of the header gray. With the sidebar hidden (one note on its own) the header
+   (and the editor's toolbar) is a neutral gray a shade apart from the text under it. */
+.sidebar.hidden + .main-content .viewer-header,
+.sidebar.hidden + .main-content .editor-header,
+.sidebar.hidden + .main-content .formatting-toolbar {
+  background: var(--note-header);
+}
+
+.formatting-toolbar {
+  background: color-mix(in srgb, var(--note-header) 55%, var(--surface));
+}
+
+/* A screen's own icon before its title (to-dos, reminders, notifications), in the screen's tone */
+.page-icon {
+  width: var(--control-lg);
+  height: var(--control-lg);
+  flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  color: var(--tone);
+  font-size: var(--fs-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-heading {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-title {
+  font-size: var(--fs-3xl);
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Sits right under the title: no gap, a 20px line */
+.page-subtitle,
+.page-meta {
+  font-size: var(--fs-md);
+  line-height: 20px;
+  color: var(--text-secondary);
+}
+
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  min-height: 24px;
+  margin-top: var(--space-1);
+}
+
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+/* A titled part of a page body (upcoming reminders, past notifications) */
+/* Sections are spaced by the body's gap, so a hidden one leaves no space behind */
+.page-body:has(> .page-section) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.page-section-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.page-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-6) var(--gutter) var(--gutter);
+}

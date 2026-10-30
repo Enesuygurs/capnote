@@ -1,0 +1,82 @@
+/* Parts specific to single dialogs: export choices, note history, password message, import options */
+
+/* Export: one 44px row per format */
+.export-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-bottom: var(--space-6);
+}
+
+.export-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  height: var(--control-lg);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.export-btn i {
+  width: 16px;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.export-btn:hover {
+  background: var(--tint-strong);
+}
+
+/* Note history: one row per change, time on the right */
+.history-body {
+  max-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.history-entry,
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--control-md);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--fs-md);
+}
+
+.history-entry.created {
+  background: var(--card);
+}
+
+.history-type {
+  color: var(--text-secondary);
+}
+
+.history-ts {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.history-empty {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-md);
+  color: var(--text-muted);
+}
+
+/* Password dialog: the optional message above the field */
+.form-message:empty {
+  display: none;
+}

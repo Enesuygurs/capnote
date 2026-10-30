@@ -1,0 +1,624 @@
+// Note lifecycle: create, open, save, duplicate, delete, favorite, pin and history
+
+import { HISTORY_MERGE_MS, HISTORY_LIMIT, MAX_PINNED_NOTES } from '../constants.js';
+import { i18n } from '../i18n.js';
+
+export class NotesFeature {
+  // A note's title as shown: an untitled note is named in the current language
+  displayTitle(note) {
+    return (note && note.title) || i18n.t('messages.untitledNote');
+  }
+
+  saveLastViewedNote(noteId) {
+    if (this.settings.lastViewedNoteId !== noteId) this.setSetting('lastViewedNoteId', noteId);
+  }
+
+  getLastViewedNote() {
+    return this.settings.lastViewedNoteId;
+  }
+
+  openStartupPage() {
+    switch (this.settings.startupPage) {
+      case 'home':
+        this.showWelcome();
+        return;
+      case 'newNote':
+        this.createNewNote();
+        return;
+      case 'todos':
+        this.showTodosScreen();
+        return;
+      case 'reminders':
+        this.showRemindersScreen();
+        return;
+      case 'notifications':
+        this.showNotificationsScreen();
+        return;
+      default:
+        this.loadLastViewedNote();
+    }
+  }
+
+  loadLastViewedNote() {
+    if (this.notes.length === 0) {
+      this.showWelcome();
+      return;
+    }
+
+    const lastViewedNoteId = this.getLastViewedNote();
+
+    if (lastViewedNoteId && this.notes.length > 0) {
+      // Find the note with the saved ID
+      const lastNote = this.notes.find((note) => note.id === lastViewedNoteId);
+
+      if (lastNote) {
+        // Open the last viewed note
+        this.openNote(lastNote);
+        return;
+      }
+    }
+
+    // If no last viewed note or note not found, open the first note
+    if (this.notes.length > 0) {
+      this.openNote(this.notes[0]);
+    }
+  }
+
+  // Before another note opens: keep the edits of the open one (if any) and lock it again if it
+  // was unlocked. Opening the same note again keeps it unlocked.
+  leaveCurrentNote(next = null) {
+    this.cancelAutoSave?.();
+    if (next !== this.currentNote && this.discardFreshEmptyNote()) return;
+    if (
+      this.currentNote &&
+      this.isEditorOpen() &&
+      this.hasUnsavedChanges() &&
+      !this.isCurrentNoteEmpty()
+    ) {
+      this.saveNote(true);
+    }
+    if (next !== this.currentNote) this.autoLockCurrentNote();
+  }
+
+  openNote(note) {
+    this.leaveCurrentNote(note);
+
+    this.currentNote = note;
+    this.showViewer();
+    this.displayNote(note);
+    this.setActiveNoteInList(this.currentNote.id); // Only update active class
+  }
+
+  createNewNote() {
+    this.leaveCurrentNote();
+
+    // Ensure emoji panel is closed when leaving the current note
+    this.hideEmojiPanel();
+    // Remember where we came from so cancelling the new note can go back there
+    this.noteBeforeNew =
+      this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;
+    this.currentNote = {
+      id: this.newId(),
+      title: '',
+      content: '',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isFavorite: false,
+      mood: null,
+      weather: null,
+      tags: [],
+      wordCount: 0,
+      charCount: 0,
+      isLocked: false,
+      folderId: null,
+      formatting: {
+        ...this.getDefaultFormatting(),
+        textAlign: 'left',
+      },
+    };
+
+    // initialize history
+    this.currentNote.history = [{ type: 'created', ts: this.currentNote.createdAt }];
+
+    // Save last viewed note (new note)
+    this.saveLastViewedNote(this.currentNote.id);
+
+    // A new note is saved right away, so it is in the list while it is being written
+    this.notes.unshift(this.currentNote);
+    this.freshNoteId = this.currentNote.id;
+    this.saveNotes();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+    this.setActiveNoteInList(this.currentNote.id);
+
+    this.showEditor();
+    this.clearEditor();
+    this.resetEditorHistory?.();
+    this.updateCurrentDate();
+    this.noteTitle.focus();
+
+    // Reset save button state for new note
+    this.originalNoteState = this.getCurrentNoteContent();
+    this.lastSavedContent = this.getCurrentNoteContent();
+    this.isAutoSaved = false;
+    this.updateSaveButtonState();
+
+    // Update favorite button state for new unsaved note
+    this.updateFavoriteButtons();
+    // Keep the color inputs in sync
+    if (this.textColor) this.textColor.value = '#363636';
+    if (this.bgColor) this.bgColor.value = '#ffffff';
+  }
+
+  // A new note left as empty as it was created is removed again (leaving it, or cancelling it)
+  discardFreshEmptyNote() {
+    const note = this.currentNote;
+    if (!note || note.id !== this.freshNoteId) return false;
+    this.freshNoteId = null;
+    const empty = this.isEditorOpen() ? this.isCurrentNoteEmpty() : this.isStoredNoteEmpty(note);
+    if (!empty || !this.notes.includes(note)) return false;
+    this.notes = this.notes.filter((n) => n !== note);
+    this.saveNotes();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+    return true;
+  }
+
+  isStoredNoteEmpty(note) {
+    const body = this.parseInertHtml(note.content || '');
+    return (
+      !(note.title || '').trim() &&
+      !body.textContent.replace(/\u200B/g, '').trim() &&
+      !body.querySelector('img, table, hr, input, pre, iframe') &&
+      !note.mood &&
+      !note.weather &&
+      !(note.tags || []).length
+    );
+  }
+
+  // Store currentNote in the notes array while keeping one shared object,
+  // so later edits (favorite, pin, lock) always reach what gets persisted
+  upsertCurrentNote() {
+    const index = this.notes.findIndex((note) => note.id === this.currentNote.id);
+    if (index === -1) {
+      this.notes.unshift(this.currentNote);
+      return;
+    }
+    if (this.notes[index] !== this.currentNote) {
+      this.notes[index] = Object.assign(this.notes[index], this.currentNote);
+      this.currentNote = this.notes[index];
+    }
+  }
+
+  saveNote(silent = false) {
+    if (!this.currentNote) return;
+    // An automatic save never creates an empty "Untitled" note
+    if (silent && this.isCurrentNoteEmpty()) return;
+
+    // Sync checkbox states before saving
+    this.syncCheckboxStates();
+
+    // An untitled note keeps an empty title; it is named in the current language when shown
+    const title = this.noteTitle.value.trim();
+    // If markdown editor is visible, save raw markdown; otherwise save HTML from rich editor
+    // If the markdown editor is visible (editing markdown), save raw markdown; otherwise save HTML from rich editor
+    // A markdown note stays markdown even while a preview hides its editor
+    const isMarkdownMode = this.isMarkdownEditing();
+    const content = isMarkdownMode ? this.markdownEditor.value : this.richEditor.innerHTML;
+
+    // Saved notes get a history entry when their title or text actually changed; the first
+    // writing in a new note (stored empty when it was created) is not an edit
+    const isStored =
+      this.notes.includes(this.currentNote) &&
+      !(this.currentNote.id === this.freshNoteId && this.isStoredNoteEmpty(this.currentNote));
+    if (isStored && (this.currentNote.title !== title || this.currentNote.content !== content)) {
+      this.recordHistory(this.currentNote);
+    }
+
+    this.currentNote.title = title;
+    this.currentNote.content = content;
+    this.currentNote.attachments = this.extractUploadNames(content);
+    this.currentNote.isMarkdown = !!isMarkdownMode;
+    const nowIso = new Date().toISOString();
+    this.currentNote.updatedAt = nowIso;
+    // Update UI lists to reflect changes. Keep it simple and robust.
+    try {
+      this.updateNotesList();
+      this.updateFoldersList();
+    } catch (e) {
+      // If anything goes wrong, ensure full refresh
+      this.updateNotesList();
+      this.updateFoldersList();
+    }
+    this.currentNote.mood = this.selectedMood;
+    this.currentNote.weather = this.selectedWeather;
+    // Ensure accurate word/char counts are stored (handle multiline and HTML)
+    const counts = this.countWordsAndCharsFromHtml(content);
+    this.currentNote.wordCount = counts.words;
+    this.currentNote.charCount = counts.chars;
+    this.currentNote.tags = [...this.tags];
+    this.currentNote.formatting = this.getEditorFormatting();
+
+    // Update the existing note or add a new one
+    this.upsertCurrentNote();
+
+    this.saveNotes();
+    if (this.currentNote.isLocked) this.resealNote(this.currentNote);
+    this.markAsSaved(); // Mark as saved to disable save button
+
+    // Update favorite button state after saving
+    this.updateFavoriteButtons();
+
+    if (!silent) {
+      // Saved with the Save button: no longer a new note that cancelling removes
+      this.freshNoteId = null;
+      this.showNotification(i18n.t('messages.noteSaved'), 'success');
+      this.showViewer();
+      this.displayNote(this.currentNote);
+    }
+
+    this.updateNotesList();
+    this.updateStats();
+  }
+
+  async editCurrentNote() {
+    if (!this.currentNote) return;
+    // Editing a locked note requires the password, same as viewing it
+    if (this.isNoteLockedForView(this.currentNote)) {
+      const unlocked = await this.unlockNoteForViewing(this.currentNote);
+      if (!unlocked) return;
+    }
+
+    this.originalNoteState = {
+      title: this.currentNote.title,
+      content: this.currentNote.content,
+      mood: this.currentNote.mood,
+      weather: this.currentNote.weather,
+      tags: [...(this.currentNote.tags || [])],
+      formatting: { ...(this.currentNote.formatting || this.getDefaultFormatting()) },
+    };
+
+    // Save last viewed note when editing
+    this.saveLastViewedNote(this.currentNote.id);
+
+    this.showEditor();
+    this.loadNoteInEditor(this.currentNote);
+  }
+
+  // Escape leaves the editor without losing writing: a new note with something in it is kept (the
+  // Cancel button is what deletes a new note), an empty one goes, and a note being edited drops
+  // its unsaved changes as Cancel does
+  escapeEditor() {
+    const fresh = this.currentNote && this.currentNote.id === this.freshNoteId;
+    if (!fresh || this.isCurrentNoteEmpty()) {
+      this.cancelEdit();
+      return;
+    }
+    this.cancelAutoSave?.();
+    this.saveNote(true);
+    this.freshNoteId = null;
+    this.showViewer();
+    this.displayNote(this.currentNote);
+    this.setActiveNoteInList(this.currentNote.id);
+  }
+
+  cancelEdit() {
+    this.cancelAutoSave?.();
+    // Cancelling a new note (one never saved with the Save button) removes it, with what was
+    // written and saved automatically in it; then the note before it opens
+    const fresh = this.currentNote && this.currentNote.id === this.freshNoteId;
+    if (fresh) {
+      this.freshNoteId = null;
+      this.notes = this.notes.filter((n) => n !== this.currentNote);
+      this.saveNotes();
+      this.removeNoteReferences([this.currentNote.id]);
+      this.updateNotesList();
+      this.updateFoldersList();
+      this.updateStats();
+    }
+    if (this.currentNote && !this.notes.includes(this.currentNote)) {
+      const previous =
+        this.noteBeforeNew && this.notes.includes(this.noteBeforeNew) ? this.noteBeforeNew : null;
+      this.currentNote = null;
+      this.noteBeforeNew = null;
+      if (previous) {
+        this.openNote(previous);
+      } else if (this.notes.length > 0) {
+        this.openNote(this.notes[0]);
+      } else {
+        this.showWelcome();
+      }
+      return;
+    }
+
+    if (this.currentNote) {
+      this.showViewer();
+      this.displayNote(this.currentNote);
+      this.showTitleInList(this.currentNote.title);
+    } else {
+      this.showWelcome();
+    }
+  }
+
+  deleteCurrentNote() {
+    if (!this.currentNote) return;
+    return this.deleteNoteById(this.currentNote.id);
+  }
+
+  // Duplicate a note (the open one by default) and open the copy
+  duplicateNote(note = this.currentNote) {
+    if (!note || this.isNoteLockedForView(note)) return;
+
+    const duplicate = this.makeDuplicate(note);
+    this.notes.unshift(duplicate);
+    this.saveNotes();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+    this.showNotification(i18n.t('messages.noteCopied'), 'success');
+
+    this.selectNote(duplicate);
+  }
+
+  // Duplicate several notes; locked ones are skipped (they cannot be read without a password)
+  duplicateNotes(notes) {
+    const copies = notes
+      .filter((n) => !this.isNoteLockedForView(n))
+      .map((n) => this.makeDuplicate(n));
+    if (!copies.length) return;
+    this.notes.unshift(...copies);
+    this.saveNotes();
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+    this.showNotification(i18n.t('selection.duplicated', { count: copies.length }), 'success');
+  }
+
+  // A new note with the content of `note`, in the same folder
+  makeDuplicate(note) {
+    const now = new Date().toISOString();
+    // A copy has its own tags, formatting and history; it does not share the original's
+    const duplicate = {
+      ...note,
+      id: this.newId(),
+      // An untitled note's copy stays untitled: "Untitled" is a label in the current language,
+      // not a title to store
+      title: note.title ? note.title + i18n.t('messages.noteCopySuffix') : '',
+      tags: [...(note.tags || [])],
+      formatting: { ...(note.formatting || this.getDefaultFormatting()) },
+      attachments: [...(note.attachments || [])],
+      history: [{ type: 'created', ts: now }],
+      createdAt: now,
+      updatedAt: now,
+      isPinned: false, // A copy starts unpinned
+      isLocked: false, // A copy starts unlocked
+      isFavorite: false, // A copy is not a favorite
+      // A copy of an archived note shows in the list, unless the settings keep it archived
+      isArchived: !!note.isArchived && !!this.settings.keepCopiesArchived,
+    };
+    delete duplicate.encrypted;
+    delete duplicate.order;
+    return duplicate;
+  }
+
+  /**
+   * Updates the favorite buttons
+   */
+  updateFavoriteButtons() {
+    const isFavorite = this.currentNote?.isFavorite;
+
+    // Only update the favorite view button since favoriteBtn is only in viewer mode
+    if (this.favoriteViewBtn) {
+      const icon = this.favoriteViewBtn.querySelector('i');
+      icon.className = isFavorite ? 'fas fa-heart' : 'far fa-heart';
+      this.favoriteViewBtn.classList.toggle('favorited', isFavorite);
+    }
+  }
+
+  // Toggle favorite from the viewer action button
+  async toggleFavoriteView() {
+    if (!this.currentNote) return;
+
+    // Mirror behavior of other favorite toggles
+    this.currentNote.isFavorite = !this.currentNote.isFavorite;
+    // Not an edit: "last edited" stays as it was
+
+    try {
+      await this.saveNotes();
+    } catch (e) {
+      // ignore save errors for UI responsiveness; still update UI
+    }
+
+    // Update viewer favorite UI
+    this.updateFavoriteButtons();
+
+    // Update the lists that show this note
+    if (this.currentNote.folderId) {
+      this.updateSpecificFolder(this.currentNote.folderId);
+    } else {
+      this.updateNotesList();
+    }
+
+    const message = this.currentNote.isFavorite
+      ? i18n.t('messages.addedToFavorites')
+      : i18n.t('messages.removedFromFavorites');
+    this.showNotification(message, 'success');
+  }
+
+  selectNote(note) {
+    this.leaveCurrentNote(note);
+
+    // Check if note is locked
+    if (this.isNoteLockedForView(note)) {
+      this.unlockNoteForViewing(note);
+      return;
+    }
+
+    this.currentNote = note;
+    this.originalNoteState = {
+      title: note.title,
+      content: note.content,
+      mood: note.mood,
+      weather: note.weather,
+      tags: [...(note.tags || [])],
+      formatting: { ...(note.formatting || this.getDefaultFormatting()) },
+    };
+
+    // Save last viewed note
+    this.saveLastViewedNote(note.id);
+
+    // Show viewer mode and display note
+    this.showViewer();
+    this.displayNote(note);
+    this.setActiveNoteInList(this.currentNote.id); // Only update active class
+  }
+
+  recordHistory(note) {
+    const now = new Date();
+    note.history = Array.isArray(note.history) ? note.history : [];
+    const last = note.history[note.history.length - 1];
+    if (last && last.type === 'updated' && now - new Date(last.ts) < HISTORY_MERGE_MS) {
+      last.ts = now.toISOString();
+    } else {
+      note.history.push({ type: 'updated', ts: now.toISOString() });
+    }
+    // Keep the creation entry and the most recent updates
+    const created = note.history.filter((h) => h.type === 'created');
+    const updates = note.history.filter((h) => h.type !== 'created').slice(-HISTORY_LIMIT);
+    note.history = [...created, ...updates];
+  }
+
+  async deleteNoteById(noteId) {
+    const note = this.notes.find((n) => n.id === noteId);
+    if (!note) return;
+    // A locked note is deleted only with its password (or while it is unlocked)
+    if (!(await this.confirmLockedNotePassword(note))) return;
+
+    this.showConfirm(`"${this.displayTitle(note)}" ${i18n.t('messages.confirmDelete')}`, () =>
+      this.performNoteDeletion(note)
+    );
+  }
+
+  performNoteDeletion(note) {
+    this.notes = this.notes.filter((n) => n !== note);
+    this.saveNotes();
+    this.removeNoteReferences([note.id]);
+    this.unlockedNotes.delete(String(note.id));
+
+    this.updateNotesList();
+    this.updateFoldersList();
+    this.updateStats();
+
+    // If the deleted note was open, follow the "on note delete" setting
+    if (this.currentNote && this.currentNote.id === note.id) {
+      this.currentNote = null;
+      if (this.settings.onNoteDelete !== 'home' && this.notes.length > 0) {
+        // The note at the top of the list as it is shown now
+        this.openNote(this.getSortedNotes(this.getFilteredNotes())[0] || this.notes[0]);
+      } else {
+        this.showWelcome();
+      }
+    }
+
+    this.showNotification(i18n.t('messages.noteDeleted'), 'success');
+  }
+
+  // Remove reminders and notifications that point at deleted notes
+  removeNoteReferences(noteIds) {
+    const ids = new Set(Array.from(noteIds, (id) => String(id)));
+    if (ids.size === 0) return;
+    const keep = (item) =>
+      item.noteId === null || item.noteId === undefined || !ids.has(String(item.noteId));
+
+    this.reminders = this.reminders.filter(keep);
+    this.notifications = this.notifications.filter(keep);
+    this.saveReminders();
+    this.saveNotifications();
+
+    this.updateRemindersView();
+    this.updateNotificationsView();
+    this.updateNoteRemindersDisplay();
+    this.updateActiveRemindersCount();
+    this.updateActiveNotificationsCount();
+  }
+
+  // Action button functions
+  async toggleFavorite(noteId) {
+    const note = this.notes.find((n) => n.id === noteId);
+    if (!note) return;
+
+    note.isFavorite = !note.isFavorite;
+    // Not an edit: "last edited" stays as it was
+
+    await this.saveNotes();
+    if (this.currentNote?.id === noteId) this.updateFavoriteButtons();
+
+    // Only update the specific folder if note is in a folder, otherwise update main list
+    if (note.folderId) {
+      this.updateSpecificFolder(note.folderId);
+    } else {
+      this.updateNotesList();
+    }
+    // Keep the current filter selected after toggling metadata
+
+    const message = note.isFavorite
+      ? i18n.t('messages.addedToFavorites')
+      : i18n.t('messages.removedFromFavorites');
+    this.showNotification(message, 'success');
+  }
+
+  async togglePin(noteId) {
+    const note = this.notes.find((n) => n.id === noteId);
+    if (!note) return;
+
+    // If trying to pin and already 3 notes are pinned, block and notify
+    if (!note.isPinned) {
+      const pinnedCount = this.notes.filter((n) => n.isPinned).length;
+      const maxPinned = MAX_PINNED_NOTES;
+      if (pinnedCount >= maxPinned) {
+        this.showNotification(
+          i18n.t('messages.maxPinnedNotes').replace('{count}', maxPinned),
+          'error'
+        );
+        return;
+      }
+    }
+
+    note.isPinned = !note.isPinned;
+    // Not an edit: "last edited" stays as it was
+
+    await this.saveNotes();
+
+    // Only update the specific folder if note is in a folder, otherwise update main list
+    if (note.folderId) {
+      this.updateSpecificFolder(note.folderId);
+    } else {
+      this.updateNotesList();
+    }
+
+    // If viewing favorites, refresh it to reflect pin changes where applicable
+    if (this.currentFilter === 'favorites') this.updateNotesList();
+
+    const message = note.isPinned ? i18n.t('messages.notePinned') : i18n.t('messages.noteUnpinned');
+    this.showNotification(message, 'success');
+  }
+
+  // Save/cancel in the editor and the action buttons of the viewer
+  setupNoteActionEvents() {
+    this.saveNoteBtn.addEventListener('click', () => this.saveNote());
+
+    this.cancelNoteBtn.addEventListener('click', () => this.cancelEdit());
+
+    this.editNoteBtn.addEventListener('click', () => this.editCurrentNote());
+
+    this.deleteNoteBtn.addEventListener('click', () => this.deleteCurrentNote());
+
+    this.favoriteViewBtn.addEventListener('click', () => this.toggleFavoriteView());
+
+    this.duplicateNoteBtn.addEventListener('click', () => this.duplicateNote());
+
+    this.exportNoteBtn.addEventListener('click', () => this.showExportModal());
+  }
+}

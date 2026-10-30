@@ -1,39 +1,59 @@
 {
   "name": "capnote",
   "version": "1.0.0",
-  "description": "Capnote — modern masaüstü not ve günlük uygulaması",
-  "main": "src/main.js",
+  "description": "Capnote - a modern desktop notes and journal app",
+  "main": "src/main/index.js",
+  "type": "module",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
+    "test": "node tests/run.mjs",
+    "test:visual": "node tests/visual.mjs",
     "build": "electron-builder",
     "build-win": "electron-builder --win",
     "build-mac": "electron-builder --mac",
     "build-linux": "electron-builder --linux",
-    "lint": "eslint src/**/*.js",
-    "lint:fix": "eslint src/**/*.js --fix",
-    "format": "prettier --write src/**/*.js src/**/*.html src/**/*.css"
+    "release": "electron-builder --win --linux --publish always",
+    "lint": "eslint src scripts tests",
+    "lint:fix": "eslint src scripts tests --fix",
+    "format": "prettier --write \"src/**/*.{js,cjs,html,css,json}\" \"tests/**/*.{mjs,cjs}\" \"scripts/**/*.mjs\"",
+    "format:check": "prettier --check \"src/**/*.{js,cjs,html,css,json}\" \"tests/**/*.{mjs,cjs}\" \"scripts/**/*.mjs\"",
+    "icons": "electron scripts/build-icons.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Enesuygurs/capnote.git"
   },
   "keywords": [
     "electron",
     "capnote",
-    "voice",
-    "speech-to-text",
-    "notes"
+    "notes",
+    "journal",
+    "diary",
+    "markdown"
   ],
   "author": "Valkyr",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^28.0.0",
-    "electron-reloader": "^1.2.0",
-    "electron-builder": "^24.6.4",
-    "eslint": "^9.37.0",
+    "@eslint/js": "^10.0.1",
+    "electron": "^45.0.0",
+    "electron-builder": "^26.18.0",
+    "electron-reloader": "^2.0.0",
+    "eslint": "^10.13.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
+    "globals": "^17.13.0",
+    "pixelmatch": "^7.2.0",
+    "pngjs": "^7.0.0",
     "prettier": "^3.6.2"
   },
   "dependencies": {
-    "electron-store": "^8.1.0"
+    "@fontsource/crimson-text": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/roboto-mono": "^5.3.0",
+    "@fortawesome/fontawesome-free": "^7.3.1",
+    "dompurify": "^3.4.17",
+    "electron-updater": "^6.8.11",
+    "marked": "^18.1.1"
   },
   "build": {
     "appId": "com.valkyr.capnote",
@@ -47,13 +67,21 @@
       "package.json"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "assets/icons/capnote.ico"
     },
     "mac": {
-      "target": "dmg"
+      "target": "dmg",
+      "icon": "assets/icons/capnote-512.png"
     },
     "linux": {
-      "target": "AppImage"
+      "target": "AppImage",
+      "icon": "assets/icons/capnote-512.png"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "Enesuygurs",
+      "repo": "capnote"
     }
   }
 }
