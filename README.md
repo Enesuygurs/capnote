@@ -78,10 +78,20 @@ Output goes to `dist/`.
 
 Installed copies on Windows and Linux check GitHub Releases for a newer version, download it in the background and install it on restart (Settings → About shows the status). macOS updates need a signed app, so the macOS build does not update itself.
 
-1. Raise `version` in `package.json`.
-2. Set a GitHub token with access to the repository in `GH_TOKEN`.
-3. Run `npm run release`. It builds the Windows installer and the AppImage and uploads them, with the `latest.yml` files the updater reads, to a draft release.
-4. Publish the draft release on GitHub.
+Releases are built and published by GitHub Actions ([`.github/workflows/release.yml`](.github/workflows/release.yml)):
+
+1. On `main`, raise the version and tag it:
+   ```bash
+   npm version patch -m "chore(release): %s"   # 1.0.0 -> 1.0.1; minor or major for bigger steps
+   ```
+   This changes `package.json`, commits it and creates the tag `v1.0.1`.
+2. Push the commit and the tag:
+   ```bash
+   git push --follow-tags
+   ```
+3. The **Release** workflow starts on the tag (follow it in the repository's Actions tab). It checks the code, builds the Windows installer and the Linux AppImage at the same time and publishes them, with the `latest.yml` files the updater reads, as the release `v1.0.1`, with notes listing the changes. If a step fails, no release is published; fix it, delete the tag (`git push --delete origin v1.0.1` and `git tag -d v1.0.1`) and tag again.
+
+To try a build without releasing, run the workflow by hand (Actions → Release → Run workflow); the packages are then kept as downloads of that run. `npm run release` still builds and uploads from your own machine, to a draft release, with a token in `GH_TOKEN`.
 
 ## License
 
