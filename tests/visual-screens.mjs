@@ -121,6 +121,9 @@ export async function run() {
     if (a.noteDate) a.noteDate.textContent = 'Sunday, March 1, 2026';
     document.querySelectorAll('.reminder-datetime-input').forEach((i) => (i.value = ''));
     a.renderReminderWhen();
+    // Started from the test entry, the app reports Electron's version, which changes with updates
+    const version = document.getElementById('appVersionLabel');
+    if (version) version.textContent = 'Capnote 1.0.0';
     // The automatic backups are named after the real day they were taken
     document
       .querySelectorAll('.auto-backup label')
