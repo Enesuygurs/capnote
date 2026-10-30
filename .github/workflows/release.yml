@@ -1,0 +1,109 @@
+# Builds Capnote and publishes it as a GitHub release, where installed copies find their updates.
+#
+# Releasing: raise the version and tag it (npm version patch), then push the tag
+# (git push --follow-tags). For the tag v1.2.3 this workflow
+#   1. checks the code and that package.json says 1.2.3,
+#   2. creates a draft release v1.2.3 (one draft, so the two builds cannot each start their own),
+#   3. builds the Windows installer and the Linux AppImage at the same time and uploads them, with
+#      the latest.yml files the updater reads, to that draft,
+#   4. publishes the draft once both builds are in. If a build fails, nothing is published.
+#
+# Run by hand (Actions > Release > Run workflow) it only builds: the packages are kept as
+# downloadable artifacts of the run, and no release is made.
+
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+# The run's token may create and edit releases
+permissions:
+  contents: write
+
+# A second push of the same tag waits for the first run instead of racing it
+concurrency:
+  group: release-${{ github.ref }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run format:check
+      - run: npm run lint
+      - name: The tag matches the version in package.json
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version="v$(node -p "require('./package.json').version")"
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::The tag is $GITHUB_REF_NAME but package.json says $version"
+            exit 1
+          fi
+
+  draft:
+    needs: check
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create the draft release (its notes list the changes since the last release)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1 ||
+            gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft \
+              --title "Capnote ${GITHUB_REF_NAME#v}" --generate-notes
+
+  build:
+    needs: [check, draft]
+    # A manual run has no draft job; it builds all the same
+    if: ${{ !cancelled() && !failure() }}
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            target: win
+          - os: ubuntu-latest
+            target: linux
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build and upload to the draft release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --${{ matrix.target }} --publish always
+      - name: Build only (manual run)
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        run: npx electron-builder --${{ matrix.target }} --publish never
+      - name: Keep the packages of a manual run
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: capnote-${{ matrix.target }}
+          path: |
+            dist/*.exe
+            dist/*.AppImage
+            dist/latest*.yml
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --latest
