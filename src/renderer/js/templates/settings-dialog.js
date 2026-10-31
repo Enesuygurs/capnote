@@ -91,19 +91,6 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <span class="toggle-slider"></span>
                 </label>
               </div>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="settings.keepCopiesArchived">Arşivdeki notların kopyası</label>
-                  <small data-i18n="settings.keepCopiesArchivedDesc"
-                    >Arşivdeki bir notun kopyası da arşivde kalsın; kapalıyken kopya listede
-                    görünür</small
-                  >
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="keepCopiesArchivedToggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
             </div>
           </section>
 
