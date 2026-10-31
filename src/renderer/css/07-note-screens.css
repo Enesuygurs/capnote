@@ -222,6 +222,92 @@
   color: var(--text-secondary);
 }
 
+/* ============ Mood journey ============
+   A day per column: its mood's icon in the mood's tone (an empty ring for a day without one), the
+   weekday or the date below; then the weekday patterns, each with its mood's icon */
+.mood-journey {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.mood-journey-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.journey-range {
+  width: 160px;
+}
+
+.mood-strip {
+  display: grid;
+  grid-template-columns: repeat(var(--days, 7), minmax(0, 1fr));
+  gap: 2px;
+}
+
+.mood-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.mood-day-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: var(--control-md);
+  aspect-ratio: 1;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--tone, var(--text-muted)) 14%, transparent);
+  color: var(--tone);
+  font-size: var(--fs-lg);
+}
+
+.mood-day-mark.is-empty {
+  background: none;
+  box-shadow: inset 0 0 0 1.5px var(--divider);
+}
+
+/* A month: thirty small squares */
+.mood-strip.is-month .mood-day-mark {
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+}
+
+.mood-day-label {
+  min-height: 14px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.mood-patterns {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.mood-pattern {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-primary);
+}
+
+.mood-pattern-icon {
+  color: var(--tone);
+  width: 16px;
+  text-align: center;
+}
+
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));

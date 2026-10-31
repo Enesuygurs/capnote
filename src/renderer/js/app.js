@@ -34,6 +34,7 @@ import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
 import { DictationFeature } from './features/dictation.js';
 import { YearSummaryFeature } from './features/year-summary.js';
+import { MoodJourneyFeature } from './features/mood-journey.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
@@ -283,6 +284,9 @@ export class CapnoteApp {
     this.summaryPrevBtn = document.getElementById('summaryPrevBtn');
     this.summaryNextBtn = document.getElementById('summaryNextBtn');
     this.summarySaveBtn = document.getElementById('summarySaveBtn');
+    this.moodStrip = document.getElementById('moodStrip');
+    this.moodPatternsList = document.getElementById('moodPatterns');
+    this.moodJourneyRangeTabs = document.getElementById('moodJourneyRange');
     this.folderModal = document.getElementById('folderModal');
     this.folderNameInput = document.getElementById('folderNameInput');
     this.createFolderBtn = document.getElementById('createFolderBtn');
@@ -421,6 +425,7 @@ export class CapnoteApp {
     this.setupToolbarMenus();
     this.setupDictation();
     this.setupYearSummary();
+    this.setupMoodJourney();
     this.setupMoodWeatherSelectors();
     this.setupModalEvents();
     this.setupKeyboardShortcuts();
@@ -685,6 +690,7 @@ applyFeatures(CapnoteApp, [
   ToolbarMenusFeature,
   DictationFeature,
   YearSummaryFeature,
+  MoodJourneyFeature,
   DashboardFeature,
   TemplatesFeature,
   MarkdownIoFeature,

@@ -573,5 +573,32 @@
     "tagsSub": "The first in {count} notes",
     "longest": "Your longest note",
     "longestWords": "{count} words"
+  },
+  "journey": {
+    "title": "Mood journey",
+    "week": "Week",
+    "month": "Month",
+    "noMood": "No mood chosen",
+    "pattern": "On {days} you usually {feel}",
+    "noPatterns": "Patterns show here as you choose moods for your notes over a few weeks",
+    "weekdays": {
+      "0": "Sundays",
+      "1": "Mondays",
+      "2": "Tuesdays",
+      "3": "Wednesdays",
+      "4": "Thursdays",
+      "5": "Fridays",
+      "6": "Saturdays"
+    },
+    "feel": {
+      "happy": "feel happy",
+      "sad": "feel sad",
+      "angry": "feel angry",
+      "tired": "feel tired",
+      "inLove": "feel in love",
+      "thoughtful": "feel thoughtful",
+      "cool": "feel cool",
+      "bored": "feel bored"
+    }
   }
 }

@@ -573,5 +573,32 @@
     "tagsSub": "Birincisi {count} notta",
     "longest": "En uzun notun",
     "longestWords": "{count} kelime"
+  },
+  "journey": {
+    "title": "Ruh hali yolculuğu",
+    "week": "Hafta",
+    "month": "Ay",
+    "noMood": "Ruh hali seçilmedi",
+    "pattern": "{days} genelde {feel}",
+    "noPatterns": "Desenler, birkaç hafta boyunca notlarına ruh hali seçtikçe burada görünür",
+    "weekdays": {
+      "0": "Pazarları",
+      "1": "Pazartesileri",
+      "2": "Salıları",
+      "3": "Çarşambaları",
+      "4": "Perşembeleri",
+      "5": "Cumaları",
+      "6": "Cumartesileri"
+    },
+    "feel": {
+      "happy": "mutlu oluyorsun",
+      "sad": "üzgün oluyorsun",
+      "angry": "kızgın oluyorsun",
+      "tired": "yorgun oluyorsun",
+      "inLove": "aşık hissediyorsun",
+      "thoughtful": "düşünceli oluyorsun",
+      "cool": "havalı hissediyorsun",
+      "bored": "sıkılmış oluyorsun"
+    }
   }
 }

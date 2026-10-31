@@ -88,6 +88,7 @@ export class DashboardFeature {
       day: 'numeric',
     });
     this.renderStatTiles();
+    this.renderMoodJourney();
     this.renderCalendar();
     this.renderOnThisDay();
     this.renderBarList(this.moodChart, this.spreadOf('mood', this.findMoodButton), 'mood');
