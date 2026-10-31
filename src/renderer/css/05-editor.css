@@ -67,6 +67,41 @@
   color: var(--accent-text);
 }
 
+/* ============ Dictation ============
+   The microphone button: red while recording, a spinner while the speech turns into text; the
+   time or the progress next to it */
+.dictate-btn.is-recording,
+.dictate-btn.is-recording:hover {
+  background: color-mix(in srgb, var(--error-color) 14%, transparent);
+  color: var(--error-color);
+  animation: dictation-pulse 1.4s ease-in-out infinite;
+}
+
+.dictate-btn:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+@keyframes dictation-pulse {
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--error-color) 18%, transparent);
+  }
+}
+
+.dictation-status {
+  padding: 0 var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dictate-btn.is-recording {
+    animation: none;
+  }
+}
+
 /* ============ Toolbar menus ============
    A button with a small caret; its popover opens under it (its right edge on the button's near
    the window's edge). A row of icons (lists) or a list with names (insert). The selectors carry

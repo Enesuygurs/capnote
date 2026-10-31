@@ -172,6 +172,10 @@ export const NOTE_EDITOR = /* HTML */ `
         <button class="format-btn" id="insertLinkBtn" data-i18n-title="titles.link">
           <i class="fas fa-link"></i>
         </button>
+        <button class="format-btn dictate-btn" id="dictateBtn" data-i18n-title="dictation.start">
+          <i class="fas fa-microphone"></i>
+        </button>
+        <span class="dictation-status" id="dictationStatus" hidden></span>
         <div class="toolbar-menu" id="insertMenu">
           <button
             type="button"

@@ -90,6 +90,7 @@ export class SettingsFeature {
     if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
     if (this.startupPageSelect) this.startupPageSelect.value = settings.startupPage;
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
+    if (this.dictationModelSelect) this.dictationModelSelect.value = settings.dictationModel;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
     if (this.quickNoteShortcutToggle)
       this.quickNoteShortcutToggle.checked = settings.quickNoteShortcut;
@@ -166,6 +167,10 @@ export class SettingsFeature {
     }
 
     // Auto save toggle
+    this.dictationModelSelect?.addEventListener('change', (e) =>
+      this.setSetting('dictationModel', e.target.value)
+    );
+
     if (this.autoSaveToggle) {
       this.autoSaveToggle.addEventListener('change', (e) => {
         this.setSetting('autoSave', e.target.checked);

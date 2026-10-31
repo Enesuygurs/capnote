@@ -32,6 +32,7 @@ import { NoteLinksFeature } from './features/note-links.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
+import { DictationFeature } from './features/dictation.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
@@ -270,6 +271,9 @@ export class CapnoteApp {
     this.addFolderBtn = document.getElementById('addFolderBtn');
     this.listContextMenu = document.getElementById('listContextMenu');
     this.focusModeBtn = document.getElementById('focusModeBtn');
+    this.dictateBtn = document.getElementById('dictateBtn');
+    this.dictationStatus = document.getElementById('dictationStatus');
+    this.dictationModelSelect = document.getElementById('dictationModelSelect');
     this.folderModal = document.getElementById('folderModal');
     this.folderNameInput = document.getElementById('folderNameInput');
     this.createFolderBtn = document.getElementById('createFolderBtn');
@@ -406,6 +410,7 @@ export class CapnoteApp {
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupToolbarMenus();
+    this.setupDictation();
     this.setupMoodWeatherSelectors();
     this.setupModalEvents();
     this.setupKeyboardShortcuts();
@@ -668,6 +673,7 @@ applyFeatures(CapnoteApp, [
   TagsFeature,
   ArchiveFeature,
   ToolbarMenusFeature,
+  DictationFeature,
   DashboardFeature,
   TemplatesFeature,
   MarkdownIoFeature,
