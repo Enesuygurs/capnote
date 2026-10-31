@@ -549,5 +549,29 @@
     "noMic": "Mikrofona erişilemedi",
     "failed": "Konuşma yazıya çevrilemedi",
     "downloadFailed": "Dikte modeli indirilemedi; ilk kullanımda internet bağlantısı gerekiyor"
+  },
+  "summary": {
+    "open": "Yıllık özet",
+    "title": "{year} özeti",
+    "subtitle": "Bir yıl boyunca yazdıkların",
+    "back": "Genel bakışa dön",
+    "prev": "Önceki yıl",
+    "next": "Sonraki yıl",
+    "save": "Görsel olarak kaydet",
+    "saved": "Özet görsel olarak kaydedildi",
+    "empty": "{year} yılında yazılmış not yok",
+    "notes": "not",
+    "words": "kelime",
+    "days": "yazdığın gün",
+    "months": "Aylar",
+    "topMonth": "En çok {month} ayında yazdın: {count} not",
+    "mood": "En sık ruh halin",
+    "moodShare": "Ruh hali seçtiğin notların %{share} kadarı",
+    "streak": "En uzun serin",
+    "streakDays": "{count} gün art arda",
+    "tags": "En çok kullandığın etiketler",
+    "tagsSub": "Birincisi {count} notta",
+    "longest": "En uzun notun",
+    "longestWords": "{count} kelime"
   }
 }

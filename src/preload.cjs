@@ -41,6 +41,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   exportHtml: (payload) => ipcRenderer.invoke('export-html', payload),
   // Save a text file (note text or JSON, the full backup) where the user picks
   saveFile: (payload) => ipcRenderer.invoke('save-file', payload),
+  // A part of the window as a PNG (base64), and a PNG saved where the user picks
+  captureArea: (rect) => ipcRenderer.invoke('capture-area', rect),
+  savePng: (payload) => ipcRenderer.invoke('save-png', payload),
   // Export: choose where and as what (backup or Markdown), then write it; import: backups and
   // Markdown files the user picks
   chooseExport: (payload) => ipcRenderer.invoke('data:choose-export', payload),

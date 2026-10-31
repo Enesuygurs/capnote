@@ -549,5 +549,29 @@
     "noMic": "The microphone could not be used",
     "failed": "The speech could not be turned into text",
     "downloadFailed": "The dictation model could not be downloaded; the first use needs an internet connection"
+  },
+  "summary": {
+    "open": "Year in review",
+    "title": "{year} in review",
+    "subtitle": "What you wrote in a year",
+    "back": "Back to the overview",
+    "prev": "Previous year",
+    "next": "Next year",
+    "save": "Save as image",
+    "saved": "The summary was saved as an image",
+    "empty": "No notes written in {year}",
+    "notes": "notes",
+    "words": "words",
+    "days": "days you wrote",
+    "months": "Months",
+    "topMonth": "You wrote most in {month}: {count} notes",
+    "mood": "Your most frequent mood",
+    "moodShare": "{share}% of the notes with a mood",
+    "streak": "Your longest streak",
+    "streakDays": "{count} days in a row",
+    "tags": "Your most used tags",
+    "tagsSub": "The first in {count} notes",
+    "longest": "Your longest note",
+    "longestWords": "{count} words"
   }
 }

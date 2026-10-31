@@ -7,6 +7,186 @@
   overflow: hidden;
 }
 
+/* ============ Year summary ============
+   One card to read or save as an image: the year large with the app's mark, three figures, the
+   months as columns (the most written one in the accent), then facts with a toned icon each.
+   While it is saved as an image the page header steps aside, so the whole card is in view. */
+.summary-screen.is-capturing .page-header {
+  display: none;
+}
+
+.summary-screen.is-capturing .page-body {
+  scrollbar-width: none;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--divider);
+}
+
+.summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-year {
+  color: var(--accent-text);
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.summary-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.summary-brand img {
+  width: 22px;
+  height: 22px;
+}
+
+.summary-figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.summary-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--card);
+}
+
+.summary-figure i {
+  color: var(--tone);
+  font-size: var(--fs-md);
+}
+
+.summary-figure-value {
+  color: var(--text-strong);
+  font-size: var(--fs-3xl);
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.summary-figure-label,
+.summary-label {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.summary-label {
+  font-weight: 500;
+}
+
+.summary-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.summary-line {
+  color: var(--text-strong);
+  font-weight: 500;
+}
+
+.summary-months {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-1);
+  height: 96px;
+}
+
+.summary-month {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 0;
+}
+
+.summary-month-bar {
+  width: 100%;
+  max-width: 24px;
+  border-radius: 4px 4px 0 0;
+  background: color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+
+.summary-month.is-top .summary-month-bar {
+  background: var(--accent-color);
+}
+
+.summary-month-name {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.summary-month.is-top .summary-month-name {
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.summary-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.summary-fact {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  min-width: 0;
+}
+
+.summary-fact > div {
+  min-width: 0;
+}
+
+.summary-fact-icon {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  color: var(--tone);
+}
+
+.summary-fact-text {
+  overflow: hidden;
+  color: var(--text-strong);
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.summary-fact-sub {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
 .stat-tiles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));

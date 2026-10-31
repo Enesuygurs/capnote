@@ -51,6 +51,28 @@ function registerExportIpc() {
     }
   });
 
+  // A part of the window as a PNG (the year summary card), returned as base64
+  ipcMain.handle('capture-area', async (event, rect) => {
+    const valid = rect && ['x', 'y', 'width', 'height'].every((k) => Number.isFinite(rect[k]));
+    if (!valid || rect.width <= 0 || rect.height <= 0) return null;
+    const image = await event.sender.capturePage(rect);
+    return image.toPNG().toString('base64');
+  });
+
+  // A PNG (base64) saved where the user picks
+  ipcMain.handle('save-png', async (event, payload) => {
+    const { data, fileName = 'capnote.png' } = payload || {};
+    if (typeof data !== 'string' || !data) return { ok: false, error: 'Invalid image' };
+    const filePath = await askSavePath(event, fileName, [{ name: 'PNG', extensions: ['png'] }]);
+    if (!filePath) return { ok: false, canceled: true };
+    try {
+      fs.writeFileSync(filePath, Buffer.from(data, 'base64'));
+      return { ok: true, filePath };
+    } catch (err) {
+      return { ok: false, error: String(err && err.message ? err.message : err) };
+    }
+  });
+
   // A note as an HTML page that looks like the PDF and opens anywhere
   ipcMain.handle('export-html', async (event, payload) => {
     const { title = 'note', bodyHtml = '', fileName = 'note.html' } = payload || {};

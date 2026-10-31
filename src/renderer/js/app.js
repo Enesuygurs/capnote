@@ -33,6 +33,7 @@ import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
 import { DictationFeature } from './features/dictation.js';
+import { YearSummaryFeature } from './features/year-summary.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
@@ -274,6 +275,14 @@ export class CapnoteApp {
     this.dictateBtn = document.getElementById('dictateBtn');
     this.dictationStatus = document.getElementById('dictationStatus');
     this.dictationModelSelect = document.getElementById('dictationModelSelect');
+    this.summaryScreen = document.getElementById('summaryScreen');
+    this.summaryCard = document.getElementById('summaryCard');
+    this.summaryTitle = document.getElementById('summaryTitle');
+    this.summaryOpenBtn = document.getElementById('summaryOpenBtn');
+    this.summaryBackBtn = document.getElementById('summaryBackBtn');
+    this.summaryPrevBtn = document.getElementById('summaryPrevBtn');
+    this.summaryNextBtn = document.getElementById('summaryNextBtn');
+    this.summarySaveBtn = document.getElementById('summarySaveBtn');
     this.folderModal = document.getElementById('folderModal');
     this.folderNameInput = document.getElementById('folderNameInput');
     this.createFolderBtn = document.getElementById('createFolderBtn');
@@ -411,6 +420,7 @@ export class CapnoteApp {
     this.setupFormattingToolbar();
     this.setupToolbarMenus();
     this.setupDictation();
+    this.setupYearSummary();
     this.setupMoodWeatherSelectors();
     this.setupModalEvents();
     this.setupKeyboardShortcuts();
@@ -674,6 +684,7 @@ applyFeatures(CapnoteApp, [
   ArchiveFeature,
   ToolbarMenusFeature,
   DictationFeature,
+  YearSummaryFeature,
   DashboardFeature,
   TemplatesFeature,
   MarkdownIoFeature,

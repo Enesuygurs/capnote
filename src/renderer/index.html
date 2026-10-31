@@ -243,6 +243,11 @@
                 <h2 class="page-title" data-i18n="dashboard.title">Genel bakış</h2>
                 <p class="page-subtitle" id="dashboardDate"></p>
               </div>
+              <div class="page-actions">
+                <button class="btn-tinted btn-small" id="summaryOpenBtn">
+                  <i class="fas fa-star"></i> <span data-i18n="summary.open">Yıllık özet</span>
+                </button>
+              </div>
             </div>
             <div class="page-body">
               <div class="stat-tiles" id="statTiles"></div>
@@ -303,6 +308,35 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- The year in review: one card, to read or save as an image -->
+        <div id="summaryScreen" class="screen summary-screen hidden">
+          <div class="page-header">
+            <button class="btn-icon" id="summaryBackBtn" data-i18n-title="summary.back">
+              <i class="fas fa-arrow-left"></i>
+            </button>
+            <span class="page-icon tone-violet"><i class="fas fa-star"></i></span>
+            <div class="page-heading">
+              <h2 class="page-title" id="summaryTitle"></h2>
+              <p class="page-subtitle" data-i18n="summary.subtitle">Yılının özeti</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn-icon" id="summaryPrevBtn" data-i18n-title="summary.prev">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button class="btn-icon" id="summaryNextBtn" data-i18n-title="summary.next">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+              <button class="btn-tinted btn-small" id="summarySaveBtn">
+                <i class="fas fa-image"></i>
+                <span data-i18n="summary.save">Görsel olarak kaydet</span>
+              </button>
+            </div>
+          </div>
+          <div class="page-body">
+            <div class="summary-card" id="summaryCard"></div>
           </div>
         </div>
 

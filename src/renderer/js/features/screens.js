@@ -20,6 +20,7 @@ export class ScreensFeature {
       reminders: this.remindersScreen,
       tags: this.tagsScreen,
       archive: this.archiveScreen,
+      summary: this.summaryScreen,
       todos: this.todosScreen,
     };
     Object.entries(screens).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
