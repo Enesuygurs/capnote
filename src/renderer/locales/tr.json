@@ -525,5 +525,16 @@
     "empty": "Henüz not yok",
     "writeFirst": "İlk notunu yaz",
     "noMatch": "Eşleşen not yok"
+  },
+  "history": {
+    "current": "Şu anki sürüm",
+    "earlier": "Önceki sürüm",
+    "view": "Görüntüle",
+    "noVersion": "İçeriği saklanmamış",
+    "back": "Sürümlere dön",
+    "versionOf": "{date} sürümü",
+    "restore": "Bu sürüme geri dön",
+    "restored": "Sürüm geri yüklendi; önceki hali geçmişte duruyor",
+    "lockedHint": "Kilitli notların eski sürümleri şifresiz kaydedilmediği için saklanmaz"
   }
 }

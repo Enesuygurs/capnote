@@ -218,6 +218,7 @@ export class CapnoteApp {
     this.lastModified = document.getElementById('lastModified');
     this.noteHistoryModal = document.getElementById('noteHistoryModal');
     this.historyBody = document.getElementById('historyBody');
+    this.historyRestoreBtn = document.getElementById('historyRestoreBtn');
     this.closeHistoryModal = document.getElementById('closeHistoryModal');
     this.historyCloseBtn = document.getElementById('historyCloseBtn');
 

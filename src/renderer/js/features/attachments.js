@@ -37,6 +37,12 @@ export class AttachmentsFeature {
     if (this.notes.some((note) => note.isLocked && !Array.isArray(note.attachments))) return;
     const keep = new Set();
     this.notes.forEach((note) => (note.attachments || []).forEach((name) => keep.add(name)));
+    // Files of earlier versions stay too, so a restored version gets its images back
+    this.notes.forEach((note) =>
+      (note.history || []).forEach((h) => {
+        if (h.version) this.extractUploadNames(h.version.content).forEach((n) => keep.add(n));
+      })
+    );
     try {
       await window.electronAPI.uploads.cleanup([...keep]);
     } catch (err) {

@@ -215,6 +215,10 @@ export const NOTE_DIALOGS = /* HTML */ `
         <button class="btn btn-secondary" id="historyCloseBtn" data-i18n="buttons.close">
           Kapat
         </button>
+        <button class="btn-primary hidden" id="historyRestoreBtn">
+          <i class="fas fa-clock-rotate-left"></i>
+          <span data-i18n="history.restore">Bu sürüme geri dön</span>
+        </button>
       </div>
     </div>
   </div>

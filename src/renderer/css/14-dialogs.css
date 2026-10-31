@@ -70,6 +70,55 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The current version, set apart like the creation entry */
+.history-entry.current {
+  background: var(--accent-tint);
+}
+
+.history-entry.current .history-type {
+  color: var(--accent-text);
+  font-weight: 500;
+}
+
+/* An earlier version: its time, then View; an old entry with no text kept says so */
+.history-item .history-ts {
+  flex: 1;
+  text-align: right;
+}
+
+.history-view {
+  flex-shrink: 0;
+}
+
+.history-no-version {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+/* One version shown read-only */
+.history-back {
+  align-self: flex-start;
+}
+
+.history-version-meta {
+  margin-top: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.history-version-title {
+  color: var(--text-strong);
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+}
+
+.history-version-body {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--card);
+}
+
 .history-empty {
   padding: var(--space-2) var(--space-3);
   font-size: var(--fs-md);

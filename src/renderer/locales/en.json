@@ -525,5 +525,16 @@
     "empty": "No notes yet",
     "writeFirst": "Write your first note",
     "noMatch": "No matching notes"
+  },
+  "history": {
+    "current": "Current version",
+    "earlier": "Earlier version",
+    "view": "View",
+    "noVersion": "Text not kept",
+    "back": "Back to versions",
+    "versionOf": "Version of {date}",
+    "restore": "Restore this version",
+    "restored": "Version restored; the previous one is kept in the history",
+    "lockedHint": "Earlier versions of locked notes are not kept, so they are never stored unencrypted"
   }
 }

@@ -140,6 +140,8 @@ export class LockFeature {
       note.encrypted = await encrypt(note.content || '', password);
       note.content = '';
       note.isLocked = true;
+      // Its earlier versions are plain text: they go
+      note.history = (note.history || []).map(({ version, ...entry }) => entry);
       this.unlockedNotes.delete(String(note.id));
       this.showNotification(i18n.t('messages.noteLocked'), 'success');
     }

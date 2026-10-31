@@ -1,6 +1,11 @@
 // Note lifecycle: create, open, save, duplicate, delete, favorite, pin and history
 
-import { HISTORY_MERGE_MS, HISTORY_LIMIT, MAX_PINNED_NOTES } from '../constants.js';
+import {
+  HISTORY_MERGE_MS,
+  HISTORY_LIMIT,
+  HISTORY_VERSIONS,
+  MAX_PINNED_NOTES,
+} from '../constants.js';
 import { i18n } from '../i18n.js';
 
 export class NotesFeature {
@@ -479,19 +484,52 @@ export class NotesFeature {
     this.setActiveNoteInList(this.currentNote.id); // Only update active class
   }
 
-  recordHistory(note) {
+  // A history entry for an edit, keeping the note as it was before it (its title and text), so that
+  // version can be seen and restored. Edits close together merge into one entry, which keeps the
+  // version from before the first of them. merge: false always starts a new entry (a restore).
+  recordHistory(note, { merge = true } = {}) {
     const now = new Date();
     note.history = Array.isArray(note.history) ? note.history : [];
     const last = note.history[note.history.length - 1];
-    if (last && last.type === 'updated' && now - new Date(last.ts) < HISTORY_MERGE_MS) {
+    if (merge && last && last.type === 'updated' && now - new Date(last.ts) < HISTORY_MERGE_MS) {
       last.ts = now.toISOString();
     } else {
-      note.history.push({ type: 'updated', ts: now.toISOString() });
+      note.history.push({
+        type: 'updated',
+        ts: now.toISOString(),
+        version: {
+          title: note.title || '',
+          content: note.content || '',
+          isMarkdown: !!note.isMarkdown,
+        },
+      });
     }
-    // Keep the creation entry and the most recent updates
+    // Keep the creation entry and the most recent updates; only the latest keep their text
     const created = note.history.filter((h) => h.type === 'created');
     const updates = note.history.filter((h) => h.type !== 'created').slice(-HISTORY_LIMIT);
+    updates.slice(0, -HISTORY_VERSIONS).forEach((h) => delete h.version);
     note.history = [...created, ...updates];
+  }
+
+  // Put an earlier version back. The note as it is now becomes a version too, so a restore can be
+  // undone the same way.
+  restoreNoteVersion(note, version) {
+    if (!note || !version) return;
+    this.recordHistory(note, { merge: false });
+    note.title = version.title;
+    note.content = version.content;
+    note.isMarkdown = !!version.isMarkdown;
+    note.attachments = this.extractUploadNames(note.content);
+    const counts = this.countWordsAndCharsFromHtml(note.content);
+    note.wordCount = counts.words;
+    note.charCount = counts.chars;
+    note.updatedAt = new Date().toISOString();
+    this.saveNotes();
+    if (note.isLocked) this.resealNote(note);
+    this.updateNotesList();
+    this.updateFoldersList();
+    if (this.currentNote === note && !this.isEditorOpen()) this.displayNote(note);
+    this.showNotification(i18n.t('history.restored'), 'success');
   }
 
   async deleteNoteById(noteId) {
