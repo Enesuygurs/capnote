@@ -89,6 +89,7 @@ export class DashboardFeature {
     });
     this.renderStatTiles();
     this.renderCalendar();
+    this.renderOnThisDay();
     this.renderBarList(this.moodChart, this.spreadOf('mood', this.findMoodButton), 'mood');
     this.renderBarList(
       this.weatherChart,
@@ -246,23 +247,75 @@ export class DashboardFeature {
       { weekday: 'long', day: 'numeric', month: 'long' }
     )} · ${i18n.t('tags.notesCount', { count: notes.length })}`;
     this.calendarDayList.innerHTML = '';
-    notes.forEach((note) => {
-      const row = document.createElement('button');
-      row.type = 'button';
-      row.className = 'calendar-note';
-      const icon = this.findMoodButton(note.mood)?.querySelector('i');
-      row.innerHTML =
-        '<span class="calendar-note-mood"></span><span class="calendar-note-title"></span><span class="calendar-note-time"></span>';
-      if (icon) {
-        row.querySelector('.calendar-note-mood').dataset.tone = note.mood;
-        row.querySelector('.calendar-note-mood').appendChild(icon.cloneNode());
-      }
-      row.querySelector('.calendar-note-title').textContent = this.displayTitle(note);
-      row.querySelector('.calendar-note-time').textContent = new Date(
-        note.createdAt
-      ).toLocaleTimeString(this.getLocale(), { hour: '2-digit', minute: '2-digit' });
-      row.addEventListener('click', () => this.selectNote(note));
-      this.calendarDayList.appendChild(row);
+    notes.forEach((note) => this.calendarDayList.appendChild(this.dayNoteRow(note)));
+  }
+
+  // A note of a day: its mood, its title and the time it was written; it opens the note
+  dayNoteRow(note) {
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'calendar-note';
+    const icon = this.findMoodButton(note.mood)?.querySelector('i');
+    row.innerHTML =
+      '<span class="calendar-note-mood"></span><span class="calendar-note-title"></span><span class="calendar-note-time"></span>';
+    if (icon) {
+      row.querySelector('.calendar-note-mood').dataset.tone = note.mood;
+      row.querySelector('.calendar-note-mood').appendChild(icon.cloneNode());
+    }
+    row.querySelector('.calendar-note-title').textContent = this.displayTitle(note);
+    row.querySelector('.calendar-note-time').textContent = new Date(
+      note.createdAt
+    ).toLocaleTimeString(this.getLocale(), { hour: '2-digit', minute: '2-digit' });
+    row.addEventListener('click', () => this.selectNote(note));
+    return row;
+  }
+
+  // ============ On this day ============
+  // The notes written on this day a month ago and a year (or more years) ago, the nearest first.
+  // A day that a month or a year does not have (31 March a month back, 29 February) is skipped.
+  onThisDay() {
+    const now = this.dashboardNow();
+    const days = [];
+    const monthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+    if (monthAgo.getDate() === now.getDate()) {
+      days.push({ label: i18n.t('dashboard.monthAgo'), date: monthAgo });
+    }
+    const first = this.notes.reduce(
+      (min, n) => Math.min(min, new Date(n.createdAt).getFullYear()),
+      now.getFullYear()
+    );
+    for (let years = 1; now.getFullYear() - years >= first; years++) {
+      const date = new Date(now.getFullYear() - years, now.getMonth(), now.getDate());
+      if (date.getDate() !== now.getDate()) continue;
+      days.push({
+        label: i18n.t(years === 1 ? 'dashboard.yearAgo' : 'dashboard.yearsAgo', { count: years }),
+        date,
+      });
+    }
+    return days
+      .map((day) => ({ ...day, notes: this.notesOfDay(this.dayKey(day.date)) }))
+      .filter((day) => day.notes.length);
+  }
+
+  renderOnThisDay() {
+    const list = this.onThisDayList;
+    if (!list) return;
+    list.innerHTML = '';
+    const days = this.onThisDay();
+    if (!days.length) {
+      list.innerHTML = `<p class="chart-empty">${i18n.t('dashboard.onThisDayEmpty')}</p>`;
+      return;
+    }
+    days.forEach((day) => {
+      const label = document.createElement('div');
+      label.className = 'on-this-day-label';
+      label.textContent = `${day.label} · ${day.date.toLocaleDateString(this.getLocale(), {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })}`;
+      list.appendChild(label);
+      day.notes.forEach((note) => list.appendChild(this.dayNoteRow(note)));
     });
   }
 

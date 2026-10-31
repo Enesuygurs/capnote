@@ -111,6 +111,7 @@ export class EditorFormattingFeature {
 
     // Sidebar toggle
     this.toggleSidebarBtn.addEventListener('click', () => this.toggleEditorSidebar());
+    this.focusModeBtn?.addEventListener('click', () => this.setFocusMode(!this.isFocusMode()));
 
     // List buttons
     document.getElementById('insertList').addEventListener('click', () => this.insertList('ul'));

@@ -81,7 +81,9 @@
     "strikethrough": "Üstü çizili",
     "link": "Bağlantı ekle (Ctrl+K)",
     "quote": "Alıntı",
-    "divider": "Ayırıcı çizgi"
+    "divider": "Ayırıcı çizgi",
+    "focusMode": "Odak modu",
+    "focusModeExit": "Odak modundan çık (Esc)"
   },
   "placeholders": {
     "noteTitle": "Not başlığı...",
@@ -435,7 +437,12 @@
     "wordsPerMonth": "Aylık kelime sayısı",
     "words": "kelime",
     "no_mood": "Henüz ruh hali seçilmiş not yok",
-    "no_weather": "Henüz hava durumu seçilmiş not yok"
+    "no_weather": "Henüz hava durumu seçilmiş not yok",
+    "onThisDay": "Geçmişte bugün",
+    "monthAgo": "1 ay önce",
+    "yearAgo": "1 yıl önce",
+    "yearsAgo": "{count} yıl önce",
+    "onThisDayEmpty": "Bu tarihte daha önce yazılmış not yok"
   },
   "noteTemplates": {
     "choose": "Şablondan yeni not",
@@ -513,5 +520,10 @@
     "emoji": "Emoji",
     "date": "Tarih",
     "time": "Saat"
+  },
+  "noteList": {
+    "empty": "Henüz not yok",
+    "writeFirst": "İlk notunu yaz",
+    "noMatch": "Eşleşen not yok"
   }
 }

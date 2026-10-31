@@ -189,6 +189,12 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Overview** (`07-note-screens.css`, the home page, also when there are no notes yet): `.stat-tile`s (an icon in its own tone: notes blue, days green, streak amber, longest streak violet, words rose; a 24/32 number, a 12px label; no chart for a single number), then a `.calendar-card` and the chart cards side by side (`minmax(300px, 1fr)`). Calendar days are 36px+ squares 2px apart: today is filled with `--accent-color` at 90% (its text and mood icon in `--text-on-accent`), the chosen day an accent tint, a day with notes shows its mood icon in the mood's tone (or an accent dot). Charts follow one rule: one measure, one color (`--accent-color`); a bar's identity comes from its icon and name, never from its color alone. Bars are 8px tall and fully rounded; the month columns are rounded at the top only, with the current month labelled; every bar and column has a tooltip with its exact value.
 
+**On this day** (overview, first card beside the calendar): the notes written on this day a month ago and one or more years ago, the nearest first; each day under a small label ("A year ago · 4 November 2025") with its notes as calendar rows (mood, title, time). With none, a muted line says so.
+
+**Empty note list**: with no notes yet, a muted "No notes yet" and a tinted "Write your first note" button; with notes but none matching the search or filters, a muted "No matching notes".
+
+**Focus mode** (editor, the expand button with the view tools): only the title and the text; the sidebar, the formatting toolbar and the side panel are hidden, the text is a 760px column in the middle and the header lines up with it. Escape or the button leaves it, and so does leaving the editor.
+
 **Note links** (`a.note-link`): the chip of the "Linked notes" bar at the same size (24px, 12px text, a note icon and the title, `--radius-sm`) in the accent (`--accent-tint`, `--accent-text`) instead of gray; a link to a deleted note is `--field` with muted, crossed-out text. "Notes that link here" is a fixed bar between the note and its numbers (a divider above, the muted label "Linked notes:" with a link icon, then `.chip.backlink` buttons that scroll sideways); it shows only when another note links here.
 
 **Tags page**: `.tag-chip` (32px, name, a count pill; the chosen tag in the accent tint) in a wrapping cloud, then the chosen tag's notes as whole-card buttons. The tag the list is filtered by shows under the list filter as a removable `.tag-filter-chip`.

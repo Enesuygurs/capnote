@@ -34,6 +34,9 @@ export const NOTE_EDITOR = /* HTML */ `
           <button class="format-btn" id="toggleSidebar" data-i18n-title="titles.toggleSidebar">
             <i class="fas fa-columns"></i>
           </button>
+          <button class="format-btn" id="focusModeBtn" data-i18n-title="titles.focusMode">
+            <i class="fas fa-expand"></i>
+          </button>
         </div>
         <button id="cancelNoteBtn" class="btn-secondary" data-i18n="buttons.cancel">İptal</button>
         <button id="saveNoteBtn" class="btn-primary">

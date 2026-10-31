@@ -235,6 +235,39 @@
   line-height: 1.7;
 }
 
+/* ============ Focus mode ============
+   Only the title and the text: the sidebar, the toolbar and the side panel are hidden, the text
+   sits in a column in the middle */
+.focus-mode .sidebar,
+.focus-mode .formatting-toolbar,
+.focus-mode .editor-sidebar,
+.focus-mode #toggleSidebar {
+  display: none !important;
+}
+
+/* The sidebar toggle has nothing to show here */
+.focus-mode .titlebar-start {
+  visibility: hidden;
+}
+
+.focus-mode .main-content {
+  margin-left: var(--space-2);
+}
+
+.focus-mode .rich-editor,
+.focus-mode .markdown-editor {
+  width: 100%;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* The header lines up with the text column */
+.focus-mode .editor-header {
+  padding-left: max(var(--gutter), calc((100% - 760px) / 2));
+  padding-right: max(var(--gutter), calc((100% - 760px) / 2));
+}
+
 /* ============ Properties panel ============
    Mood, weather, tags and reminders; a tinted column with labelled sections */
 .editor-sidebar {

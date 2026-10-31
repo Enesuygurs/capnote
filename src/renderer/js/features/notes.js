@@ -91,6 +91,11 @@ export class NotesFeature {
 
   createNewNote() {
     this.leaveCurrentNote();
+    // A search would hide the new note from the list: it is cleared
+    if (this.searchInput?.value) {
+      this.searchInput.value = '';
+      this.searchNotes();
+    }
 
     // Ensure emoji panel is closed when leaving the current note
     this.hideEmojiPanel();

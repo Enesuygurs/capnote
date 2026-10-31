@@ -24,9 +24,29 @@ export class NoteListFeature {
       const noteElement = this.createNoteItem(note);
       this.notesList.appendChild(noteElement);
     });
+    this.renderEmptyNotesList();
 
     // Also update folder notes for custom folders
     this.updateFolderNotes();
+  }
+
+  // Nothing in the list: no notes yet (a way to write the first one), or none matching the
+  // search and filters
+  renderEmptyNotesList() {
+    if (this.getVisibleNotesCount() > 0) return;
+    const hasNotes = this.notes.some((note) => !note.isArchived);
+    const empty = document.createElement('div');
+    empty.className = 'notes-list-empty';
+    if (hasNotes) {
+      empty.textContent = i18n.t('noteList.noMatch');
+    } else {
+      empty.innerHTML =
+        '<p></p><button type="button" class="btn-tinted btn-small"><i class="fas fa-pen"></i> <span></span></button>';
+      empty.querySelector('p').textContent = i18n.t('noteList.empty');
+      empty.querySelector('span').textContent = i18n.t('noteList.writeFirst');
+      empty.querySelector('button').addEventListener('click', () => this.createNewNote());
+    }
+    this.notesList.appendChild(empty);
   }
 
   // Update only the active state in existing DOM note lists without full re-render

@@ -179,6 +179,18 @@
   font-size: var(--fs-sm);
 }
 
+/* On this day: each day's label, then its notes as in the calendar */
+.on-this-day-label {
+  margin: var(--space-2) 0 var(--space-1);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.on-this-day-label:first-child {
+  margin-top: 0;
+}
+
 .calendar-note {
   display: flex;
   align-items: center;

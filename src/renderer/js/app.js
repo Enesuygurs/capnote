@@ -128,6 +128,7 @@ export class CapnoteApp {
     this.calendarDayNotes = document.getElementById('calendarDayNotes');
     this.calendarDayLabel = document.getElementById('calendarDayLabel');
     this.calendarDayList = document.getElementById('calendarDayList');
+    this.onThisDayList = document.getElementById('onThisDayList');
     this.moodChart = document.getElementById('moodChart');
     this.weatherChart = document.getElementById('weatherChart');
     this.wordsChart = document.getElementById('wordsChart');
@@ -267,6 +268,7 @@ export class CapnoteApp {
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
     this.listContextMenu = document.getElementById('listContextMenu');
+    this.focusModeBtn = document.getElementById('focusModeBtn');
     this.folderModal = document.getElementById('folderModal');
     this.folderNameInput = document.getElementById('folderNameInput');
     this.createFolderBtn = document.getElementById('createFolderBtn');

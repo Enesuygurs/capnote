@@ -81,7 +81,9 @@
     "strikethrough": "Strikethrough",
     "link": "Add link (Ctrl+K)",
     "quote": "Quote",
-    "divider": "Divider"
+    "divider": "Divider",
+    "focusMode": "Focus mode",
+    "focusModeExit": "Leave focus mode (Esc)"
   },
   "placeholders": {
     "noteTitle": "Note title...",
@@ -435,7 +437,12 @@
     "wordsPerMonth": "Words per month",
     "words": "words",
     "no_mood": "No note has a mood yet",
-    "no_weather": "No note has the weather yet"
+    "no_weather": "No note has the weather yet",
+    "onThisDay": "On this day",
+    "monthAgo": "A month ago",
+    "yearAgo": "A year ago",
+    "yearsAgo": "{count} years ago",
+    "onThisDayEmpty": "Nothing written on this day before"
   },
   "noteTemplates": {
     "choose": "New note from a template",
@@ -513,5 +520,10 @@
     "emoji": "Emoji",
     "date": "Date",
     "time": "Time"
+  },
+  "noteList": {
+    "empty": "No notes yet",
+    "writeFirst": "Write your first note",
+    "noMatch": "No matching notes"
   }
 }

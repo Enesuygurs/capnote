@@ -293,6 +293,10 @@ export class UiFeature {
           this.clearSelection();
           return;
         }
+        if (this.isFocusMode?.()) {
+          this.setFocusMode(false);
+          return;
+        }
         // Menus close before anything else
         const openMenu = document.querySelector(
           '.context-menu:not(.hidden), .sort-dropdown:not(.hidden), .select-items:not(.select-hide), .toolbar-popover:not(.hidden)'
