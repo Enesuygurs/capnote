@@ -5,7 +5,7 @@
 import { i18n } from '../i18n.js';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-const MONTHS_CHARTED = 6;
+const MONTHS_CHARTED = 12;
 
 export class DashboardFeature {
   // "Now" for the overview; tests set dashboardToday to see a fixed day

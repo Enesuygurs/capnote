@@ -195,13 +195,20 @@
 }
 
 /* A number with its label: the headline figures, no chart */
+/* The icon beside the number, the label under both: a compact tile */
 .stat-tile {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-4);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-2);
+  row-gap: 2px;
+  padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--card);
+}
+
+.stat-tile-label {
+  grid-column: 1 / -1;
 }
 
 .stat-tile i {
@@ -239,7 +246,7 @@
 .dashboard-grid {
   display: grid;
   /* The calendar grows with the window in both directions, so its days stay near square */
-  grid-template-columns: minmax(340px, 0.6fr) minmax(0, 1fr);
+  grid-template-columns: minmax(380px, 0.9fr) minmax(0, 1fr);
   grid-template-rows: minmax(348px, 1.2fr) minmax(0, 1fr);
   gap: var(--space-4);
   min-height: 0;
@@ -524,7 +531,9 @@
 /* Words per month: thin columns on one baseline, rounded at the top */
 .column-chart {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  /* One column per month charted, however many */
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
   gap: var(--space-2);
   min-height: 96px;
 }

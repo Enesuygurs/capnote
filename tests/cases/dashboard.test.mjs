@@ -1,6 +1,6 @@
 // The overview on the home page: totals, the writing streak (writing yesterday keeps it going),
 // the words of the last 30 days, a calendar with each day's mood whose days list their notes, how moods and
-// weather are spread, and the words of the last six months
+// weather are spread, and the words of the last twelve months
 
 export async function run() {
   const a = window.app;
@@ -83,7 +83,7 @@ export const expected = {
   isToday: true,
   moods: ['2 · 50%', '1 · 25%', '1 · 25%'],
   weather: 1,
-  months: ['0 kelime', '0 kelime', '0 kelime', '0 kelime', '100 kelime', '100 kelime'],
+  months: [...Array(10).fill('0 kelime'), '100 kelime', '100 kelime'],
   dayList: ['Yesterday'],
   previousMonthMood: 'tired',
   backToJune: 'Haziran 2026',
