@@ -169,7 +169,7 @@
     "startupHome": "Home page",
     "startupNewNote": "New note",
     "quickNoteShortcut": "Quick note shortcut",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a new note, even while Capnote is in the background or the tray",
+    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a small always-on-top note window in the corner of the screen, from anywhere",
     "dictationModel": "Dictation",
     "dictationModelDesc": "Speech turns into text on this computer; the model is downloaded once, the first time",
     "dictationAccurate": "Accurate (~240 MB)",
@@ -600,5 +600,16 @@
       "cool": "feel cool",
       "bored": "feel bored"
     }
+  },
+  "quickNote": {
+    "title": "Quick note",
+    "titlePlaceholder": "Title",
+    "textPlaceholder": "Write what is on your mind…",
+    "save": "Save",
+    "expand": "Open in the app",
+    "close": "Close",
+    "hint": "{mod}+Enter saves · Esc closes",
+    "added": "Quick note added",
+    "failed": "The note could not be saved. Is Capnote open?"
   }
 }

@@ -35,6 +35,7 @@ import { ToolbarMenusFeature } from './features/toolbar-menus.js';
 import { DictationFeature } from './features/dictation.js';
 import { YearSummaryFeature } from './features/year-summary.js';
 import { MoodJourneyFeature } from './features/mood-journey.js';
+import { QuickNoteFeature } from './features/quick-note.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
@@ -426,6 +427,7 @@ export class CapnoteApp {
     this.setupDictation();
     this.setupYearSummary();
     this.setupMoodJourney();
+    this.setupQuickNote();
     this.setupMoodWeatherSelectors();
     this.setupModalEvents();
     this.setupKeyboardShortcuts();
@@ -691,6 +693,7 @@ applyFeatures(CapnoteApp, [
   DictationFeature,
   YearSummaryFeature,
   MoodJourneyFeature,
+  QuickNoteFeature,
   DashboardFeature,
   TemplatesFeature,
   MarkdownIoFeature,

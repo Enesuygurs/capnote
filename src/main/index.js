@@ -119,7 +119,7 @@ registerNotificationIpc();
 registerAutostartIpc();
 registerExportIpc();
 registerUpdateIpc();
-registerQuickNoteIpc();
+registerQuickNoteIpc({ settings: () => getDataStore().read('settings') });
 registerDataTransferIpc();
 
 app.whenReady().then(() => {

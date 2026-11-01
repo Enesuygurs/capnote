@@ -225,6 +225,8 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Toast**: `--surface-raised`, bottom center, its icon colored by kind.
 
+**Quick note window** (`quick-note.html`, `css/quick-note.css`): 360×300, frameless and always on top in the bottom right corner of the screen. One `--surface` with a 1px `--divider` ring: a drag bar (the app's mark, the name in `--text-secondary` 12/600, open in the app and close as `.btn-icon-xs`), a 16/600 title and the text without borders, then a footer above a divider with the keys in `--text-muted` 11px and a small primary Save, off while the note is empty. It takes the app's theme, accent and language.
+
 ## 10. Checking a change
 
 - `npm test` for behaviour, `npm run test:visual` for every screen in both themes (compare with `tests/visual/accepted`, accept with `--accept` once reviewed).

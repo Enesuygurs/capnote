@@ -256,7 +256,8 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.quickNoteShortcut">Hızlı not kısayolu</label>
                   <small data-i18n="settings.quickNoteShortcutDesc"
-                    >Ctrl+Alt+N, Capnote arka planda ya da tepsideyken bile yeni not açar</small
+                    >Ctrl+Alt+N, her yerden ekranın köşesinde küçük, her zaman üstte duran bir not
+                    penceresi açar</small
                   >
                 </div>
                 <label class="toggle-switch">

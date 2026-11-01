@@ -200,4 +200,5 @@ export {
   isCloseToTrayEnabled,
   supportsCloseToTray,
   registerWindowIpc,
+  lockDownNavigation,
 };

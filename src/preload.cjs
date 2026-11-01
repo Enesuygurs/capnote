@@ -71,7 +71,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Close-to-tray preference
   getCloseToTray: () => ipcRenderer.invoke('get-close-to-tray'),
   setCloseToTray: (enabled) => ipcRenderer.invoke('set-close-to-tray', enabled),
-  // Ctrl+Alt+N from anywhere opens a new note
+  // Ctrl+Alt+N from anywhere opens the quick note window; its note comes here to be added, or to
+  // be opened in the editor
+  onQuickNote: (callback) => ipcRenderer.on('quick-note:add', (event, note) => callback(note)),
+  onQuickNoteOpen: (callback) => ipcRenderer.on('quick-note:open', (event, note) => callback(note)),
   setQuickNoteShortcut: (enabled) => ipcRenderer.invoke('quick-note-shortcut:set', enabled),
   getQuickNoteShortcut: () => ipcRenderer.invoke('quick-note-shortcut:get'),
 });

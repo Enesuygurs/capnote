@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Capnote</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link
+      rel="stylesheet"
+      href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/01-base.css" />
+    <link rel="stylesheet" href="css/08-buttons.css" />
+    <link rel="stylesheet" href="css/quick-note.css" />
+  </head>
+  <body class="quick-note">
+    <header class="qn-bar">
+      <img class="qn-brand" src="../../assets/icons/source/capnote.svg" alt="" />
+      <span class="qn-name" data-i18n="quickNote.title">Hızlı not</span>
+      <button class="btn-icon-xs" id="qnExpand" data-i18n-title="quickNote.expand">
+        <i class="fas fa-up-right-from-square"></i>
+      </button>
+      <button class="btn-icon-xs" id="qnClose" data-i18n-title="quickNote.close">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </header>
+    <input
+      class="qn-title"
+      id="qnTitle"
+      maxlength="500"
+      data-i18n-placeholder="quickNote.titlePlaceholder"
+      placeholder="Başlık"
+    />
+    <textarea
+      class="qn-text"
+      id="qnText"
+      data-i18n-placeholder="quickNote.textPlaceholder"
+      placeholder="Aklındakini yaz…"
+    ></textarea>
+    <footer class="qn-footer">
+      <span class="qn-hint" id="qnHint"></span>
+      <button class="btn-primary btn-small" id="qnSave" disabled>
+        <span data-i18n="quickNote.save">Kaydet</span>
+      </button>
+    </footer>
+    <script type="module" src="js/quick-note.js"></script>
+  </body>
+</html>
