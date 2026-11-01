@@ -139,6 +139,30 @@
   color: var(--text-muted);
 }
 
+/* Archive and the note graph, icon buttons beside Settings */
+.sidebar-footer-tool {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.sidebar-footer-tool:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.sidebar-footer-tool.active {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
 .sidebar-settings:hover {
   background: var(--tint-hover);
   color: var(--text-strong);

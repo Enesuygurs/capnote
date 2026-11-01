@@ -164,34 +164,6 @@
                   <button class="nav-control-btn" id="tagsNavBtn" data-i18n-title="nav.tags">
                     <i class="fas fa-tags"></i>
                   </button>
-                  <button class="nav-control-btn" id="graphNavBtn" data-i18n-title="graph.title">
-                    <svg class="icon-graph" viewBox="0 0 20 20" aria-hidden="true">
-                      <g
-                        stroke="currentColor"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        opacity=".5"
-                      >
-                        <path
-                          d="M10.5 10.5 4.8 5.8M10.5 10.5l4.3-5.6M10.5 10.5l-5.6 5M10.5 10.5l5.3 4.4M4.8 5.8l10-.9"
-                        />
-                      </g>
-                      <g fill="currentColor">
-                        <circle cx="10.5" cy="10.5" r="3" />
-                        <circle cx="4.8" cy="5.8" r="2.3" />
-                        <circle cx="14.8" cy="4.9" r="2" />
-                        <circle cx="4.9" cy="15.5" r="1.8" />
-                        <circle cx="15.8" cy="14.9" r="2.3" />
-                      </g>
-                    </svg>
-                  </button>
-                  <button
-                    class="nav-control-btn"
-                    id="archiveNavBtn"
-                    data-i18n-title="archive.title"
-                  >
-                    <i class="fas fa-box-archive"></i>
-                  </button>
                   <button class="nav-control-btn" id="sortBtn" data-i18n-title="titles.sort">
                     <i class="fas fa-sort-amount-down"></i>
                   </button>
@@ -244,11 +216,30 @@
           </nav>
         </div>
 
-        <!-- Fixed bottom: settings -->
+        <!-- Fixed bottom: settings, and the pages that are not about the list: archive and graph -->
         <div class="sidebar-footer">
           <button class="sidebar-settings" id="settingsNav">
             <i class="fas fa-gear"></i>
             <span data-i18n="nav.settings">Ayarlar</span>
+          </button>
+          <button class="sidebar-footer-tool" id="archiveNavBtn" data-i18n-title="archive.title">
+            <i class="fas fa-box-archive"></i>
+          </button>
+          <button class="sidebar-footer-tool" id="graphNavBtn" data-i18n-title="graph.title">
+            <svg class="icon-graph" viewBox="0 0 20 20" aria-hidden="true">
+              <g stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5">
+                <path
+                  d="M10.5 10.5 4.8 5.8M10.5 10.5l4.3-5.6M10.5 10.5l-5.6 5M10.5 10.5l5.3 4.4M4.8 5.8l10-.9"
+                />
+              </g>
+              <g fill="currentColor">
+                <circle cx="10.5" cy="10.5" r="3" />
+                <circle cx="4.8" cy="5.8" r="2.3" />
+                <circle cx="14.8" cy="4.9" r="2" />
+                <circle cx="4.9" cy="15.5" r="1.8" />
+                <circle cx="15.8" cy="14.9" r="2.3" />
+              </g>
+            </svg>
           </button>
         </div>
       </div>

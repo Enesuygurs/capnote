@@ -190,7 +190,7 @@
 .stat-tiles {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(112px, 1fr));
-  gap: var(--space-3);
+  gap: var(--space-4);
   margin-bottom: var(--space-4);
 }
 
@@ -245,8 +245,9 @@
 
 .dashboard-grid {
   display: grid;
-  /* The calendar grows with the window in both directions, so its days stay near square */
-  grid-template-columns: minmax(380px, 0.9fr) minmax(0, 1fr);
+  /* Both rows split in the middle, so the cards line up; the calendar grows with the window in
+     both directions, so its days stay near square */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: minmax(348px, 1.2fr) minmax(0, 1fr);
   gap: var(--space-4);
   min-height: 0;
