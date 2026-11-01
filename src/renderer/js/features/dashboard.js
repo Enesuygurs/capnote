@@ -297,7 +297,7 @@ export class DashboardFeature {
     });
   }
 
-  // Words per month: one column each, the current month labelled with its number
+  // Words per month: one column each, its number right above its bar (none for an empty month)
   renderWordsChart() {
     const months = this.monthlyWords();
     const max = Math.max(...months.map((m) => m.words), 1);
@@ -308,13 +308,15 @@ export class DashboardFeature {
       column.className = 'column';
       const name = new Date(m.year, m.month, 1).toLocaleDateString(locale, { month: 'short' });
       column.title = `${new Date(m.year, m.month, 1).toLocaleDateString(locale, { month: 'long', year: 'numeric' })}: ${m.words.toLocaleString(locale)} ${i18n.t('dashboard.words')}`;
-      const last = index === months.length - 1;
-      column.innerHTML = `<span class="column-value"></span><span class="column-track"><span class="column-fill"></span></span><span class="column-label"></span>`;
-      column.querySelector('.column-value').textContent = last
+      column.classList.toggle('is-current', index === months.length - 1);
+      column.innerHTML = `<span class="column-track"><span class="column-value"></span><span class="column-fill"></span></span><span class="column-label"></span>`;
+      column.querySelector('.column-value').textContent = m.words
         ? m.words.toLocaleString(locale)
         : '';
-      column.querySelector('.column-fill').style.height =
-        `${m.words ? Math.max(4, (m.words / max) * 100) : 0}%`;
+      // The tallest bar leaves room above it for its number
+      column.querySelector('.column-fill').style.height = m.words
+        ? `max(4px, calc((100% - 18px) * ${m.words / max}))`
+        : '0';
       column.querySelector('.column-label').textContent = name;
       this.wordsChart.appendChild(column);
     });

@@ -225,10 +225,11 @@
   color: var(--text-secondary);
 }
 
-/* The overview fills the page and does not scroll: the figures on top, then the calendar beside
-   the mood and weather cards side by side, with the words per month across under them. A card's
-   size comes from the layout, never from its data: what does not fit scrolls inside the card. The
-   smallest window (window.js) fits it all; on a shorter screen the page scrolls past 440px. */
+/* The overview fills the page and does not scroll: the figures on top; then the calendar (its
+   days near square) beside the words per month; then mood and weather side by side, half the
+   width each, sharing the rest of the height. A card's size comes from the layout, never from its
+   data: what does not fit scrolls inside the card. The smallest window (window.js) fits it all;
+   on a shorter screen the page scrolls past 440px. */
 .dashboard .page-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -237,21 +238,19 @@
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(300px, 1fr) minmax(0, 1.4fr);
+  /* The calendar grows with the window in both directions, so its days stay near square */
+  grid-template-columns: minmax(340px, 0.6fr) minmax(0, 1fr);
+  grid-template-rows: minmax(348px, 1.2fr) minmax(0, 1fr);
   gap: var(--space-4);
   min-height: 0;
 }
 
 .dashboard-side {
   display: grid;
+  grid-column: 1 / -1;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
   min-height: 0;
-}
-
-.dashboard-side .words-card {
-  grid-column: 1 / -1;
 }
 
 .dashboard-grid .card {
@@ -277,6 +276,10 @@
   .dashboard-side {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: none;
+  }
+
+  .dashboard-side {
+    grid-column: auto;
   }
 
   .dashboard-grid .card {
@@ -534,19 +537,28 @@
   min-width: 0;
 }
 
-.column-value {
-  height: 16px;
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
 .column-track {
   flex: 1;
   width: 100%;
   max-width: 28px;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2px;
+}
+
+/* The number sits right above its bar */
+.column-value {
+  height: 16px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.column.is-current .column-value {
+  color: var(--text-strong);
 }
 
 .column-fill {
