@@ -616,9 +616,11 @@
     "title": "Not grafiği",
     "linked": "Bağlantılı",
     "all": "Tümü",
-    "fit": "Sığdır",
+    "fit": "Ortala",
     "count": "{notes} not · {links} bağlantı",
     "links": "{count} bağlantı",
-    "empty": "Notlar arasında henüz bağlantı yok. Bir notta [[ yazıp başka bir notu seçerek bağlantı ver; burada harita olarak görünür."
+    "empty": "Notlar arasında henüz bağlantı yok. Bir notta [[ yazıp başka bir notu seçerek bağlantı ver; burada harita olarak görünür.",
+    "fullscreen": "Tam ekran",
+    "fullscreenExit": "Tam ekrandan çık"
   }
 }

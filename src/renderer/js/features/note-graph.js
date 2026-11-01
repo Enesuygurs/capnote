@@ -6,6 +6,8 @@
 import { i18n } from '../i18n.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
+// The graph's icon (also in index.html): a hub with four notes around it, two of them linked
+const GRAPH_ICON = document.getElementById('graphNavBtn')?.innerHTML.trim() || '';
 // Labels for every note up to this many dots; past it only for the notes with the most links
 const ALL_LABELS_UP_TO = 40;
 const MIN_SCALE = 0.3;
@@ -161,7 +163,7 @@ export class NoteGraphFeature {
     box.innerHTML = '';
     this.graphNodes = nodes;
     if (!links.length && !unlinked) {
-      box.innerHTML = `<div class="graph-empty"><i class="fas fa-diagram-project"></i><p></p></div>`;
+      box.innerHTML = `<div class="graph-empty">${GRAPH_ICON}<p></p></div>`;
       box.querySelector('p').textContent = i18n.t('graph.empty');
       return;
     }
@@ -324,7 +326,27 @@ export class NoteGraphFeature {
     box.appendChild(root);
   }
 
+  isGraphFullscreen() {
+    return document.body.classList.contains('graph-full');
+  }
+
+  // Full screen: the sidebar is hidden and the map takes the window; Escape, the button or
+  // another screen ends it
+  setGraphFullscreen(on) {
+    document.body.classList.toggle('graph-full', on);
+    const btn = this.graphFullBtn;
+    if (!btn) return;
+    btn.classList.toggle('active', on);
+    btn.querySelector('i').className = `fas ${on ? 'fa-compress' : 'fa-expand'}`;
+    const label = i18n.t(on ? 'graph.fullscreenExit' : 'graph.fullscreen');
+    btn.title = label;
+    btn.setAttribute('aria-label', label);
+  }
+
   setupNoteGraph() {
+    this.graphFullBtn?.addEventListener('click', () =>
+      this.setGraphFullscreen(!this.isGraphFullscreen())
+    );
     this.graphNavBtn?.addEventListener('click', () =>
       this.toggleScreenFromButton('graph', () => this.showNoteGraph())
     );

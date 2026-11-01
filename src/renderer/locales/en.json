@@ -616,9 +616,11 @@
     "title": "Note graph",
     "linked": "Linked",
     "all": "All",
-    "fit": "Fit",
+    "fit": "Center",
     "count": "{notes} notes · {links} links",
     "links": "{count} links",
-    "empty": "No links between notes yet. Type [[ in a note and pick another note to link it; the links show here as a map."
+    "empty": "No links between notes yet. Type [[ in a note and pick another note to link it; the links show here as a map.",
+    "fullscreen": "Full screen",
+    "fullscreenExit": "Exit full screen"
   }
 }

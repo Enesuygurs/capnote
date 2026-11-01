@@ -73,6 +73,16 @@ export async function run() {
     .sort();
   dotOf('c').dispatchEvent(new PointerEvent('pointerout', { bubbles: true }));
 
+  // Full screen hides the sidebar; Escape ends it
+  a.graphFullBtn.click();
+  const sidebar = document.getElementById('sidebar');
+  const full = {
+    on: a.isGraphFullscreen(),
+    sidebarHidden: getComputedStyle(sidebar).display === 'none',
+  };
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  full.offByEscape = !a.isGraphFullscreen();
+
   // A click opens the note
   const target = dotOf('b');
   const opts = { bubbles: true, button: 0, pointerId: 1, clientX: 10, clientY: 10 };
@@ -89,7 +99,7 @@ export async function run() {
     text: a.graphCanvas.querySelector('.graph-empty')?.textContent.trim(),
     subtitle: a.graphSubtitle.textContent,
   };
-  return { data, screen, withAll, hover, opened, empty };
+  return { data, screen, withAll, hover, full, opened, empty };
 }
 
 export const expected = {
@@ -109,6 +119,7 @@ export const expected = {
   },
   withAll: { dots: 5, alone: 1 },
   hover: ['a', 'c'],
+  full: { on: true, sidebarHidden: true, offByEscape: true },
   opened: { screen: 'viewer', note: 'b' },
   empty: { text: /henüz bağlantı yok/, subtitle: '0 not · 0 bağlantı' },
 };
