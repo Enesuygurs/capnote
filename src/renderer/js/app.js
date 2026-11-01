@@ -34,7 +34,6 @@ import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
 import { DictationFeature } from './features/dictation.js';
 import { YearSummaryFeature } from './features/year-summary.js';
-import { MoodJourneyFeature } from './features/mood-journey.js';
 import { QuickNoteFeature } from './features/quick-note.js';
 import { NoteGraphFeature } from './features/note-graph.js';
 import { DashboardFeature } from './features/dashboard.js';
@@ -133,7 +132,6 @@ export class CapnoteApp {
     this.calendarDayNotes = document.getElementById('calendarDayNotes');
     this.calendarDayLabel = document.getElementById('calendarDayLabel');
     this.calendarDayList = document.getElementById('calendarDayList');
-    this.onThisDayList = document.getElementById('onThisDayList');
     this.moodChart = document.getElementById('moodChart');
     this.weatherChart = document.getElementById('weatherChart');
     this.wordsChart = document.getElementById('wordsChart');
@@ -286,9 +284,6 @@ export class CapnoteApp {
     this.summaryPrevBtn = document.getElementById('summaryPrevBtn');
     this.summaryNextBtn = document.getElementById('summaryNextBtn');
     this.summarySaveBtn = document.getElementById('summarySaveBtn');
-    this.moodStrip = document.getElementById('moodStrip');
-    this.moodPatternsList = document.getElementById('moodPatterns');
-    this.moodJourneyRangeTabs = document.getElementById('moodJourneyRange');
     this.folderModal = document.getElementById('folderModal');
     this.folderNameInput = document.getElementById('folderNameInput');
     this.createFolderBtn = document.getElementById('createFolderBtn');
@@ -433,7 +428,6 @@ export class CapnoteApp {
     this.setupToolbarMenus();
     this.setupDictation();
     this.setupYearSummary();
-    this.setupMoodJourney();
     this.setupQuickNote();
     this.setupNoteGraph();
     this.setupMoodWeatherSelectors();
@@ -700,7 +694,6 @@ applyFeatures(CapnoteApp, [
   ToolbarMenusFeature,
   DictationFeature,
   YearSummaryFeature,
-  MoodJourneyFeature,
   QuickNoteFeature,
   NoteGraphFeature,
   DashboardFeature,

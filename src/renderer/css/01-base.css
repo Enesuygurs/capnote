@@ -110,6 +110,21 @@ body.resizing .modal {
   --tone-blue: #2563eb;
   --tone-violet: #7c3aed;
   --tone-slate: #64748b;
+  /* Moods and weather: one distinct color each (no two alike, checked for color blindness) */
+  --mood-happy: #db9b04;
+  --mood-sad: #3674ea;
+  --mood-angry: #ca052f;
+  --mood-tired: #761cb7;
+  --mood-in-love: #ef669a;
+  --mood-thoughtful: #007f43;
+  --mood-cool: #42b5bb;
+  --mood-bored: #824b07;
+  --weather-sunny: #bd670a;
+  --weather-partly-cloudy: #bea514;
+  --weather-cloudy: #07908d;
+  --weather-rainy: #4178e4;
+  --weather-stormy: #792ba6;
+  --weather-snowy: #4cb8ec;
 
   /* The chosen segment or tab: one neutral step darker than its track */
   --segment-active: rgba(15, 23, 42, 0.08);
@@ -223,6 +238,21 @@ body.resizing .modal {
   --tone-blue: #60a5fa;
   --tone-violet: #a78bfa;
   --tone-slate: #94a3b8;
+  /* Moods and weather: one distinct color each (no two alike, checked for color blindness) */
+  --mood-happy: #ebae02;
+  --mood-sad: #42a8fd;
+  --mood-angry: #e82f33;
+  --mood-tired: #ab6bec;
+  --mood-in-love: #f88cbd;
+  --mood-thoughtful: #58a257;
+  --mood-cool: #38dad9;
+  --mood-bored: #a16822;
+  --weather-sunny: #ec7930;
+  --weather-partly-cloudy: #e4c017;
+  --weather-cloudy: #26a496;
+  --weather-rainy: #3e86f4;
+  --weather-stormy: #a064ba;
+  --weather-snowy: #5dd1f9;
 
   --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.45);
   --shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.55);

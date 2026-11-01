@@ -432,7 +432,7 @@
     "activeDays": "Yazılan gün",
     "streak": "Süren seri (gün)",
     "longestStreak": "En uzun seri (gün)",
-    "wordsLast30Days": "Son 30 günde yazılan kelime",
+    "wordsLast30Days": "Kelime (30 gün)",
     "today": "Bugün",
     "prevMonth": "Önceki ay",
     "nextMonth": "Sonraki ay",
@@ -441,12 +441,7 @@
     "wordsPerMonth": "Aylık kelime sayısı",
     "words": "kelime",
     "no_mood": "Henüz ruh hali seçilmiş not yok",
-    "no_weather": "Henüz hava durumu seçilmiş not yok",
-    "onThisDay": "Geçmişte bugün",
-    "monthAgo": "1 ay önce",
-    "yearAgo": "1 yıl önce",
-    "yearsAgo": "{count} yıl önce",
-    "onThisDayEmpty": "Bu tarihte daha önce yazılmış not yok"
+    "no_weather": "Henüz hava durumu seçilmiş not yok"
   },
   "noteTemplates": {
     "choose": "Şablondan yeni not",
@@ -573,32 +568,6 @@
     "tagsSub": "Birincisi {count} notta",
     "longest": "En uzun notun",
     "longestWords": "{count} kelime"
-  },
-  "journey": {
-    "title": "Ruh hali yolculuğu",
-    "week": "Hafta",
-    "month": "Ay",
-    "noMood": "Ruh hali seçilmedi",
-    "pattern": "{days} genelde {feel}",
-    "weekdays": {
-      "0": "Pazarları",
-      "1": "Pazartesileri",
-      "2": "Salıları",
-      "3": "Çarşambaları",
-      "4": "Perşembeleri",
-      "5": "Cumaları",
-      "6": "Cumartesileri"
-    },
-    "feel": {
-      "happy": "mutlu oluyorsun",
-      "sad": "üzgün oluyorsun",
-      "angry": "kızgın oluyorsun",
-      "tired": "yorgun oluyorsun",
-      "inLove": "aşık hissediyorsun",
-      "thoughtful": "düşünceli oluyorsun",
-      "cool": "havalı hissediyorsun",
-      "bored": "sıkılmış oluyorsun"
-    }
   },
   "quickNote": {
     "title": "Hızlı not",

@@ -217,125 +217,22 @@
 }
 
 .stat-tile-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-size: var(--fs-sm);
   line-height: 16px;
   color: var(--text-secondary);
 }
 
-/* ============ Mood journey ============
-   The header holds the title, the weekday patterns as chips on one line (each with its mood's
-   icon; more than fit scroll sideways) and the week/month switch. Under it a day per column: its
-   mood's icon in the mood's tone (an empty ring for a day without one), the weekday or the date
-   below. The card is as tall with or without patterns, for a week or a month. */
-.mood-journey {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-}
-
-.mood-journey-header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.mood-journey-header .section-label {
-  flex: none;
-}
-
-.journey-range {
-  flex: none;
-  width: 160px;
-  margin-left: auto;
-}
-
-.mood-strip {
-  display: grid;
-  grid-template-columns: repeat(var(--days, 7), minmax(0, 1fr));
-  align-items: center;
-  gap: 2px;
-  height: 54px;
-}
-
-.mood-day {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  min-width: 0;
-}
-
-.mood-day-mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: var(--control-md);
-  aspect-ratio: 1;
-  border-radius: var(--radius-md);
-  background: color-mix(in srgb, var(--tone, var(--text-muted)) 14%, transparent);
-  color: var(--tone);
-  font-size: var(--fs-lg);
-}
-
-.mood-day-mark.is-empty {
-  background: none;
-  box-shadow: inset 0 0 0 1.5px var(--divider);
-}
-
-/* A month: thirty small squares */
-.mood-strip.is-month .mood-day-mark {
-  border-radius: var(--radius-sm);
-  font-size: var(--fs-xs);
-}
-
-.mood-day-label {
-  min-height: 14px;
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-  line-height: 14px;
-  white-space: nowrap;
-}
-
-.mood-patterns {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-  gap: var(--space-2);
-  overflow-x: auto;
-  scrollbar-width: none;
-  /* A chip cut at the end fades out */
-  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
-}
-
-.mood-pattern {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: var(--space-1);
-  padding: 2px var(--space-3) 2px var(--space-2);
-  border-radius: var(--radius-full);
-  background: var(--field);
-  color: var(--text-primary);
-  font-size: var(--fs-sm);
-  white-space: nowrap;
-}
-
-.mood-pattern-icon {
-  color: var(--tone);
-  width: 16px;
-  text-align: center;
-}
-
-/* The overview fills the page and does not scroll: the figures and the mood journey on top, then
-   the calendar beside the four cards two by two, which share the rest of the height. A card's size
-   comes from the layout, never from its data: what does not fit scrolls inside the card. The
+/* The overview fills the page and does not scroll: the figures on top, then the calendar beside
+   the mood and weather cards side by side, with the words per month across under them. A card's
+   size comes from the layout, never from its data: what does not fit scrolls inside the card. The
    smallest window (window.js) fits it all; on a shorter screen the page scrolls past 440px. */
 .dashboard .page-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto auto minmax(440px, 1fr);
+  grid-template-rows: auto minmax(440px, 1fr);
 }
 
 .dashboard-grid {
@@ -351,6 +248,10 @@
   grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
   min-height: 0;
+}
+
+.dashboard-side .words-card {
+  grid-column: 1 / -1;
 }
 
 .dashboard-grid .card {
@@ -491,8 +392,18 @@
   background: var(--text-on-accent);
 }
 
+/* A day with a mood takes a tint of the mood's color, its icon in that color (today and the
+   chosen day keep their own look) */
+.calendar-day.has-mood:not(.is-today, .is-selected) {
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+}
+
+.calendar-day.has-mood.has-notes:not(.is-today, .is-selected):hover {
+  background: color-mix(in srgb, var(--tone) 22%, transparent);
+}
+
 .calendar-day-mark {
-  font-size: var(--fs-sm);
+  font-size: var(--fs-lg);
   line-height: 1;
   color: var(--tone, var(--text-muted));
 }
@@ -517,17 +428,6 @@
 }
 
 /* On this day: each day's label, then its notes as in the calendar */
-.on-this-day-label {
-  margin: var(--space-2) 0 var(--space-1);
-  color: var(--text-secondary);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-}
-
-.on-this-day-label:first-child {
-  margin-top: 0;
-}
-
 .calendar-note {
   display: flex;
   align-items: center;

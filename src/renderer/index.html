@@ -272,19 +272,6 @@
             </div>
             <div class="page-body">
               <div class="stat-tiles" id="statTiles"></div>
-              <section class="card mood-journey">
-                <div class="mood-journey-header">
-                  <h3 class="section-label" data-i18n="journey.title">Ruh hali yolculuğu</h3>
-                  <div class="mood-patterns" id="moodPatterns"></div>
-                  <div class="segmented journey-range" id="moodJourneyRange">
-                    <button class="segment active" data-range="7" data-i18n="journey.week">
-                      Hafta
-                    </button>
-                    <button class="segment" data-range="30" data-i18n="journey.month">Ay</button>
-                  </div>
-                </div>
-                <div class="mood-strip" id="moodStrip"></div>
-              </section>
               <div class="dashboard-grid">
                 <section class="card calendar-card">
                   <div class="calendar-header">
@@ -321,10 +308,6 @@
                   </div>
                 </section>
                 <div class="dashboard-side">
-                  <section class="card chart-card on-this-day">
-                    <h3 class="section-label" data-i18n="dashboard.onThisDay">Geçmişte bugün</h3>
-                    <div id="onThisDayList"></div>
-                  </section>
                   <section class="card chart-card">
                     <h3 class="section-label" data-i18n="dashboard.moods">Ruh hali dağılımı</h3>
                     <div id="moodChart" class="bar-list"></div>
@@ -333,7 +316,7 @@
                     <h3 class="section-label" data-i18n="dashboard.weather">Hava durumu</h3>
                     <div id="weatherChart" class="bar-list"></div>
                   </section>
-                  <section class="card chart-card">
+                  <section class="card chart-card words-card">
                     <h3 class="section-label" data-i18n="dashboard.wordsPerMonth">
                       Aylık kelime sayısı
                     </h3>

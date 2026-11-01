@@ -328,50 +328,63 @@
   gap: var(--space-1);
 }
 
-/* Each mood and weather has its own icon color; the viewer's meta line uses the same ones */
+/* Each mood and weather has its own color (--mood-* and --weather-* in 01-base.css); the viewer,
+   the calendar and the charts use the same ones */
 [data-mood='happy'],
-[data-tone='happy'],
-[data-weather='sunny'],
-[data-tone='sunny'],
-[data-weather='partlyCloudy'],
-[data-tone='partlyCloudy'] {
-  --tone: var(--tone-amber);
+[data-tone='happy'] {
+  --tone: var(--mood-happy);
 }
 [data-mood='sad'],
-[data-tone='sad'],
-[data-weather='rainy'],
-[data-tone='rainy'] {
-  --tone: var(--tone-blue);
+[data-tone='sad'] {
+  --tone: var(--mood-sad);
 }
 [data-mood='angry'],
 [data-tone='angry'] {
-  --tone: var(--tone-red);
+  --tone: var(--mood-angry);
 }
 [data-mood='tired'],
-[data-tone='tired'],
-[data-weather='stormy'],
-[data-tone='stormy'] {
-  --tone: var(--tone-violet);
+[data-tone='tired'] {
+  --tone: var(--mood-tired);
 }
 [data-mood='inLove'],
 [data-tone='inLove'] {
-  --tone: var(--tone-rose);
+  --tone: var(--mood-in-love);
 }
 [data-mood='thoughtful'],
 [data-tone='thoughtful'] {
-  --tone: var(--tone-teal);
+  --tone: var(--mood-thoughtful);
 }
 [data-mood='cool'],
-[data-tone='cool'],
-[data-weather='snowy'],
-[data-tone='snowy'] {
-  --tone: var(--tone-sky);
+[data-tone='cool'] {
+  --tone: var(--mood-cool);
 }
 [data-mood='bored'],
-[data-tone='bored'],
+[data-tone='bored'] {
+  --tone: var(--mood-bored);
+}
+[data-weather='sunny'],
+[data-tone='sunny'] {
+  --tone: var(--weather-sunny);
+}
+[data-weather='partlyCloudy'],
+[data-tone='partlyCloudy'] {
+  --tone: var(--weather-partly-cloudy);
+}
 [data-weather='cloudy'],
 [data-tone='cloudy'] {
-  --tone: var(--tone-slate);
+  --tone: var(--weather-cloudy);
+}
+[data-weather='rainy'],
+[data-tone='rainy'] {
+  --tone: var(--weather-rainy);
+}
+[data-weather='stormy'],
+[data-tone='stormy'] {
+  --tone: var(--weather-stormy);
+}
+[data-weather='snowy'],
+[data-tone='snowy'] {
+  --tone: var(--weather-snowy);
 }
 
 /* Icons are neutral; a button shows its tone on hover, and the chosen one keeps that look */

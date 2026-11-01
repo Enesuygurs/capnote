@@ -10,7 +10,7 @@ Capnote is a desktop app for notes and journaling. Everything stays on your comp
 - **Dictation:** speak and the text is written where the cursor is; Whisper runs on the computer (the model downloads once, the first time), so no audio leaves it.
 - **Templates:** start a note as a journal entry, meeting notes or a weekly plan.
 - **Year in review:** a card with the year's notes, words and writing days, the months written most, the most frequent mood, the longest streak, the most used tags and the longest note, to save as an image and share.
-- **Journaling:** mood and weather for each note, an overview with a mood calendar, a mood journey for the last week or month with weekday patterns ("On Mondays you usually feel tired"), the writing streak, how moods and weather are spread and the words per month, word and character counts, reading time and an edit history.
+- **Journaling:** mood and weather for each note, an overview with a mood calendar, the writing streak, how moods and weather are spread and the words per month, word and character counts, reading time and an edit history.
 - **Reminders and to-dos:** reminders with desktop notifications, and a to-do list grouped into sections.
 - **Locked notes:** a locked note is encrypted with its password (PBKDF2-SHA256 and AES-GCM). If you forget the password, the note cannot be recovered.
 - **Export and backup:** export a note as PDF, HTML, plain text or JSON, export every note as Markdown files and import Markdown files, back up or restore all data as a JSON file, and go back to one of the automatic daily backups of the last 7 days.
