@@ -223,8 +223,10 @@
 }
 
 /* ============ Mood journey ============
-   A day per column: its mood's icon in the mood's tone (an empty ring for a day without one), the
-   weekday or the date below; then the weekday patterns, each with its mood's icon */
+   The header holds the title, the weekday patterns as chips on one line (each with its mood's
+   icon; more than fit scroll sideways) and the week/month switch. Under it a day per column: its
+   mood's icon in the mood's tone (an empty ring for a day without one), the weekday or the date
+   below. The card is as tall with or without patterns, for a week or a month. */
 .mood-journey {
   display: flex;
   flex-direction: column;
@@ -235,18 +237,25 @@
 .mood-journey-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-3);
 }
 
+.mood-journey-header .section-label {
+  flex: none;
+}
+
 .journey-range {
+  flex: none;
   width: 160px;
+  margin-left: auto;
 }
 
 .mood-strip {
   display: grid;
   grid-template-columns: repeat(var(--days, 7), minmax(0, 1fr));
+  align-items: center;
   gap: 2px;
+  height: 54px;
 }
 
 .mood-day {
@@ -291,15 +300,26 @@
 
 .mood-patterns {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+  flex: 1;
+  min-width: 0;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* A chip cut at the end fades out */
+  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
 }
 
 .mood-pattern {
   display: flex;
+  flex: none;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
+  padding: 2px var(--space-3) 2px var(--space-2);
+  border-radius: var(--radius-full);
+  background: var(--field);
   color: var(--text-primary);
+  font-size: var(--fs-sm);
+  white-space: nowrap;
 }
 
 .mood-pattern-icon {
@@ -308,30 +328,62 @@
   text-align: center;
 }
 
-/* The calendar, then the four cards two by two beside it, so the whole overview fits the window
-   at its smallest size (window.js); a narrower window (a small screen) stacks them */
+/* The overview fills the page and does not scroll: the figures and the mood journey on top, then
+   the calendar beside the four cards two by two, which share the rest of the height. A card's size
+   comes from the layout, never from its data: what does not fit scrolls inside the card. The
+   smallest window (window.js) fits it all; on a shorter screen the page scrolls past 440px. */
+.dashboard .page-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto minmax(440px, 1fr);
+}
+
 .dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(280px, 1fr) minmax(0, 2fr);
+  grid-template-columns: minmax(300px, 1fr) minmax(0, 1.4fr);
   gap: var(--space-4);
-  align-items: start;
+  min-height: 0;
 }
 
 .dashboard-side {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
-  align-items: start;
+  min-height: 0;
 }
 
+.dashboard-grid .card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.chart-card > :not(.section-label) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* A narrow window (a small screen) stacks the cards, each at a fixed height */
 @media (max-width: 1150px) {
-  .dashboard-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  .dashboard .page-body {
+    display: block;
   }
 
+  .dashboard-grid,
   .dashboard-side {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+  }
+
+  .dashboard-grid .card {
+    height: 300px;
+  }
+
+  .dashboard-grid .calendar-card {
+    height: auto;
   }
 }
 
@@ -369,6 +421,12 @@
   gap: var(--stack-gap);
 }
 
+/* The weeks share the card's height; a chosen day's notes below scroll with the card */
+.calendar-grid {
+  flex: 1 0 auto;
+  grid-auto-rows: minmax(var(--control-md), 1fr);
+}
+
 .calendar-weekdays span {
   padding-bottom: var(--space-1);
   text-align: center;
@@ -380,7 +438,6 @@
 
 /* A day: its number, and the mood of the day (or a dot when no note has a mood) */
 .calendar-day {
-  aspect-ratio: 1;
   min-height: var(--control-md);
   border-radius: var(--radius-md);
   display: flex;
@@ -522,7 +579,7 @@
 /* One row: icon in the mood's own color, its name, a bar in one shared color, the count */
 .bar-row {
   display: grid;
-  grid-template-columns: 16px minmax(64px, 96px) minmax(40px, 1fr) auto;
+  grid-template-columns: 16px minmax(0, 96px) minmax(32px, 1fr) auto;
   align-items: center;
   gap: var(--space-2);
   font-size: var(--fs-md);
@@ -555,6 +612,7 @@
 }
 
 .bar-value {
+  white-space: nowrap;
   font-size: var(--fs-sm);
   color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
@@ -565,7 +623,7 @@
   display: grid;
   grid-template-columns: repeat(6, 1fr);
   gap: var(--space-2);
-  height: 136px;
+  min-height: 96px;
 }
 
 .column {
