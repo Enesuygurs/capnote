@@ -21,6 +21,7 @@ export class ScreensFeature {
       tags: this.tagsScreen,
       archive: this.archiveScreen,
       summary: this.summaryScreen,
+      graph: this.graphScreen,
       todos: this.todosScreen,
     };
     Object.entries(screens).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
@@ -33,6 +34,7 @@ export class ScreensFeature {
       reminders: this.remindersNav,
       tags: this.tagsNavBtn,
       archive: this.archiveNavBtn,
+      graph: this.graphNavBtn,
       todos: this.todosNav,
     };
     Object.entries(navItems).forEach(([key, el]) => el?.classList.toggle('active', key === name));
@@ -54,6 +56,7 @@ export class ScreensFeature {
       todos: () => this.showTodosScreen(),
       tags: () => this.showTagsScreen(),
       archive: () => this.showArchiveScreen(),
+      graph: () => this.showNoteGraph(),
     };
     const note =
       this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;

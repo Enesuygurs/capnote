@@ -164,6 +164,9 @@
                   <button class="nav-control-btn" id="tagsNavBtn" data-i18n-title="nav.tags">
                     <i class="fas fa-tags"></i>
                   </button>
+                  <button class="nav-control-btn" id="graphNavBtn" data-i18n-title="graph.title">
+                    <i class="fas fa-diagram-project"></i>
+                  </button>
                   <button
                     class="nav-control-btn"
                     id="archiveNavBtn"
@@ -415,6 +418,29 @@
               <div id="tagNotesList" class="card-list"></div>
             </section>
           </div>
+        </div>
+
+        <!-- Note graph: the notes and their [[links]] as a map -->
+        <div id="graphScreen" class="screen graph-screen hidden">
+          <div class="page-header">
+            <span class="page-icon tone-sky"><i class="fas fa-diagram-project"></i></span>
+            <div class="page-heading">
+              <h2 class="page-title" data-i18n="graph.title">Not grafiği</h2>
+              <p class="page-subtitle" id="graphSubtitle"></p>
+            </div>
+            <div class="page-actions">
+              <div class="segmented graph-range" id="graphRange">
+                <button class="segment active" data-show="linked" data-i18n="graph.linked">
+                  Bağlantılı
+                </button>
+                <button class="segment" data-show="all" data-i18n="graph.all">Tümü</button>
+              </div>
+              <button class="btn-icon" id="graphFitBtn" data-i18n-title="graph.fit">
+                <i class="fas fa-expand"></i>
+              </button>
+            </div>
+          </div>
+          <div class="graph-canvas" id="graphCanvas"></div>
         </div>
 
         <!-- Archive: notes kept out of the list without deleting them -->

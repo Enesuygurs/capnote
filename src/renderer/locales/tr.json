@@ -169,7 +169,7 @@
     "startupHome": "Giriş sayfası",
     "startupNewNote": "Yeni not",
     "quickNoteShortcut": "Hızlı not kısayolu",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N, her yerden ekranın köşesinde küçük, her zaman üstte duran bir not penceresi açar",
+    "quickNoteShortcutDesc": "Ctrl+Alt+N, Capnote arka planda ya da tepsideyken bile yeni not açar",
     "dictationModel": "Dikte",
     "dictationModelDesc": "Konuşma bu bilgisayarda yazıya çevrilir; model ilk kullanımda bir kez indirilir",
     "dictationAccurate": "Doğru (~240 MB)",
@@ -611,5 +611,14 @@
     "hint": "{mod}+Enter kaydeder · Esc kapatır",
     "added": "Hızlı not eklendi",
     "failed": "Not kaydedilemedi, Capnote açık mı?"
+  },
+  "graph": {
+    "title": "Not grafiği",
+    "linked": "Bağlantılı",
+    "all": "Tümü",
+    "fit": "Sığdır",
+    "count": "{notes} not · {links} bağlantı",
+    "links": "{count} bağlantı",
+    "empty": "Notlar arasında henüz bağlantı yok. Bir notta [[ yazıp başka bir notu seçerek bağlantı ver; burada harita olarak görünür."
   }
 }

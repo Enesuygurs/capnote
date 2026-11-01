@@ -169,7 +169,7 @@
     "startupHome": "Home page",
     "startupNewNote": "New note",
     "quickNoteShortcut": "Quick note shortcut",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a small always-on-top note window in the corner of the screen, from anywhere",
+    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a new note, even while Capnote is in the background or the tray",
     "dictationModel": "Dictation",
     "dictationModelDesc": "Speech turns into text on this computer; the model is downloaded once, the first time",
     "dictationAccurate": "Accurate (~240 MB)",
@@ -611,5 +611,14 @@
     "hint": "{mod}+Enter saves · Esc closes",
     "added": "Quick note added",
     "failed": "The note could not be saved. Is Capnote open?"
+  },
+  "graph": {
+    "title": "Note graph",
+    "linked": "Linked",
+    "all": "All",
+    "fit": "Fit",
+    "count": "{notes} notes · {links} links",
+    "links": "{count} links",
+    "empty": "No links between notes yet. Type [[ in a note and pick another note to link it; the links show here as a map."
   }
 }

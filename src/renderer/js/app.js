@@ -36,6 +36,7 @@ import { DictationFeature } from './features/dictation.js';
 import { YearSummaryFeature } from './features/year-summary.js';
 import { MoodJourneyFeature } from './features/mood-journey.js';
 import { QuickNoteFeature } from './features/quick-note.js';
+import { NoteGraphFeature } from './features/note-graph.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
@@ -307,6 +308,12 @@ export class CapnoteApp {
     this.tagsScreen = document.getElementById('tagsScreen');
     this.tagsNavBtn = document.getElementById('tagsNavBtn');
     this.archiveScreen = document.getElementById('archiveScreen');
+    this.graphScreen = document.getElementById('graphScreen');
+    this.graphCanvas = document.getElementById('graphCanvas');
+    this.graphSubtitle = document.getElementById('graphSubtitle');
+    this.graphRangeTabs = document.getElementById('graphRange');
+    this.graphFitBtn = document.getElementById('graphFitBtn');
+    this.graphNavBtn = document.getElementById('graphNavBtn');
     this.archiveList = document.getElementById('archiveList');
     this.archiveNavBtn = document.getElementById('archiveNavBtn');
     this.archiveViewBtn = document.getElementById('archiveViewBtn');
@@ -428,6 +435,7 @@ export class CapnoteApp {
     this.setupYearSummary();
     this.setupMoodJourney();
     this.setupQuickNote();
+    this.setupNoteGraph();
     this.setupMoodWeatherSelectors();
     this.setupModalEvents();
     this.setupKeyboardShortcuts();
@@ -694,6 +702,7 @@ applyFeatures(CapnoteApp, [
   YearSummaryFeature,
   MoodJourneyFeature,
   QuickNoteFeature,
+  NoteGraphFeature,
   DashboardFeature,
   TemplatesFeature,
   MarkdownIoFeature,

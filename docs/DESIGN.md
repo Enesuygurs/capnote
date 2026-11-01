@@ -227,6 +227,8 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Quick note window** (`quick-note.html`, `css/quick-note.css`): 360×300, frameless and always on top in the bottom right corner of the screen. One `--surface` with a 1px `--divider` ring: a drag bar (the app's mark, the name in `--text-secondary` 12/600, open in the app and close as `.btn-icon-xs`), a 16/600 title and the text without borders, then a footer above a divider with the keys in `--text-muted` 11px and a small primary Save, off while the note is empty. It takes the app's theme, accent and language.
 
+**Note graph** (`17-screens.css`, opened from the notes header): the map fills the page under the header. Dots are notes in `--accent-color` (a note without links in `--text-muted`), 5px plus 2px for each link up to 14px, with a 2px `--surface` ring; links are 1.5px lines in `--text-muted` at 35%. Labels are 12px `--text-secondary` with a `--surface` halo, every note's up to 40 dots and only the most linked ones past that. Hovering or focusing a note fades the others to 20% and draws its links in the accent. A Linked/All segmented control and a fit button sit in the header; with no links the page shows an empty state.
+
 ## 10. Checking a change
 
 - `npm test` for behaviour, `npm run test:visual` for every screen in both themes (compare with `tests/visual/accepted`, accept with `--accept` once reviewed).
