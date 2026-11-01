@@ -104,11 +104,11 @@ export class DashboardFeature {
     const days = this.writingDays();
     const { current, longest } = this.writingStreaks(days);
     const now = this.dashboardNow();
-    const wordsThisMonth = this.notes
-      .filter((n) => {
-        const d = new Date(n.createdAt);
-        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-      })
+    // Words of the notes written in the last 30 days, today among them (a calendar month would
+    // show next to nothing in its first days)
+    const since = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29);
+    const wordsLast30Days = this.notes
+      .filter((n) => new Date(n.createdAt) >= since)
       .reduce((sum, n) => sum + (n.wordCount || 0), 0);
     // Each figure has its own icon color
     const tiles = [
@@ -116,7 +116,7 @@ export class DashboardFeature {
       ['activeDays', days.size, 'fa-calendar-check', 'green'],
       ['streak', current, 'fa-fire', 'amber'],
       ['longestStreak', longest, 'fa-trophy', 'violet'],
-      ['wordsThisMonth', wordsThisMonth, 'fa-pen-nib', 'rose'],
+      ['wordsLast30Days', wordsLast30Days, 'fa-pen-nib', 'rose'],
     ];
     this.statTiles.innerHTML = '';
     tiles.forEach(([key, value, icon, tone]) => {

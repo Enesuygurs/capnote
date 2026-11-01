@@ -1,5 +1,5 @@
 // The overview on the home page: totals, the writing streak (writing yesterday keeps it going),
-// words this month, a calendar with each day's mood whose days list their notes, how moods and
+// the words of the last 30 days, a calendar with each day's mood whose days list their notes, how moods and
 // weather are spread, and the words of the last six months
 
 export async function run() {
@@ -38,7 +38,7 @@ export async function run() {
       activeDays: tile('activeDays'),
       streak: tile('streak'),
       longest: tile('longestStreak'),
-      wordsThisMonth: tile('wordsThisMonth'),
+      wordsLast30Days: tile('wordsLast30Days'),
     },
     month: a.calendarTitle.textContent,
     todayMood: day('2026-06-15').querySelector('.calendar-day-mark')?.dataset.tone,
@@ -76,7 +76,7 @@ export async function run() {
 
 export const expected = {
   overviewShown: true,
-  tiles: { notes: '5', activeDays: '5', streak: '3', longest: '3', wordsThisMonth: '100' },
+  tiles: { notes: '5', activeDays: '5', streak: '3', longest: '3', wordsLast30Days: '200' },
   month: 'Haziran 2026',
   todayMood: 'happy',
   plainDay: true,

@@ -90,10 +90,8 @@ export class MoodJourneyFeature {
     const list = this.moodPatternsList;
     list.innerHTML = '';
     const patterns = this.moodPatterns();
-    if (!patterns.length) {
-      list.innerHTML = `<p class="chart-empty">${i18n.t('journey.noPatterns')}</p>`;
-      return;
-    }
+    // Until a weekday shows a pattern there is nothing under the days
+    list.hidden = !patterns.length;
     patterns.forEach(({ weekday, mood }) => {
       const row = document.createElement('p');
       row.className = 'mood-pattern';

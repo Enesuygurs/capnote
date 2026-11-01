@@ -326,27 +326,7 @@ export class NoteGraphFeature {
     box.appendChild(root);
   }
 
-  isGraphFullscreen() {
-    return document.body.classList.contains('graph-full');
-  }
-
-  // Full screen: the sidebar is hidden and the map takes the window; Escape, the button or
-  // another screen ends it
-  setGraphFullscreen(on) {
-    document.body.classList.toggle('graph-full', on);
-    const btn = this.graphFullBtn;
-    if (!btn) return;
-    btn.classList.toggle('active', on);
-    btn.querySelector('i').className = `fas ${on ? 'fa-compress' : 'fa-expand'}`;
-    const label = i18n.t(on ? 'graph.fullscreenExit' : 'graph.fullscreen');
-    btn.title = label;
-    btn.setAttribute('aria-label', label);
-  }
-
   setupNoteGraph() {
-    this.graphFullBtn?.addEventListener('click', () =>
-      this.setGraphFullscreen(!this.isGraphFullscreen())
-    );
     this.graphNavBtn?.addEventListener('click', () =>
       this.toggleScreenFromButton('graph', () => this.showNoteGraph())
     );

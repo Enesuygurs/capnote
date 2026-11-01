@@ -432,7 +432,7 @@
     "activeDays": "Yazılan gün",
     "streak": "Süren seri (gün)",
     "longestStreak": "En uzun seri (gün)",
-    "wordsThisMonth": "Bu ay yazılan kelime",
+    "wordsLast30Days": "Son 30 günde yazılan kelime",
     "today": "Bugün",
     "prevMonth": "Önceki ay",
     "nextMonth": "Sonraki ay",
@@ -580,7 +580,6 @@
     "month": "Ay",
     "noMood": "Ruh hali seçilmedi",
     "pattern": "{days} genelde {feel}",
-    "noPatterns": "Desenler, birkaç hafta boyunca notlarına ruh hali seçtikçe burada görünür",
     "weekdays": {
       "0": "Pazarları",
       "1": "Pazartesileri",
@@ -619,8 +618,6 @@
     "fit": "Ortala",
     "count": "{notes} not · {links} bağlantı",
     "links": "{count} bağlantı",
-    "empty": "Notlar arasında henüz bağlantı yok. Bir notta [[ yazıp başka bir notu seçerek bağlantı ver; burada harita olarak görünür.",
-    "fullscreen": "Tam ekran",
-    "fullscreenExit": "Tam ekrandan çık"
+    "empty": "Notlar arasında henüz bağlantı yok. Bir notta [[ yazıp başka bir notu seçerek bağlantı ver; burada harita olarak görünür."
   }
 }

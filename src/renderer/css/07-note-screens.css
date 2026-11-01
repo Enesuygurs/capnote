@@ -308,17 +308,31 @@
   text-align: center;
 }
 
+/* The calendar, then the four cards two by two beside it, so the whole overview fits the window
+   at its smallest size (window.js); a narrower window (a small screen) stacks them */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: minmax(280px, 1fr) minmax(0, 2fr);
   gap: var(--space-4);
   align-items: start;
 }
 
 .dashboard-side {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-4);
+  align-items: start;
+}
+
+@media (max-width: 1150px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .dashboard-side {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .chart-card .section-label {
@@ -508,7 +522,7 @@
 /* One row: icon in the mood's own color, its name, a bar in one shared color, the count */
 .bar-row {
   display: grid;
-  grid-template-columns: 16px minmax(64px, 96px) 1fr auto;
+  grid-template-columns: 16px minmax(64px, 96px) minmax(40px, 1fr) auto;
   align-items: center;
   gap: var(--space-2);
   font-size: var(--fs-md);

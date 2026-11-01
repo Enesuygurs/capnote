@@ -432,7 +432,7 @@
     "activeDays": "Days written",
     "streak": "Current streak (days)",
     "longestStreak": "Longest streak (days)",
-    "wordsThisMonth": "Words this month",
+    "wordsLast30Days": "Words in the last 30 days",
     "today": "Today",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
@@ -580,7 +580,6 @@
     "month": "Month",
     "noMood": "No mood chosen",
     "pattern": "On {days} you usually {feel}",
-    "noPatterns": "Patterns show here as you choose moods for your notes over a few weeks",
     "weekdays": {
       "0": "Sundays",
       "1": "Mondays",
@@ -619,8 +618,6 @@
     "fit": "Center",
     "count": "{notes} notes · {links} links",
     "links": "{count} links",
-    "empty": "No links between notes yet. Type [[ in a note and pick another note to link it; the links show here as a map.",
-    "fullscreen": "Full screen",
-    "fullscreenExit": "Exit full screen"
+    "empty": "No links between notes yet. Type [[ in a note and pick another note to link it; the links show here as a map."
   }
 }

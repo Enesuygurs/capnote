@@ -302,10 +302,6 @@ export class UiFeature {
           this.setFocusMode(false);
           return;
         }
-        if (this.isGraphFullscreen?.()) {
-          this.setGraphFullscreen(false);
-          return;
-        }
         // Menus close before anything else
         const openMenu = document.querySelector(
           '.context-menu:not(.hidden), .sort-dropdown:not(.hidden), .select-items:not(.select-hide), .toolbar-popover:not(.hidden)'

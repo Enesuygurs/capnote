@@ -103,6 +103,10 @@ function saveWindowState(win) {
   }
 }
 
+// The smallest window: the overview fits without scrolling, with every mood and weather in use
+// and a few notes on this day (measured with the sidebar shown)
+const MIN_SIZE = { width: 1200, height: 970 };
+
 // Window background before the page paints: the app's light and dark --chrome colors
 const BACKGROUND = { light: '#f1f2f4', dark: '#121212' };
 
@@ -117,12 +121,21 @@ function createMainWindow({ darkMode = false, devTools = false } = {}) {
   }
 
   const state = loadWindowState();
+  // The smallest window shows the whole overview; on a smaller screen, the screen's work area
+  const area = screen.getPrimaryDisplay().workAreaSize;
+  const minWidth = Math.min(MIN_SIZE.width, area.width);
+  const minHeight = Math.min(MIN_SIZE.height, area.height);
   mainWindow = new BrowserWindow({
-    width: 1000,
-    height: 700,
-    ...(state && { x: state.x, y: state.y, width: state.width, height: state.height }),
-    minWidth: 800,
-    minHeight: 600,
+    width: Math.max(minWidth, Math.min(1200, area.width)),
+    height: minHeight,
+    ...(state && {
+      x: state.x,
+      y: state.y,
+      width: Math.max(state.width, minWidth),
+      height: Math.max(state.height, minHeight),
+    }),
+    minWidth,
+    minHeight,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

@@ -313,7 +313,6 @@ export class CapnoteApp {
     this.graphSubtitle = document.getElementById('graphSubtitle');
     this.graphRangeTabs = document.getElementById('graphRange');
     this.graphFitBtn = document.getElementById('graphFitBtn');
-    this.graphFullBtn = document.getElementById('graphFullBtn');
     this.graphNavBtn = document.getElementById('graphNavBtn');
     this.archiveList = document.getElementById('archiveList');
     this.archiveNavBtn = document.getElementById('archiveNavBtn');
