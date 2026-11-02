@@ -288,15 +288,6 @@
 }
 
 /* ============ Note graph ============
-   Its icon is an SVG (a hub with four notes): the size of the icons beside it, in their color */
-.icon-graph {
-  display: block;
-  width: 1.15em;
-  height: 1.15em;
-  flex: none;
-}
-
-/* ============ Note graph (the page) ============
    The map fills the page under the header. Dots in the accent (a note without links in the muted
    ink), lines in a light muted ink; hovering a note fades all but it, its neighbours and their links */
 .graph-canvas {
@@ -393,9 +384,8 @@
   text-align: center;
 }
 
-.graph-empty .icon-graph {
-  width: 48px;
-  height: 48px;
+.graph-empty i {
+  font-size: 44px;
   opacity: 0.6;
 }
 

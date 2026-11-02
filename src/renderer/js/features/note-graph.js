@@ -6,8 +6,8 @@
 import { i18n } from '../i18n.js';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
-// The graph's icon (also in index.html): a hub with four notes around it, two of them linked
-const GRAPH_ICON = document.getElementById('graphNavBtn')?.innerHTML.trim() || '';
+// The graph's icon, as in the sidebar footer and the page header
+const GRAPH_ICON = '<i class="fas fa-circle-nodes"></i>';
 // Labels for every note up to this many dots; past it only for the notes with the most links
 const ALL_LABELS_UP_TO = 40;
 const MIN_SCALE = 0.3;
