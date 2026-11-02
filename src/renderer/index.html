@@ -305,12 +305,18 @@
                   <div id="wordsChart" class="column-chart"></div>
                 </section>
                 <div class="dashboard-side">
-                  <section class="card chart-card">
-                    <h3 class="section-label" data-i18n="dashboard.moods">Ruh hali dağılımı</h3>
+                  <section class="card chart-card spread-card">
+                    <div class="chart-card-header">
+                      <h3 class="section-label" data-i18n="dashboard.moods">Ruh hali dağılımı</h3>
+                      <span class="chart-card-total" id="moodTotal"></span>
+                    </div>
                     <div id="moodChart" class="bar-list"></div>
                   </section>
-                  <section class="card chart-card">
-                    <h3 class="section-label" data-i18n="dashboard.weather">Hava durumu</h3>
+                  <section class="card chart-card spread-card">
+                    <div class="chart-card-header">
+                      <h3 class="section-label" data-i18n="dashboard.weather">Hava durumu</h3>
+                      <span class="chart-card-total" id="weatherTotal"></span>
+                    </div>
                     <div id="weatherChart" class="bar-list"></div>
                   </section>
                 </div>

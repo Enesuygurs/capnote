@@ -89,11 +89,17 @@ export class DashboardFeature {
     });
     this.renderStatTiles();
     this.renderCalendar();
-    this.renderBarList(this.moodChart, this.spreadOf('mood', this.findMoodButton), 'mood');
+    this.renderBarList(
+      this.moodChart,
+      this.spreadOf('mood', this.findMoodButton),
+      'mood',
+      this.moodTotal
+    );
     this.renderBarList(
       this.weatherChart,
       this.spreadOf('weather', this.findWeatherButton),
-      'weather'
+      'weather',
+      this.weatherTotal
     );
     this.renderWordsChart();
   }
@@ -274,21 +280,25 @@ export class DashboardFeature {
   // ============ Charts ============
   // One bar per mood (or weather): its icon in its own color and its name say which it is;
   // the bars share one color, since they show one measure
-  renderBarList(container, entries, field) {
+  // Each mood (or weather) as a tile: its icon on a tint of its color, its name and share, and a
+  // bar in its color; the card's header says how many notes have one
+  renderBarList(container, entries, field, totalLabel) {
     container.innerHTML = '';
+    const total = entries.reduce((sum, e) => sum + e.count, 0);
+    if (totalLabel)
+      totalLabel.textContent = total ? i18n.t('tags.notesCount', { count: total }) : '';
     if (!entries.length) {
       container.innerHTML = `<p class="chart-empty">${i18n.t(`dashboard.no_${field}`)}</p>`;
       return;
     }
-    const total = entries.reduce((sum, e) => sum + e.count, 0);
     const max = entries[0].count;
     entries.forEach((entry) => {
       const row = document.createElement('div');
       row.className = 'bar-row';
+      row.dataset.tone = entry.key;
       const share = Math.round((entry.count / total) * 100);
       row.title = `${entry.button.title}: ${entry.count} (${share}%)`;
-      row.innerHTML = `<span class="bar-icon"></span><span class="bar-name"></span><span class="bar-track"><span class="bar-fill"></span></span><span class="bar-value"></span>`;
-      row.querySelector('.bar-icon').dataset.tone = entry.key;
+      row.innerHTML = `<span class="bar-icon"></span><span class="bar-body"><span class="bar-line"><span class="bar-name"></span><span class="bar-value"></span></span><span class="bar-track"><span class="bar-fill"></span></span></span>`;
       row.querySelector('.bar-icon').appendChild(entry.button.querySelector('i').cloneNode());
       row.querySelector('.bar-name').textContent = entry.button.title;
       row.querySelector('.bar-fill').style.width = `${Math.max(4, (entry.count / max) * 100)}%`;

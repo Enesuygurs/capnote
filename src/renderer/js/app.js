@@ -304,6 +304,8 @@ export class CapnoteApp {
     this.tagsNavBtn = document.getElementById('tagsNavBtn');
     this.archiveScreen = document.getElementById('archiveScreen');
     this.graphScreen = document.getElementById('graphScreen');
+    this.moodTotal = document.getElementById('moodTotal');
+    this.weatherTotal = document.getElementById('weatherTotal');
     this.graphCanvas = document.getElementById('graphCanvas');
     this.graphSubtitle = document.getElementById('graphSubtitle');
     this.graphRangeTabs = document.getElementById('graphRange');

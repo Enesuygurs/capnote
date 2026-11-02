@@ -268,7 +268,7 @@
   overflow-y: auto;
 }
 
-.chart-card > :not(.section-label) {
+.chart-card > :not(.section-label, .chart-card-header) {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -299,6 +299,35 @@
   }
 }
 
+/* The overview's cards have more room around their content; a chart card's header holds its title
+   and, for mood and weather, how many notes have one */
+.dashboard-grid .card {
+  padding: var(--space-5);
+}
+
+/* The calendar keeps its sides and gives its top and bottom to the weeks */
+.dashboard-grid .calendar-card {
+  padding: var(--space-4) var(--space-5);
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.chart-card-header .section-label {
+  margin-bottom: 0;
+}
+
+.chart-card-total {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
 .chart-card .section-label {
   display: block;
   margin-bottom: var(--space-3);
@@ -310,7 +339,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-2);
 }
 
 .calendar-title {
@@ -330,7 +359,7 @@
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: var(--stack-gap);
+  gap: var(--space-1);
 }
 
 /* The weeks share the card's height, never under 44px: a chosen day's notes below scroll with the
@@ -341,25 +370,30 @@
 }
 
 .calendar-weekdays span {
-  padding-bottom: var(--space-1);
+  padding-bottom: 6px;
   text-align: center;
   font-size: var(--fs-xs);
   font-weight: 600;
+  letter-spacing: 0.04em;
   color: var(--text-muted);
   text-transform: uppercase;
 }
 
-/* A day: its number, and the mood of the day (or a dot when no note has a mood) */
+/* A day is a rounded tile with a gap around it: its number, and under it the day's mood in the
+   mood's color on a soft tint of it (a dot when no note has a mood). Today has an accent ring,
+   the chosen day an accent tint; days of the months around are faint and plain. */
 .calendar-day {
+  position: relative;
   min-height: var(--control-md);
-  border-radius: var(--radius-md);
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 3px;
   color: var(--text-secondary);
   font-size: var(--fs-md);
+  font-variant-numeric: tabular-nums;
   cursor: default;
   transition: var(--transition-fast);
 }
@@ -374,48 +408,41 @@
   background: var(--tint-hover);
 }
 
+.calendar-day.has-mood {
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+}
+
+.calendar-day.has-mood.has-notes:hover {
+  background: color-mix(in srgb, var(--tone) 20%, transparent);
+}
+
 .calendar-day.is-other-month {
   color: var(--text-muted);
-  opacity: 0.5;
+  opacity: 0.4;
+}
+
+.calendar-day.is-other-month.has-mood {
+  background: none;
+}
+
+.calendar-day.is-today {
+  box-shadow: inset 0 0 0 2px var(--accent-color);
+  color: var(--accent-text);
+  font-weight: 700;
 }
 
 .calendar-day.is-selected,
 .calendar-day.is-selected:hover {
   background: var(--accent-tint);
-  color: var(--accent-text);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 45%, transparent);
 }
 
-/* Today is filled with the accent, chosen or not */
-.calendar-day.is-today,
-.calendar-day.is-today:hover {
-  background: color-mix(in srgb, var(--accent-color) 90%, transparent);
-  color: var(--text-on-accent);
-}
-
-.calendar-day.is-today.has-notes:hover {
-  filter: brightness(0.94);
-}
-
-.calendar-day.is-today .calendar-day-mark {
-  color: var(--text-on-accent);
-}
-
-.calendar-day.is-today .calendar-day-mark.is-dot {
-  background: var(--text-on-accent);
-}
-
-/* A day with a mood takes a tint of the mood's color, its icon in that color (today and the
-   chosen day keep their own look) */
-.calendar-day.has-mood:not(.is-today, .is-selected) {
-  background: color-mix(in srgb, var(--tone) 14%, transparent);
-}
-
-.calendar-day.has-mood.has-notes:not(.is-today, .is-selected):hover {
-  background: color-mix(in srgb, var(--tone) 22%, transparent);
+.calendar-day.is-today.is-selected {
+  box-shadow: inset 0 0 0 2px var(--accent-color);
 }
 
 .calendar-day-mark {
-  font-size: var(--fs-lg);
+  font-size: 17px;
   line-height: 1;
   color: var(--tone, var(--text-muted));
 }
@@ -482,35 +509,62 @@
   color: var(--text-muted);
 }
 
+/* Mood and weather: two columns of tiles. Each has its icon on a soft square of its own color,
+   its name with the count and share on one line, and under them a thin bar in its color (the icon
+   and the name say which it is, so the color is never alone) */
 .bar-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: var(--space-3) var(--space-5);
 }
 
-/* One row: icon in the mood's own color, its name, a bar in one shared color, the count */
 .bar-row {
-  display: grid;
-  grid-template-columns: 16px minmax(0, 96px) minmax(32px, 1fr) auto;
+  display: flex;
   align-items: center;
-  gap: var(--space-2);
-  font-size: var(--fs-md);
+  gap: var(--space-3);
+  min-width: 0;
 }
 
 .bar-icon {
-  text-align: center;
-  color: var(--tone, var(--text-muted));
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-sm);
+  height: var(--control-sm);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  color: var(--tone);
+  font-size: var(--fs-base);
+}
+
+.bar-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.bar-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
 }
 
 .bar-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: var(--text-primary);
+  color: var(--text-strong);
+  font-size: var(--fs-md);
+  font-weight: 500;
 }
 
 .bar-track {
-  height: 8px;
+  height: 6px;
   border-radius: var(--radius-full);
   background: var(--field);
   overflow: hidden;
@@ -520,13 +574,13 @@
   display: block;
   height: 100%;
   border-radius: var(--radius-full);
-  background: var(--accent-color);
+  background: var(--tone);
 }
 
 .bar-value {
   white-space: nowrap;
   font-size: var(--fs-sm);
-  color: var(--text-secondary);
+  color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
 
