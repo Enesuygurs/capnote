@@ -29,9 +29,10 @@
   background: var(--tint-hover);
 }
 
+/* The full app icon, mood badge and all: large enough here to read */
 .app-brand-icon {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
 }
 
