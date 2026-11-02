@@ -97,27 +97,59 @@
   color: #fff;
 }
 
-/* New note with the template button joined to its right edge */
+/* New note and its templates are one accent button: the two halves share the surface and the
+   rounded corners, a thin light line between them; each half darkens on its own on hover, and
+   the arrow turns up while the templates menu is open */
 .new-note-split {
   display: flex;
-  gap: var(--stack-gap);
+  height: var(--control-sm);
+  border-radius: var(--radius-md);
+  background: var(--accent-color);
+  overflow: hidden;
+}
+
+.new-note-split .btn-primary {
+  height: 100%;
+  border-radius: 0;
+  background: none;
+}
+
+.new-note-split .btn-primary:hover {
+  filter: none;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.new-note-split .btn-primary:active {
+  background: rgba(0, 0, 0, 0.14);
 }
 
 .sidebar-new-note {
   flex: 1;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
 }
 
 .new-note-more {
-  width: var(--control-sm);
+  position: relative;
+  width: var(--control-md);
   padding: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+}
+
+.new-note-more::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 1px;
+  background: color-mix(in srgb, var(--text-on-accent) 35%, transparent);
 }
 
 .new-note-more i {
   font-size: var(--fs-xs);
+  transition: transform 0.15s ease;
+}
+
+body:has(#templateMenu:not(.hidden)) .new-note-more i {
+  transform: rotate(180deg);
 }
 
 /* Settings: one full-width row at the bottom, aligned with the list rows */

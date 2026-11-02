@@ -205,7 +205,7 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Automatic backups** (Settings > Data): a `.settings-section-desc` line under the section label (12px, secondary text), then one `.setting-item` per backup in a `.settings-group`: the day (or "Before the last restore") as the label, "as at the start of the day" and the note and folder counts below, and a tinted "Restore" button. Restoring asks first and reloads the app on the restored data.
 
-**Split button**: "New note" and its template button share one control at the small size (32px): 2px apart, the inner corners square.
+**Split button**: "New note" and its template button are one accent control at the small size (32px): one surface with the outer corners rounded, a 1px line of `--text-on-accent` at 35% between the halves (8px short of the edges), each half darkening on its own on hover; the 36px arrow half turns its chevron up while the templates menu is open.
 
 **Reminder form** (editor side panel): two field-style buttons side by side, the day ("Thu 5 March", or a muted "Date") and the time ("18:30", or a muted "Time", as wide as its text), each opening its own picker; then "Repeat" as a small `.segmented`, the weekdays as seven round toggles (the chosen ones `--accent-color`) and a full-width primary button. Nothing is filled in by itself: the day, the hour and the minute are each chosen by hand; setting a reminder with a part missing shows a warning naming it and rings the missing button red with a short shake. The note's reminders are cards: an accent-tinted icon (a bell, or arrows when it repeats), the day in bold and the time and repeat in muted text.
 
