@@ -223,6 +223,8 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Sidebar footer**: Settings fills the row; the archive and the note graph (pages, not list filters) sit beside it as 36px icon buttons in `--text-muted`, an accent tint while their page is open.
 
+**App icon** (`assets/icons/source`, rendered by `npm run icons`): flat shapes with round ends, like the app's icons. On an amber tile (#FCC93A to #F2730C), a white note with a folded corner and an orange bookmark ribbon over a cream page turned a little, and the day's mood as an orange smiling badge with a white ring. 32px and smaller (taskbar, tray, the app's own small logos) use `capnote-small.svg`: the note and ribbon alone, larger, with fewer lines.
+
 **Toast**: `--surface-raised`, bottom center, its icon colored by kind.
 
 **Quick note window** (`quick-note.html`, `css/quick-note.css`): 360×300, frameless and always on top in the bottom right corner of the screen. One `--surface` with a 1px `--divider` ring: a drag bar (the app's mark, the name in `--text-secondary` 12/600, open in the app and close as `.btn-icon-xs`), a 16/600 title and the text without borders, then a footer above a divider with the keys in `--text-muted` 11px and a small primary Save, off while the note is empty. It takes the app's theme, accent and language.

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Capnote app icon for 32px and smaller (the taskbar, the tray, the app's own small logos):
+       the note and its ribbon, larger and with fewer lines, so it stays sharp. capnote.svg is the
+       full icon. -->
+  <defs>
+    <linearGradient id="tile" x1="0.15" y1="0" x2="0.65" y2="1">
+      <stop offset="0" stop-color="#FCC93A"/>
+      <stop offset="1" stop-color="#F2730C"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="960" height="960" rx="216" fill="url(#tile)"/>
+  <path d="M336 168 H620 L776 324 V800 A72 72 0 0 1 704 872 H336 A72 72 0 0 1 264 800 V240 A72 72 0 0 1 336 168 Z" fill="#FFFFFF"/>
+  <path d="M620 168 V268 A56 56 0 0 0 676 324 H776 Z" fill="#FDCB8E"/>
+  <path d="M340 168 H436 V412 L388 372 L340 412 Z" fill="#E4580B"/>
+  <g fill="#F59E0B">
+    <rect x="480" y="470" width="200" height="64" rx="32"/>
+    <rect x="352" y="600" width="328" height="64" rx="32" opacity=".5"/>
+  </g>
+</svg>

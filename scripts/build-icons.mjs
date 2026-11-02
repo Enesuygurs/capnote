@@ -9,13 +9,16 @@ import { app, BrowserWindow } from 'electron';
 const ICONS_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'icons');
 const SOURCE_DIR = path.join(ICONS_DIR, 'source');
 
-// Every size is drawn from the one app icon, the same one the app shows on its home page
 const ICO_SIZES = [16, 24, 32, 48, 64, 128, 256];
+
+// 32px and smaller use the simpler drawing (the note and its ribbon), which stays sharp there
+const SMALL_UP_TO = 32;
+const appIconFor = (size) => (size <= SMALL_UP_TO ? 'capnote-small.svg' : 'capnote.svg');
 
 const PNG_OUTPUTS = [
   { file: 'capnote-512.png', source: 'capnote.svg', size: 512 },
-  { file: 'capnote-32.png', source: 'capnote.svg', size: 32 },
-  { file: 'capnote-16.png', source: 'capnote.svg', size: 16 },
+  { file: 'capnote-32.png', source: 'capnote-small.svg', size: 32 },
+  { file: 'capnote-16.png', source: 'capnote-small.svg', size: 16 },
   // macOS loads the @2x file automatically on Retina screens
   { file: 'trayTemplate.png', source: 'tray-template.svg', size: 16 },
   { file: 'trayTemplate@2x.png', source: 'tray-template.svg', size: 32 },
@@ -68,7 +71,7 @@ app.whenReady().then(async () => {
 
   const icoImages = [];
   for (const size of ICO_SIZES) {
-    icoImages.push({ size, png: await rasterize(win, 'capnote.svg', size) });
+    icoImages.push({ size, png: await rasterize(win, appIconFor(size), size) });
   }
   fs.writeFileSync(path.join(ICONS_DIR, 'capnote.ico'), buildIco(icoImages));
   console.log(`capnote.ico (${ICO_SIZES.join(', ')}px)`);
