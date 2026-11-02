@@ -223,7 +223,7 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Sidebar footer**: Settings fills the row; the archive and the note graph (pages, not list filters) sit beside it as 36px icon buttons in `--text-muted`, an accent tint while their page is open.
 
-**App icon** (`assets/icons/source`, rendered by `npm run icons`): flat shapes with round ends, like the app's icons. On an amber tile (#FCC93A to #F2730C), a white note with a folded corner and an orange bookmark ribbon over a cream page turned a little, and the day's mood as an orange smiling badge with a white ring. The sidebar shows the full icon at 32px; smaller sizes (taskbar, tray, the quick note window, the year summary) use `capnote-small.svg`: the note and ribbon alone, larger, with fewer lines.
+**App icon** (`assets/icons/source/capnote.svg`, rendered by `npm run icons`): no tile, the icon alone, flat with round ends like the app's icons: an amber note (#FBBF24 to #F97316) with a light folded corner, a deep orange bookmark ribbon and white lines. Simple enough to stay sharp at 16px, so every size, the sidebar's 28px among them, is drawn from it.
 
 **Toast**: `--surface-raised`, bottom center, its icon colored by kind.
 

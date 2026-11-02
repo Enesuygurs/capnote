@@ -1,32 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <!-- Capnote app icon: a note with a bookmark ribbon on a page behind it, and the day's mood, on
-       an amber tile. Flat shapes with round ends, like the app's icons. Used from 48px up; the
-       smaller sizes use capnote-small.svg. Rendered to PNG/ICO by scripts/build-icons.mjs. -->
+  <!-- Capnote app icon: an amber note with a folded corner, a bookmark ribbon and its lines, on
+       nothing (no tile). Flat with round ends, like the app's icons; simple enough to be sharp at
+       16px, so every size is drawn from it. Rendered to PNG/ICO by scripts/build-icons.mjs. -->
   <defs>
-    <linearGradient id="tile" x1="0.15" y1="0" x2="0.65" y2="1">
-      <stop offset="0" stop-color="#FCC93A"/>
-      <stop offset="1" stop-color="#F2730C"/>
-    </linearGradient>
-    <linearGradient id="back" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#FFF3DC"/>
-      <stop offset="1" stop-color="#FFDDA6"/>
+    <linearGradient id="g" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#FBBF24" />
+      <stop offset="1" stop-color="#F97316" />
     </linearGradient>
   </defs>
-  <rect x="64" y="64" width="896" height="896" rx="216" fill="url(#tile)"/>
-  <!-- The page under the note, turned a little: a journal of many pages -->
-  <rect x="314" y="190" width="400" height="584" rx="66" fill="url(#back)" transform="rotate(-9 514 482)"/>
-  <!-- The note, with a folded corner and a bookmark ribbon -->
-  <path d="M378 226 H604 L716 338 V752 A62 62 0 0 1 654 814 H378 A62 62 0 0 1 316 752 V288 A62 62 0 0 1 378 226 Z" fill="#FFFFFF"/>
-  <path d="M604 226 V298 A40 40 0 0 0 644 338 H716 Z" fill="#FDCB8E"/>
-  <path d="M382 226 H448 V388 L415 360 L382 388 Z" fill="#E4580B"/>
-  <g fill="#F59E0B">
-    <rect x="490" y="420" width="160" height="34" rx="17"/>
-    <rect x="382" y="498" width="268" height="34" rx="17" opacity=".42"/>
-    <rect x="382" y="576" width="196" height="34" rx="17" opacity=".42"/>
+  <path d="M276 64 H640 L864 288 V856 A104 104 0 0 1 760 960 H276 A104 104 0 0 1 172 856 V168 A104 104 0 0 1 276 64 Z" fill="url(#g)"/>
+  <path d="M640 64 V224 A64 64 0 0 0 704 288 H864 Z" fill="#FDE68A"/>
+  <path d="M284 64 H412 V372 L348 320 L284 372 Z" fill="#C2410C"/>
+  <g fill="#FFFFFF">
+    <rect x="476" y="428" width="252" height="64" rx="32" />
+    <rect x="300" y="560" width="428" height="64" rx="32" opacity=".85" />
+    <rect x="300" y="692" width="300" height="64" rx="32" opacity=".85" />
   </g>
-  <!-- The day's mood -->
-  <circle cx="700" cy="738" r="128" fill="#E4580B" stroke="#FFFFFF" stroke-width="28"/>
-  <circle cx="657" cy="708" r="16" fill="#FFFFFF"/>
-  <circle cx="743" cy="708" r="16" fill="#FFFFFF"/>
-  <path d="M642 762 Q700 816 758 762" fill="none" stroke="#FFFFFF" stroke-width="23" stroke-linecap="round"/>
 </svg>

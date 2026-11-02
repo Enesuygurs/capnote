@@ -116,7 +116,7 @@ export class YearSummaryFeature {
     // The year and its numbers
     const head = document.createElement('div');
     head.className = 'summary-head';
-    head.innerHTML = `<div class="summary-year"></div><div class="summary-brand"><img src="../../assets/icons/source/capnote-small.svg" alt="" /> Capnote</div>`;
+    head.innerHTML = `<div class="summary-year"></div><div class="summary-brand"><img src="../../assets/icons/source/capnote.svg" alt="" /> Capnote</div>`;
     head.querySelector('.summary-year').textContent = s.year;
     card.appendChild(head);
     const figures = document.createElement('div');
