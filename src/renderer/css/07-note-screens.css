@@ -425,20 +425,37 @@
   background: none;
 }
 
-.calendar-day.is-today {
-  box-shadow: inset 0 0 0 2px var(--accent-color);
-  color: var(--accent-text);
-  font-weight: 700;
+/* Today is filled with the accent, its number and mood in the accent's text color */
+.calendar-day.is-today,
+.calendar-day.is-today:hover {
+  background: color-mix(in srgb, var(--accent-color) 90%, transparent);
+  color: var(--text-on-accent);
 }
 
-.calendar-day.is-selected,
-.calendar-day.is-selected:hover {
-  background: var(--accent-tint);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-color) 45%, transparent);
+.calendar-day.is-today.has-notes:hover {
+  filter: brightness(0.94);
+}
+
+.calendar-day.is-today .calendar-day-mark {
+  color: var(--text-on-accent);
+}
+
+.calendar-day.is-today .calendar-day-mark.is-dot {
+  background: var(--text-on-accent);
+}
+
+/* The chosen day has an accent ring (on today's fill, a light one inside it) */
+.calendar-day.is-selected {
+  box-shadow: inset 0 0 0 2px var(--accent-color);
+}
+
+/* A chosen day of the month before or after is not faded */
+.calendar-day.is-other-month.is-selected {
+  opacity: 1;
 }
 
 .calendar-day.is-today.is-selected {
-  box-shadow: inset 0 0 0 2px var(--accent-color);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--text-on-accent) 80%, transparent);
 }
 
 .calendar-day-mark {
@@ -454,16 +471,29 @@
   background: var(--accent-color);
 }
 
-.calendar-day-notes {
-  margin-top: var(--space-4);
+/* The words card shows a chosen day's notes in place of the chart: the day as its title, then
+   the notes, which scroll inside the card */
+.words-card.is-showing-day > .section-label,
+.words-card.is-showing-day > .column-chart {
+  display: none;
 }
 
-.calendar-day-notes .section-label {
-  display: block;
-  margin-bottom: var(--space-2);
-  text-transform: none;
-  letter-spacing: 0;
-  font-size: var(--fs-sm);
+.calendar-day-notes {
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-day-label {
+  margin-bottom: var(--space-3);
+  color: var(--text-strong);
+  font-size: var(--fs-md);
+  font-weight: 600;
+}
+
+.calendar-day-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 /* On this day: each day's label, then its notes as in the calendar */

@@ -130,6 +130,7 @@ export class CapnoteApp {
     this.calendarWeekdays = document.getElementById('calendarWeekdays');
     this.calendarGrid = document.getElementById('calendarGrid');
     this.calendarDayNotes = document.getElementById('calendarDayNotes');
+    this.wordsCard = document.getElementById('wordsCard');
     this.calendarDayLabel = document.getElementById('calendarDayLabel');
     this.calendarDayList = document.getElementById('calendarDayList');
     this.moodChart = document.getElementById('moodChart');

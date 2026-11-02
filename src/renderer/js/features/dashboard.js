@@ -243,11 +243,13 @@ export class DashboardFeature {
     this.renderCalendarDay();
   }
 
-  // The notes of the chosen day, under the calendar
+  // The notes of the chosen day, in the words card in place of the chart; choosing the day again
+  // (or a day without notes) brings the chart back
   renderCalendarDay() {
     const key = this.calendarSelectedDay;
     const notes = key ? this.notesOfDay(key) : [];
     this.calendarDayNotes.classList.toggle('hidden', !notes.length);
+    this.wordsCard?.classList.toggle('is-showing-day', notes.length > 0);
     if (!notes.length) return;
     this.calendarDayLabel.textContent = `${new Date(`${key}T12:00:00`).toLocaleDateString(
       this.getLocale(),

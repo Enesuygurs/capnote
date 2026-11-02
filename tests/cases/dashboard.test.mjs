@@ -51,11 +51,17 @@ export async function run() {
     months: [...a.wordsChart.querySelectorAll('.column')].map((c) => c.title.split(': ')[1]),
   };
 
-  // A day with notes lists them; a click on one opens it
+  // A day with notes lists them in the words card in place of the chart; choosing it again
+  // brings the chart back; a click on a note opens it
+  const chartShown = () => getComputedStyle(a.wordsChart).display !== 'none';
   day('2026-06-14').click();
   result.dayList = [...a.calendarDayList.querySelectorAll('.calendar-note-title')].map(
     (t) => t.textContent
   );
+  result.dayInWordsCard = [a.wordsCard.contains(a.calendarDayNotes), chartShown()];
+  day('2026-06-14').click();
+  result.chartBack = [chartShown(), a.calendarDayNotes.classList.contains('hidden')];
+  day('2026-06-14').click();
   // The previous month
   a.calendarPrevBtn.click();
   result.previousMonthMood = a.calendarGrid.querySelector(
@@ -85,6 +91,8 @@ export const expected = {
   weather: 1,
   months: [...Array(10).fill('0 kelime'), '100 kelime', '100 kelime'],
   dayList: ['Yesterday'],
+  dayInWordsCard: [true, false],
+  chartBack: [true, true],
   previousMonthMood: 'tired',
   backToJune: 'Haziran 2026',
   opened: 'Yesterday',
