@@ -1,19 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <!-- Capnote app icon: an amber note with a folded corner, a bookmark ribbon and its lines, on
-       nothing (no tile). Flat with round ends, like the app's icons; simple enough to be sharp at
-       16px, so every size is drawn from it. Rendered to PNG/ICO by scripts/build-icons.mjs. -->
+  <!-- Capnote app icon: one flat amber color, like the app's solid icons. A note with a folded
+       corner; the bookmark ribbon and the lines are cut out of it, so they show what is behind.
+       Simple enough to be sharp at 16px, so every size is drawn from it.
+       Rendered to PNG/ICO by scripts/build-icons.mjs. -->
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="0.4" y2="1">
-      <stop offset="0" stop-color="#FBBF24" />
-      <stop offset="1" stop-color="#F97316" />
-    </linearGradient>
+    <mask id="cutouts">
+      <rect width="1024" height="1024" fill="#FFFFFF" />
+      <path d="M296 64 V400 L360 344 L424 400 V64 Z" fill="#000000" />
+      <rect x="488" y="440" width="216" height="72" rx="36" fill="#000000" />
+      <rect x="320" y="584" width="384" height="72" rx="36" fill="#000000" />
+      <rect x="320" y="728" width="264" height="72" rx="36" fill="#000000" />
+    </mask>
   </defs>
-  <path d="M276 64 H640 L864 288 V856 A104 104 0 0 1 760 960 H276 A104 104 0 0 1 172 856 V168 A104 104 0 0 1 276 64 Z" fill="url(#g)"/>
-  <path d="M640 64 V224 A64 64 0 0 0 704 288 H864 Z" fill="#FDE68A"/>
-  <path d="M284 64 H412 V372 L348 320 L284 372 Z" fill="#C2410C"/>
-  <g fill="#FFFFFF">
-    <rect x="476" y="428" width="252" height="64" rx="32" />
-    <rect x="300" y="560" width="428" height="64" rx="32" opacity=".85" />
-    <rect x="300" y="692" width="300" height="64" rx="32" opacity=".85" />
+  <g fill="#F59E0B">
+    <path
+      d="M280 64 H592 V264 A96 96 0 0 0 688 360 H864 V856 A104 104 0 0 1 760 960 H280 A104 104 0 0 1 176 856 V168 A104 104 0 0 1 280 64 Z"
+      mask="url(#cutouts)"
+    />
+    <path d="M672 80 L848 256 V280 H704 A32 32 0 0 1 672 248 Z" />
   </g>
 </svg>
