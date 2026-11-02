@@ -1,10 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <!-- Capnote app icon: a capsule in one flat amber, turned 45 degrees. One half is solid with a
-       highlight cut out of it, the other is its outline. Simple enough to be sharp at 16px, so
-       every size is drawn from it. Rendered to PNG/ICO by scripts/build-icons.mjs. -->
+       highlight cut out of it; the other is its outline with two lines of writing in it. Simple
+       enough to be sharp at 16px, so every size is drawn from it.
+       Rendered to PNG/ICO by scripts/build-icons.mjs. -->
   <defs>
     <mask id="highlight">
-      <rect width="1024" height="1024" fill="#FFFFFF" />
+      <rect x="-200" y="-200" width="1424" height="1424" fill="#FFFFFF" />
       <path
         d="M232 448 A116 116 0 0 1 324 392 H360"
         fill="none"
@@ -23,5 +24,9 @@
       stroke-width="64"
       stroke-linejoin="round"
     />
+    <g fill="#F59E0B">
+      <rect x="580" y="450" width="170" height="44" rx="22" />
+      <rect x="580" y="530" width="120" height="44" rx="22" />
+    </g>
   </g>
 </svg>

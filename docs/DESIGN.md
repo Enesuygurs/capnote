@@ -223,7 +223,7 @@ Actions use the accent: a form's add or set button is `.btn-primary`. On a list 
 
 **Sidebar footer**: Settings fills the row; the archive and the note graph (pages, not list filters) sit beside it as 36px icon buttons in `--text-muted`, an accent tint while their page is open.
 
-**App icon** (`assets/icons/source/capnote.svg`, rendered by `npm run icons`): a capsule, after the name, with no tile and in one flat color (`#F59E0B`, the default accent), like the app's solid icons: turned 45 degrees, one half solid with a highlight cut out of it, the other its outline. Simple enough to stay sharp at 16px, so every size, the sidebar's 28px among them, is drawn from it.
+**App icon** (`assets/icons/source/capnote.svg`, rendered by `npm run icons`): a capsule, after the name, with no tile and in one flat color (`#F59E0B`, the default accent), like the app's solid icons: turned 45 degrees, one half solid with a highlight cut out of it, the other its outline with two lines of writing in it. Simple enough to stay sharp at 16px, so every size, the sidebar's 28px among them, is drawn from it.
 
 **Toast**: `--surface-raised`, bottom center, its icon colored by kind.
 
