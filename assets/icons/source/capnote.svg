@@ -1,32 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <!-- Capnote app icon: a capsule in one flat amber, turned 45 degrees. One half is solid with a
-       highlight cut out of it; the other is its outline with two lines of writing in it. Simple
-       enough to be sharp at 16px, so every size is drawn from it.
+  <!-- Capnote app icon: a rounded square in one flat amber with a capsule cut out of it, turned 45
+       degrees: one half of the capsule is a solid hole, the other its outline, so what is behind
+       shows through. Simple enough to be sharp at 16px, so every size is drawn from it.
        Rendered to PNG/ICO by scripts/build-icons.mjs. -->
   <defs>
-    <mask id="highlight">
-      <rect x="-200" y="-200" width="1424" height="1424" fill="#FFFFFF" />
-      <path
-        d="M232 448 A116 116 0 0 1 324 392 H360"
-        fill="none"
-        stroke="#000000"
-        stroke-width="44"
-        stroke-linecap="round"
-      />
+    <mask id="capsule">
+      <rect width="1024" height="1024" fill="#FFFFFF" />
+      <g transform="rotate(-45 512 512)">
+        <path d="M512 360 H380 A152 152 0 0 0 380 664 H512 Z" fill="#000000" />
+        <path
+          d="M512 384 H644 A128 128 0 0 1 644 640 H512 Z"
+          fill="none"
+          stroke="#000000"
+          stroke-width="48"
+          stroke-linejoin="round"
+        />
+      </g>
     </mask>
   </defs>
-  <g transform="rotate(-45 512 512)">
-    <path d="M512 288 H320 A224 224 0 0 0 320 736 H512 Z" fill="#F59E0B" mask="url(#highlight)" />
-    <path
-      d="M512 320 H704 A192 192 0 0 1 704 704 H512 Z"
-      fill="none"
-      stroke="#F59E0B"
-      stroke-width="64"
-      stroke-linejoin="round"
-    />
-    <g fill="#F59E0B">
-      <rect x="580" y="450" width="170" height="44" rx="22" />
-      <rect x="580" y="530" width="120" height="44" rx="22" />
-    </g>
-  </g>
+  <rect x="96" y="96" width="832" height="832" rx="224" fill="#F59E0B" mask="url(#capsule)" />
 </svg>
