@@ -1,5 +1,5 @@
-// The note history keeps each earlier version (the note before an edit): it can be viewed and
-// restored, a restore keeps the current text as a version, only the latest versions keep their
+// The note history keeps each earlier version (the note before an edit): it can be viewed in the
+// note itself under a banner and restored from there, a restore keeps the current text as a version, only the latest versions keep their
 // text, and a locked note's versions never reach the disk
 export async function run() {
   const a = window.app;
@@ -21,15 +21,38 @@ export async function run() {
   }
   r.versions = n.history.filter((h) => h.version).map((h) => h.version.content);
 
-  // The dialog: the current version, then the earlier ones, the newest first
+  // The dialog: the current version, then the earlier ones, the newest first, then the creation
   a.openNoteHistory();
-  r.rows = [...a.historyBody.querySelectorAll('.history-item')].length;
-  r.current = !!a.historyBody.querySelector('.history-entry.current');
+  r.rows = [...a.historyBody.querySelectorAll('.history-row')].map((row) =>
+    row.className.replace('history-row is-', '')
+  );
+  r.snippet = a.historyBody.querySelector('.history-row.is-version .history-snippet').textContent;
+
+  // View: the note shows that version under a banner, its own actions hidden; Current goes back
   a.historyBody.querySelectorAll('.history-view')[1].click();
-  r.shown = a.historyBody.querySelector('.history-version-body').textContent;
-  r.restoreShown = !a.historyRestoreBtn.classList.contains('hidden');
-  a.historyRestoreBtn.click();
-  r.restored = { content: n.content, viewer: a.viewerText.textContent.trim() };
+  r.preview = {
+    dialogClosed: a.noteHistoryModal.classList.contains('hidden'),
+    text: a.viewerText.textContent.trim(),
+    banner: !a.versionBanner.classList.contains('hidden'),
+    actionsHidden: getComputedStyle(document.querySelector('.viewer-actions')).visibility,
+    noteUnchanged: n.content,
+  };
+  a.versionCloseBtn.click();
+  r.backToCurrent = [a.viewerText.textContent.trim(), a.versionBanner.classList.contains('hidden')];
+
+  // Escape also leaves a preview; Restore puts the version back
+  a.openNoteHistory();
+  a.historyBody.querySelectorAll('.history-view')[1].click();
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  r.escapeLeaves = a.versionBanner.classList.contains('hidden');
+  a.openNoteHistory();
+  a.historyBody.querySelectorAll('.history-view')[1].click();
+  a.versionRestoreBtn.click();
+  r.restored = {
+    content: n.content,
+    viewer: a.viewerText.textContent.trim(),
+    banner: a.versionBanner.classList.contains('hidden'),
+  };
   r.keptCurrent = n.history[n.history.length - 1].version.content;
 
   // Only the latest 30 versions keep their text
@@ -48,11 +71,18 @@ export async function run() {
 
 export const expected = {
   versions: ['<p>one</p>', '<p>two</p>'],
-  rows: 2,
-  current: true,
-  shown: 'one',
-  restoreShown: true,
-  restored: { content: '<p>one</p>', viewer: 'one' },
+  rows: ['current', 'version', 'version', 'created'],
+  snippet: /two/,
+  preview: {
+    dialogClosed: true,
+    text: 'one',
+    banner: true,
+    actionsHidden: 'hidden',
+    noteUnchanged: '<p>three</p>',
+  },
+  backToCurrent: ['three', true],
+  escapeLeaves: true,
+  restored: { content: '<p>one</p>', viewer: 'one', banner: true },
   keptCurrent: '<p>three</p>',
   withText: 30,
   lockedStored: false,

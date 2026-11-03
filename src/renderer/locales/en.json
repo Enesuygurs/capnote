@@ -526,11 +526,14 @@
     "earlier": "Earlier version",
     "view": "View",
     "noVersion": "Text not kept",
-    "back": "Back to versions",
-    "versionOf": "Version of {date}",
+    "versionOf": "The version of {date}",
     "restore": "Restore this version",
     "restored": "Version restored; the previous one is kept in the history",
-    "lockedHint": "Earlier versions of locked notes are not kept, so they are never stored unencrypted"
+    "lockedHint": "Earlier versions of locked notes are not kept, so they are never stored unencrypted",
+    "previewTitle": "You are looking at an earlier version",
+    "backToList": "History",
+    "showCurrent": "Current version",
+    "words": "{count} words"
   },
   "summary": {
     "open": "Year in review",

@@ -4,6 +4,8 @@ import { i18n } from '../i18n.js';
 
 export class ViewerFeature {
   displayNote(note) {
+    // Showing a note (another one, or this one again) ends a version preview
+    if (!note.isVersionPreview) this.clearVersionPreview();
     this.viewerTitle.textContent = this.displayTitle(note);
     this.updateArchiveView?.();
 
@@ -124,63 +126,99 @@ export class ViewerFeature {
     });
   }
 
-  // The note's versions, the newest first: the current one, then each earlier version (the note
-  // as it was before an edit, saved at the time of the edit before it) to view and restore, then
-  // its creation
-  openNoteHistory() {
-    if (!this.currentNote || this.isNoteLockedForView(this.currentNote)) return;
-    const note = this.currentNote;
-    const hist = note.history || [];
-    const locale = this.getLocale();
-    const when = (ts) => new Date(ts).toLocaleString(locale);
-    this.historyBody.innerHTML = '';
-    this.historyRestoreBtn?.classList.add('hidden');
+  // A version's text in one line, for the history list
+  versionSnippet(version) {
+    const text = version.isMarkdown
+      ? String(version.content || '').replace(/[#>*_`~[\]()-]+/g, ' ')
+      : this.getPlainText(version.content || '');
+    return text.replace(/\s+/g, ' ').trim();
+  }
 
-    const row = (className, label, ts) => {
+  historyDate(ts) {
+    return new Date(ts).toLocaleString(this.getLocale(), {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  // The note's versions as a timeline, the newest first: the current one, then each earlier
+  // version (the note as it was before an edit, saved at the time of the edit before it) with a
+  // line of its text and a way to view it, then the note's creation
+  openNoteHistory() {
+    const note = this.versionPreview?.note || this.currentNote;
+    if (!note || this.isNoteLockedForView(note)) return;
+    const hist = note.history || [];
+    this.historyBody.innerHTML = '';
+
+    const row = ({ kind, when, text, title, action }) => {
       const el = document.createElement('div');
-      el.className = className;
-      el.innerHTML = '<span class="history-type"></span><span class="history-ts"></span>';
-      el.querySelector('.history-type').textContent = label;
-      el.querySelector('.history-ts').textContent = ts ? when(ts) : '';
+      el.className = `history-row is-${kind}`;
+      el.innerHTML =
+        '<span class="history-dot"></span><div class="history-text"><span class="history-when"></span><span class="history-snippet"></span></div>';
+      el.querySelector('.history-when').textContent = title;
+      const snippet = el.querySelector('.history-snippet');
+      snippet.textContent = [when, text].filter(Boolean).join(' · ');
+      if (action) el.appendChild(action);
       return el;
     };
+    const timeline = document.createElement('div');
+    timeline.className = 'history-timeline';
+    const words = (content) =>
+      i18n.t('history.words', { count: this.countWordsAndCharsFromHtml(content || '').words });
+
     const updates = hist.filter((h) => h.type !== 'created');
-    if (updates.length > 0) {
-      this.historyBody.appendChild(
-        row('history-entry current', i18n.t('history.current'), note.updatedAt)
-      );
-      const list = document.createElement('div');
-      list.className = 'history-list';
-      // An entry's version was saved by the edit before it (the first one at creation)
-      updates.forEach((h, i) => {
-        const savedAt = i > 0 ? updates[i - 1].ts : note.createdAt;
-        const item = row('history-item', i18n.t('history.earlier'), savedAt);
-        if (h.version) {
-          const view = document.createElement('button');
-          view.type = 'button';
-          view.className = 'btn-secondary btn-small history-view';
-          view.textContent = i18n.t('history.view');
-          view.addEventListener('click', () => this.showNoteVersion(note, h.version, savedAt));
-          item.appendChild(view);
-        } else {
-          const none = document.createElement('span');
-          none.className = 'history-no-version';
-          none.textContent = i18n.t('history.noVersion');
-          item.appendChild(none);
-        }
-        list.prepend(item);
+    timeline.appendChild(
+      row({
+        kind: 'current',
+        title: i18n.t('history.current'),
+        when: this.historyDate(note.updatedAt),
+        text: words(note.content),
+      })
+    );
+    // An entry's version was saved by the edit before it (the first one at creation)
+    const earlier = updates.map((h, i) => {
+      const savedAt = i > 0 ? updates[i - 1].ts : note.createdAt;
+      let action;
+      if (h.version) {
+        action = document.createElement('button');
+        action.type = 'button';
+        action.className = 'btn-secondary btn-small history-view';
+        action.innerHTML = '<i class="fas fa-eye"></i> <span></span>';
+        action.querySelector('span').textContent = i18n.t('history.view');
+        action.addEventListener('click', () => this.previewNoteVersion(note, h.version, savedAt));
+      } else {
+        action = document.createElement('span');
+        action.className = 'history-no-version';
+        action.textContent = i18n.t('history.noVersion');
+      }
+      const el = row({
+        kind: h.version ? 'version' : 'gone',
+        title: this.historyDate(savedAt),
+        text: h.version ? this.versionSnippet(h.version) || words('') : '',
+        action,
       });
-      this.historyBody.appendChild(list);
-    } else {
+      if (h.version) el.title = h.version.title || i18n.t('messages.untitledNote');
+      return el;
+    });
+    earlier.reverse().forEach((el) => timeline.appendChild(el));
+    if (note.createdAt) {
+      timeline.appendChild(
+        row({
+          kind: 'created',
+          title: i18n.t('viewer.created').replace(/:\s*$/, ''),
+          when: this.historyDate(note.createdAt),
+        })
+      );
+    }
+    this.historyBody.appendChild(timeline);
+    if (!updates.length) {
       const empty = document.createElement('p');
       empty.className = 'history-empty';
       empty.textContent = i18n.t('viewer.noHistory');
       this.historyBody.appendChild(empty);
-    }
-    if (note.createdAt) {
-      this.historyBody.appendChild(
-        row('history-entry created', i18n.t('viewer.created'), note.createdAt)
-      );
     }
     if (note.isLocked) {
       const hint = document.createElement('p');
@@ -191,38 +229,47 @@ export class ViewerFeature {
     if (this.noteHistoryModal.classList.contains('hidden')) this.showModal(this.noteHistoryModal);
   }
 
-  // One earlier version, read-only, with a way back to the list and a way to restore it
-  showNoteVersion(note, version, savedAt) {
-    this.historyBody.innerHTML = '';
-    const back = document.createElement('button');
-    back.type = 'button';
-    back.className = 'btn-secondary btn-small history-back';
-    back.innerHTML = '<i class="fas fa-arrow-left"></i> <span></span>';
-    back.querySelector('span').textContent = i18n.t('history.back');
-    back.addEventListener('click', () => this.openNoteHistory());
-    const meta = document.createElement('p');
-    meta.className = 'history-version-meta';
-    meta.textContent = i18n.t('history.versionOf', {
-      date: new Date(savedAt).toLocaleString(this.getLocale()),
+  // An earlier version shown in the viewer in place of the note, read-only, under a banner that
+  // says which version it is and offers the list, the current version and a restore
+  previewNoteVersion(note, version, savedAt) {
+    this.hideModal(this.noteHistoryModal);
+    const preview = {
+      ...note,
+      title: version.title,
+      content: version.content,
+      isMarkdown: !!version.isMarkdown,
+      updatedAt: savedAt,
+      isVersionPreview: true,
+    };
+    this.versionPreview = { note, version, savedAt };
+    if (!this.isViewerOpen()) this.showViewer();
+    this.displayNote(preview);
+    this.noteViewer.classList.add('is-version-preview');
+    this.versionBanner.classList.remove('hidden');
+    this.versionBannerDate.textContent = i18n.t('history.versionOf', {
+      date: this.historyDate(savedAt),
     });
-    const title = document.createElement('h2');
-    title.className = 'history-version-title';
-    title.textContent = version.title || i18n.t('messages.untitledNote');
-    const body = document.createElement('div');
-    body.className = 'formatted-content history-version-body';
-    body.innerHTML = this.sanitizeHtml(
-      version.isMarkdown && window.marked && marked.parse
-        ? marked.parse(version.content || '')
-        : version.content || ''
-    );
-    this.historyBody.append(back, meta, title, body);
-    if (this.historyRestoreBtn) {
-      this.historyRestoreBtn.classList.remove('hidden');
-      this.historyRestoreBtn.onclick = () => {
-        this.hideModal(this.noteHistoryModal);
-        this.restoreNoteVersion(note, version);
-      };
-    }
+  }
+
+  clearVersionPreview() {
+    if (!this.versionPreview) return;
+    this.versionPreview = null;
+    this.noteViewer.classList.remove('is-version-preview');
+    this.versionBanner.classList.add('hidden');
+  }
+
+  // Back to the note as it is now
+  endVersionPreview() {
+    const note = this.versionPreview?.note;
+    this.clearVersionPreview();
+    if (note && this.currentNote === note) this.displayNote(note);
+  }
+
+  restorePreviewedVersion() {
+    const { note, version } = this.versionPreview || {};
+    if (!note) return;
+    this.clearVersionPreview();
+    this.restoreNoteVersion(note, version);
   }
 
   // Attach a small copy button to every <pre> inside the given container
@@ -347,6 +394,9 @@ export class ViewerFeature {
     this.historyBtn = document.getElementById('historyBtn');
 
     this.historyBtn?.addEventListener('click', () => this.openNoteHistory());
+    this.versionListBtn?.addEventListener('click', () => this.openNoteHistory());
+    this.versionCloseBtn?.addEventListener('click', () => this.endVersionPreview());
+    this.versionRestoreBtn?.addEventListener('click', () => this.restorePreviewedVersion());
 
     // History modal close handlers
     this.closeHistoryModal?.addEventListener('click', () => this.hideModal(this.noteHistoryModal));

@@ -26,6 +26,7 @@ export class ScreensFeature {
     };
     Object.entries(screens).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
     if (name !== 'editor' && this.isFocusMode()) this.setFocusMode(false);
+    if (name !== 'viewer') this.clearVersionPreview?.();
     this.currentScreen = name;
 
     const navItems = {

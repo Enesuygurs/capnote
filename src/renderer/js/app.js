@@ -221,7 +221,11 @@ export class CapnoteApp {
     this.lastModified = document.getElementById('lastModified');
     this.noteHistoryModal = document.getElementById('noteHistoryModal');
     this.historyBody = document.getElementById('historyBody');
-    this.historyRestoreBtn = document.getElementById('historyRestoreBtn');
+    this.versionBanner = document.getElementById('versionBanner');
+    this.versionBannerDate = document.getElementById('versionBannerDate');
+    this.versionListBtn = document.getElementById('versionListBtn');
+    this.versionCloseBtn = document.getElementById('versionCloseBtn');
+    this.versionRestoreBtn = document.getElementById('versionRestoreBtn');
     this.closeHistoryModal = document.getElementById('closeHistoryModal');
     this.historyCloseBtn = document.getElementById('historyCloseBtn');
 

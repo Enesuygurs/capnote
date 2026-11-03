@@ -520,6 +520,24 @@
               </button>
             </div>
           </div>
+          <!-- An earlier version shown in place of the note: what it is, and the ways out -->
+          <div class="version-banner hidden" id="versionBanner">
+            <span class="version-banner-icon"><i class="fas fa-clock-rotate-left"></i></span>
+            <div class="version-banner-text">
+              <strong data-i18n="history.previewTitle">Eski bir sürüme bakıyorsun</strong>
+              <span id="versionBannerDate"></span>
+            </div>
+            <button class="btn-secondary btn-small" id="versionListBtn">
+              <i class="fas fa-list"></i> <span data-i18n="history.backToList">Geçmiş</span>
+            </button>
+            <button class="btn-secondary btn-small" id="versionCloseBtn">
+              <span data-i18n="history.showCurrent">Güncel sürüm</span>
+            </button>
+            <button class="btn-primary btn-small" id="versionRestoreBtn">
+              <i class="fas fa-rotate-left"></i>
+              <span data-i18n="history.restore">Bu sürüme dön</span>
+            </button>
+          </div>
           <div class="viewer-content">
             <div id="viewerText" class="formatted-content"></div>
           </div>

@@ -297,6 +297,11 @@ export class UiFeature {
           this.setFocusMode(false);
           return;
         }
+        // A version preview goes back to the note as it is now
+        if (this.versionPreview) {
+          this.endVersionPreview();
+          return;
+        }
         // Menus close before anything else
         const openMenu = document.querySelector(
           '.context-menu:not(.hidden), .sort-dropdown:not(.hidden), .select-items:not(.select-hide), .toolbar-popover:not(.hidden)'

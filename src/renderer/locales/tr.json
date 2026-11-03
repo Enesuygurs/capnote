@@ -526,11 +526,14 @@
     "earlier": "Önceki sürüm",
     "view": "Görüntüle",
     "noVersion": "İçeriği saklanmamış",
-    "back": "Sürümlere dön",
-    "versionOf": "{date} sürümü",
-    "restore": "Bu sürüme geri dön",
+    "versionOf": "{date} tarihli sürüm",
+    "restore": "Bu sürüme dön",
     "restored": "Sürüm geri yüklendi; önceki hali geçmişte duruyor",
-    "lockedHint": "Kilitli notların eski sürümleri şifresiz kaydedilmediği için saklanmaz"
+    "lockedHint": "Kilitli notların eski sürümleri şifresiz kaydedilmediği için saklanmaz",
+    "previewTitle": "Eski bir sürüme bakıyorsun",
+    "backToList": "Geçmiş",
+    "showCurrent": "Güncel sürüm",
+    "words": "{count} kelime"
   },
   "summary": {
     "open": "Yıllık özet",
