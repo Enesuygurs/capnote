@@ -34,7 +34,7 @@ The window has two layers:
 - `.page-header`: an optional `.page-icon` (a 44px tile in the screen's tone, on to-dos and notifications), the title (`.page-title`, 24/32 semibold) with a subtitle (`.page-subtitle`, 13/20, right under the title) or a meta line (`.page-meta`, 4px below) under it, and actions (`.page-actions`) on the right. Padding is 20px vertically and `--gutter` (32px) horizontally, with a divider below. A body with parts uses `.page-section`s, each under a `.page-section-label` (a section label with an optional count), 32px apart (the body's gap, so a hidden section leaves no space); a section with nothing in it is hidden.
 - `.page-body`: scrolls, 24px top padding, `--gutter` on the other sides.
 
-The viewer, the editor, to-dos, reminders and notifications all use this header, so the title is in the same place on every screen. The editor's toolbar belongs to its header region: header, then toolbar, then the divider.
+The viewer, the editor, to-dos, reminders and notifications all use this header, so the title is in the same place on every screen. The editor's toolbar belongs to its header region: header, then toolbar, with no lines above or below it; its own soft tint (`--note-header`) sets it apart.
 
 ## 2. No borders
 
@@ -42,7 +42,7 @@ Components are separated by **surface tone, spacing and shadow**, never by an ou
 
 Lines (`--divider`, 1px) are allowed only in these places:
 
-- **Region dividers inside the content panel**: below a page header (or the editor toolbar), above the viewer's stats bar.
+- **Region dividers inside the content panel**: below a page header (not around the editor toolbar), above the viewer's stats bar.
 - **Note content**: table cells, blockquotes and horizontal rules.
 - **Menus**: one divider before a destructive item (`.menu-divider`).
 - **Transient feedback**: the dashed outline of a drop target while dragging (the root list shows "take out of the folder" only while a note from a folder is dragged), the insertion line when reordering folders, and the dashed outline of a selected image.

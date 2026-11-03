@@ -25,15 +25,13 @@
 }
 
 /* ============ Formatting toolbar ============ */
-/* A line above and below sets the toolbar apart from the title and from the text */
+/* No lines: the toolbar's own soft tint (--note-header) sets it apart from the title and the text */
 .formatting-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2) var(--space-3);
   padding: var(--space-2) var(--gutter);
-  border-top: 1px solid var(--divider);
-  border-bottom: 1px solid var(--divider);
   flex-shrink: 0;
 }
 
