@@ -72,7 +72,7 @@ export async function run() {
 export const expected = {
   versions: ['<p>one</p>', '<p>two</p>'],
   rows: ['current', 'version', 'version', 'created'],
-  snippet: /two/,
+  snippet: 'Plan',
   preview: {
     dialogClosed: true,
     text: 'one',

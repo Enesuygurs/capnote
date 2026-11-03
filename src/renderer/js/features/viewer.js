@@ -126,14 +126,6 @@ export class ViewerFeature {
     });
   }
 
-  // A version's text in one line, for the history list
-  versionSnippet(version) {
-    const text = version.isMarkdown
-      ? String(version.content || '').replace(/[#>*_`~[\]()-]+/g, ' ')
-      : this.getPlainText(version.content || '');
-    return text.replace(/\s+/g, ' ').trim();
-  }
-
   historyDate(ts) {
     return new Date(ts).toLocaleString(this.getLocale(), {
       day: 'numeric',
@@ -145,8 +137,8 @@ export class ViewerFeature {
   }
 
   // The note's versions as a timeline, the newest first: the current one, then each earlier
-  // version (the note as it was before an edit, saved at the time of the edit before it) with a
-  // line of its text and a way to view it, then the note's creation
+  // version (the note as it was before an edit, saved at the time of the edit before it) with its
+  // title and a way to view it, then the note's creation
   openNoteHistory() {
     const note = this.versionPreview?.note || this.currentNote;
     if (!note || this.isNoteLockedForView(note)) return;
@@ -197,10 +189,9 @@ export class ViewerFeature {
       const el = row({
         kind: h.version ? 'version' : 'gone',
         title: this.historyDate(savedAt),
-        text: h.version ? this.versionSnippet(h.version) || words('') : '',
+        text: h.version ? h.version.title || i18n.t('messages.untitledNote') : '',
         action,
       });
-      if (h.version) el.title = h.version.title || i18n.t('messages.untitledNote');
       return el;
     });
     earlier.reverse().forEach((el) => timeline.appendChild(el));
