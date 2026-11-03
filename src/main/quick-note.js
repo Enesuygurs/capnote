@@ -50,7 +50,7 @@ function openQuickNote() {
     show: false,
     title: 'Capnote',
     // The --surface colors, so nothing flashes before the page paints
-    backgroundColor: dark ? '#1b1b1b' : '#f4f3ef',
+    backgroundColor: dark ? '#1b1b1b' : '#ffffff',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

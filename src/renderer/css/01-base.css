@@ -72,13 +72,16 @@ body.resizing .modal {
   --text-muted: #8f97a3;
   --text-strong: #2a2a2a;
 
-  /* Surfaces by role: a soft warm paper rather than pure white, which tires the eyes; menus and
-     toasts a little lighter so they stand out */
-  --chrome: #e7e6e1;
-  --surface: #f4f3ef;
-  --surface-raised: #faf9f6;
-  /* A note's header: a shade off the page, lighter than the sidebar */
-  --note-header: #eeede8;
+  /* Surfaces by role */
+  --chrome: #f1f2f4;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  /* A note's header: a neutral gray a shade off the page, lighter than the sidebar */
+  --note-header: #f7f7f7;
+  /* A note (viewer and editor) is a soft warm paper rather than pure white, which tires the eyes
+     when reading and writing; its header gray a shade off it */
+  --note-paper: #f4f3ef;
+  --note-paper-header: #eeede8;
   --panel-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
   /* Tints: one step from whatever they sit on, so they work on every surface */
   --card: rgba(15, 23, 42, 0.035);
@@ -216,6 +219,9 @@ body.resizing .modal {
   --surface-raised: #262626;
   /* The sidebar is darker than the page, so the note's header is a shade lighter */
   --note-header: #222222;
+  /* A note is the page itself in the dark theme */
+  --note-paper: var(--surface);
+  --note-paper-header: var(--note-header);
   --panel-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   --card: rgba(255, 255, 255, 0.035);
   --field: rgba(255, 255, 255, 0.06);

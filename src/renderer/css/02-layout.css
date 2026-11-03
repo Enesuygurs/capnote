@@ -98,6 +98,15 @@
   flex-shrink: 0;
 }
 
+/* A note is on paper, not on the page's white: inside the viewer and the editor the page and the
+   header gray are the note's own (the same as the page in the dark theme) */
+.note-viewer,
+.note-editor {
+  --surface: var(--note-paper);
+  --note-header: var(--note-paper-header);
+  background: var(--surface);
+}
+
 /* A note's header (its title, date and actions) sits on the page; in the editor only the toolbar
    takes a soft step of the header gray. With the sidebar hidden (one note on its own) the header
    (and the editor's toolbar) is a neutral gray a shade apart from the text under it. */
