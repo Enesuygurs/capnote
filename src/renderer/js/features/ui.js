@@ -293,11 +293,6 @@ export class UiFeature {
           this.clearSelection();
           return;
         }
-        // A recording is dropped before the editor closes
-        if (this.isDictating?.()) {
-          this.stopDictation(true);
-          return;
-        }
         if (this.isFocusMode?.()) {
           this.setFocusMode(false);
           return;

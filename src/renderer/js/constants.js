@@ -16,8 +16,6 @@ export const DEFAULT_SETTINGS = {
   folderColorsBackup: null,
   noteSort: 'date-desc',
   autoSave: true,
-  // Dictation: accurate (Whisper small, about 240 MB) or fast (Whisper base, about 75 MB)
-  dictationModel: 'accurate',
   onNoteDelete: 'lastNote',
   // What opens when the app starts: lastNote, home, newNote, todos or notifications
   startupPage: 'lastNote',

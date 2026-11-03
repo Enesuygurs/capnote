@@ -15,8 +15,6 @@ export class EditorFeature {
       if (iframe) iframe.srcdoc = '';
       this.htmlPreview.innerHTML = '';
     }
-    // A recording for the previous note is dropped
-    this.stopDictation?.(true);
     // A preview left open by the previous note hid the text area: show it again
     this.showRichEditor();
     const baseFormatting = this.currentNote?.formatting || this.getDefaultFormatting();
@@ -89,7 +87,6 @@ export class EditorFeature {
   }
 
   loadNoteInEditor(note) {
-    this.stopDictation?.(true);
     this.clearSavedSelection();
     this.noteTitle.value = note.title;
     // Load either raw markdown or HTML depending on note.isMarkdown

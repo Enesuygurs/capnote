@@ -169,11 +169,7 @@
     "startupHome": "Home page",
     "startupNewNote": "New note",
     "quickNoteShortcut": "Quick note shortcut",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a new note, even while Capnote is in the background or the tray",
-    "dictationModel": "Dictation",
-    "dictationModelDesc": "Speech turns into text on this computer; the model is downloaded once, the first time",
-    "dictationAccurate": "Accurate (~240 MB)",
-    "dictationFast": "Fast (~75 MB)"
+    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a new note, even while Capnote is in the background or the tray"
   },
   "modals": {
     "exportNote": "Export Note",
@@ -535,15 +531,6 @@
     "restore": "Restore this version",
     "restored": "Version restored; the previous one is kept in the history",
     "lockedHint": "Earlier versions of locked notes are not kept, so they are never stored unencrypted"
-  },
-  "dictation": {
-    "start": "Dictate: write by speaking",
-    "stop": "Stop and turn into text",
-    "working": "Turning into text…",
-    "downloading": "Downloading the model {percent}%",
-    "noMic": "The microphone could not be used",
-    "failed": "The speech could not be turned into text",
-    "downloadFailed": "The dictation model could not be downloaded; the first use needs an internet connection"
   },
   "summary": {
     "open": "Year in review",

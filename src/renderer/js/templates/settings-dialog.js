@@ -91,21 +91,6 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <span class="toggle-slider"></span>
                 </label>
               </div>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="settings.dictationModel">Dikte</label>
-                  <small data-i18n="settings.dictationModelDesc"
-                    >Konuşma bu bilgisayarda yazıya çevrilir; model ilk kullanımda bir kez
-                    indirilir</small
-                  >
-                </div>
-                <select id="dictationModelSelect" class="select-small">
-                  <option value="accurate" data-i18n="settings.dictationAccurate">
-                    Doğru (~240 MB)
-                  </option>
-                  <option value="fast" data-i18n="settings.dictationFast">Hızlı (~75 MB)</option>
-                </select>
-              </div>
             </div>
           </section>
 

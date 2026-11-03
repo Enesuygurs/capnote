@@ -169,11 +169,7 @@
     "startupHome": "Giriş sayfası",
     "startupNewNote": "Yeni not",
     "quickNoteShortcut": "Hızlı not kısayolu",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N, Capnote arka planda ya da tepsideyken bile yeni not açar",
-    "dictationModel": "Dikte",
-    "dictationModelDesc": "Konuşma bu bilgisayarda yazıya çevrilir; model ilk kullanımda bir kez indirilir",
-    "dictationAccurate": "Doğru (~240 MB)",
-    "dictationFast": "Hızlı (~75 MB)"
+    "quickNoteShortcutDesc": "Ctrl+Alt+N, Capnote arka planda ya da tepsideyken bile yeni not açar"
   },
   "modals": {
     "exportNote": "Notu Dışa Aktar",
@@ -535,15 +531,6 @@
     "restore": "Bu sürüme geri dön",
     "restored": "Sürüm geri yüklendi; önceki hali geçmişte duruyor",
     "lockedHint": "Kilitli notların eski sürümleri şifresiz kaydedilmediği için saklanmaz"
-  },
-  "dictation": {
-    "start": "Dikte: konuşarak yaz",
-    "stop": "Kaydı bitir ve yazıya çevir",
-    "working": "Yazıya çevriliyor…",
-    "downloading": "Model indiriliyor %{percent}",
-    "noMic": "Mikrofona erişilemedi",
-    "failed": "Konuşma yazıya çevrilemedi",
-    "downloadFailed": "Dikte modeli indirilemedi; ilk kullanımda internet bağlantısı gerekiyor"
   },
   "summary": {
     "open": "Yıllık özet",

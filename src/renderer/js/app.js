@@ -32,7 +32,6 @@ import { NoteLinksFeature } from './features/note-links.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
-import { DictationFeature } from './features/dictation.js';
 import { YearSummaryFeature } from './features/year-summary.js';
 import { QuickNoteFeature } from './features/quick-note.js';
 import { NoteGraphFeature } from './features/note-graph.js';
@@ -274,9 +273,6 @@ export class CapnoteApp {
     this.addFolderBtn = document.getElementById('addFolderBtn');
     this.listContextMenu = document.getElementById('listContextMenu');
     this.focusModeBtn = document.getElementById('focusModeBtn');
-    this.dictateBtn = document.getElementById('dictateBtn');
-    this.dictationStatus = document.getElementById('dictationStatus');
-    this.dictationModelSelect = document.getElementById('dictationModelSelect');
     this.summaryScreen = document.getElementById('summaryScreen');
     this.summaryCard = document.getElementById('summaryCard');
     this.summaryTitle = document.getElementById('summaryTitle');
@@ -429,7 +425,6 @@ export class CapnoteApp {
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupToolbarMenus();
-    this.setupDictation();
     this.setupYearSummary();
     this.setupQuickNote();
     this.setupNoteGraph();
@@ -695,7 +690,6 @@ applyFeatures(CapnoteApp, [
   TagsFeature,
   ArchiveFeature,
   ToolbarMenusFeature,
-  DictationFeature,
   YearSummaryFeature,
   QuickNoteFeature,
   NoteGraphFeature,
