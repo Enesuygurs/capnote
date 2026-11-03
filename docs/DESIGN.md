@@ -75,6 +75,8 @@ States that could be a border use something else:
 
 Cards and fields are translucent tints, so they are always one step from whatever they sit on, in both themes. A field inside a card is still `--field`.
 
+The light theme is a soft warm paper, never pure white, which tires the eyes: `--chrome` #e7e6e1, `--surface` #f4f3ef, `--note-header` #eeede8, and `--surface-raised` #faf9f6, a little lighter so floating things stand out. The windows start on the same colors (`window.js`, `quick-note.js`).
+
 Shadows: `--panel-shadow` on the content panel, `--shadow-popover` on menus and toasts, `--shadow-modal` on dialogs. Nothing else has a shadow.
 
 ## 4. Spacing

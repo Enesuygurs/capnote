@@ -108,7 +108,7 @@ function saveWindowState(win) {
 const MIN_SIZE = { width: 1200, height: 970 };
 
 // Window background before the page paints: the app's light and dark --chrome colors
-const BACKGROUND = { light: '#f1f2f4', dark: '#121212' };
+const BACKGROUND = { light: '#e7e6e1', dark: '#121212' };
 
 function createMainWindow({ darkMode = false, devTools = false } = {}) {
   // Determine icon path (prefer .ico on Windows if available)
