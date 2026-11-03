@@ -1,17 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <!-- Capnote app icon: a rounded amber square with a white capsule on it, turned 45 degrees: one
-       half of the capsule solid, the other its outline. The capsule is drawn in white rather than
-       cut out, so it stays white on a dark taskbar too. Simple enough to be sharp at 16px, so every
-       size is drawn from it. Rendered to PNG/ICO by scripts/build-icons.mjs. -->
-  <rect x="96" y="96" width="832" height="832" rx="224" fill="#F59E0B" />
-  <g transform="rotate(-45 512 512)" fill="#FFFFFF">
-    <path d="M512 360 H380 A152 152 0 0 0 380 664 H512 Z" />
+  <!-- Capnote app icon: a capsule in one flat amber, turned 45 degrees. One half is solid with a
+       highlight cut out of it; the other is its outline with two lines of writing in it. Simple
+       enough to be sharp at 16px, so every size is drawn from it.
+       Rendered to PNG/ICO by scripts/build-icons.mjs. -->
+  <defs>
+    <mask id="highlight">
+      <rect x="-200" y="-200" width="1424" height="1424" fill="#FFFFFF" />
+      <path
+        d="M232 448 A116 116 0 0 1 324 392 H360"
+        fill="none"
+        stroke="#000000"
+        stroke-width="44"
+        stroke-linecap="round"
+      />
+    </mask>
+  </defs>
+  <g transform="rotate(-45 512 512)">
+    <path d="M512 288 H320 A224 224 0 0 0 320 736 H512 Z" fill="#F59E0B" mask="url(#highlight)" />
     <path
-      d="M512 384 H644 A128 128 0 0 1 644 640 H512 Z"
+      d="M512 320 H704 A192 192 0 0 1 704 704 H512 Z"
       fill="none"
-      stroke="#FFFFFF"
-      stroke-width="48"
+      stroke="#F59E0B"
+      stroke-width="64"
       stroke-linejoin="round"
     />
+    <g fill="#F59E0B">
+      <rect x="580" y="450" width="170" height="44" rx="22" />
+      <rect x="580" y="530" width="120" height="44" rx="22" />
+    </g>
   </g>
 </svg>
