@@ -433,41 +433,40 @@
   background: none;
 }
 
-/* Today is filled with the accent, its number and mood in the accent's text color */
-.calendar-day.is-today,
-.calendar-day.is-today:hover {
+/* Today is a see-through accent: a tint of it, its number in the accent text, its mood in the
+   mood's own color */
+.calendar-day.is-today {
+  background: color-mix(in srgb, var(--accent-color) 22%, transparent);
+  color: var(--accent-text);
+  font-weight: 700;
+}
+
+.calendar-day.is-today.has-notes:hover {
+  background: color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+
+/* A day picked by hand (always one with notes), today too, is filled with the accent: its number
+   and mood in the accent's text color. A picked day of the month before or after is not faded. */
+.calendar-day.has-notes.is-selected,
+.calendar-day.has-notes.is-selected:hover {
   background: color-mix(in srgb, var(--accent-color) 90%, transparent);
   color: var(--text-on-accent);
 }
 
-.calendar-day.is-today.has-notes:hover {
+.calendar-day.has-notes.is-selected:hover {
   filter: brightness(0.94);
 }
 
-.calendar-day.is-today .calendar-day-mark {
+.calendar-day.is-selected .calendar-day-mark {
   color: var(--text-on-accent);
 }
 
-.calendar-day.is-today .calendar-day-mark.is-dot {
+.calendar-day.is-selected .calendar-day-mark.is-dot {
   background: var(--text-on-accent);
-}
-
-/* The chosen day (always one with notes) takes an accent tint over its mood's; chosen today, the
-   accent fill goes a shade darker. A chosen day of the month before or after is not faded. */
-.calendar-day.has-notes.is-selected,
-.calendar-day.has-notes.is-selected:hover {
-  background: var(--accent-tint);
-  color: var(--accent-text);
 }
 
 .calendar-day.is-other-month.is-selected {
   opacity: 1;
-}
-
-.calendar-day.is-today.is-selected,
-.calendar-day.is-today.is-selected:hover {
-  background: color-mix(in srgb, var(--accent-color) 82%, black);
-  color: var(--text-on-accent);
 }
 
 .calendar-day-mark {
