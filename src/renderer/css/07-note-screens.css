@@ -19,12 +19,20 @@
   scrollbar-width: none;
 }
 
+/* The card sits in the middle of the page, both ways; a window shorter than the card scrolls it
+   from its top (auto margins never push it above the page) */
+.summary-screen .page-body {
+  display: flex;
+  flex-direction: column;
+}
+
 .summary-card {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
+  width: 100%;
   max-width: 640px;
-  margin: 0 auto;
+  margin: auto;
   padding: var(--space-6);
   border-radius: var(--radius-lg);
   background: var(--surface);
