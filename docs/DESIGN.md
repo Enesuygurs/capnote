@@ -75,7 +75,7 @@ States that could be a border use something else:
 
 Cards and fields are translucent tints, so they are always one step from whatever they sit on, in both themes. A field inside a card is still `--field`.
 
-A note (the viewer and the editor) is on `--note-paper`, a soft warm paper (#f4f3ef in the light theme, its header gray `--note-paper-header` #eeede8) rather than pure white, which tires the eyes when reading and writing; inside them `--surface` and `--note-header` take these values. Everything else keeps the white page. In the dark theme a note is the page.
+A note (the viewer and the editor) is on `--note-paper`, a neutral off white (#f7f7f8 in the light theme, no warm or yellow cast; its header gray `--note-paper-header` #efeff1) rather than pure white, which tires the eyes when reading and writing; inside them `--surface` and `--note-header` take these values. Everything else keeps the white page. In the dark theme a note is the page.
 
 Shadows: `--panel-shadow` on the content panel, `--shadow-popover` on menus and toasts, `--shadow-modal` on dialogs. Nothing else has a shadow.
 

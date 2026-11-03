@@ -57,7 +57,9 @@
   color: var(--tone, var(--text-muted));
 }
 
-.note-item.active .nav-icon {
+/* The open note and every picked one: the icon in the row's accent text (or its own tone) */
+.note-item.active .nav-icon,
+.note-item.is-selected .nav-icon {
   color: var(--tone, inherit);
 }
 

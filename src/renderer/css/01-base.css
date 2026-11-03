@@ -78,10 +78,10 @@ body.resizing .modal {
   --surface-raised: #ffffff;
   /* A note's header: a neutral gray a shade off the page, lighter than the sidebar */
   --note-header: #f7f7f7;
-  /* A note (viewer and editor) is a soft warm paper rather than pure white, which tires the eyes
+  /* A note (viewer and editor) is a neutral off white rather than pure white, which tires the eyes
      when reading and writing; its header gray a shade off it */
-  --note-paper: #f4f3ef;
-  --note-paper-header: #eeede8;
+  --note-paper: #f7f7f8;
+  --note-paper-header: #efeff1;
   --panel-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
   /* Tints: one step from whatever they sit on, so they work on every surface */
   --card: rgba(15, 23, 42, 0.035);
