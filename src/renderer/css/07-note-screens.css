@@ -42,7 +42,30 @@
 .summary-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* The app's mark large in a round accent-tinted badge before the year */
+.summary-mark {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  background: var(--accent-tint);
+}
+
+.summary-mark img {
+  width: 44px;
+  height: 44px;
+}
+
+.summary-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 .summary-year {
@@ -54,16 +77,9 @@
 }
 
 .summary-brand {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
   color: var(--text-secondary);
+  font-size: var(--fs-md);
   font-weight: 600;
-}
-
-.summary-brand img {
-  width: 22px;
-  height: 22px;
 }
 
 .summary-figures {
