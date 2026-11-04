@@ -45,21 +45,22 @@
   gap: var(--space-4);
 }
 
-/* The app's mark large in a round accent-tinted badge before the year */
+/* The app's mark in a round neutral badge before the year (not the accent: the mark keeps its
+   own amber whatever the accent is) */
 .summary-mark {
   display: flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   border-radius: var(--radius-full);
-  background: var(--accent-tint);
+  background: var(--field);
 }
 
 .summary-mark img {
-  width: 44px;
-  height: 44px;
+  width: 32px;
+  height: 32px;
 }
 
 .summary-head-text {
