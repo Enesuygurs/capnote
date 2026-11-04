@@ -525,7 +525,6 @@
     "current": "Current version",
     "earlier": "Earlier version",
     "view": "View",
-    "noVersion": "Text not kept",
     "versionOf": "The version of {date}",
     "restore": "Restore this version",
     "restored": "Version restored; the previous one is kept in the history",

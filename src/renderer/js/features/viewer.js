@@ -170,31 +170,27 @@ export class ViewerFeature {
         text: words(note.content),
       })
     );
-    // An entry's version was saved by the edit before it (the first one at creation)
-    const earlier = updates.map((h, i) => {
-      const savedAt = i > 0 ? updates[i - 1].ts : note.createdAt;
-      let action;
-      if (h.version) {
-        action = document.createElement('button');
-        action.type = 'button';
-        action.className = 'btn-secondary btn-small history-view';
-        action.innerHTML = '<i class="fas fa-eye"></i> <span></span>';
-        action.querySelector('span').textContent = i18n.t('history.view');
-        action.addEventListener('click', () => this.previewNoteVersion(note, h.version, savedAt));
-      } else {
-        action = document.createElement('span');
-        action.className = 'history-no-version';
-        action.textContent = i18n.t('history.noVersion');
-      }
-      const el = row({
-        kind: h.version ? 'version' : 'gone',
-        title: this.historyDate(savedAt),
-        text: h.version ? h.version.title || i18n.t('messages.untitledNote') : '',
-        action,
-      });
-      return el;
+    // An entry's version was saved by the edit before it (the first one at creation). Entries
+    // whose text was not kept (older edits) are left out.
+    const earlier = updates
+      .map((h, i) => ({ version: h.version, savedAt: i > 0 ? updates[i - 1].ts : note.createdAt }))
+      .filter(({ version }) => version);
+    earlier.reverse().forEach(({ version, savedAt }) => {
+      const view = document.createElement('button');
+      view.type = 'button';
+      view.className = 'btn-secondary btn-small history-view';
+      view.innerHTML = '<i class="fas fa-eye"></i> <span></span>';
+      view.querySelector('span').textContent = i18n.t('history.view');
+      view.addEventListener('click', () => this.previewNoteVersion(note, version, savedAt));
+      timeline.appendChild(
+        row({
+          kind: 'version',
+          title: this.historyDate(savedAt),
+          text: version.title || i18n.t('messages.untitledNote'),
+          action: view,
+        })
+      );
     });
-    earlier.reverse().forEach((el) => timeline.appendChild(el));
     if (note.createdAt) {
       timeline.appendChild(
         row({
@@ -205,7 +201,7 @@ export class ViewerFeature {
       );
     }
     this.historyBody.appendChild(timeline);
-    if (!updates.length) {
+    if (!earlier.length) {
       const empty = document.createElement('p');
       empty.className = 'history-empty';
       empty.textContent = i18n.t('viewer.noHistory');

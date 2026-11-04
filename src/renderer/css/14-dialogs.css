@@ -34,7 +34,8 @@
 
 /* Note history: a timeline, the newest first. Each row has a dot on a line through the rows, the
    version's date with a line of its text under it, and View on the right. The current version
-   has an accent dot and title, the creation a hollow dot. */
+   has an accent dot and title, the creation a hollow dot. A version whose text was not kept is
+   not listed. */
 .history-body {
   max-height: 60vh;
   overflow-y: auto;
@@ -99,8 +100,7 @@
     0 0 0 7px var(--accent-tint);
 }
 
-.history-row.is-created .history-dot,
-.history-row.is-gone .history-dot {
+.history-row.is-created .history-dot {
   background: var(--surface-raised);
   box-shadow:
     inset 0 0 0 2px var(--text-muted),
@@ -139,11 +139,6 @@
 
 .history-view {
   flex-shrink: 0;
-}
-
-.history-no-version {
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
 }
 
 .history-empty {

@@ -525,7 +525,6 @@
     "current": "Şu anki sürüm",
     "earlier": "Önceki sürüm",
     "view": "Görüntüle",
-    "noVersion": "İçeriği saklanmamış",
     "versionOf": "{date} tarihli sürüm",
     "restore": "Bu sürüme dön",
     "restored": "Sürüm geri yüklendi; önceki hali geçmişte duruyor",

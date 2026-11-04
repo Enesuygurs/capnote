@@ -27,6 +27,12 @@ export async function run() {
     row.className.replace('history-row is-', '')
   );
   r.snippet = a.historyBody.querySelector('.history-row.is-version .history-snippet').textContent;
+  // An older edit whose text was not kept is not listed
+  n.history.splice(1, 0, { type: 'updated', ts: hourAgo(5) });
+  a.openNoteHistory();
+  r.withOldEntry = a.historyBody.querySelectorAll('.history-row').length;
+  n.history.splice(1, 1);
+  a.openNoteHistory();
 
   // View: the note shows that version under a banner, its own actions hidden; Current goes back
   a.historyBody.querySelectorAll('.history-view')[1].click();
@@ -73,6 +79,7 @@ export const expected = {
   versions: ['<p>one</p>', '<p>two</p>'],
   rows: ['current', 'version', 'version', 'created'],
   snippet: 'Plan',
+  withOldEntry: 4,
   preview: {
     dialogClosed: true,
     text: 'one',
