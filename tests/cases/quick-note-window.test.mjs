@@ -43,7 +43,24 @@ export async function run() {
     title: a.noteTitle.value,
     text: a.richEditor.innerHTML,
   };
-  return { afterAdd, empty, opened, html: a.quickNoteHtml('') };
+  // Lines marked while typing become lists, tasks, headings and quotes; with the setting off they
+  // stay lines
+  const marked = [
+    '• milk',
+    '- bread',
+    '1. one',
+    '2. two',
+    '☐ call',
+    '☑ paid',
+    '# Plan',
+    '> said',
+    'plain',
+  ].join('\n');
+  const lists = a.quickNoteHtml(marked).replace(/ (id|for)="task_[^"]+"/g, '');
+  a.settings.autoFormat = false;
+  const plain = a.quickNoteHtml('- bread');
+  a.settings.autoFormat = true;
+  return { afterAdd, empty, opened, html: a.quickNoteHtml(''), lists, plain };
 }
 
 export const expected = {
@@ -63,4 +80,10 @@ export const expected = {
   empty: null,
   opened: { editorVisible: true, isNew: true, title: '', text: '<p>Devamı burada</p>' },
   html: '',
+  lists:
+    '<ul><li>milk</li><li>bread</li></ul><ol><li>one</li><li>two</li></ol>' +
+    '<div class="checklist"><div class="checklist-item"><input type="checkbox"><label>call</label></div>' +
+    '<div class="checklist-item"><input type="checkbox" checked><label>paid</label></div></div>' +
+    '<h1>Plan</h1><blockquote>said</blockquote><p>plain</p>',
+  plain: '<p>- bread</p>',
 };

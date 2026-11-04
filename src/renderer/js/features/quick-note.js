@@ -5,14 +5,66 @@
 import { i18n } from '../i18n.js';
 
 export class QuickNoteFeature {
-  // Plain text as paragraphs, as the editor writes them
+  // Plain text as the editor writes it: paragraphs, and with "format while typing" on, the marked
+  // lines as blocks: "• " / "- " a bulleted list, "1. " a numbered one, "☐ " / "[] " a task ("☑ " /
+  // "[x] " a done one), "# " to "### " a heading, "> " a quote. Lines of one kind in a row make one
+  // list.
   quickNoteHtml(text) {
     const lines = String(text || '')
       .replace(/\r\n?/g, '\n')
       .replace(/^\n+|\s+$/g, '')
       .split('\n');
     if (lines.length === 1 && !lines[0]) return '';
-    return lines.map((line) => (line ? `<p>${this.escapeHtml(line)}</p>` : '<p><br></p>')).join('');
+    const kindOf = (line) => {
+      if (this.settings?.autoFormat === false) return null;
+      let m = line.match(/^[•*-] (.*)$/);
+      if (m) return { kind: 'ul', text: m[1] };
+      m = line.match(/^\d+\. (.*)$/);
+      if (m) return { kind: 'ol', text: m[1] };
+      m = line.match(/^(?:☐|\[ ?\]) (.*)$/);
+      if (m) return { kind: 'task', text: m[1] };
+      m = line.match(/^(?:☑|\[x\]) (.*)$/i);
+      if (m) return { kind: 'task', text: m[1], done: true };
+      m = line.match(/^(#{1,3}) (.*)$/);
+      if (m) return { kind: `h${m[1].length}`, text: m[2] };
+      m = line.match(/^> (.*)$/);
+      if (m) return { kind: 'blockquote', text: m[1] };
+      return null;
+    };
+    const inline = (value) => this.escapeHtml(value) || '<br>';
+    const html = [];
+    let group = null;
+    const flush = () => {
+      if (!group) return;
+      if (group.kind === 'task') {
+        html.push(`<div class="checklist">${group.items.join('')}</div>`);
+      } else {
+        html.push(
+          `<${group.kind}>${group.items.map((i) => `<li>${i}</li>`).join('')}</${group.kind}>`
+        );
+      }
+      group = null;
+    };
+    lines.forEach((line) => {
+      const block = kindOf(line);
+      if (block && /^(ul|ol|task)$/.test(block.kind)) {
+        if (group?.kind !== block.kind) {
+          flush();
+          group = { kind: block.kind, items: [] };
+        }
+        let item =
+          block.kind === 'task' ? this.checklistItemHtml(inline(block.text)) : inline(block.text);
+        if (block.done)
+          item = item.replace('<input type="checkbox"', '<input type="checkbox" checked');
+        group.items.push(item);
+        return;
+      }
+      flush();
+      if (block) html.push(`<${block.kind}>${inline(block.text)}</${block.kind}>`);
+      else html.push(line ? `<p>${this.escapeHtml(line)}</p>` : '<p><br></p>');
+    });
+    flush();
+    return html.join('');
   }
 
   addQuickNote({ title = '', text = '' } = {}) {

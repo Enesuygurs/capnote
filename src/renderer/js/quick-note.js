@@ -1,6 +1,10 @@
 // The quick note window: a title and plain text, saved with Ctrl+Enter (the main window adds the
-// note) or opened in the app to go on writing there; Escape closes it. The language, theme and
-// accent come from the app settings in the address.
+// note) or opened in the app to go on writing there; Escape closes it. The language, theme,
+// accent and "format while typing" come from the app settings in the address.
+//
+// Formatting while typing, in plain text: "- " (or "* ") at the start of a line becomes "• " and
+// "[] " becomes "☐ "; Enter on such a line (or a numbered one, "1. ") starts the next item, and
+// Enter on an empty item ends the list. Saved, these lines become real lists in the note.
 
 import { i18n } from './i18n.js';
 
@@ -17,6 +21,44 @@ const title = document.getElementById('qnTitle');
 const text = document.getElementById('qnText');
 const save = document.getElementById('qnSave');
 const hint = document.getElementById('qnHint');
+
+const autoFormat = params.get('autoFormat') !== '0';
+const MARKS = { '- ': '• ', '* ': '• ', '[] ': '☐ ', '[ ] ': '☐ ' };
+const ITEM = /^(• |☐ |☑ |(\d+)\. )/;
+
+// The line the caret is on: where it starts and ends
+const caretLine = () => {
+  const pos = text.selectionStart;
+  const start = text.value.lastIndexOf('\n', pos - 1) + 1;
+  const end = text.value.indexOf('\n', pos);
+  return { pos, start, end: end < 0 ? text.value.length : end };
+};
+
+text.addEventListener('input', (e) => {
+  if (!autoFormat || e.inputType !== 'insertText' || e.data !== ' ') return;
+  const { pos, start } = caretLine();
+  const mark = MARKS[text.value.slice(start, pos)];
+  if (mark) text.setRangeText(mark, start, pos, 'end');
+});
+
+text.addEventListener('keydown', (e) => {
+  if (!autoFormat || e.key !== 'Enter' || e.shiftKey || e.ctrlKey || e.metaKey || e.isComposing)
+    return;
+  if (text.selectionStart !== text.selectionEnd) return;
+  const { pos, start, end } = caretLine();
+  const line = text.value.slice(start, end);
+  const item = line.match(ITEM);
+  if (!item) return;
+  e.preventDefault();
+  if (!line.slice(item[0].length).trim()) {
+    // An empty item ends the list
+    text.setRangeText('', start, end, 'end');
+  } else {
+    const next = item[2] ? `${Number(item[2]) + 1}. ` : item[1] === '☑ ' ? '☐ ' : item[1];
+    text.setRangeText(`\n${next}`, pos, pos, 'end');
+  }
+  update();
+});
 
 const note = () => ({ title: title.value.trim(), text: text.value });
 const isEmpty = () => !title.value.trim() && !text.value.trim();

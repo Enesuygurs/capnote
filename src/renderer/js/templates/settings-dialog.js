@@ -93,10 +93,9 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
-                  <label data-i18n="settings.autoFormat">Yazarken otomatik biçimlendirme</label>
+                  <label data-i18n="settings.autoFormat">Otomatik biçimlendirme</label>
                   <small data-i18n="settings.autoFormatDesc"
-                    >Satır başında “- ” madde, “1. ” numaralı liste, “[] ” yapılacak, “# ” başlık,
-                    “> ” alıntı olur</small
+                    >Satır başındaki “-”, “1.” ve “[]” işaretlerini listeye dönüştürür</small
                   >
                 </div>
                 <label class="toggle-switch">

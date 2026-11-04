@@ -65,6 +65,7 @@ function openQuickNote() {
       lang: settings.language === 'en' ? 'en' : 'tr',
       theme: dark ? 'dark' : 'light',
       accent: /^#[0-9a-f]{6}$/i.test(settings.accentColor || '') ? settings.accentColor : '',
+      autoFormat: settings.autoFormat === false ? '0' : '1',
     },
   });
   const win = quickWindow;
