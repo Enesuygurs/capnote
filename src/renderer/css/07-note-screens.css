@@ -31,7 +31,7 @@
   flex-direction: column;
   gap: var(--space-5);
   width: 100%;
-  max-width: 640px;
+  max-width: 720px;
   margin: auto;
   padding: var(--space-6);
   border-radius: var(--radius-lg);
@@ -149,6 +149,109 @@
 .summary-month.is-top .summary-month-name {
   color: var(--accent-text);
   font-weight: 600;
+}
+
+/* The heat map: a square per day, the weeks as columns; the accent in four steps for the words
+   written, a faint field for a day without writing */
+.summary-heatmap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.heatmap-months,
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--weeks), minmax(0, 1fr));
+  gap: 3px;
+}
+
+.heatmap-months {
+  margin-left: 32px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  line-height: 14px;
+  white-space: nowrap;
+}
+
+.heatmap-body {
+  display: flex;
+  gap: 6px;
+}
+
+.heatmap-weekdays {
+  display: grid;
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+  flex: none;
+  width: 26px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  line-height: 1;
+}
+
+.heatmap-weekdays span {
+  align-self: center;
+}
+
+.heatmap-grid {
+  flex: 1;
+  grid-template-rows: repeat(7, auto);
+  grid-auto-flow: column;
+}
+
+.heatmap-day {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: var(--field);
+}
+
+.heatmap-day.is-outside {
+  visibility: hidden;
+}
+
+.heatmap-day[data-level='1'] {
+  background: color-mix(in srgb, var(--accent-color) 28%, transparent);
+}
+
+.heatmap-day[data-level='2'] {
+  background: color-mix(in srgb, var(--accent-color) 50%, transparent);
+}
+
+.heatmap-day[data-level='3'] {
+  background: color-mix(in srgb, var(--accent-color) 75%, transparent);
+}
+
+.heatmap-day[data-level='4'] {
+  background: var(--accent-color);
+}
+
+.heatmap-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.heatmap-legend .heatmap-day {
+  width: 10px;
+}
+
+.heatmap-legend > span:first-child {
+  margin-right: 3px;
+}
+
+.heatmap-legend > span:last-child {
+  margin-left: 3px;
 }
 
 .summary-facts {

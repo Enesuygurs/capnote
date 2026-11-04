@@ -558,7 +558,12 @@
     "tags": "En çok kullandığın etiketler",
     "tagsSub": "Birincisi {count} notta",
     "longest": "En uzun notun",
-    "longestWords": "{count} kelime"
+    "longestWords": "{count} kelime",
+    "heatmap": "Yazma takvimi",
+    "heatmapNone": "yazmadın",
+    "heatmapLess": "Az",
+    "heatmapMore": "Çok",
+    "heatmapBusiest": "En çok yazdığın gün: {date}, {count} kelime"
   },
   "quickNote": {
     "title": "Hızlı not",

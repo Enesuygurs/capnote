@@ -558,7 +558,12 @@
     "tags": "Your most used tags",
     "tagsSub": "The first in {count} notes",
     "longest": "Your longest note",
-    "longestWords": "{count} words"
+    "longestWords": "{count} words",
+    "heatmap": "Writing calendar",
+    "heatmapNone": "no writing",
+    "heatmapLess": "Less",
+    "heatmapMore": "More",
+    "heatmapBusiest": "Your busiest day: {date}, {count} words"
   },
   "quickNote": {
     "title": "Quick note",

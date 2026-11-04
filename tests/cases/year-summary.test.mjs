@@ -1,6 +1,6 @@
 // The year in review counts a year's notes, words and writing days, finds the month written most,
 // the most frequent mood, the longest streak within the year, the most used tags and the longest
-// note, and saves the card as a PNG
+// note, shows a heat map of the year's days, and saves the card as a PNG
 export async function run() {
   const a = window.app;
   a.dashboardToday = '2026-11-04T12:00:00';
@@ -34,6 +34,16 @@ export async function run() {
   a.showYearSummary(2026);
   r.title = a.summaryTitle.textContent;
   r.nextDisabled = a.summaryNextBtn.disabled;
+  // The heat map: a square per day of the year, the busiest day in the full accent
+  const heat = (key) =>
+    a.summaryCard.querySelector(`.heatmap-grid [data-day="${key}"]`)?.dataset.level;
+  r.heatmap = {
+    days: a.summaryCard.querySelectorAll('.heatmap-grid .heatmap-day:not(.is-outside)').length,
+    busiest: heat('2026-07-01'),
+    light: heat('2026-03-03'),
+    none: heat('2026-03-06'),
+    lastYearLeftOut: !heat('2025-12-31'),
+  };
   a.summaryPrevBtn.click();
   r.prevYear = a.summaryTitle.textContent;
   await a.saveYearSummaryImage();
@@ -60,6 +70,7 @@ export const expected = {
   years: [2026, 2025],
   title: '2026 özeti',
   nextDisabled: true,
+  heatmap: { days: 365, busiest: '4', light: '1', none: '0', lastYearLeftOut: true },
   prevYear: '2025 özeti',
   headerBack: true,
 };

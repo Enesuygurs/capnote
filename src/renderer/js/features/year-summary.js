@@ -53,8 +53,19 @@ export class YearSummaryFeature {
       .filter((n) => !this.isNoteLockedForView(n))
       .sort((a, b) => (b.wordCount || 0) - (a.wordCount || 0))[0];
 
+    // Each day's notes and words, for the heat map
+    const perDay = new Map();
+    notes.forEach((n) => {
+      const key = this.dayKey(n.createdAt);
+      const day = perDay.get(key) || { notes: 0, words: 0 };
+      day.notes += 1;
+      day.words += n.wordCount || 0;
+      perDay.set(key, day);
+    });
+
     return {
       year,
+      perDay,
       notes: notes.length,
       words: notes.reduce((sum, n) => sum + (n.wordCount || 0), 0),
       days: days.length,
@@ -68,6 +79,99 @@ export class YearSummaryFeature {
       tags: [...tags.values()].sort((a, b) => b.count - a.count).slice(0, 3),
       longest: longest && longest.wordCount ? longest : null,
     };
+  }
+
+  // The year as a heat map: a square per day, the weeks as columns from Monday to Sunday, in the
+  // accent: the more words that day, the deeper (four steps against the year's busiest day), a
+  // day without writing a faint field. Month names above, Mon / Wed / Fri on the left, a legend
+  // and the busiest day below; each square tells its day, notes and words.
+  renderYearHeatmap(sectionEl, s) {
+    const locale = this.getLocale();
+    const first = new Date(s.year, 0, 1);
+    // Monday on or before 1 January starts the first week
+    const start = new Date(s.year, 0, 1 - ((first.getDay() + 6) % 7));
+    const last = new Date(s.year, 11, 31);
+    const weeks = Math.ceil((Math.round((last - start) / DAY_MS) + 1) / 7);
+    const maxWords = Math.max(1, ...[...s.perDay.values()].map((d) => d.words));
+    const level = (day) => {
+      if (!day) return 0;
+      const ratio = day.words / maxWords;
+      return ratio > 0.75 ? 4 : ratio > 0.5 ? 3 : ratio > 0.25 ? 2 : 1;
+    };
+
+    const wrap = document.createElement('div');
+    wrap.className = 'summary-heatmap';
+    wrap.style.setProperty('--weeks', weeks);
+    const months = document.createElement('div');
+    months.className = 'heatmap-months';
+    const weekdays = document.createElement('div');
+    weekdays.className = 'heatmap-weekdays';
+    // Monday, Wednesday and Friday named; 2024-01-01 was a Monday
+    [0, 2, 4].forEach((offset) => {
+      const label = document.createElement('span');
+      label.style.gridRow = String(offset + 1);
+      label.textContent = new Date(2024, 0, 1 + offset).toLocaleDateString(locale, {
+        weekday: 'short',
+      });
+      weekdays.appendChild(label);
+    });
+    const grid = document.createElement('div');
+    grid.className = 'heatmap-grid';
+
+    let busiest = null;
+    for (let i = 0; i < weeks * 7; i++) {
+      const date = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+      const cell = document.createElement('span');
+      cell.className = 'heatmap-day';
+      if (date.getFullYear() !== s.year) {
+        cell.classList.add('is-outside');
+      } else {
+        const key = this.dayKey(date);
+        const day = s.perDay.get(key);
+        cell.dataset.level = level(day);
+        cell.dataset.day = key;
+        const name = date.toLocaleDateString(locale, {
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+        });
+        cell.title = day
+          ? `${name} · ${i18n.t('tags.notesCount', { count: day.notes })} · ${i18n.t('history.words', { count: day.words.toLocaleString(locale) })}`
+          : `${name} · ${i18n.t('summary.heatmapNone')}`;
+        if (day && (!busiest || day.words > busiest.words)) busiest = { ...day, date };
+        // A month's name over the week its first day is in
+        if (date.getDate() === 1) {
+          const label = document.createElement('span');
+          label.style.gridColumn = `${Math.floor(i / 7) + 1} / span 4`;
+          label.textContent = date.toLocaleDateString(locale, { month: 'short' });
+          months.appendChild(label);
+        }
+      }
+      grid.appendChild(cell);
+    }
+
+    const body = document.createElement('div');
+    body.className = 'heatmap-body';
+    body.append(weekdays, grid);
+    const foot = document.createElement('div');
+    foot.className = 'heatmap-foot';
+    const busiestText = document.createElement('span');
+    busiestText.className = 'summary-fact-sub';
+    if (busiest) {
+      busiestText.textContent = i18n.t('summary.heatmapBusiest', {
+        date: busiest.date.toLocaleDateString(locale, { day: 'numeric', month: 'long' }),
+        count: busiest.words.toLocaleString(locale),
+      });
+    }
+    const legend = document.createElement('span');
+    legend.className = 'heatmap-legend';
+    legend.innerHTML = `<span></span>${[0, 1, 2, 3, 4].map((l) => `<span class="heatmap-day" data-level="${l}"></span>`).join('')}<span></span>`;
+    legend.firstChild.textContent = i18n.t('summary.heatmapLess');
+    legend.lastChild.textContent = i18n.t('summary.heatmapMore');
+    foot.append(busiestText, legend);
+
+    wrap.append(months, body, foot);
+    sectionEl.appendChild(wrap);
   }
 
   showYearSummary(year = this.summaryYear || this.dashboardNow().getFullYear()) {
@@ -134,6 +238,8 @@ export class YearSummaryFeature {
       figures.appendChild(figure);
     });
     card.appendChild(figures);
+
+    this.renderYearHeatmap(section(i18n.t('summary.heatmap')), s);
 
     // The months: a column each, the most written one marked
     const monthsSection = section(i18n.t('summary.months'));
