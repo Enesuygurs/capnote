@@ -209,14 +209,6 @@ export class YearSummaryFeature {
       card.appendChild(el);
       return el;
     };
-    const line = (parent, text, className = 'summary-line') => {
-      const p = document.createElement('p');
-      p.className = className;
-      p.textContent = text;
-      parent.appendChild(p);
-      return p;
-    };
-
     // The year and its numbers
     const head = document.createElement('div');
     head.className = 'summary-head';
@@ -244,12 +236,6 @@ export class YearSummaryFeature {
 
     // The months: a column each, the most written one marked
     const monthsSection = section(i18n.t('summary.months'));
-    if (s.topMonth) {
-      line(
-        monthsSection,
-        i18n.t('summary.topMonth', { month: monthName(s.topMonth.month), count: s.topMonth.notes })
-      );
-    }
     const columns = document.createElement('div');
     columns.className = 'summary-months';
     const max = Math.max(...s.months.map((m) => m.notes), 1);

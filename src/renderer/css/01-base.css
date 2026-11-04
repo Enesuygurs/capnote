@@ -319,6 +319,10 @@ body {
 .tone-slate {
   --tone: var(--tone-slate);
 }
+/* The accent the user chose (the year in review's icon) */
+.tone-accent {
+  --tone: var(--accent-color);
+}
 
 /* ============ Titlebar ============
    Sits on the window chrome with the sidebar: the sidebar toggle on the left, window buttons on the right */
