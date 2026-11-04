@@ -303,9 +303,9 @@ export class YearSummaryFeature {
     if (s.tags.length) {
       fact(
         i18n.t('summary.tags'),
-        'fas fa-tags',
+        'fas fa-tag',
         'teal',
-        s.tags.map((t) => `#${t.name}`).join('  '),
+        `#${s.tags[0].name}`,
         i18n.t('summary.tagsSub', { count: s.tags[0].count })
       );
     }

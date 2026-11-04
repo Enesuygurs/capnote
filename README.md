@@ -8,7 +8,7 @@ Capnote is a desktop app for notes and journaling. Everything stays on your comp
 - **Links between notes:** type `[[` to link to another note; a note lists the notes that link to it, and the note graph shows all the links as a map.
 - **Organizing:** folders with colors, tags with a tags page and a tag filter, favorites, pinned notes and folders, a Today view, a custom order by dragging, selecting several notes at once, an archive for notes kept out of the list, sorting and search.
 - **Templates:** start a note as a journal entry, meeting notes or a weekly plan.
-- **Year in review:** a card with the year's notes, words and writing days, the months written most, the most frequent mood, the longest streak, the most used tags and the longest note, to save as an image and share.
+- **Year in review:** a card with the year's notes, words and writing days, the months written most, the most frequent mood, the longest streak, the most used tag and the longest note, to save as an image and share.
 - **Journaling:** mood and weather for each note, an overview with a mood calendar, the writing streak, how moods and weather are spread and the words per month, word and character counts, reading time and an edit history.
 - **Reminders and to-dos:** reminders with desktop notifications, and a to-do list grouped into sections.
 - **Locked notes:** a locked note is encrypted with its password (PBKDF2-SHA256 and AES-GCM). If you forget the password, the note cannot be recovered.
