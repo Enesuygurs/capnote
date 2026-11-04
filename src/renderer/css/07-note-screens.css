@@ -42,39 +42,36 @@
 .summary-head {
   display: flex;
   align-items: center;
-  gap: var(--space-4);
+  gap: var(--space-3);
 }
 
-/* The app's mark in a round neutral badge before the year (not the accent: the mark keeps its
-   own amber whatever the accent is) */
+/* The title: the app's mark, "Capnote", a round dot, the year in the accent */
 .summary-mark {
-  display: flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  background: var(--field);
+  width: 40px;
+  height: 40px;
 }
 
-.summary-mark img {
-  width: 32px;
-  height: 32px;
-}
-
+.summary-brand,
 .summary-year {
-  color: var(--accent-text);
-  font-size: 44px;
+  font-size: 36px;
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.02em;
 }
 
 .summary-brand {
-  margin-left: auto;
-  color: var(--text-secondary);
-  font-weight: 600;
+  color: var(--text-strong);
+}
+
+.summary-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--text-muted);
+}
+
+.summary-year {
+  color: var(--accent-text);
 }
 
 .summary-figures {
