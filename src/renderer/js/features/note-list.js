@@ -426,8 +426,10 @@ export class NoteListFeature {
     label('favorite', note.isFavorite ? 'messages.removeFromFavorites' : 'messages.addToFavorites');
     label('pin', note.isPinned ? 'messages.unpinNote' : 'messages.pinNote');
     label('lock', note.isLocked ? 'messages.unlockNote' : 'messages.lockNote');
-    // A locked note cannot be copied without its password
+    // A locked note cannot be copied or renamed without its password
     this.noteContextMenu.querySelector('[data-action="duplicate"]').disabled =
+      this.isNoteLockedForView(note);
+    this.noteContextMenu.querySelector('[data-action="rename"]').disabled =
       this.isNoteLockedForView(note);
 
     this.positionMenu(this.noteContextMenu, x, y);
@@ -532,6 +534,12 @@ export class NoteListFeature {
         favorite: () => this.toggleFavorite(noteId),
         pin: () => this.togglePin(noteId),
         lock: () => this.toggleLock(noteId),
+        // The title edited in place in the list, as with a double-click
+        rename: () =>
+          this.startRenameNote(
+            note,
+            document.querySelector(`.note-item[data-note-id="${noteId}"]`)
+          ),
         duplicate: () => this.duplicateNote(note),
         archive: () => this.setArchived([note], true),
         delete: () => this.deleteNoteById(noteId),

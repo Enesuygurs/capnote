@@ -329,6 +329,10 @@ export const APP_DIALOGS = /* HTML */ `
       <i class="fas fa-lock"></i>
       <span></span>
     </button>
+    <button class="menu-item" data-action="rename" role="menuitem">
+      <i class="fas fa-pen"></i>
+      <span data-i18n="modals.renameFolder">Yeniden Adlandır</span>
+    </button>
     <button class="menu-item" data-action="duplicate" role="menuitem">
       <i class="fas fa-clone"></i>
       <span data-i18n="buttons.duplicate">Çoğalt</span>
