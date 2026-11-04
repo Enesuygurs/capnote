@@ -91,6 +91,19 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <span class="toggle-slider"></span>
                 </label>
               </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.autoFormat">Yazarken otomatik biçimlendirme</label>
+                  <small data-i18n="settings.autoFormatDesc"
+                    >Satır başında “- ” madde, “1. ” numaralı liste, “[] ” yapılacak, “# ” başlık,
+                    “> ” alıntı olur</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="autoFormatToggle" checked />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
             </div>
           </section>
 

@@ -172,8 +172,10 @@ export class EditorToolsFeature {
     if (!el.textContent) el.innerHTML = '<br>';
   }
 
-  // "## " heading, "- " list, "1. " numbered list, "[] " task, "> " quote, "```" code block
+  // "## " heading, "- " list, "1. " numbered list, "[] " task, "> " quote, "```" code block; the
+  // settings can turn them off ("Format while typing")
   handleLineShortcut(e) {
+    if (this.settings?.autoFormat === false) return;
     if (e.inputType !== 'insertText' || (e.data !== ' ' && e.data !== '`')) return;
     const line = this.styledLine();
     const range = this.caretRange();
@@ -234,6 +236,7 @@ export class EditorToolsFeature {
 
   // "---" and Enter on a line of its own makes a divider
   handleDividerEnter(e) {
+    if (this.settings?.autoFormat === false) return;
     if (e.key !== 'Enter' || e.shiftKey) return;
     const line = this.styledLine();
     if (!line || !/^(P|DIV)$/.test(line.tagName) || line.textContent.trim() !== '---') return;

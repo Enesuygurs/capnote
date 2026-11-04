@@ -159,6 +159,8 @@
     "languageDesc": "Change application language",
     "autoSave": "Auto Save",
     "autoSaveDesc": "Automatically save notes while typing",
+    "autoFormat": "Format while typing",
+    "autoFormatDesc": "At the start of a line, “- ” starts a bulleted list, “1. ” a numbered one, “[] ” a task, “# ” a heading and “> ” a quote",
     "onNoteDelete": "On note deletion",
     "onNoteDeleteDesc": "Choose what happens when a note is deleted",
     "openLastNote": "Open last remaining note",
