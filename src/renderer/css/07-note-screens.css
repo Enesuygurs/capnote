@@ -63,12 +63,6 @@
   height: 32px;
 }
 
-.summary-head-text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-}
-
 .summary-year {
   color: var(--accent-text);
   font-size: 44px;
@@ -78,8 +72,8 @@
 }
 
 .summary-brand {
+  margin-left: auto;
   color: var(--text-secondary);
-  font-size: var(--fs-md);
   font-weight: 600;
 }
 

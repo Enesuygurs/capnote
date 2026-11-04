@@ -220,8 +220,8 @@ export class YearSummaryFeature {
     // The year and its numbers
     const head = document.createElement('div');
     head.className = 'summary-head';
-    // The app's mark large in a round badge, then the year with the app's name under it
-    head.innerHTML = `<span class="summary-mark"><img src="../../assets/icons/source/capnote.svg" alt="" /></span><div class="summary-head-text"><div class="summary-year"></div><div class="summary-brand">Capnote</div></div>`;
+    // One row: the app's mark in a round badge, the year beside it, the app's name at the end
+    head.innerHTML = `<span class="summary-mark"><img src="../../assets/icons/source/capnote.svg" alt="" /></span><div class="summary-year"></div><div class="summary-brand">Capnote</div>`;
     head.querySelector('.summary-year').textContent = s.year;
     card.appendChild(head);
     const figures = document.createElement('div');
