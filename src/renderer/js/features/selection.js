@@ -209,10 +209,25 @@ export class SelectionFeature {
         })
       : i18n.t('selection.confirmDeleteNotes', { count: noteIds.size });
 
-    this.showConfirm(message, () => {
-      const { deleted, kept } = this.removeNotesAndFolders([...noteIds], [...folderIds]);
-      if (!kept) this.showNotification(i18n.t('selection.deleted', { count: deleted }), 'success');
-    });
+    // File notes among them can take their files with them (to the Recycle Bin); file notes cannot
+    // be locked, so all of them are deleted
+    const fileNotes = this.notes.filter((n) => noteIds.has(n.id) && this.isFileNote(n));
+    const option = fileNotes.length
+      ? fileNotes.length === 1
+        ? i18n.t('files.deleteFileToo', { name: this.fileName(fileNotes[0]) })
+        : i18n.t('files.deleteFilesToo', { count: fileNotes.length })
+      : undefined;
+
+    this.showConfirm(
+      message,
+      (deleteFiles) => {
+        const { deleted, kept } = this.removeNotesAndFolders([...noteIds], [...folderIds]);
+        if (!kept)
+          this.showNotification(i18n.t('selection.deleted', { count: deleted }), 'success');
+        if (deleteFiles && option) this.trashNoteFiles(fileNotes);
+      },
+      { option }
+    );
   }
 
   // Double-click on a note row: edit its title right there. Enter or leaving the field saves,

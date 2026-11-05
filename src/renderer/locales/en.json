@@ -601,6 +601,11 @@
     "conflict": "“{name}” was changed in another program. Overwrite it?",
     "noLock": "File notes cannot be locked: the text is unencrypted in the file",
     "contextMenuDev": "The right-click menu is added by the installed app only",
-    "contextMenuFailed": "Could not update the right-click menu"
+    "contextMenuFailed": "Could not update the right-click menu",
+    "deleteFileToo": "Also delete “{name}” (moves it to the Recycle Bin)",
+    "deleteFilesToo": "Also delete the {count} files (moves them to the Recycle Bin)",
+    "trashed": "Note deleted, “{name}” moved to the Recycle Bin",
+    "trashedMany": "Notes deleted, {count} files moved to the Recycle Bin",
+    "trashFailed": "Could not delete “{name}”; the file is still there"
   }
 }

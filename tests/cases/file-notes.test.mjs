@@ -75,7 +75,7 @@ export async function run() {
 
 export const expected = {
   opened: {
-    title: 'plan',
+    title: 'plan.md',
     kind: 'md',
     editor: true,
     text: '# Plan\n\n- one\n- two\n',
@@ -83,7 +83,11 @@ export const expected = {
     words: '3 kelime',
   },
   again: { sameNote: true, fileNotes: 1, text: '# Plan\n\n- one\n' },
-  txt: { shown: 'line one\n  indented\n\nlast', chip: 'notes.txt', icon: /fa-file nav-icon/ },
+  txt: {
+    shown: 'line one\n  indented\n\nlast',
+    chip: 'C:\\Docs\\notes.txt',
+    icon: /fa-file nav-icon/,
+  },
   html: '<h1>Hi</h1><p>A page</p>',
   locked: false,
   copy: { linked: false, kind: null },

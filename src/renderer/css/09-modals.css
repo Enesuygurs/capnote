@@ -121,6 +121,11 @@
   cursor: pointer;
 }
 
+/* The confirm dialog's extra choice, set apart from the question */
+.confirm-option {
+  margin-top: var(--space-3);
+}
+
 .form-check input[type='checkbox'],
 .form-checkbox {
   width: 16px;

@@ -132,10 +132,17 @@ export class EditorFeature {
 
     // Update favorite button state
     this.updateFavoriteButtons();
-    // A file note is edited as the file's plain text: the rich text toolbar does not apply
+    // A file note is edited as the file's plain text: the rich text toolbar does not apply, and
+    // only its own kind's preview does (Markdown for .md, the page for .html, none for .txt)
     this.noteEditor?.classList.toggle('is-file-note', !!note.filePath);
-    // Hide preview by default when loading into editor
+    if (this.noteEditor)
+      this.noteEditor.dataset.fileKind = note.filePath ? note.fileKind || '' : '';
+    // A file note starts without the sidebar
+    this.fileNoteSidebarOpen = false;
+    this.applyEditorSidebar(note);
+    // Previews start closed
     this.hideMarkdownPreview();
+    this.hideHtmlPreview();
     // Show appropriate editor (markdownEditor for markdown notes)
     if (note.isMarkdown) {
       this.showMarkdownEditor();

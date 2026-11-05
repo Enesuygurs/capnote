@@ -236,6 +236,11 @@ export const APP_DIALOGS = /* HTML */ `
         <p id="confirmMessage" class="modal-text" data-i18n="modals.confirmMessage">
           Bu işlemi gerçekleştirmek istediğinizden emin misiniz?
         </p>
+        <!-- An extra choice some confirmations offer (e.g. deleting a file note's file too) -->
+        <label class="form-check confirm-option hidden" for="confirmOptionCheck">
+          <input id="confirmOptionCheck" type="checkbox" />
+          <span id="confirmOptionLabel"></span>
+        </label>
       </div>
       <div class="modal-footer">
         <button id="cancelBtn" class="btn btn-secondary" data-i18n="buttons.cancel">İptal</button>
