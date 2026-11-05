@@ -499,18 +499,18 @@
   text-transform: uppercase;
 }
 
-/* A day is a rounded tile with a gap around it: its number, and under it the day's mood in the
-   mood's color on a soft tint of it (a dot when no note has a mood). Today has an accent ring,
-   the chosen day an accent tint; days of the months around are faint and plain. */
+/* A day is a rounded tile with a gap around it: its number with the day's mood beside it, in the
+   mood's color on a soft tint of it (a dot when no note has a mood). Today is a see-through
+   accent, a picked day the filled accent; days of the months around are faint and plain. */
 .calendar-day {
   position: relative;
   min-height: var(--control-md);
   border-radius: 10px;
   display: flex;
-  flex-direction: column;
+  /* The number and the mood side by side: stacked they crowded the tile */
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 5px;
   color: var(--text-secondary);
   font-size: var(--fs-md);
   font-variant-numeric: tabular-nums;
@@ -582,7 +582,7 @@
 }
 
 .calendar-day-mark {
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1;
   color: var(--tone, var(--text-muted));
 }
