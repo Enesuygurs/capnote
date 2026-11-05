@@ -20,10 +20,22 @@ export class NoteListFeature {
     const navCountEl = document.getElementById('navNotesCount');
     this.setCount(navCountEl, this.getVisibleNotesCount(), { alwaysShow: true });
 
-    sortedNotes.forEach((note) => {
-      const noteElement = this.createNoteItem(note);
-      this.notesList.appendChild(noteElement);
-    });
+    if (this.currentSort === 'manual') {
+      // The custom order: the notes and the (unpinned) folders share one list
+      this.rootListItems(sortedNotes).forEach(({ note, folder }) => {
+        if (note) {
+          this.notesList.appendChild(this.createNoteItem(note));
+        } else if (!this.isViewFiltered() || this.getVisibleCountForFolder(folder.id)) {
+          this.notesList.appendChild(this.createFolderElement(folder));
+        }
+      });
+      this.restoreFolderExpansion();
+    } else {
+      sortedNotes.forEach((note) => {
+        const noteElement = this.createNoteItem(note);
+        this.notesList.appendChild(noteElement);
+      });
+    }
     this.renderEmptyNotesList();
 
     // Also update folder notes for custom folders
@@ -349,7 +361,17 @@ export class NoteListFeature {
       const rect = div.getBoundingClientRect();
       return e.clientY < rect.top + rect.height / 2;
     };
+    // A folder dragged over a note of the root list goes before or after it
+    const takesFolder = () => this.draggedFolderId && !note.folderId && !note.isPinned;
     div.addEventListener('dragover', (e) => {
+      if (takesFolder()) {
+        e.preventDefault();
+        e.stopPropagation();
+        const before = dropBefore(e);
+        div.classList.toggle('insert-before', before);
+        div.classList.toggle('insert-after', !before);
+        return;
+      }
       if (!this.draggedNoteId || this.draggedNoteId === note.id) return;
       e.preventDefault();
       e.stopPropagation();
@@ -361,6 +383,13 @@ export class NoteListFeature {
     div.addEventListener('dragleave', () => div.classList.remove('insert-before', 'insert-after'));
     div.addEventListener('drop', (e) => {
       div.classList.remove('insert-before', 'insert-after');
+      if (takesFolder()) {
+        e.preventDefault();
+        e.stopPropagation();
+        const folder = this.folders.find((f) => f.id === this.draggedFolderId);
+        if (folder) this.placeInRootList([{ folder }], { note }, dropBefore(e));
+        return;
+      }
       if (!this.draggedNoteId || this.draggedNoteId === note.id) return;
       e.preventDefault();
       e.stopPropagation();
@@ -371,6 +400,47 @@ export class NoteListFeature {
     return div;
   }
 
+  // The root list in the custom order: the given notes (no folder, sorted) and the unpinned
+  // folders. A note or folder dragged into place has an order; notes without one come first (the
+  // newest on top), folders without one after everything, in their own order.
+  rootListItems(notes) {
+    const items = [
+      ...notes.map((note) => ({ note, key: note.isPinned ? -Infinity : (note.order ?? -1) })),
+      ...this.folders
+        .filter((folder) => !folder.isPinned)
+        .map((folder, i) => ({ folder, key: folder.order ?? 1e6 + i })),
+    ];
+    // A stable sort keeps the notes' own order among equal keys
+    return items.sort((x, y) => x.key - y.key);
+  }
+
+  // Put notes and folders of the root list before or after a note or folder of it, then number
+  // the whole list in its new order and switch to the custom order. Each item is { note } or
+  // { folder }.
+  async placeInRootList(moving, target, before) {
+    const same = (x, y) => (x.note && x.note === y.note) || (x.folder && x.folder === y.folder);
+    const rootNotes = this.notes.filter((n) => !n.folderId && !n.isArchived);
+    // The list as it is shown now (in another order, the notes first and the folders after them)
+    const items =
+      this.currentSort === 'manual'
+        ? this.rootListItems(this.getSortedNotes(rootNotes))
+        : [
+            ...this.getSortedNotes(rootNotes).map((note) => ({ note })),
+            ...this.folders.filter((f) => !f.isPinned).map((folder) => ({ folder })),
+          ];
+    const rest = items.filter((item) => !moving.some((m) => same(m, item)));
+    const at = rest.findIndex((item) => same(item, target));
+    if (at === -1) return;
+    rest.splice(at + (before ? 0 : 1), 0, ...moving);
+    rest.forEach((item, i) => {
+      (item.note || item.folder).order = i;
+    });
+    if (this.currentSort !== 'manual') this.changeSorting('manual');
+    await Promise.all([this.saveNotes(), this.saveFolders()]);
+    this.updateNotesList();
+    this.updateFoldersList();
+  }
+
   // Place a note before or after another one (moving it into that note's folder if needed) and
   // switch the list to the custom order
   // sourceId may be one id or several (a dragged selection, kept in its shown order)
@@ -379,6 +449,15 @@ export class NoteListFeature {
     const target = this.notes.find((n) => n.id === targetId);
     const sources = this.notes.filter((n) => ids.includes(n.id) && n !== target);
     if (!sources.length || !target) return;
+
+    // In the root list the folders take part in the order too
+    if (!target.folderId) {
+      sources.forEach((source) => {
+        if (source.folderId) source.folderId = null;
+      });
+      const moving = this.getSortedNotes([...sources]).map((note) => ({ note }));
+      return this.placeInRootList(moving, { note: target }, before);
+    }
 
     const folderId = target.folderId || null;
     sources.forEach((source) => {
@@ -476,8 +555,9 @@ export class NoteListFeature {
     this.currentSort = sort;
     this.markSortOption(sort);
     if (this.settings.noteSort !== sort) this.setSetting('noteSort', sort);
+    // The custom order puts the folders among the notes, the others below them
     this.updateNotesList();
-    this.updateFolderNotes();
+    this.updateFoldersList();
   }
 
   markSortOption(sort) {
