@@ -32,6 +32,7 @@ import { NoteLinksFeature } from './features/note-links.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
+import { FileNotesFeature } from './features/file-notes.js';
 import { YearSummaryFeature } from './features/year-summary.js';
 import { QuickNoteFeature } from './features/quick-note.js';
 import { NoteGraphFeature } from './features/note-graph.js';
@@ -114,6 +115,8 @@ export class CapnoteApp {
 
     // The page chosen in the settings: the last note, home, a new note, to-dos or notifications
     this.openStartupPage();
+    // A file Capnote was started on opens over it
+    this.setupFileNotes();
   }
 
   initializeElements() {
@@ -318,6 +321,8 @@ export class CapnoteApp {
     this.archiveNavBtn = document.getElementById('archiveNavBtn');
     this.archiveViewBtn = document.getElementById('archiveViewBtn');
     this.viewerArchived = document.getElementById('viewerArchived');
+    this.viewerFile = document.getElementById('viewerFile');
+    this.fileContextMenuToggle = document.getElementById('fileContextMenuToggle');
     this.tagFilter = document.getElementById('tagFilter');
     this.clearTagFilterBtn = document.getElementById('clearTagFilterBtn');
     this.tagsCloud = document.getElementById('tagsCloud');
@@ -696,6 +701,7 @@ applyFeatures(CapnoteApp, [
   TagsFeature,
   ArchiveFeature,
   ToolbarMenusFeature,
+  FileNotesFeature,
   YearSummaryFeature,
   QuickNoteFeature,
   NoteGraphFeature,

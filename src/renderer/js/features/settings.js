@@ -92,6 +92,7 @@ export class SettingsFeature {
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
     if (this.autoFormatToggle) this.autoFormatToggle.checked = settings.autoFormat;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
+    if (this.fileContextMenuToggle) this.fileContextMenuToggle.checked = settings.fileContextMenu;
     if (this.quickNoteShortcutToggle)
       this.quickNoteShortcutToggle.checked = settings.quickNoteShortcut;
 
@@ -492,6 +493,20 @@ export class SettingsFeature {
         if (this.startAtLoginToggle)
           this.startAtLoginToggle.checked = !this.startAtLoginToggle.checked;
         this.showNotification(i18n.t('messages.launchOnStartupError'), 'error');
+      }
+    });
+
+    // "Edit with Capnote" in the right-click menu: Windows only, and only the installed app can add it
+    const fileMenuItem = document.getElementById('fileContextMenuItem');
+    if (fileMenuItem && window.electronAPI?.platform !== 'win32') fileMenuItem.hidden = true;
+    this.fileContextMenuToggle?.addEventListener('change', async (e) => {
+      const enabled = e.target.checked;
+      this.setSetting('fileContextMenu', enabled);
+      const result = await window.electronAPI?.files?.setContextMenu(enabled);
+      if (result?.error === 'dev') {
+        this.showNotification(i18n.t('files.contextMenuDev'), 'info');
+      } else if (result && !result.ok) {
+        this.showNotification(i18n.t('files.contextMenuFailed'), 'error');
       }
     });
 

@@ -14,6 +14,7 @@ Capnote is a desktop app for notes and journaling. Everything stays on your comp
 - **Locked notes:** a locked note is encrypted with its password (PBKDF2-SHA256 and AES-GCM). If you forget the password, the note cannot be recovered.
 - **Export and backup:** export a note as PDF, HTML, plain text or JSON, export every note as Markdown files and import Markdown files, back up or restore all data as a JSON file, and go back to one of the automatic daily backups of the last 7 days.
 - **Desktop integration:** a quick note window (Ctrl+Alt+N from any app opens a small always-on-top note in the corner of the screen), tray icon, close to tray (Windows), start at login, a chosen start page, light and dark themes, accent colors, and English and Turkish.
+- **Edit text files:** on Windows, "Edit with Capnote" in the right-click menu of .md, .txt and .html files opens the file in Capnote as a file note; saving it writes the file back, as a text editor does (Capnote asks before overwriting a file changed in another program). The menu entry can be turned off in the settings, and uninstalling removes it.
 
 ### Keyboard shortcuts
 

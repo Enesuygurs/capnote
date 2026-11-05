@@ -143,6 +143,7 @@ export class NotesFeature {
     this.setActiveNoteInList(this.currentNote.id);
 
     this.showEditor();
+    this.noteEditor?.classList.remove('is-file-note');
     this.clearEditor();
     this.resetEditorHistory?.();
     this.updateCurrentDate();
@@ -256,6 +257,8 @@ export class NotesFeature {
 
     this.saveNotes();
     if (this.currentNote.isLocked) this.resealNote(this.currentNote);
+    // A file note's file is written too, by every save (the automatic ones included)
+    if (this.currentNote.filePath) this.writeFileNote(this.currentNote);
     this.markAsSaved(); // Mark as saved to disable save button
 
     // Update favorite button state after saving
@@ -409,6 +412,10 @@ export class NotesFeature {
     };
     delete duplicate.encrypted;
     delete duplicate.order;
+    // A copy of a file note is a note of its own, not linked to the file
+    delete duplicate.filePath;
+    delete duplicate.fileKind;
+    delete duplicate.fileMtime;
     return duplicate;
   }
 
@@ -482,6 +489,7 @@ export class NotesFeature {
     this.showViewer();
     this.displayNote(note);
     this.setActiveNoteInList(this.currentNote.id); // Only update active class
+    if (note.filePath) this.refreshFileNote(note);
   }
 
   // A history entry for an edit, keeping the note as it was before it (its title and text), so that
