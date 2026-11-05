@@ -5,7 +5,9 @@ import { i18n } from '../i18n.js';
 export class ExportFeature {
   // Export methods
   showExportModal() {
+    // A file note is already a file: it is not exported
     if (!this.currentNote || this.isNoteLockedForView(this.currentNote)) return;
+    if (this.isFileNote(this.currentNote)) return;
     this.showModal(this.exportModal);
   }
 

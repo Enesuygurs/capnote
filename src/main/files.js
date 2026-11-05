@@ -56,7 +56,8 @@ function readFileNote(filePath) {
   };
 }
 
-function openFiles(paths) {
+// show: bring the window forward (not for files dropped on it, which is already in front)
+function openFiles(paths, { show = true } = {}) {
   paths.forEach((filePath) => {
     known.add(keyOf(filePath));
     let file;
@@ -67,7 +68,7 @@ function openFiles(paths) {
     }
     const win = getMainWindow();
     if (pageReady && win) {
-      showMainWindow();
+      if (show) showMainWindow();
       win.webContents.send('file:open', file);
     } else {
       pending.push(file);
@@ -147,6 +148,25 @@ function registerFileIpc({ settings = () => ({}), notes = () => [] } = {}) {
     } catch (err) {
       return { ok: false, error: String(err.message || err) };
     }
+  });
+
+  // Files dragged into the notes list: the supported ones open as file notes; the names of the
+  // others come back so the page can say they are not supported
+  ipcMain.handle('files:open-dropped', (event, paths) => {
+    const list = (Array.isArray(paths) ? paths : []).filter((p) => typeof p === 'string' && p);
+    const isFile = (p) => {
+      try {
+        return fs.statSync(p).isFile();
+      } catch {
+        return false;
+      }
+    };
+    const supported = list.filter((p) => isSupported(p) && isFile(p));
+    openFiles(supported, { show: false });
+    return {
+      opened: supported.length,
+      unsupported: list.filter((p) => !supported.includes(p)).map((p) => path.basename(p)),
+    };
   });
 
   // Deleting a file note can delete its file too: it goes to the Recycle Bin, not away for good

@@ -81,6 +81,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     write: (payload) => ipcRenderer.invoke('files:write', payload),
     reveal: (filePath) => ipcRenderer.invoke('files:reveal', filePath),
     trash: (filePath) => ipcRenderer.invoke('files:trash', filePath),
+    // Files dragged in from the desktop open as file notes, as "Edit with Capnote" does
+    openDropped: (files) =>
+      ipcRenderer.invoke(
+        'files:open-dropped',
+        Array.from(files, (file) => webUtils.getPathForFile(file))
+      ),
     setContextMenu: (enabled) => ipcRenderer.invoke('files:context-menu', enabled),
   },
   // Ctrl+Alt+N from anywhere opens the quick note window; its note comes here to be added, or to

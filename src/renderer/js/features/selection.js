@@ -65,7 +65,10 @@ export class SelectionFeature {
     const allPinned = notes.length > 0 && notes.every((n) => n.isPinned);
     item('pin').hidden = notes.length === 0;
     // Locked notes cannot be read without their password, so they are not duplicated
-    item('duplicate').hidden = !notes.some((n) => !this.isNoteLockedForView(n));
+    // nor are file notes (they are their files)
+    item('duplicate').hidden = !notes.some(
+      (n) => !this.isNoteLockedForView(n) && !this.isFileNote(n)
+    );
     item('pin').querySelector('span').textContent = i18n.t(
       allPinned ? 'messages.unpinNote' : 'messages.pinNote'
     );
@@ -81,7 +84,7 @@ export class SelectionFeature {
       allFavorite ? 'messages.removeFromFavorites' : 'messages.addToFavorites'
     );
     item('unfile').hidden = !notes.some((n) => n.folderId);
-    item('archive').hidden = notes.length === 0;
+    item('archive').hidden = !notes.some((n) => !this.isFileNote(n));
     item('delete').querySelector('span').textContent = i18n.t('selection.delete', { count });
 
     this.positionMenu(menu, x, y);

@@ -169,8 +169,6 @@ export class CapnoteApp {
     this.toggleMarkdownBtn = document.getElementById('toggleMarkdownBtn');
     this.markdownEditor = document.getElementById('markdownEditor');
     this.markdownPreview = document.getElementById('markdownPreview');
-    this.toggleHtmlBtn = document.getElementById('toggleHtmlBtn');
-    this.htmlPreview = document.getElementById('htmlPreview');
     this.insertCodeBlockBtn = document.getElementById('insertCodeBlockBtn');
     this.browseImageBtn = document.getElementById('browseImageBtn');
     this.browseImageInput = document.getElementById('browseImageInput');
@@ -649,21 +647,16 @@ export class CapnoteApp {
   }
 
   toggleEditorSidebar() {
-    // A file note starts without the sidebar; opening it there lasts until another note opens and
-    // leaves the setting for notes as it is
-    if (this.isFileNote(this.currentNote)) {
-      this.fileNoteSidebarOpen = !this.fileNoteSidebarOpen;
-      this.applyEditorSidebar();
-      return;
-    }
+    // A file note has no sidebar (mood, weather, tags, reminders are a note's, not a file's)
+    if (this.isFileNote(this.currentNote)) return;
     this.isSidebarVisible = !this.isSidebarVisible;
     this.applyEditorSidebar();
     this.setSetting('editorSidebarVisible', this.isSidebarVisible);
   }
 
-  // Show or hide the editor sidebar for the note in the editor
+  // Show or hide the editor sidebar for the note in the editor; a file note never has it
   applyEditorSidebar(note = this.currentNote) {
-    const visible = this.isFileNote(note) ? !!this.fileNoteSidebarOpen : this.isSidebarVisible;
+    const visible = !this.isFileNote(note) && this.isSidebarVisible;
     this.editorSidebar.classList.toggle('hidden', !visible);
     this.toggleSidebarBtn.classList.toggle('active', visible);
   }

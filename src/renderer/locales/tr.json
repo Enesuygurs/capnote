@@ -52,7 +52,6 @@
     "insertTime": "Saat ekle",
     "insertImage": "Görsel ekle (Gözat)",
     "markdownPreview": "Markdown önizleme",
-    "htmlPreview": "HTML önizleme",
     "codeBlock": "Kod bloğu ekle",
     "emoji": "Emoji Ekle",
     "toggleSidebar": "Yan paneli aç/kapat",
@@ -606,6 +605,9 @@
     "deleteFilesToo": "{count} dosyayı da sil (Geri Dönüşüm Kutusu'na taşınır)",
     "trashed": "Not silindi, “{name}” Geri Dönüşüm Kutusu'na taşındı",
     "trashedMany": "Notlar silindi, {count} dosya Geri Dönüşüm Kutusu'na taşındı",
-    "trashFailed": "“{name}” silinemedi; dosya yerinde duruyor"
+    "trashFailed": "“{name}” silinemedi; dosya yerinde duruyor",
+    "pathButton": "Dosya Yolu",
+    "dropToOpen": "Not olarak aç",
+    "unsupported": "Desteklenmeyen dosya: {name}. Yalnızca .md, .txt ve .html dosyaları açılabilir"
   }
 }

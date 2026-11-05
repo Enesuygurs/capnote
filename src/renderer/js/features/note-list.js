@@ -513,6 +513,11 @@ export class NoteListFeature {
       this.isNoteLockedForView(note);
     this.noteContextMenu.querySelector('[data-action="rename"]').disabled =
       this.isNoteLockedForView(note);
+    // A file note is its file: it is not locked, copied or archived
+    ['lock', 'duplicate', 'archive'].forEach((action) => {
+      this.noteContextMenu.querySelector(`[data-action="${action}"]`).hidden =
+        this.isFileNote(note);
+    });
 
     this.positionMenu(this.noteContextMenu, x, y);
   }

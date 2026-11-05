@@ -371,15 +371,10 @@ ol[style*='text-align: right'] li {
   padding: var(--space-2) var(--space-3) !important;
 }
 
-/* Previews cover the writing area, inset by the page gutter */
-.markdown-preview,
-.html-preview {
+/* The preview covers the writing area, inset by the page gutter */
+.markdown-preview {
   position: absolute;
   inset: var(--gutter);
   overflow: auto;
   background: var(--surface);
-}
-
-.html-preview {
-  font-size: var(--fs-base);
 }

@@ -205,12 +205,10 @@ export async function run() {
     .join(',');
   r.codeKeptLines = ed.querySelector('code').textContent;
 
-  // Markdown and HTML previews leave the rich content unchanged
+  // The Markdown preview leaves the rich content unchanged
   const htmlBefore = ed.innerHTML;
   a.toggleMarkdownMode();
   a.toggleMarkdownMode();
-  a.toggleHtmlMode();
-  a.toggleHtmlMode();
   r.previewKeeps = ed.innerHTML === htmlBefore;
 
   a.cancelEdit();

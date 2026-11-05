@@ -7,14 +7,8 @@ export class EditorFeature {
     this.noteTitle.value = '';
     this.richEditor.innerHTML = '';
     if (this.markdownEditor) this.markdownEditor.value = '';
-    // clear previews
+    // clear the preview
     if (this.markdownPreview) this.hideMarkdownPreview();
-    if (this.htmlPreview) {
-      this.hideHtmlPreview();
-      const iframe = this.htmlPreview.querySelector('iframe.preview-iframe');
-      if (iframe) iframe.srcdoc = '';
-      this.htmlPreview.innerHTML = '';
-    }
     // A preview left open by the previous note hid the text area: show it again
     this.showRichEditor();
     const baseFormatting = this.currentNote?.formatting || this.getDefaultFormatting();
@@ -132,17 +126,16 @@ export class EditorFeature {
 
     // Update favorite button state
     this.updateFavoriteButtons();
-    // A file note is edited as the file's plain text: the rich text toolbar does not apply, and
-    // only its own kind's preview does (Markdown for .md, the page for .html, none for .txt)
+    // A file note is edited as the file's plain text, as its format is: no rich text toolbar, no
+    // sidebar, and of the view buttons only the Markdown preview, for a Markdown file
     this.noteEditor?.classList.toggle('is-file-note', !!note.filePath);
     if (this.noteEditor)
       this.noteEditor.dataset.fileKind = note.filePath ? note.fileKind || '' : '';
-    // A file note starts without the sidebar
-    this.fileNoteSidebarOpen = false;
     this.applyEditorSidebar(note);
-    // Previews start closed
+    // Its focus mode button is hidden, so it does not stay in focus mode either
+    if (note.filePath && this.isFocusMode?.()) this.setFocusMode(false);
+    // The preview starts closed
     this.hideMarkdownPreview();
-    this.hideHtmlPreview();
     // Show appropriate editor (markdownEditor for markdown notes)
     if (note.isMarkdown) {
       this.showMarkdownEditor();
