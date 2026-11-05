@@ -439,7 +439,8 @@
     "wordsPerMonth": "Aylık kelime sayısı",
     "words": "kelime",
     "no_mood": "Henüz ruh hali seçilmiş not yok",
-    "no_weather": "Henüz hava durumu seçilmiş not yok"
+    "no_weather": "Henüz hava durumu seçilmiş not yok",
+    "wordsTotal": "{count} kelime, son 12 ay"
   },
   "noteTemplates": {
     "choose": "Şablondan yeni not",

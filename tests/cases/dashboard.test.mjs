@@ -48,7 +48,8 @@ export async function run() {
       (r) => r.querySelector('.bar-value').textContent
     ),
     weather: a.weatherChart.querySelectorAll('.bar-row').length,
-    months: [...a.wordsChart.querySelectorAll('.column')].map((c) => c.title.split(': ')[1]),
+    months: [...a.wordsChart.querySelectorAll('.area-hit')].map((h) => h.dataset.words),
+    wordsTotal: a.wordsTotal.textContent,
   };
 
   // A day with notes lists them in the words card in place of the chart; choosing it again
@@ -89,7 +90,8 @@ export const expected = {
   isToday: true,
   moods: ['2 · 50%', '1 · 25%', '1 · 25%'],
   weather: 1,
-  months: [...Array(10).fill('0 kelime'), '100 kelime', '100 kelime'],
+  months: [...Array(10).fill('0'), '100', '100'],
+  wordsTotal: '200 kelime, son 12 ay',
   dayList: ['Yesterday'],
   dayInWordsCard: [true, false],
   chartBack: [true, true],

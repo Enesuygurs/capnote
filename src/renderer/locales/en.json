@@ -439,7 +439,8 @@
     "wordsPerMonth": "Words per month",
     "words": "words",
     "no_mood": "No note has a mood yet",
-    "no_weather": "No note has the weather yet"
+    "no_weather": "No note has the weather yet",
+    "wordsTotal": "{count} words in 12 months"
   },
   "noteTemplates": {
     "choose": "New note from a template",

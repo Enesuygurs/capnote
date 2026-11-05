@@ -283,10 +283,13 @@
                 </section>
                 <!-- The words per month; a day chosen in the calendar shows its notes here instead -->
                 <section class="card chart-card words-card" id="wordsCard">
-                  <h3 class="section-label" data-i18n="dashboard.wordsPerMonth">
-                    Aylık kelime sayısı
-                  </h3>
-                  <div id="wordsChart" class="column-chart"></div>
+                  <div class="chart-card-header">
+                    <h3 class="section-label" data-i18n="dashboard.wordsPerMonth">
+                      Aylık kelime sayısı
+                    </h3>
+                    <span class="chart-card-total" id="wordsTotal"></span>
+                  </div>
+                  <div id="wordsChart" class="area-chart"></div>
                   <div class="calendar-day-notes hidden" id="calendarDayNotes">
                     <h4 class="calendar-day-label" id="calendarDayLabel"></h4>
                     <div class="calendar-day-list" id="calendarDayList"></div>

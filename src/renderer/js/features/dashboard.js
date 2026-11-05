@@ -309,32 +309,208 @@ export class DashboardFeature {
     });
   }
 
-  // Words per month: one column each, its number right above its bar (none for an empty month)
+  // Words per month as an area chart: the last 12 months as a smooth line in the accent over a fill
+  // that fades down, on a grid with its values; the current month's point is marked with its number.
+  // The grid and the months are drawn even with no words, so the card is never empty. Hovering a
+  // month shows a guide line and the month's words.
   renderWordsChart() {
-    const months = this.monthlyWords();
-    const max = Math.max(...months.map((m) => m.words), 1);
+    this.wordsMonths = this.monthlyWords();
+    const total = this.wordsMonths.reduce((sum, m) => sum + m.words, 0);
+    if (this.wordsTotal) {
+      this.wordsTotal.textContent = i18n.t('dashboard.wordsTotal', {
+        count: total.toLocaleString(this.getLocale()),
+      });
+    }
+    this.drawWordsChart();
+  }
+
+  drawWordsChart() {
+    const box = this.wordsChart;
+    const months = this.wordsMonths;
+    if (!box || !months) return;
+    const width = box.clientWidth;
+    const height = box.clientHeight;
+    box.innerHTML = '';
+    if (!width || !height) return;
     const locale = this.getLocale();
-    this.wordsChart.innerHTML = '';
-    months.forEach((m, index) => {
-      const column = document.createElement('div');
-      column.className = 'column';
-      const name = new Date(m.year, m.month, 1).toLocaleDateString(locale, { month: 'short' });
-      column.title = `${new Date(m.year, m.month, 1).toLocaleDateString(locale, { month: 'long', year: 'numeric' })}: ${m.words.toLocaleString(locale)} ${i18n.t('dashboard.words')}`;
-      column.classList.toggle('is-current', index === months.length - 1);
-      column.innerHTML = `<span class="column-track"><span class="column-value"></span><span class="column-fill"></span></span><span class="column-label"></span>`;
-      column.querySelector('.column-value').textContent = m.words
-        ? m.words.toLocaleString(locale)
-        : '';
-      // The tallest bar leaves room above it for its number
-      column.querySelector('.column-fill').style.height = m.words
-        ? `max(4px, calc((100% - 18px) * ${m.words / max}))`
-        : '0';
-      column.querySelector('.column-label').textContent = name;
-      this.wordsChart.appendChild(column);
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (tag, attrs = {}, parent) => {
+      const node = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+      if (parent) parent.appendChild(node);
+      return node;
+    };
+
+    // A round top for the scale: 1, 2, 2.5 or 5 times a power of ten per step, four steps
+    const max = Math.max(...months.map((m) => m.words));
+    const rough = Math.max(max, 1) / 4;
+    const power = 10 ** Math.floor(Math.log10(rough));
+    const step = Math.max(
+      25,
+      [1, 2, 2.5, 5, 10].map((f) => f * power).find((v) => v >= rough)
+    );
+    const top = step * 4;
+
+    const pad = { left: 40, right: 12, top: 26, bottom: 24 };
+    const plotW = width - pad.left - pad.right;
+    const plotH = height - pad.top - pad.bottom;
+    const band = plotW / months.length;
+    const x = (i) => pad.left + band * (i + 0.5);
+    const y = (v) => pad.top + plotH - (v / top) * plotH;
+    const short = (n) =>
+      n.toLocaleString(locale, { notation: n >= 10000 ? 'compact' : 'standard' });
+
+    const svg = el('svg', { class: 'area-svg', width, height, viewBox: `0 0 ${width} ${height}` });
+    const defs = el('defs', {}, svg);
+    const gradient = el('linearGradient', { id: 'wordsArea', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+    el('stop', { offset: 0, class: 'area-stop', 'stop-opacity': 0.32 }, gradient);
+    el('stop', { offset: 1, class: 'area-stop', 'stop-opacity': 0 }, gradient);
+
+    // The grid, its values on the left
+    for (let i = 0; i <= 4; i++) {
+      const gy = y(step * i);
+      el(
+        'line',
+        {
+          class: i ? 'area-grid' : 'area-base',
+          x1: pad.left,
+          x2: width - pad.right,
+          y1: gy,
+          y2: gy,
+        },
+        svg
+      );
+      const label = el(
+        'text',
+        { class: 'area-axis', x: pad.left - 8, y: gy + 4, 'text-anchor': 'end' },
+        svg
+      );
+      label.textContent = short(step * i);
+    }
+
+    // The line: a monotone curve through the months (never dips below zero), and the fill under it
+    const pts = months.map((m, i) => [x(i), y(m.words)]);
+    const n = pts.length;
+    const slopes = pts.slice(1).map((p, i) => (p[1] - pts[i][1]) / (p[0] - pts[i][0]));
+    const tangents = pts.map((_, i) => {
+      if (i === 0) return slopes[0];
+      if (i === n - 1) return slopes[n - 2];
+      return slopes[i - 1] * slopes[i] <= 0 ? 0 : (slopes[i - 1] + slopes[i]) / 2;
     });
+    for (let i = 0; i < n - 1; i++) {
+      if (slopes[i] === 0) {
+        tangents[i] = 0;
+        tangents[i + 1] = 0;
+        continue;
+      }
+      const a = tangents[i] / slopes[i];
+      const b = tangents[i + 1] / slopes[i];
+      const h = a * a + b * b;
+      if (h > 9) {
+        const t = 3 / Math.sqrt(h);
+        tangents[i] = t * a * slopes[i];
+        tangents[i + 1] = t * b * slopes[i];
+      }
+    }
+    let line = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < n - 1; i++) {
+      const dx = (pts[i + 1][0] - pts[i][0]) / 3;
+      line += ` C${pts[i][0] + dx},${pts[i][1] + tangents[i] * dx} ${pts[i + 1][0] - dx},${pts[i + 1][1] - tangents[i + 1] * dx} ${pts[i + 1][0]},${pts[i + 1][1]}`;
+    }
+    const base = y(0);
+    el(
+      'path',
+      { class: 'area-fill', d: `${line} L${pts[n - 1][0]},${base} L${pts[0][0]},${base} Z` },
+      svg
+    );
+    el('path', { class: 'area-line', d: line }, svg);
+
+    // The months below, a point on each month with words, the current one marked with its number
+    months.forEach((m, i) => {
+      const current = i === n - 1;
+      const name = new Date(m.year, m.month, 1).toLocaleDateString(locale, { month: 'short' });
+      const label = el(
+        'text',
+        {
+          class: `area-month${current ? ' is-current' : ''}`,
+          x: x(i),
+          y: height - 6,
+          'text-anchor': 'middle',
+        },
+        svg
+      );
+      label.textContent = name;
+      if (m.words || current) {
+        el(
+          'circle',
+          {
+            class: `area-point${current ? ' is-current' : ''}`,
+            cx: x(i),
+            cy: y(m.words),
+            r: current ? 5 : 3.5,
+          },
+          svg
+        );
+      }
+      if (current) {
+        const value = el(
+          'text',
+          { class: 'area-value', x: x(i), y: y(m.words) - 12, 'text-anchor': 'middle' },
+          svg
+        );
+        value.textContent = m.words.toLocaleString(locale);
+      }
+    });
+
+    // Hover: a guide line, the month's point and a tip with its words
+    const guide = el('line', { class: 'area-guide', y1: pad.top, y2: base }, svg);
+    const focus = el('circle', { class: 'area-focus', r: 5 }, svg);
+    const tip = document.createElement('div');
+    tip.className = 'area-tip';
+    const hide = () => {
+      guide.style.opacity = 0;
+      focus.style.opacity = 0;
+      tip.style.opacity = 0;
+    };
+    hide();
+    months.forEach((m, i) => {
+      const hit = el(
+        'rect',
+        { class: 'area-hit', x: pad.left + band * i, y: 0, width: band, height },
+        svg
+      );
+      hit.dataset.month = `${m.year}-${String(m.month + 1).padStart(2, '0')}`;
+      hit.dataset.words = m.words;
+      hit.addEventListener('mouseenter', () => {
+        guide.setAttribute('x1', x(i));
+        guide.setAttribute('x2', x(i));
+        focus.setAttribute('cx', x(i));
+        focus.setAttribute('cy', y(m.words));
+        tip.innerHTML = '<strong></strong><span></span>';
+        tip.firstChild.textContent = new Date(m.year, m.month, 1).toLocaleDateString(locale, {
+          month: 'long',
+          year: 'numeric',
+        });
+        tip.lastChild.textContent = `${m.words.toLocaleString(locale)} ${i18n.t('dashboard.words')}`;
+        tip.style.left = `${Math.min(Math.max(x(i), 60), width - 60)}px`;
+        // Above the point, or below it when the point is near the top
+        const below = y(m.words) < 64;
+        tip.classList.toggle('is-below', below);
+        tip.style.top = `${below ? y(m.words) + 12 : y(m.words) - 12}px`;
+        guide.style.opacity = 1;
+        focus.style.opacity = 1;
+        tip.style.opacity = 1;
+      });
+    });
+    svg.addEventListener('mouseleave', hide);
+    box.append(svg, tip);
   }
 
   setupDashboard() {
+    // The words chart is drawn for its size, again when the card changes size
+    if (this.wordsChart && typeof ResizeObserver === 'function') {
+      new ResizeObserver(() => this.drawWordsChart()).observe(this.wordsChart);
+    }
     this.calendarPrevBtn?.addEventListener('click', () => this.moveCalendar(-1));
     this.calendarNextBtn?.addEventListener('click', () => this.moveCalendar(1));
     this.calendarTodayBtn?.addEventListener('click', () => this.moveCalendar(0));

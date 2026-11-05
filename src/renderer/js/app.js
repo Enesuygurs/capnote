@@ -135,6 +135,7 @@ export class CapnoteApp {
     this.moodChart = document.getElementById('moodChart');
     this.weatherChart = document.getElementById('weatherChart');
     this.wordsChart = document.getElementById('wordsChart');
+    this.wordsTotal = document.getElementById('wordsTotal');
     this.noteEditor = document.getElementById('noteEditor');
     this.noteViewer = document.getElementById('noteViewer');
     this.notesList = document.getElementById('notesList');
