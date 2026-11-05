@@ -171,7 +171,9 @@
     "startupHome": "Home page",
     "startupNewNote": "New note",
     "quickNoteShortcut": "Quick note shortcut",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a new note, even while Capnote is in the background or the tray"
+    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a new note, even while Capnote is in the background or the tray",
+    "fileContextMenu": "Capnote in the right-click menu",
+    "fileContextMenuDesc": "“Edit with Capnote” on .md, .txt and .html files"
   },
   "modals": {
     "exportNote": "Export Note",
@@ -586,5 +588,16 @@
     "count": "{notes} notes · {links} links",
     "links": "{count} links",
     "empty": "No links between notes yet. Type [[ in a note and pick another note to link it; the links show here as a map."
+  },
+  "files": {
+    "reveal": "Show in folder",
+    "openFailed": "Could not open “{name}”",
+    "tooLarge": "“{name}” is too large (10 MB at most)",
+    "missing": "“{name}” was not found; it may have been moved or deleted",
+    "saveFailed": "Could not save “{name}”",
+    "conflict": "“{name}” was changed in another program. Overwrite it?",
+    "noLock": "File notes cannot be locked: the text is unencrypted in the file",
+    "contextMenuDev": "The right-click menu is added by the installed app only",
+    "contextMenuFailed": "Could not update the right-click menu"
   }
 }

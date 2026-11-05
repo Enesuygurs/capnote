@@ -24,6 +24,7 @@ import { registerExportIpc } from './export-pdf.js';
 import { startUpdater, registerUpdateIpc } from './updater.js';
 import { setQuickNoteShortcut, registerQuickNoteIpc } from './quick-note.js';
 import { registerDataTransferIpc } from './data-transfer.js';
+import { filesFromArgv, openFiles, registerFileIpc, setContextMenu } from './files.js';
 
 // Development mode is 'npm run dev' from a source checkout: hot reload and DevTools
 const isDev = !app.isPackaged && process.argv.includes('--dev');
@@ -44,7 +45,11 @@ if (!isPrimaryInstance) {
   );
   app.quit();
 }
-app.on('second-instance', () => showMainWindow());
+// Starting it again with a file ("Edit with Capnote") opens the file in the running one
+app.on('second-instance', (event, argv, workingDirectory) => {
+  showMainWindow();
+  openFiles(filesFromArgv(argv, workingDirectory));
+});
 
 registerUploadScheme();
 
@@ -128,6 +133,10 @@ registerExportIpc();
 registerUpdateIpc();
 registerQuickNoteIpc({ settings: () => getDataStore().read('settings') });
 registerDataTransferIpc();
+registerFileIpc({
+  settings: () => getDataStore().read('settings'),
+  notes: () => getDataStore().read('notes'),
+});
 
 app.whenReady().then(() => {
   if (!isPrimaryInstance) return;
@@ -136,6 +145,10 @@ app.whenReady().then(() => {
   createMainWindow({ darkMode: readDarkModePreference(), devTools: isDev });
   createTray();
   setQuickNoteShortcut(readQuickNotePreference());
+  // A file Capnote was started on, and the right-click menu entry (installed app, Windows)
+  openFiles(filesFromArgv(process.argv));
+  const settings = getDataStore().read('settings') || {};
+  if (settings.fileContextMenu !== false) setContextMenu(true, settings.language);
   startUpdater((state) => getMainWindow()?.webContents.send('updates:status', state));
 
   app.on('activate', () => {

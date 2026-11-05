@@ -70,6 +70,9 @@
       "target": "nsis",
       "icon": "assets/icons/capnote.ico"
     },
+    "nsis": {
+      "include": "build/installer.nsh"
+    },
     "mac": {
       "target": "dmg",
       "icon": "assets/icons/capnote-512.png"

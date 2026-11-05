@@ -301,12 +301,15 @@ export class NoteListFeature {
     div.title = title;
 
     const icon = note.isLocked
-      ? 'fa-lock'
+      ? 'fas fa-lock'
       : note.isPinned
-        ? 'fa-thumbtack tone-gold'
-        : 'fa-file-lines';
+        ? 'fas fa-thumbtack tone-gold'
+        : note.filePath
+          ? this.fileNoteIcon(note)
+          : 'fas fa-file-lines';
+    if (note.filePath) div.title = `${title}\n${note.filePath}`;
     div.innerHTML = `
-            <i class="fas ${icon} nav-icon"></i>
+            <i class="${icon} nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(title)}</span>
             ${note.isFavorite ? '<i class="fas fa-heart note-item-favorite tone-rose" aria-hidden="true"></i>' : ''}
         `;

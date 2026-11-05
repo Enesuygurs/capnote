@@ -25,6 +25,11 @@
 }
 
 /* ============ Formatting toolbar ============ */
+/* A file note is edited as the file's plain text, so it has no rich text toolbar */
+.note-editor.is-file-note .formatting-toolbar {
+  display: none;
+}
+
 /* No lines: the toolbar's own soft tint (--note-header) sets it apart from the title and the text */
 .formatting-toolbar {
   display: flex;

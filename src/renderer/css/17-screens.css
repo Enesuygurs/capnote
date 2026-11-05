@@ -33,6 +33,23 @@
   gap: var(--space-1);
 }
 
+/* A file note's file: its name, a click shows it in its folder */
+.viewer-file {
+  gap: var(--space-1);
+  cursor: pointer;
+}
+
+.viewer-file:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+/* A text file shows as it is: its own line breaks and spaces */
+.plain-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .list-card-main {
   flex: 1 1 240px;
   min-width: 0;

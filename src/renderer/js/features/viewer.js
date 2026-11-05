@@ -18,6 +18,9 @@ export class ViewerFeature {
                     <p>${i18n.t('messages.unlockFromList')}</p>
                 </div>
             `;
+    } else if (note.fileKind && this.fileNoteViewerHtml(note) !== null) {
+      // A text or HTML file shows as the file would
+      this.viewerText.innerHTML = this.fileNoteViewerHtml(note);
     } else {
       if (note.isMarkdown) {
         try {
@@ -36,6 +39,15 @@ export class ViewerFeature {
       this.refreshNoteLinks(this.viewerText);
     }
     this.renderBacklinks(note);
+    // A file note names its file; a click shows it in its folder
+    if (this.viewerFile) {
+      this.viewerFile.classList.toggle('hidden', !note.filePath);
+      if (note.filePath) {
+        this.viewerFile.querySelector('span').textContent = this.fileName(note);
+        this.viewerFile.title = `${note.filePath}\n${i18n.t('files.reveal')}`;
+        this.viewerFile.querySelector('i').className = this.fileNoteIcon(note);
+      }
+    }
 
     this.applyViewerFormatting(note.formatting);
 

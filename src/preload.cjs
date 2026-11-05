@@ -71,6 +71,16 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Close-to-tray preference
   getCloseToTray: () => ipcRenderer.invoke('get-close-to-tray'),
   setCloseToTray: (enabled) => ipcRenderer.invoke('set-close-to-tray', enabled),
+  // Text files edited as file notes ("Edit with Capnote"): the files to open, reading and writing
+  // them, showing one in its folder, and the right-click menu entry
+  files: {
+    takePending: () => ipcRenderer.invoke('files:take-pending'),
+    onOpen: (callback) => ipcRenderer.on('file:open', (event, file) => callback(file)),
+    read: (filePath) => ipcRenderer.invoke('files:read', filePath),
+    write: (payload) => ipcRenderer.invoke('files:write', payload),
+    reveal: (filePath) => ipcRenderer.invoke('files:reveal', filePath),
+    setContextMenu: (enabled) => ipcRenderer.invoke('files:context-menu', enabled),
+  },
   // Ctrl+Alt+N from anywhere opens the quick note window; its note comes here to be added, or to
   // be opened in the editor
   onQuickNote: (callback) => ipcRenderer.on('quick-note:add', (event, note) => callback(note)),

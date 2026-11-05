@@ -26,6 +26,8 @@ export const DEFAULT_SETTINGS = {
   closeToTray: true,
   // Ctrl+Alt+N anywhere in the system opens a new note
   quickNoteShortcut: true,
+  // "Edit with Capnote" in the right-click menu of .md, .txt and .html files (Windows)
+  fileContextMenu: true,
   lastViewedNoteId: null,
 };
 

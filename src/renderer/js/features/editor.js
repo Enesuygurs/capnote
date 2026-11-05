@@ -54,11 +54,12 @@ export class EditorFeature {
   }
 
   updateWordCount() {
-    // Use innerText to preserve visible line breaks from the rich editor
-    const text = (this.richEditor.innerText || this.richEditor.textContent || '').replace(
-      /\u00A0/g,
-      ' '
-    );
+    // A Markdown note (or a file note) is counted from its text editor; a rich one from the rich
+    // editor, whose innerText keeps the visible line breaks
+    const source = this.isMarkdownEditing()
+      ? this.markdownEditor.value
+      : this.richEditor.innerText || this.richEditor.textContent || '';
+    const text = source.replace(/\u00A0/g, ' ');
     const words = this.countWords(text);
     const chars = text.length;
 
@@ -131,6 +132,8 @@ export class EditorFeature {
 
     // Update favorite button state
     this.updateFavoriteButtons();
+    // A file note is edited as the file's plain text: the rich text toolbar does not apply
+    this.noteEditor?.classList.toggle('is-file-note', !!note.filePath);
     // Hide preview by default when loading into editor
     this.hideMarkdownPreview();
     // Show appropriate editor (markdownEditor for markdown notes)

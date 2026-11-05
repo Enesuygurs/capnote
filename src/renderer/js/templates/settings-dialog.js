@@ -274,6 +274,18 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <span class="toggle-slider"></span>
                 </label>
               </div>
+              <div class="setting-item" id="fileContextMenuItem">
+                <div class="setting-info">
+                  <label data-i18n="settings.fileContextMenu">Sağ tık menüsünde Capnote</label>
+                  <small data-i18n="settings.fileContextMenuDesc"
+                    >.md, .txt ve .html dosyalarında “Capnote ile düzenle”</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="fileContextMenuToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
             </div>
           </section>
         </div>

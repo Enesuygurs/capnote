@@ -171,7 +171,9 @@
     "startupHome": "Giriş sayfası",
     "startupNewNote": "Yeni not",
     "quickNoteShortcut": "Hızlı not kısayolu",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N, Capnote arka planda ya da tepsideyken bile yeni not açar"
+    "quickNoteShortcutDesc": "Ctrl+Alt+N, Capnote arka planda ya da tepsideyken bile yeni not açar",
+    "fileContextMenu": "Sağ tık menüsünde Capnote",
+    "fileContextMenuDesc": ".md, .txt ve .html dosyalarında “Capnote ile düzenle”"
   },
   "modals": {
     "exportNote": "Notu Dışa Aktar",
@@ -586,5 +588,16 @@
     "count": "{notes} not · {links} bağlantı",
     "links": "{count} bağlantı",
     "empty": "Notlar arasında henüz bağlantı yok. Bir notta [[ yazıp başka bir notu seçerek bağlantı ver; burada harita olarak görünür."
+  },
+  "files": {
+    "reveal": "Klasörde göster",
+    "openFailed": "“{name}” açılamadı",
+    "tooLarge": "“{name}” çok büyük (en fazla 10 MB)",
+    "missing": "“{name}” bulunamadı; taşınmış ya da silinmiş olabilir",
+    "saveFailed": "“{name}” kaydedilemedi",
+    "conflict": "“{name}” başka bir programda değiştirilmiş. Üzerine yazılsın mı?",
+    "noLock": "Dosya notları kilitlenemez: metin dosyada şifresiz duruyor",
+    "contextMenuDev": "Sağ tık menüsü yalnızca kurulu uygulamada eklenir",
+    "contextMenuFailed": "Sağ tık menüsü güncellenemedi"
   }
 }

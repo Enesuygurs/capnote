@@ -109,6 +109,11 @@ export class LockFeature {
   async toggleLock(noteId) {
     const note = this.notes.find((n) => n.id === noteId);
     if (!note) return;
+    // A file note's text is in its file, unencrypted, so locking it would protect nothing
+    if (note.filePath) {
+      this.showNotification(i18n.t('files.noLock'), 'warning');
+      return;
+    }
 
     if (note.isLocked) {
       // Unlock note - ask for password
