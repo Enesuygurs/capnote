@@ -6,6 +6,8 @@ import { i18n } from '../i18n.js';
 export class ArchiveFeature {
   // Archive or bring back notes; an archived note is no longer pinned
   async setArchived(notes, archived) {
+    // A file note is not archived (it is its file, kept where the file is)
+    if (archived) notes = notes.filter((n) => !this.isFileNote(n));
     if (!notes.length) return;
     notes.forEach((note) => {
       note.isArchived = archived;

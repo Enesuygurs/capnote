@@ -28,9 +28,6 @@ export const NOTE_EDITOR = /* HTML */ `
           >
             <i class="fas fa-file-code"></i>
           </button>
-          <button class="format-btn" id="toggleHtmlBtn" data-i18n-title="titles.htmlPreview">
-            <i class="fas fa-code"></i>
-          </button>
           <button class="format-btn" id="toggleSidebar" data-i18n-title="titles.toggleSidebar">
             <i class="fas fa-columns"></i>
           </button>
@@ -240,7 +237,6 @@ export const NOTE_EDITOR = /* HTML */ `
               data-i18n-placeholder="placeholders.noteContent"
             ></div>
             <div id="markdownPreview" class="markdown-preview hidden" aria-hidden="true"></div>
-            <div id="htmlPreview" class="html-preview hidden" aria-hidden="true"></div>
             <!-- Emoji panel (hidden by default) -->
             <div id="emojiPanel" class="emoji-panel menu hidden">
               <div class="emoji-panel-header">

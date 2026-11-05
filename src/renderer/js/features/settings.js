@@ -202,8 +202,6 @@ export class SettingsFeature {
     document.querySelectorAll('.swatch-btn').forEach((btn) => {
       btn.classList.toggle('active', (btn.dataset.color || '').toLowerCase() === color);
     });
-    // Links in the HTML preview use the accent color
-    this.refreshHtmlPreview();
   }
 
   applyFolderAccentSync(enabled) {
@@ -256,7 +254,6 @@ export class SettingsFeature {
     } else {
       document.documentElement.removeAttribute('data-theme');
     }
-    this.refreshHtmlPreview();
   }
 
   testNativeNotification() {

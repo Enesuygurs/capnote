@@ -52,7 +52,6 @@
     "insertTime": "Insert time",
     "insertImage": "Insert image (Browse)",
     "markdownPreview": "Markdown preview",
-    "htmlPreview": "HTML preview",
     "codeBlock": "Insert code block",
     "emoji": "Add Emoji",
     "toggleSidebar": "Toggle sidebar",
@@ -606,6 +605,9 @@
     "deleteFilesToo": "Also delete the {count} files (moves them to the Recycle Bin)",
     "trashed": "Note deleted, “{name}” moved to the Recycle Bin",
     "trashedMany": "Notes deleted, {count} files moved to the Recycle Bin",
-    "trashFailed": "Could not delete “{name}”; the file is still there"
+    "trashFailed": "Could not delete “{name}”; the file is still there",
+    "pathButton": "File Path",
+    "dropToOpen": "Open as a note",
+    "unsupported": "Unsupported file: {name}. Only .md, .txt and .html files can be opened"
   }
 }

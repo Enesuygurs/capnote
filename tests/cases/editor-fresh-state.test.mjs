@@ -27,7 +27,7 @@ export async function run() {
   );
   document.querySelector('.format-btn[data-align="center"]').classList.add('active');
   a.updateCustomDropdown('blockStyle', 'h3');
-  a.toggleHtmlMode();
+  a.toggleMarkdownMode();
 
   a.createNewNote();
   r.newNote = {

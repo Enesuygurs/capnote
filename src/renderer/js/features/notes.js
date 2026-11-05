@@ -364,7 +364,8 @@ export class NotesFeature {
 
   // Duplicate a note (the open one by default) and open the copy
   duplicateNote(note = this.currentNote) {
-    if (!note || this.isNoteLockedForView(note)) return;
+    // A file note is its file: it is not copied
+    if (!note || this.isNoteLockedForView(note) || this.isFileNote(note)) return;
 
     const duplicate = this.makeDuplicate(note);
     this.notes.unshift(duplicate);
@@ -380,7 +381,7 @@ export class NotesFeature {
   // Duplicate several notes; locked ones are skipped (they cannot be read without a password)
   duplicateNotes(notes) {
     const copies = notes
-      .filter((n) => !this.isNoteLockedForView(n))
+      .filter((n) => !this.isNoteLockedForView(n) && !this.isFileNote(n))
       .map((n) => this.makeDuplicate(n));
     if (!copies.length) return;
     this.notes.unshift(...copies);
@@ -498,6 +499,8 @@ export class NotesFeature {
   // version can be seen and restored. Edits close together merge into one entry, which keeps the
   // version from before the first of them. merge: false always starts a new entry (a restore).
   recordHistory(note, { merge = true } = {}) {
+    // A file note keeps no versions: its file is what it is
+    if (this.isFileNote(note)) return;
     const now = new Date();
     note.history = Array.isArray(note.history) ? note.history : [];
     const last = note.history[note.history.length - 1];

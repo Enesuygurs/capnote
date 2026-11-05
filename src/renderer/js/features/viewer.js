@@ -39,11 +39,16 @@ export class ViewerFeature {
       this.refreshNoteLinks(this.viewerText);
     }
     this.renderBacklinks(note);
-    // A file note shows its file's path; a click shows the file in its folder
+    // A file note is its file, not a full note: no copy, history, export or archive
+    ['duplicateNoteBtn', 'historyBtn', 'exportNoteBtn', 'archiveViewBtn'].forEach((id) => {
+      const btn = document.getElementById(id);
+      if (btn) btn.hidden = this.isFileNote(note);
+    });
+    // A file note has a "File path" button: its path on hover, a click shows the file in its folder
     if (this.viewerFile) {
       this.viewerFile.classList.toggle('hidden', !note.filePath);
       if (note.filePath) {
-        this.viewerFile.querySelector('span').textContent = note.filePath;
+        this.viewerFile.querySelector('span').textContent = i18n.t('files.pathButton');
         this.viewerFile.title = `${note.filePath}\n${i18n.t('files.reveal')}`;
         this.viewerFile.querySelector('i').className = this.fileNoteIcon(note);
       }
@@ -153,7 +158,8 @@ export class ViewerFeature {
   // title and a way to view it, then the note's creation
   openNoteHistory() {
     const note = this.versionPreview?.note || this.currentNote;
-    if (!note || this.isNoteLockedForView(note)) return;
+    // A file note keeps no history
+    if (!note || this.isNoteLockedForView(note) || this.isFileNote(note)) return;
     const hist = note.history || [];
     this.historyBody.innerHTML = '';
 

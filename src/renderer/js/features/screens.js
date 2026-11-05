@@ -96,15 +96,8 @@ export class ScreensFeature {
     this.resetFormState();
     // Each note starts with an empty reminder form
     this.resetReminderForm?.();
-    // Ensure any previews are hidden when entering editor
+    // Ensure the preview is hidden when entering editor
     this.hideMarkdownPreview();
-    if (this.htmlPreview) {
-      this.hideHtmlPreview();
-      // clear iframe content if exists
-      const iframe = this.htmlPreview.querySelector('iframe.preview-iframe');
-      if (iframe) iframe.srcdoc = '';
-      this.htmlPreview.innerHTML = '';
-    }
   }
 
   showViewer() {

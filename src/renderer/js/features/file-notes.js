@@ -170,6 +170,50 @@ export class FileNotesFeature {
     if (note?.filePath) window.electronAPI?.files?.reveal(note.filePath);
   }
 
+  // Files dragged from the desktop onto the notes list open as file notes. Only a drag that carries
+  // files is taken here; moving notes and folders within the list goes on as before.
+  setupFileDrop() {
+    const area = this.sidebarContent;
+    const list = document.getElementById('notesListContainer');
+    if (!area || !list) return;
+    const carriesFiles = (e) => [...(e.dataTransfer?.types || [])].includes('Files');
+    const clear = () => list.classList.remove('drag-over');
+    // Both are taken: the browser picks the drop target on dragenter, so over a note row (which
+    // has drag handlers of its own) the drop would otherwise not come
+    const accept = (e) => {
+      if (!carriesFiles(e)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      e.dataTransfer.dropEffect = 'copy';
+      list.dataset.dropLabel = i18n.t('files.dropToOpen');
+      list.classList.add('drag-over');
+    };
+    area.addEventListener('dragenter', accept, true);
+    area.addEventListener('dragover', accept, true);
+    area.addEventListener('dragleave', (e) => {
+      if (carriesFiles(e) && !area.contains(e.relatedTarget)) clear();
+    });
+    area.addEventListener(
+      'drop',
+      async (e) => {
+        if (!carriesFiles(e)) return;
+        e.preventDefault();
+        e.stopPropagation();
+        clear();
+        const files = [...(e.dataTransfer.files || [])];
+        if (!files.length) return;
+        const result = await window.electronAPI.files.openDropped(files);
+        if (result?.unsupported?.length) {
+          this.showNotification(
+            i18n.t('files.unsupported', { name: result.unsupported.join(', ') }),
+            'warning'
+          );
+        }
+      },
+      true
+    );
+  }
+
   async setupFileNotes() {
     const api = window.electronAPI?.files;
     if (!api) return;
@@ -184,6 +228,7 @@ export class FileNotesFeature {
     }
     this.viewerFile?.addEventListener('click', () => this.revealFileNote());
     api.onOpen((file) => this.openExternalFile(file));
+    this.setupFileDrop();
     // The files Capnote was started on, once the page is ready
     const files = await api.takePending();
     (files || []).forEach((file) => this.openExternalFile(file));

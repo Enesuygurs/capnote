@@ -1,16 +1,41 @@
-// Editing file notes: the editor has no sidebar until it is opened (the setting for notes stays),
-// only the file kind's own preview button shows, the preview buttons are lit only while their
-// preview is open, and an HTML file's page shows in the preview whichever preview came before.
-// Titles keep the extension, also for file notes made before (unless the title was changed), and
-// deleting a file note offers to delete the file too (an ordinary note does not).
+// A file note is its file, not a full note: in the editor it has no toolbar, no sidebar and no
+// focus mode, and of the view buttons only the Markdown preview, for a Markdown file; it cannot be
+// copied, archived, exported, locked or looked back through its history, and none of those show.
+// Its viewer has a "File path" button. Titles keep the extension, also for file notes made before
+// (unless the title was changed); deleting one offers to delete the file too. Dragging files over
+// the notes list shows where they open.
 
 export async function run() {
   const a = window.app;
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
-  const shown = (el) => getComputedStyle(el).display !== 'none';
+  const shown = (el) => !!el && getComputedStyle(el).display !== 'none';
   const lit = (el) => el.classList.contains('active');
-  const page =
-    '<!doctype html><html><head><title>T</title></head><body><h1>Hello page</h1></body></html>';
+  const byId = (id) => document.getElementById(id);
+  const editorButtons = () => ({
+    md: shown(a.toggleMarkdownBtn),
+    sidebarBtn: shown(byId('toggleSidebar')),
+    focus: shown(byId('focusModeBtn')),
+    sidebar: shown(a.editorSidebar),
+    toolbar: shown(document.querySelector('.formatting-toolbar')),
+  });
+  const viewerButtons = () =>
+    Object.fromEntries(
+      ['duplicateNoteBtn', 'historyBtn', 'exportNoteBtn', 'archiveViewBtn'].map((id) => [
+        id,
+        shown(byId(id)),
+      ])
+    );
+  const menuItems = (note) => {
+    a.showNoteContextMenu(100, 100, note.id);
+    const items = Object.fromEntries(
+      ['lock', 'duplicate', 'archive', 'rename', 'delete'].map((action) => [
+        action,
+        shown(a.noteContextMenu.querySelector(`[data-action="${action}"]`)),
+      ])
+    );
+    a.hideNoteContextMenu();
+    return items;
+  };
   const open = async (name, content) => {
     a.openExternalFile({
       ok: true,
@@ -23,62 +48,97 @@ export async function run() {
     await wait(150);
   };
   const r = {};
-
-  // The sidebar: closed for a file note; opened there, it does not change the setting
   const sidebarSetting = a.settings.editorSidebarVisible;
-  await open('index.html', page);
-  r.title = a.currentNote.title;
-  r.sidebar = { start: shown(a.editorSidebar) };
-  a.toggleEditorSidebar();
-  r.sidebar.toggled = shown(a.editorSidebar);
-  r.sidebar.settingKept = a.settings.editorSidebarVisible === sidebarSetting;
 
-  // Buttons for an HTML file: only the page preview
-  r.htmlButtons = { md: shown(a.toggleMarkdownBtn), html: shown(a.toggleHtmlBtn) };
-  // Lit only while open; the page shows even after the Markdown preview covered the editor
-  a.toggleMarkdownBtn.click();
-  r.mdOn = lit(a.toggleMarkdownBtn);
-  a.toggleMarkdownBtn.click();
-  r.mdOff = lit(a.toggleMarkdownBtn);
-  a.toggleMarkdownBtn.click();
-  a.toggleHtmlBtn.click();
-  const frame = a.htmlPreview.querySelector('iframe');
-  r.page = { lit: lit(a.toggleHtmlBtn), mdLit: lit(a.toggleMarkdownBtn), srcdoc: frame.srcdoc };
-  a.toggleHtmlBtn.click();
-  a.toggleHtmlBtn.click();
-  r.pageAgain = frame.srcdoc === page && !a.htmlPreview.classList.contains('hidden');
-  a.toggleHtmlBtn.click();
-  r.editorBack = !a.markdownEditor.classList.contains('hidden');
+  // An HTML file: only its text, no buttons, no sidebar (not even when asked for)
+  await open('index.html', '<!doctype html><html><body><h1>Hi</h1></body></html>');
+  const htmlNote = a.currentNote;
+  r.title = htmlNote.title;
+  r.html = editorButtons();
+  a.toggleEditorSidebar();
+  r.sidebarAsked = { shown: shown(a.editorSidebar), settingKept: a.settings.editorSidebarVisible };
   a.cancelEdit();
 
-  // The other kinds' buttons; an ordinary note has both and its sidebar as set
+  // A Markdown file: the Markdown preview, lit only while it is open
   await open('plan.md', '# Plan');
-  r.mdButtons = { md: shown(a.toggleMarkdownBtn), html: shown(a.toggleHtmlBtn) };
-  r.mdSidebar = shown(a.editorSidebar);
+  const mdNote = a.currentNote;
+  r.md = editorButtons();
+  a.toggleMarkdownBtn.click();
+  r.mdOn = {
+    lit: lit(a.toggleMarkdownBtn),
+    preview: !a.markdownPreview.classList.contains('hidden'),
+  };
+  a.toggleMarkdownBtn.click();
+  r.mdOff = {
+    lit: lit(a.toggleMarkdownBtn),
+    editor: !a.markdownEditor.classList.contains('hidden'),
+  };
+  a.saveNote(true);
+  r.noHistory = mdNote.history.map((h) => h.type);
   a.cancelEdit();
   await open('list.txt', 'a\nb');
-  r.txtButtons = { md: shown(a.toggleMarkdownBtn), html: shown(a.toggleHtmlBtn) };
+  r.txt = editorButtons();
   a.cancelEdit();
+
+  // An ordinary note keeps all of it
   a.createNewNote();
-  r.plainNote = {
-    md: shown(a.toggleMarkdownBtn),
-    html: shown(a.toggleHtmlBtn),
-    sidebar: shown(a.editorSidebar) === sidebarSetting,
-  };
+  r.plain = editorButtons();
   a.noteTitle.value = 'Plain';
+  a.richEditor.innerHTML = '<p>text</p>';
   a.saveNote(true);
   const plain = a.currentNote;
+  // Esc keeps a new note that has something in it (Cancel would delete it)
+  a.escapeEditor();
+
+  // The viewer: no copy, history, export or archive for a file note; a "File path" button
+  a.selectNote(htmlNote);
+  await wait(100);
+  r.viewer = {
+    file: viewerButtons(),
+    chip: a.viewerFile.textContent.trim(),
+    chipTitle: a.viewerFile.title.split('\n')[0],
+  };
+  a.selectNote(plain);
+  await wait(100);
+  r.viewer.plain = viewerButtons();
+  r.viewer.plainChip = shown(a.viewerFile);
+  r.menu = { file: menuItems(htmlNote), plain: menuItems(plain) };
+
+  // Nor can it be done another way (shortcuts, the selection)
+  const count = a.notes.length;
+  a.duplicateNote(htmlNote);
+  a.duplicateNotes([htmlNote, mdNote]);
+  await a.setArchived([htmlNote], true);
+  a.selectNote(htmlNote);
+  await wait(100);
+  a.showExportModal();
+  a.openNoteHistory();
+  r.refused = {
+    copies: a.notes.length - count,
+    archived: !!htmlNote.isArchived,
+    exportOpen: !a.exportModal.classList.contains('hidden'),
+    historyOpen: [...document.querySelectorAll('.modal:not(.hidden)')].length,
+  };
 
   // Earlier file notes get their extension; a title the user changed stays
-  const old = { ...a.notes.find((n) => n.title === 'list.txt'), id: a.newId(), title: 'old' };
-  old.filePath = 'C:\\Docs\\old.md';
-  const renamed = { ...old, id: a.newId(), title: 'My notes', filePath: 'C:\\Docs\\mine.md' };
+  const old = { ...mdNote, id: a.newId(), title: 'old', filePath: 'C:\\Docs\\old.md' };
+  const renamed = { ...mdNote, id: a.newId(), title: 'My notes', filePath: 'C:\\Docs\\mine.md' };
   r.migrate = [
     a.addExtensionToTitle(old),
     old.title,
     a.addExtensionToTitle(renamed),
     renamed.title,
   ];
+
+  // Files dragged over the notes list: it shows they open there
+  const dt = new DataTransfer();
+  dt.items.add(new File(['x'], 'drop.md'));
+  a.sidebarContent.dispatchEvent(
+    new DragEvent('dragover', { dataTransfer: dt, bubbles: true, cancelable: true })
+  );
+  const list = byId('notesListContainer');
+  r.dragOver = { marked: list.classList.contains('drag-over'), label: list.dataset.dropLabel };
+  list.classList.remove('drag-over');
 
   // Deleting: a file note offers its file (unticked); an ordinary note does not
   const option = () => {
@@ -87,49 +147,51 @@ export async function run() {
       ? null
       : { label: row.textContent.trim(), ticked: row.querySelector('input').checked };
   };
-  const htmlNote = a.notes.find((n) => n.title === 'index.html');
   await a.deleteNoteById(htmlNote.id);
   r.deleteFileNote = option();
   a.hideModal(a.confirmModal);
   await a.deleteNoteById(plain.id);
   r.deletePlainNote = option();
   a.hideModal(a.confirmModal);
-  // Ticked: the note goes and the file is asked to go too (this file is not one Capnote opened,
-  // so the main process refuses and the note says so)
-  await a.deleteNoteById(htmlNote.id);
-  a.confirmModal.querySelector('#confirmOptionCheck').checked = true;
-  document.getElementById('confirmBtn').click();
-  await wait(200);
-  r.deleted = {
-    gone: !a.notes.includes(htmlNote),
-    toast: document.querySelector('.notification')?.textContent.trim(),
-  };
+  r.sidebarSetting = sidebarSetting;
   return r;
 }
 
+const noButtons = { md: false, sidebarBtn: false, focus: false, sidebar: false, toolbar: false };
+
 export const expected = {
   title: 'index.html',
-  sidebar: { start: false, toggled: true, settingKept: true },
-  htmlButtons: { md: false, html: true },
-  mdOn: true,
-  mdOff: false,
-  page: {
-    lit: true,
-    mdLit: false,
-    srcdoc:
-      '<!doctype html><html><head><title>T</title></head><body><h1>Hello page</h1></body></html>',
+  html: noButtons,
+  sidebarAsked: { shown: false, settingKept: true },
+  md: { ...noButtons, md: true },
+  mdOn: { lit: true, preview: true },
+  mdOff: { lit: false, editor: true },
+  noHistory: ['created'],
+  txt: noButtons,
+  plain: { md: true, sidebarBtn: true, focus: true, sidebar: true, toolbar: true },
+  viewer: {
+    file: {
+      duplicateNoteBtn: false,
+      historyBtn: false,
+      exportNoteBtn: false,
+      archiveViewBtn: false,
+    },
+    chip: 'Dosya Yolu',
+    chipTitle: 'C:\\Docs\\index.html',
+    plain: { duplicateNoteBtn: true, historyBtn: true, exportNoteBtn: true, archiveViewBtn: true },
+    plainChip: false,
   },
-  pageAgain: true,
-  editorBack: true,
-  mdButtons: { md: true, html: false },
-  mdSidebar: false,
-  txtButtons: { md: false, html: false },
-  plainNote: { md: true, html: true, sidebar: true },
+  menu: {
+    file: { lock: false, duplicate: false, archive: false, rename: true, delete: true },
+    plain: { lock: true, duplicate: true, archive: true, rename: true, delete: true },
+  },
+  refused: { copies: 0, archived: false, exportOpen: false, historyOpen: 0 },
   migrate: [true, 'old.md', false, 'My notes'],
+  dragOver: { marked: true, label: 'Not olarak aç' },
   deleteFileNote: {
     label: /^“index\.html” dosyasını da sil \(Geri Dönüşüm Kutusu.na taşınır\)$/,
     ticked: false,
   },
   deletePlainNote: null,
-  deleted: { gone: true, toast: /“index.html” silinemedi/ },
+  sidebarSetting: true,
 };

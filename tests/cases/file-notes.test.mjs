@@ -1,7 +1,7 @@
 // File notes ("Edit with Capnote"): a file the main process sends becomes a note linked to it and
 // opens in the editor as the file's plain text (no rich text toolbar), the counter counts it, a text
 // file shows as it is and an HTML file as its page; the same file again updates that note instead of
-// adding another, a file note cannot be locked, and its copy is a note of its own.
+// adding another, and a file note cannot be locked or copied.
 // Reading and writing the file itself is the main process's (src/main/files.js).
 export async function run() {
   const a = window.app;
@@ -59,13 +59,13 @@ export async function run() {
   a.cancelEdit();
   r.html = a.viewerText.innerHTML;
 
-  // Not lockable; a copy is not linked to the file
+  // Not lockable, not copied
   const htmlNote = a.currentNote;
   await a.toggleLock(htmlNote.id);
   r.locked = htmlNote.isLocked;
+  const count = a.notes.length;
   a.duplicateNote(htmlNote);
-  const copy = a.notes[0];
-  r.copy = { linked: !!copy.filePath, kind: copy.fileKind || null };
+  r.copies = a.notes.length - count;
 
   // A file that could not be read says so
   a.openExternalFile({ ok: false, error: 'too-large', path: 'C:\\Docs\\big.md' });
@@ -85,11 +85,11 @@ export const expected = {
   again: { sameNote: true, fileNotes: 1, text: '# Plan\n\n- one\n' },
   txt: {
     shown: 'line one\n  indented\n\nlast',
-    chip: 'C:\\Docs\\notes.txt',
+    chip: 'Dosya Yolu',
     icon: /fa-file nav-icon/,
   },
   html: '<h1>Hi</h1><p>A page</p>',
   locked: false,
-  copy: { linked: false, kind: null },
+  copies: 0,
   tooLarge: /“big.md” çok büyük/,
 };
