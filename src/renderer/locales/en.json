@@ -440,7 +440,9 @@
     "words": "words",
     "no_mood": "No note has a mood yet",
     "no_weather": "No note has the weather yet",
-    "wordsTotal": "{count} words in 12 months"
+    "wordsTotal": "{count} words in 12 months",
+    "dayNo_mood": "No mood chosen for this day",
+    "dayNo_weather": "No weather chosen for this day"
   },
   "noteTemplates": {
     "choose": "New note from a template",

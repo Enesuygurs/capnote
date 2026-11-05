@@ -60,8 +60,19 @@ export async function run() {
     (t) => t.textContent
   );
   result.dayInWordsCard = [a.wordsCard.contains(a.calendarDayNotes), chartShown()];
+  // Mood and weather count the chosen day only, and their headers name it
+  const moodRows = () =>
+    [...a.moodChart.querySelectorAll('.bar-row')].map(
+      (r) => r.querySelector('.bar-value').textContent
+    );
+  result.dayMoods = {
+    rows: moodRows(),
+    header: a.moodTotal.textContent,
+    weather: a.weatherChart.textContent.trim(),
+  };
   day('2026-06-14').click();
   result.chartBack = [chartShown(), a.calendarDayNotes.classList.contains('hidden')];
+  result.allMoodsBack = moodRows().length;
   day('2026-06-14').click();
   // The previous month
   a.calendarPrevBtn.click();
@@ -94,6 +105,12 @@ export const expected = {
   wordsTotal: '200 kelime, son 12 ay',
   dayList: ['Yesterday'],
   dayInWordsCard: [true, false],
+  dayMoods: {
+    rows: ['1 · 100%'],
+    header: '14 Haziran · 1 not',
+    weather: 'Bu gün için hava durumu seçilmemiş',
+  },
+  allMoodsBack: 3,
   chartBack: [true, true],
   previousMonthMood: 'tired',
   backToJune: 'Haziran 2026',

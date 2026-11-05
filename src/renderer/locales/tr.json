@@ -440,7 +440,9 @@
     "words": "kelime",
     "no_mood": "Henüz ruh hali seçilmiş not yok",
     "no_weather": "Henüz hava durumu seçilmiş not yok",
-    "wordsTotal": "{count} kelime, son 12 ay"
+    "wordsTotal": "{count} kelime, son 12 ay",
+    "dayNo_mood": "Bu gün için ruh hali seçilmemiş",
+    "dayNo_weather": "Bu gün için hava durumu seçilmemiş"
   },
   "noteTemplates": {
     "choose": "Şablondan yeni not",

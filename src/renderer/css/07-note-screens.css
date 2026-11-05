@@ -442,6 +442,12 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* For a day chosen in the calendar, its date in the accent text */
+.chart-card-total.is-day {
+  color: var(--accent-text);
+  font-weight: 500;
+}
+
 .chart-card .section-label {
   display: block;
   margin-bottom: var(--space-3);

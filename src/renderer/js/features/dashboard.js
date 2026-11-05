@@ -67,10 +67,10 @@ export class DashboardFeature {
     return months;
   }
 
-  // How many notes have each mood (or weather), most first
-  spreadOf(field, findButton) {
+  // How many notes have each mood (or weather), most first (all notes, or the ones given)
+  spreadOf(field, findButton, notes = this.notes) {
     const counts = new Map();
-    this.notes.forEach((note) => {
+    notes.forEach((note) => {
       if (note[field]) counts.set(note[field], (counts.get(note[field]) || 0) + 1);
     });
     return [...counts.entries()]
@@ -88,20 +88,36 @@ export class DashboardFeature {
       day: 'numeric',
     });
     this.renderStatTiles();
+    // The calendar draws the chosen day's notes and the mood and weather cards with it
     this.renderCalendar();
+    this.renderWordsChart();
+  }
+
+  // Mood and weather over all notes, or over the chosen day's when a day is chosen in the
+  // calendar; the cards' headers then name the day
+  renderSpreads() {
+    const key = this.calendarSelectedDay;
+    const notes = key ? this.notesOfDay(key) : this.notes;
+    const day = key
+      ? new Date(`${key}T12:00:00`).toLocaleDateString(this.getLocale(), {
+          day: 'numeric',
+          month: 'long',
+        })
+      : null;
     this.renderBarList(
       this.moodChart,
-      this.spreadOf('mood', this.findMoodButton),
+      this.spreadOf('mood', this.findMoodButton, notes),
       'mood',
-      this.moodTotal
+      this.moodTotal,
+      day
     );
     this.renderBarList(
       this.weatherChart,
-      this.spreadOf('weather', this.findWeatherButton),
+      this.spreadOf('weather', this.findWeatherButton, notes),
       'weather',
-      this.weatherTotal
+      this.weatherTotal,
+      day
     );
-    this.renderWordsChart();
   }
 
   renderStatTiles() {
@@ -250,6 +266,7 @@ export class DashboardFeature {
     const notes = key ? this.notesOfDay(key) : [];
     this.calendarDayNotes.classList.toggle('hidden', !notes.length);
     this.wordsCard?.classList.toggle('is-showing-day', notes.length > 0);
+    this.renderSpreads();
     if (!notes.length) return;
     this.calendarDayLabel.textContent = `${new Date(`${key}T12:00:00`).toLocaleDateString(
       this.getLocale(),
@@ -283,14 +300,19 @@ export class DashboardFeature {
   // One bar per mood (or weather): its icon in its own color and its name say which it is;
   // the bars share one color, since they show one measure
   // Each mood (or weather) as a tile: its icon on a tint of its color, its name and share, and a
-  // bar in its color; the card's header says how many notes have one
-  renderBarList(container, entries, field, totalLabel) {
+  // bar in its color; the card's header says how many notes have one, and for a chosen day, which
+  // day it is
+  renderBarList(container, entries, field, totalLabel, day = null) {
     container.innerHTML = '';
     const total = entries.reduce((sum, e) => sum + e.count, 0);
-    if (totalLabel)
-      totalLabel.textContent = total ? i18n.t('tags.notesCount', { count: total }) : '';
+    if (totalLabel) {
+      const count = total ? i18n.t('tags.notesCount', { count: total }) : '';
+      totalLabel.textContent = day ? [day, count].filter(Boolean).join(' · ') : count;
+      totalLabel.classList.toggle('is-day', !!day);
+    }
     if (!entries.length) {
-      container.innerHTML = `<p class="chart-empty">${i18n.t(`dashboard.no_${field}`)}</p>`;
+      const empty = day ? `dashboard.dayNo_${field}` : `dashboard.no_${field}`;
+      container.innerHTML = `<p class="chart-empty">${i18n.t(empty)}</p>`;
       return;
     }
     const max = entries[0].count;
