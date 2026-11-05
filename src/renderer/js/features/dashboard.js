@@ -332,9 +332,9 @@ export class DashboardFeature {
   }
 
   // Words per month as an area chart: the last 12 months as a smooth line in the accent over a fill
-  // that fades down, on a grid with its values; the current month's point is marked with its number.
-  // The grid and the months are drawn even with no words, so the card is never empty. Hovering a
-  // month shows a guide line and the month's words.
+  // that fades down, on a grid with its values; the current month's point is filled. There are no
+  // numbers on the chart itself. The grid and the months are drawn even with no words, so the card
+  // is never empty. Hovering a month shows a guide line and the month's words.
   renderWordsChart() {
     this.wordsMonths = this.monthlyWords();
     const total = this.wordsMonths.reduce((sum, m) => sum + m.words, 0);
@@ -447,7 +447,7 @@ export class DashboardFeature {
     );
     el('path', { class: 'area-line', d: line }, svg);
 
-    // The months below, a point on each month with words, the current one marked with its number
+    // The months below, a point on each month with words, the current one filled
     months.forEach((m, i) => {
       const current = i === n - 1;
       const name = new Date(m.year, m.month, 1).toLocaleDateString(locale, { month: 'short' });
@@ -473,14 +473,6 @@ export class DashboardFeature {
           },
           svg
         );
-      }
-      if (current) {
-        const value = el(
-          'text',
-          { class: 'area-value', x: x(i), y: y(m.words) - 12, 'text-anchor': 'middle' },
-          svg
-        );
-        value.textContent = m.words.toLocaleString(locale);
       }
     });
 

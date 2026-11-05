@@ -739,8 +739,8 @@
 
 /* Words per month: an area chart. A 2px line in the accent over a fill of the accent fading down,
    a recessive grid with its values on the left, the months below (the current one in the accent
-   text); the current month's point filled with its number above. Hover: a guide line, a point
-   and a tip. */
+   text); the current month's point filled, no numbers on the chart. Hover: a guide line, a point
+   and a tip with the month's words. */
 .area-chart {
   position: relative;
   min-height: 140px;
@@ -801,12 +801,6 @@
 .area-point.is-current {
   fill: var(--accent-color);
   stroke: var(--surface);
-}
-
-.area-value {
-  fill: var(--text-strong);
-  font-size: var(--fs-sm);
-  font-weight: 600;
 }
 
 .area-hit {
