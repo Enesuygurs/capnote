@@ -37,25 +37,31 @@
   <body>
     <div class="titlebar">
       <!-- The title spans the whole bar and is part of the drag area. It comes first: the window
-           sets drag areas in page order, so the buttons after it stay clickable on top of it -->
+           sets drag areas in page order, so the buttons after it stay clickable on top of it.
+           The bar's buttons are for the mouse, like a window's own: Tab does not stop on them -->
       <span class="titlebar-title">Capnote</span>
       <div class="titlebar-start">
-        <button class="hamburger-btn" id="hamburgerBtn" data-i18n-title="titles.toggleSidebar">
+        <button
+          class="hamburger-btn"
+          id="hamburgerBtn"
+          data-i18n-title="titles.toggleSidebar"
+          tabindex="-1"
+        >
           <i class="fas fa-bars"></i>
         </button>
       </div>
       <div class="titlebar-controls">
-        <button class="titlebar-button minimize" id="minimizeBtn">
+        <button class="titlebar-button minimize" id="minimizeBtn" tabindex="-1">
           <svg class="titlebar-icon" viewBox="0 0 14 14" aria-hidden="true">
             <rect x="2" y="9" width="10" height="2" />
           </svg>
         </button>
-        <button class="titlebar-button maximize" id="maximizeBtn">
+        <button class="titlebar-button maximize" id="maximizeBtn" tabindex="-1">
           <svg class="titlebar-icon" viewBox="0 0 14 14" aria-hidden="true">
             <path d="M2 2h10v10H2zM4 4v6h6V4z" fill-rule="evenodd" />
           </svg>
         </button>
-        <button class="titlebar-button close" id="closeBtn">
+        <button class="titlebar-button close" id="closeBtn" tabindex="-1">
           <i class="fas fa-times"></i>
         </button>
       </div>

@@ -238,6 +238,28 @@ export class UiFeature {
   }
 
   setupKeyboardShortcuts() {
+    // A Tab that reaches the window just as it comes forward (switching to it with Alt+Tab, opening
+    // it from the keyboard) is not meant for the page: without this it would put the focus, and its
+    // ring, on the first button
+    let focusedAt = 0;
+    window.addEventListener('focus', () => {
+      focusedAt = Date.now();
+    });
+    document.addEventListener(
+      'keydown',
+      (e) => {
+        if (
+          e.key === 'Tab' &&
+          Date.now() - focusedAt < 300 &&
+          document.activeElement === document.body
+        ) {
+          e.preventDefault();
+          e.stopImmediatePropagation();
+        }
+      },
+      true
+    );
+
     document.addEventListener('keydown', (e) => {
       const dialogOpen = !!document.querySelector('.modal:not(.hidden)');
       if ((e.ctrlKey || e.metaKey) && !dialogOpen) {
