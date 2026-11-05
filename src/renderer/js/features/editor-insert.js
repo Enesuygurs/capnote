@@ -204,8 +204,45 @@ export class EditorInsertFeature {
     this.trackContentChanges();
   }
 
+  // Images on the clipboard (a screenshot, an image copied from a page, or an image file copied in
+  // the file manager) go into the uploads and into the note at the caret
+  async pasteImages(files) {
+    const extensions = { 'image/jpeg': 'jpg', 'image/svg+xml': 'svg' };
+    for (const file of files) {
+      let src = null;
+      try {
+        // A file copied in the file manager has a path: it is copied as a dropped file is
+        src = await window.electronAPI.saveDroppedFile(file);
+        if (!src) {
+          // An image with no file of its own (a screenshot): its data is written to the uploads
+          const ext = extensions[file.type] || file.type.split('/')[1]?.replace(/\W/g, '') || 'png';
+          const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-pasted.${ext}`;
+          const data = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(file);
+          });
+          if (await window.electronAPI.uploads.write({ [name]: data })) {
+            src = `capnote-file://upload/${encodeURIComponent(name)}`;
+          }
+        }
+      } catch (err) {
+        console.error('Failed to paste image', err);
+      }
+      if (src) this.insertImageAtSelection(src, file.name || '');
+    }
+    this.trackContentChanges();
+  }
+
   handlePaste(e) {
     e.preventDefault();
+    // An image on the clipboard is pasted as an image (a copied web image also carries its text)
+    const images = [...(e.clipboardData?.files || [])].filter((f) => f.type.startsWith('image/'));
+    if (images.length) {
+      this.pasteImages(images);
+      return;
+    }
     const text = e.clipboardData.getData('text/plain');
 
     // If there's no selection or no richEditor, fallback to default insert
