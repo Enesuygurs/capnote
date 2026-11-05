@@ -2,19 +2,19 @@
 // notes too), without archived notes and links to missing notes. Lone notes show with "All", a
 // note opens with a click, and with no links the page says how to make one.
 
-const at = new Date().toISOString();
-const note = (id, title, content = '', extra = {}) => ({
-  id,
-  title,
-  content,
-  createdAt: at,
-  updatedAt: at,
-  tags: [],
-  ...extra,
-});
-const link = (id) => `<p><a class="note-link" data-note-id="${id}" href="#">x</a></p>`;
-
 export async function seed() {
+  // The seed runs in the page on its own, so its helpers are inside it
+  const at = new Date().toISOString();
+  const note = (id, title, content = '', extra = {}) => ({
+    id,
+    title,
+    content,
+    createdAt: at,
+    updatedAt: at,
+    tags: [],
+    ...extra,
+  });
+  const link = (id) => `<p><a class="note-link" data-note-id="${id}" href="#">x</a></p>`;
   await window.electronAPI.storage.save('notes', [
     note('a', 'Plan', link('b') + link('c') + link('a') + link('gone')),
     note('b', 'Bütçe', link('a')),
