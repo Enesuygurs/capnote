@@ -28,6 +28,8 @@ export const DEFAULT_SETTINGS = {
   quickNoteShortcut: true,
   // "Edit with Capnote" in the right-click menu of .md, .txt and .html files (Windows)
   fileContextMenu: true,
+  // Drawing with the graphics card; off uses a little less memory (applies after a restart)
+  hardwareAcceleration: true,
   lastViewedNoteId: null,
 };
 

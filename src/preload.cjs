@@ -60,6 +60,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   setStartAtLogin: (enabled) => ipcRenderer.invoke('set-start-at-login', enabled),
   // App version and updates (GitHub Releases, installed Windows and Linux builds)
   appInfo: () => ipcRenderer.invoke('app:info'),
+  relaunch: () => ipcRenderer.invoke('app:relaunch'),
   updates: {
     state: () => ipcRenderer.invoke('updates:state'),
     check: () => ipcRenderer.invoke('updates:check'),

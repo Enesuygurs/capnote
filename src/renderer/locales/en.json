@@ -173,7 +173,10 @@
     "quickNoteShortcut": "Quick note shortcut",
     "quickNoteShortcutDesc": "Ctrl+Alt+N opens a small always-on-top note window in the corner of the screen, from anywhere",
     "fileContextMenu": "Capnote in the right-click menu",
-    "fileContextMenuDesc": "“Edit with Capnote” on .md, .txt and .html files"
+    "fileContextMenuDesc": "“Edit with Capnote” on .md, .txt and .html files",
+    "hardwareAcceleration": "Hardware acceleration",
+    "hardwareAccelerationDesc": "Draws the window with the graphics card. Turning it off uses a little less memory.",
+    "hardwareAccelerationRestart": "This change applies when Capnote restarts. Restart now?"
   },
   "modals": {
     "exportNote": "Export Note",
