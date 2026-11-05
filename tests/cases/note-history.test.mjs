@@ -23,7 +23,7 @@ export async function run() {
   const afterHour = n.history.filter((h) => h.type === 'updated').length;
   a.saveNote();
   a.openNoteHistory();
-  const items = a.historyBody.querySelectorAll('.history-item').length;
+  const items = a.historyBody.querySelectorAll('.history-row.is-version').length;
   const stored = (await window.electronAPI.storage.load()).data.notes.find((x) => x.id === n.id)
     .history.length;
   return { emptyText, mergedCount, afterHour, items, stored };

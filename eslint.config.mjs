@@ -20,7 +20,7 @@ export default [
   },
   {
     // Sandboxed preload scripts must be CommonJS
-    files: ['src/preload.cjs'],
+    files: ['src/preload.cjs', 'src/quick-note-preload.cjs'],
     languageOptions: {
       sourceType: 'commonjs',
       globals: globals.node,

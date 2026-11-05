@@ -1,5 +1,7 @@
 // Switching between the main screens
 
+import { i18n } from '../i18n.js';
+
 export class ScreensFeature {
   // Show exactly one of the main screens and highlight its sidebar entry (if it has one)
   showScreen(name) {
@@ -18,9 +20,13 @@ export class ScreensFeature {
       reminders: this.remindersScreen,
       tags: this.tagsScreen,
       archive: this.archiveScreen,
+      summary: this.summaryScreen,
+      graph: this.graphScreen,
       todos: this.todosScreen,
     };
     Object.entries(screens).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
+    if (name !== 'editor' && this.isFocusMode()) this.setFocusMode(false);
+    if (name !== 'viewer') this.clearVersionPreview?.();
     this.currentScreen = name;
 
     const navItems = {
@@ -28,6 +34,7 @@ export class ScreensFeature {
       reminders: this.remindersNav,
       tags: this.tagsNavBtn,
       archive: this.archiveNavBtn,
+      graph: this.graphNavBtn,
       todos: this.todosNav,
     };
     Object.entries(navItems).forEach(([key, el]) => el?.classList.toggle('active', key === name));
@@ -49,6 +56,7 @@ export class ScreensFeature {
       todos: () => this.showTodosScreen(),
       tags: () => this.showTagsScreen(),
       archive: () => this.showArchiveScreen(),
+      graph: () => this.showNoteGraph(),
     };
     const note =
       this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;
@@ -62,6 +70,23 @@ export class ScreensFeature {
     } else {
       this.showWelcome();
     }
+  }
+
+  // Focus mode: only the note's title and text, in a column in the middle; the sidebar, the
+  // toolbar and the side panel are hidden. Escape or the button leaves it, and so does leaving
+  // the editor.
+  isFocusMode() {
+    return document.body.classList.contains('focus-mode');
+  }
+
+  setFocusMode(on) {
+    document.body.classList.toggle('focus-mode', on);
+    if (!this.focusModeBtn) return;
+    this.focusModeBtn.classList.toggle('active', on);
+    this.focusModeBtn.querySelector('i').className = `fas ${on ? 'fa-compress' : 'fa-expand'}`;
+    const label = i18n.t(on ? 'titles.focusModeExit' : 'titles.focusMode');
+    this.focusModeBtn.title = label;
+    this.focusModeBtn.setAttribute('aria-label', label);
   }
 
   showEditor() {

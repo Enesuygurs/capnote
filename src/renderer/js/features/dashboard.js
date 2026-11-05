@@ -5,7 +5,7 @@
 import { i18n } from '../i18n.js';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
-const MONTHS_CHARTED = 6;
+const MONTHS_CHARTED = 12;
 
 export class DashboardFeature {
   // "Now" for the overview; tests set dashboardToday to see a fixed day
@@ -67,10 +67,10 @@ export class DashboardFeature {
     return months;
   }
 
-  // How many notes have each mood (or weather), most first
-  spreadOf(field, findButton) {
+  // How many notes have each mood (or weather), most first (all notes, or the ones given)
+  spreadOf(field, findButton, notes = this.notes) {
     const counts = new Map();
-    this.notes.forEach((note) => {
+    notes.forEach((note) => {
       if (note[field]) counts.set(note[field], (counts.get(note[field]) || 0) + 1);
     });
     return [...counts.entries()]
@@ -88,25 +88,47 @@ export class DashboardFeature {
       day: 'numeric',
     });
     this.renderStatTiles();
+    // The calendar draws the chosen day's notes and the mood and weather cards with it
     this.renderCalendar();
-    this.renderBarList(this.moodChart, this.spreadOf('mood', this.findMoodButton), 'mood');
+    this.renderWordsChart();
+  }
+
+  // Mood and weather over all notes, or over the chosen day's when a day is chosen in the
+  // calendar; the cards' headers then name the day
+  renderSpreads() {
+    const key = this.calendarSelectedDay;
+    const notes = key ? this.notesOfDay(key) : this.notes;
+    const day = key
+      ? new Date(`${key}T12:00:00`).toLocaleDateString(this.getLocale(), {
+          day: 'numeric',
+          month: 'long',
+        })
+      : null;
+    this.renderBarList(
+      this.moodChart,
+      this.spreadOf('mood', this.findMoodButton, notes),
+      'mood',
+      this.moodTotal,
+      day
+    );
     this.renderBarList(
       this.weatherChart,
-      this.spreadOf('weather', this.findWeatherButton),
-      'weather'
+      this.spreadOf('weather', this.findWeatherButton, notes),
+      'weather',
+      this.weatherTotal,
+      day
     );
-    this.renderWordsChart();
   }
 
   renderStatTiles() {
     const days = this.writingDays();
     const { current, longest } = this.writingStreaks(days);
     const now = this.dashboardNow();
-    const wordsThisMonth = this.notes
-      .filter((n) => {
-        const d = new Date(n.createdAt);
-        return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-      })
+    // Words of the notes written in the last 30 days, today among them (a calendar month would
+    // show next to nothing in its first days)
+    const since = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 29);
+    const wordsLast30Days = this.notes
+      .filter((n) => new Date(n.createdAt) >= since)
       .reduce((sum, n) => sum + (n.wordCount || 0), 0);
     // Each figure has its own icon color
     const tiles = [
@@ -114,7 +136,7 @@ export class DashboardFeature {
       ['activeDays', days.size, 'fa-calendar-check', 'green'],
       ['streak', current, 'fa-fire', 'amber'],
       ['longestStreak', longest, 'fa-trophy', 'violet'],
-      ['wordsThisMonth', wordsThisMonth, 'fa-pen-nib', 'rose'],
+      ['wordsLast30Days', wordsLast30Days, 'fa-pen-nib', 'rose'],
     ];
     this.statTiles.innerHTML = '';
     tiles.forEach(([key, value, icon, tone]) => {
@@ -208,6 +230,8 @@ export class DashboardFeature {
         mark.className = 'calendar-day-mark';
         if (button) {
           mark.dataset.tone = withMood.mood;
+          cell.dataset.tone = withMood.mood;
+          cell.classList.add('has-mood');
           mark.appendChild(button.querySelector('i').cloneNode());
         } else {
           mark.classList.add('is-dot');
@@ -235,55 +259,70 @@ export class DashboardFeature {
     this.renderCalendarDay();
   }
 
-  // The notes of the chosen day, under the calendar
+  // The notes of the chosen day, in the words card in place of the chart; choosing the day again
+  // (or a day without notes) brings the chart back
   renderCalendarDay() {
     const key = this.calendarSelectedDay;
     const notes = key ? this.notesOfDay(key) : [];
     this.calendarDayNotes.classList.toggle('hidden', !notes.length);
+    this.wordsCard?.classList.toggle('is-showing-day', notes.length > 0);
+    this.renderSpreads();
     if (!notes.length) return;
     this.calendarDayLabel.textContent = `${new Date(`${key}T12:00:00`).toLocaleDateString(
       this.getLocale(),
       { weekday: 'long', day: 'numeric', month: 'long' }
     )} · ${i18n.t('tags.notesCount', { count: notes.length })}`;
     this.calendarDayList.innerHTML = '';
-    notes.forEach((note) => {
-      const row = document.createElement('button');
-      row.type = 'button';
-      row.className = 'calendar-note';
-      const icon = this.findMoodButton(note.mood)?.querySelector('i');
-      row.innerHTML =
-        '<span class="calendar-note-mood"></span><span class="calendar-note-title"></span><span class="calendar-note-time"></span>';
-      if (icon) {
-        row.querySelector('.calendar-note-mood').dataset.tone = note.mood;
-        row.querySelector('.calendar-note-mood').appendChild(icon.cloneNode());
-      }
-      row.querySelector('.calendar-note-title').textContent = this.displayTitle(note);
-      row.querySelector('.calendar-note-time').textContent = new Date(
-        note.createdAt
-      ).toLocaleTimeString(this.getLocale(), { hour: '2-digit', minute: '2-digit' });
-      row.addEventListener('click', () => this.selectNote(note));
-      this.calendarDayList.appendChild(row);
-    });
+    notes.forEach((note) => this.calendarDayList.appendChild(this.dayNoteRow(note)));
+  }
+
+  // A note of a day: its mood, its title and the time it was written; it opens the note
+  dayNoteRow(note) {
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'calendar-note';
+    const icon = this.findMoodButton(note.mood)?.querySelector('i');
+    row.innerHTML =
+      '<span class="calendar-note-mood"></span><span class="calendar-note-title"></span><span class="calendar-note-time"></span>';
+    if (icon) {
+      row.querySelector('.calendar-note-mood').dataset.tone = note.mood;
+      row.querySelector('.calendar-note-mood').appendChild(icon.cloneNode());
+    }
+    row.querySelector('.calendar-note-title').textContent = this.displayTitle(note);
+    row.querySelector('.calendar-note-time').textContent = new Date(
+      note.createdAt
+    ).toLocaleTimeString(this.getLocale(), { hour: '2-digit', minute: '2-digit' });
+    row.addEventListener('click', () => this.selectNote(note));
+    return row;
   }
 
   // ============ Charts ============
   // One bar per mood (or weather): its icon in its own color and its name say which it is;
   // the bars share one color, since they show one measure
-  renderBarList(container, entries, field) {
+  // Each mood (or weather) as a tile: its icon on a tint of its color, its name and share, and a
+  // bar in its color; the card's header says how many notes have one, and for a chosen day, which
+  // day it is
+  renderBarList(container, entries, field, totalLabel, day = null) {
     container.innerHTML = '';
+    const total = entries.reduce((sum, e) => sum + e.count, 0);
+    if (totalLabel) {
+      const count = total ? i18n.t('tags.notesCount', { count: total }) : '';
+      totalLabel.textContent = day ? [day, count].filter(Boolean).join(' · ') : count;
+      totalLabel.classList.toggle('is-day', !!day);
+    }
     if (!entries.length) {
-      container.innerHTML = `<p class="chart-empty">${i18n.t(`dashboard.no_${field}`)}</p>`;
+      const empty = day ? `dashboard.dayNo_${field}` : `dashboard.no_${field}`;
+      container.innerHTML = `<p class="chart-empty">${i18n.t(empty)}</p>`;
       return;
     }
-    const total = entries.reduce((sum, e) => sum + e.count, 0);
     const max = entries[0].count;
     entries.forEach((entry) => {
       const row = document.createElement('div');
       row.className = 'bar-row';
+      row.dataset.tone = entry.key;
       const share = Math.round((entry.count / total) * 100);
       row.title = `${entry.button.title}: ${entry.count} (${share}%)`;
-      row.innerHTML = `<span class="bar-icon"></span><span class="bar-name"></span><span class="bar-track"><span class="bar-fill"></span></span><span class="bar-value"></span>`;
-      row.querySelector('.bar-icon').dataset.tone = entry.key;
+      row.innerHTML = `<span class="bar-icon"></span><span class="bar-body"><span class="bar-line"><span class="bar-name"></span><span class="bar-value"></span></span><span class="bar-track"><span class="bar-fill"></span></span></span>`;
       row.querySelector('.bar-icon').appendChild(entry.button.querySelector('i').cloneNode());
       row.querySelector('.bar-name').textContent = entry.button.title;
       row.querySelector('.bar-fill').style.width = `${Math.max(4, (entry.count / max) * 100)}%`;
@@ -292,30 +331,200 @@ export class DashboardFeature {
     });
   }
 
-  // Words per month: one column each, the current month labelled with its number
+  // Words per month as an area chart: the last 12 months as a smooth line in the accent over a fill
+  // that fades down, on a grid with its values; the current month's point is filled. There are no
+  // numbers on the chart itself. The grid and the months are drawn even with no words, so the card
+  // is never empty. Hovering a month shows a guide line and the month's words.
   renderWordsChart() {
-    const months = this.monthlyWords();
-    const max = Math.max(...months.map((m) => m.words), 1);
+    this.wordsMonths = this.monthlyWords();
+    const total = this.wordsMonths.reduce((sum, m) => sum + m.words, 0);
+    if (this.wordsTotal) {
+      this.wordsTotal.textContent = i18n.t('dashboard.wordsTotal', {
+        count: total.toLocaleString(this.getLocale()),
+      });
+    }
+    this.drawWordsChart();
+  }
+
+  drawWordsChart() {
+    const box = this.wordsChart;
+    const months = this.wordsMonths;
+    if (!box || !months) return;
+    const width = box.clientWidth;
+    const height = box.clientHeight;
+    box.innerHTML = '';
+    if (!width || !height) return;
     const locale = this.getLocale();
-    this.wordsChart.innerHTML = '';
-    months.forEach((m, index) => {
-      const column = document.createElement('div');
-      column.className = 'column';
-      const name = new Date(m.year, m.month, 1).toLocaleDateString(locale, { month: 'short' });
-      column.title = `${new Date(m.year, m.month, 1).toLocaleDateString(locale, { month: 'long', year: 'numeric' })}: ${m.words.toLocaleString(locale)} ${i18n.t('dashboard.words')}`;
-      const last = index === months.length - 1;
-      column.innerHTML = `<span class="column-value"></span><span class="column-track"><span class="column-fill"></span></span><span class="column-label"></span>`;
-      column.querySelector('.column-value').textContent = last
-        ? m.words.toLocaleString(locale)
-        : '';
-      column.querySelector('.column-fill').style.height =
-        `${m.words ? Math.max(4, (m.words / max) * 100) : 0}%`;
-      column.querySelector('.column-label').textContent = name;
-      this.wordsChart.appendChild(column);
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (tag, attrs = {}, parent) => {
+      const node = document.createElementNS(NS, tag);
+      Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+      if (parent) parent.appendChild(node);
+      return node;
+    };
+
+    // A round top for the scale: 1, 2, 2.5 or 5 times a power of ten per step, four steps
+    const max = Math.max(...months.map((m) => m.words));
+    const rough = Math.max(max, 1) / 4;
+    const power = 10 ** Math.floor(Math.log10(rough));
+    const step = Math.max(
+      25,
+      [1, 2, 2.5, 5, 10].map((f) => f * power).find((v) => v >= rough)
+    );
+    const top = step * 4;
+
+    const pad = { left: 40, right: 12, top: 26, bottom: 24 };
+    const plotW = width - pad.left - pad.right;
+    const plotH = height - pad.top - pad.bottom;
+    const band = plotW / months.length;
+    const x = (i) => pad.left + band * (i + 0.5);
+    const y = (v) => pad.top + plotH - (v / top) * plotH;
+    const short = (n) =>
+      n.toLocaleString(locale, { notation: n >= 10000 ? 'compact' : 'standard' });
+
+    const svg = el('svg', { class: 'area-svg', width, height, viewBox: `0 0 ${width} ${height}` });
+    const defs = el('defs', {}, svg);
+    const gradient = el('linearGradient', { id: 'wordsArea', x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+    el('stop', { offset: 0, class: 'area-stop', 'stop-opacity': 0.32 }, gradient);
+    el('stop', { offset: 1, class: 'area-stop', 'stop-opacity': 0 }, gradient);
+
+    // The grid, its values on the left
+    for (let i = 0; i <= 4; i++) {
+      const gy = y(step * i);
+      el(
+        'line',
+        {
+          class: i ? 'area-grid' : 'area-base',
+          x1: pad.left,
+          x2: width - pad.right,
+          y1: gy,
+          y2: gy,
+        },
+        svg
+      );
+      const label = el(
+        'text',
+        { class: 'area-axis', x: pad.left - 8, y: gy + 4, 'text-anchor': 'end' },
+        svg
+      );
+      label.textContent = short(step * i);
+    }
+
+    // The line: a monotone curve through the months (never dips below zero), and the fill under it
+    const pts = months.map((m, i) => [x(i), y(m.words)]);
+    const n = pts.length;
+    const slopes = pts.slice(1).map((p, i) => (p[1] - pts[i][1]) / (p[0] - pts[i][0]));
+    const tangents = pts.map((_, i) => {
+      if (i === 0) return slopes[0];
+      if (i === n - 1) return slopes[n - 2];
+      return slopes[i - 1] * slopes[i] <= 0 ? 0 : (slopes[i - 1] + slopes[i]) / 2;
     });
+    for (let i = 0; i < n - 1; i++) {
+      if (slopes[i] === 0) {
+        tangents[i] = 0;
+        tangents[i + 1] = 0;
+        continue;
+      }
+      const a = tangents[i] / slopes[i];
+      const b = tangents[i + 1] / slopes[i];
+      const h = a * a + b * b;
+      if (h > 9) {
+        const t = 3 / Math.sqrt(h);
+        tangents[i] = t * a * slopes[i];
+        tangents[i + 1] = t * b * slopes[i];
+      }
+    }
+    let line = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 0; i < n - 1; i++) {
+      const dx = (pts[i + 1][0] - pts[i][0]) / 3;
+      line += ` C${pts[i][0] + dx},${pts[i][1] + tangents[i] * dx} ${pts[i + 1][0] - dx},${pts[i + 1][1] - tangents[i + 1] * dx} ${pts[i + 1][0]},${pts[i + 1][1]}`;
+    }
+    const base = y(0);
+    el(
+      'path',
+      { class: 'area-fill', d: `${line} L${pts[n - 1][0]},${base} L${pts[0][0]},${base} Z` },
+      svg
+    );
+    el('path', { class: 'area-line', d: line }, svg);
+
+    // The months below, a point on each month with words, the current one filled
+    months.forEach((m, i) => {
+      const current = i === n - 1;
+      const name = new Date(m.year, m.month, 1).toLocaleDateString(locale, { month: 'short' });
+      const label = el(
+        'text',
+        {
+          class: `area-month${current ? ' is-current' : ''}`,
+          x: x(i),
+          y: height - 6,
+          'text-anchor': 'middle',
+        },
+        svg
+      );
+      label.textContent = name;
+      if (m.words || current) {
+        el(
+          'circle',
+          {
+            class: `area-point${current ? ' is-current' : ''}`,
+            cx: x(i),
+            cy: y(m.words),
+            r: current ? 5 : 3.5,
+          },
+          svg
+        );
+      }
+    });
+
+    // Hover: a guide line, the month's point and a tip with its words
+    const guide = el('line', { class: 'area-guide', y1: pad.top, y2: base }, svg);
+    const focus = el('circle', { class: 'area-focus', r: 5 }, svg);
+    const tip = document.createElement('div');
+    tip.className = 'area-tip';
+    const hide = () => {
+      guide.style.opacity = 0;
+      focus.style.opacity = 0;
+      tip.style.opacity = 0;
+    };
+    hide();
+    months.forEach((m, i) => {
+      const hit = el(
+        'rect',
+        { class: 'area-hit', x: pad.left + band * i, y: 0, width: band, height },
+        svg
+      );
+      hit.dataset.month = `${m.year}-${String(m.month + 1).padStart(2, '0')}`;
+      hit.dataset.words = m.words;
+      hit.addEventListener('mouseenter', () => {
+        guide.setAttribute('x1', x(i));
+        guide.setAttribute('x2', x(i));
+        focus.setAttribute('cx', x(i));
+        focus.setAttribute('cy', y(m.words));
+        tip.innerHTML = '<strong></strong><span></span>';
+        tip.firstChild.textContent = new Date(m.year, m.month, 1).toLocaleDateString(locale, {
+          month: 'long',
+          year: 'numeric',
+        });
+        tip.lastChild.textContent = `${m.words.toLocaleString(locale)} ${i18n.t('dashboard.words')}`;
+        tip.style.left = `${Math.min(Math.max(x(i), 60), width - 60)}px`;
+        // Above the point, or below it when the point is near the top
+        const below = y(m.words) < 64;
+        tip.classList.toggle('is-below', below);
+        tip.style.top = `${below ? y(m.words) + 12 : y(m.words) - 12}px`;
+        guide.style.opacity = 1;
+        focus.style.opacity = 1;
+        tip.style.opacity = 1;
+      });
+    });
+    svg.addEventListener('mouseleave', hide);
+    box.append(svg, tip);
   }
 
   setupDashboard() {
+    // The words chart is drawn for its size, again when the card changes size
+    if (this.wordsChart && typeof ResizeObserver === 'function') {
+      new ResizeObserver(() => this.drawWordsChart()).observe(this.wordsChart);
+    }
     this.calendarPrevBtn?.addEventListener('click', () => this.moveCalendar(-1));
     this.calendarNextBtn?.addEventListener('click', () => this.moveCalendar(1));
     this.calendarTodayBtn?.addEventListener('click', () => this.moveCalendar(0));

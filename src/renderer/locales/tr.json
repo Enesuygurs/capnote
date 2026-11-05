@@ -81,7 +81,9 @@
     "strikethrough": "Üstü çizili",
     "link": "Bağlantı ekle (Ctrl+K)",
     "quote": "Alıntı",
-    "divider": "Ayırıcı çizgi"
+    "divider": "Ayırıcı çizgi",
+    "focusMode": "Odak modu",
+    "focusModeExit": "Odak modundan çık (Esc)"
   },
   "placeholders": {
     "noteTitle": "Not başlığı...",
@@ -157,6 +159,8 @@
     "languageDesc": "Uygulama dilini değiştir",
     "autoSave": "Otomatik Kaydetme",
     "autoSaveDesc": "Notları yazarken otomatik olarak kaydet",
+    "autoFormat": "Otomatik biçimlendirme",
+    "autoFormatDesc": "Satır başındaki “-”, “1.” ve “[]” işaretlerini listeye dönüştürür",
     "onNoteDelete": "Not silindiğinde",
     "onNoteDeleteDesc": "Not silindiğinde ne olacağını seç",
     "openLastNote": "Son kalan notu aç",
@@ -426,7 +430,7 @@
     "activeDays": "Yazılan gün",
     "streak": "Süren seri (gün)",
     "longestStreak": "En uzun seri (gün)",
-    "wordsThisMonth": "Bu ay yazılan kelime",
+    "wordsLast30Days": "Kelime (30 gün)",
     "today": "Bugün",
     "prevMonth": "Önceki ay",
     "nextMonth": "Sonraki ay",
@@ -435,7 +439,10 @@
     "wordsPerMonth": "Aylık kelime sayısı",
     "words": "kelime",
     "no_mood": "Henüz ruh hali seçilmiş not yok",
-    "no_weather": "Henüz hava durumu seçilmiş not yok"
+    "no_weather": "Henüz hava durumu seçilmiş not yok",
+    "wordsTotal": "{count} kelime, son 12 ay",
+    "dayNo_mood": "Bu gün için ruh hali seçilmemiş",
+    "dayNo_weather": "Bu gün için hava durumu seçilmemiş"
   },
   "noteTemplates": {
     "choose": "Şablondan yeni not",
@@ -513,5 +520,71 @@
     "emoji": "Emoji",
     "date": "Tarih",
     "time": "Saat"
+  },
+  "noteList": {
+    "empty": "Henüz not yok",
+    "writeFirst": "İlk notunu yaz",
+    "noMatch": "Eşleşen not yok"
+  },
+  "history": {
+    "current": "Şu anki sürüm",
+    "earlier": "Önceki sürüm",
+    "view": "Görüntüle",
+    "versionOf": "{date} tarihli sürüm",
+    "restore": "Bu sürüme dön",
+    "restored": "Sürüm geri yüklendi; önceki hali geçmişte duruyor",
+    "lockedHint": "Kilitli notların eski sürümleri şifresiz kaydedilmediği için saklanmaz",
+    "previewTitle": "Eski bir sürüme bakıyorsun",
+    "backToList": "Geçmiş",
+    "showCurrent": "Güncel sürüm",
+    "words": "{count} kelime"
+  },
+  "summary": {
+    "open": "Yıllık özet",
+    "title": "{year} özeti",
+    "subtitle": "Bir yıl boyunca yazdıkların",
+    "back": "Genel bakışa dön",
+    "prev": "Önceki yıl",
+    "next": "Sonraki yıl",
+    "save": "Görsel olarak kaydet",
+    "saved": "Özet görsel olarak kaydedildi",
+    "empty": "{year} yılında yazılmış not yok",
+    "notes": "not",
+    "words": "kelime",
+    "days": "yazdığın gün",
+    "months": "Aylar",
+    "mood": "En sık ruh halin",
+    "moodShare": "Ruh hali seçtiğin notların %{share} kadarı",
+    "streak": "En uzun serin",
+    "streakDays": "{count} gün art arda",
+    "tags": "En çok kullandığın etiket",
+    "tagsSub": "{count} notta",
+    "longest": "En uzun notun",
+    "longestWords": "{count} kelime",
+    "heatmap": "Yazma takvimi",
+    "heatmapNone": "yazmadın",
+    "heatmapLess": "Az",
+    "heatmapMore": "Çok",
+    "heatmapBusiest": "En çok yazdığın gün: {date}, {count} kelime"
+  },
+  "quickNote": {
+    "title": "Hızlı not",
+    "titlePlaceholder": "Başlık",
+    "textPlaceholder": "Aklındakini yaz…",
+    "save": "Kaydet",
+    "expand": "Uygulamada aç",
+    "close": "Kapat",
+    "hint": "{mod}+Enter kaydeder · Esc kapatır",
+    "added": "Hızlı not eklendi",
+    "failed": "Not kaydedilemedi, Capnote açık mı?"
+  },
+  "graph": {
+    "title": "Not grafiği",
+    "linked": "Bağlantılı",
+    "all": "Tümü",
+    "fit": "Ortala",
+    "count": "{notes} not · {links} bağlantı",
+    "links": "{count} bağlantı",
+    "empty": "Notlar arasında henüz bağlantı yok. Bir notta [[ yazıp başka bir notu seçerek bağlantı ver; burada harita olarak görünür."
   }
 }

@@ -286,3 +286,109 @@
   color: var(--text-muted);
   font-size: var(--fs-sm);
 }
+
+/* ============ Note graph ============
+   The map fills the page under the header. Dots in the accent (a note without links in the muted
+   ink), lines in a light muted ink; hovering a note fades all but it, its neighbours and their links */
+.graph-canvas {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.graph-svg {
+  display: block;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.graph-svg.is-dragging {
+  cursor: grabbing;
+}
+
+.graph-link {
+  stroke: var(--text-muted);
+  stroke-opacity: 0.35;
+  stroke-width: 1.5;
+  transition: stroke-opacity 0.15s ease;
+}
+
+.graph-node {
+  cursor: pointer;
+  outline: none;
+  transition: opacity 0.15s ease;
+}
+
+.graph-node circle {
+  fill: var(--accent-color);
+  stroke: var(--surface);
+  stroke-width: 2;
+}
+
+.graph-node.is-alone circle {
+  fill: var(--text-muted);
+}
+
+.graph-node text {
+  fill: var(--text-secondary);
+  font-size: var(--fs-sm);
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.graph-node.is-quiet text {
+  display: none;
+}
+
+.graph-node:hover circle,
+.graph-node:focus-visible circle {
+  stroke: color-mix(in srgb, var(--accent-color) 35%, transparent);
+  stroke-width: 6;
+}
+
+.graph-svg.is-focusing .graph-node:not(.is-near) {
+  opacity: 0.2;
+}
+
+.graph-svg.is-focusing .graph-link:not(.is-near) {
+  stroke-opacity: 0.08;
+}
+
+.graph-svg.is-focusing .graph-link.is-near {
+  stroke: var(--accent-color);
+  stroke-opacity: 0.8;
+}
+
+.graph-svg.is-focusing .graph-node.is-near text {
+  display: block;
+  fill: var(--text-strong);
+}
+
+.graph-range {
+  width: 180px;
+}
+
+.graph-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  height: 100%;
+  padding: var(--gutter);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.graph-empty i {
+  font-size: 44px;
+  opacity: 0.6;
+}
+
+.graph-empty p {
+  max-width: 360px;
+}

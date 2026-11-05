@@ -4,30 +4,31 @@ Capnote is a desktop app for notes and journaling. Everything stays on your comp
 
 ## Features
 
-- **Rich text and Markdown:** headings, lists, task lists, quotes, dividers, tables, code blocks, links, strikethrough, images and file attachments, Markdown shortcuts while typing ("## ", "- ", "[] ", "```"), undo for every tool, plus Markdown notes with a live preview and an HTML preview.
-- **Links between notes:** type `[[` to link to another note; a note lists the notes that link to it.
-- **Organizing:** folders with colors, tags with a tags page and a tag filter, favorites, pinned notes and folders, a Today view, a custom order by dragging, selecting several notes at once, an archive for notes kept out of the list, sorting and search.
+- **Rich text and Markdown:** headings, lists, task lists, quotes, dividers, tables, code blocks, links, strikethrough, images and file attachments, Markdown shortcuts while typing ("## ", "- ", "[] ", "```"; they can be turned off in the settings), undo for every tool, plus Markdown notes with a live preview and an HTML preview.
+- **Links between notes:** type `[[` to link to another note; a note lists the notes that link to it, and the note graph shows all the links as a map.
+- **Organizing:** folders with colors, tags with a tags page and a tag filter, favorites, pinned notes and folders, a Today view, a custom order by dragging (folders can go between notes), selecting several notes at once, an archive for notes kept out of the list, sorting and search.
 - **Templates:** start a note as a journal entry, meeting notes or a weekly plan.
+- **Year in review:** a card with the year's notes, words and writing days, the months written most, the most frequent mood, the longest streak, the most used tag and the longest note, to save as an image and share.
 - **Journaling:** mood and weather for each note, an overview with a mood calendar, the writing streak, how moods and weather are spread and the words per month, word and character counts, reading time and an edit history.
 - **Reminders and to-dos:** reminders with desktop notifications, and a to-do list grouped into sections.
 - **Locked notes:** a locked note is encrypted with its password (PBKDF2-SHA256 and AES-GCM). If you forget the password, the note cannot be recovered.
 - **Export and backup:** export a note as PDF, HTML, plain text or JSON, export every note as Markdown files and import Markdown files, back up or restore all data as a JSON file, and go back to one of the automatic daily backups of the last 7 days.
-- **Desktop integration:** a quick note shortcut that works from any app, tray icon, close to tray (Windows), start at login, a chosen start page, light and dark themes, accent colors, and English and Turkish.
+- **Desktop integration:** a quick note window (Ctrl+Alt+N from any app opens a small always-on-top note in the corner of the screen), tray icon, close to tray (Windows), start at login, a chosen start page, light and dark themes, accent colors, and English and Turkish.
 
 ### Keyboard shortcuts
 
-| Shortcut           | Action                             |
-| ------------------ | ---------------------------------- |
-| Ctrl/Cmd + N       | New note                           |
-| Ctrl/Cmd + S       | Save the note being edited         |
-| Ctrl/Cmd + E       | Edit the open note                 |
-| Ctrl/Cmd + D       | Duplicate the open note            |
-| Ctrl/Cmd + F       | Search notes                       |
-| Ctrl/Cmd + K       | Add or edit a link in the editor   |
-| Ctrl/Cmd + Z / Y   | Undo / redo in the editor          |
-| Ctrl/Cmd + Enter   | Leave a code block in the editor   |
-| Ctrl/Cmd + Alt + N | New note from any app (quick note) |
-| Esc                | Close the open dialog or editor    |
+| Shortcut           | Action                           |
+| ------------------ | -------------------------------- |
+| Ctrl/Cmd + N       | New note                         |
+| Ctrl/Cmd + S       | Save the note being edited       |
+| Ctrl/Cmd + E       | Edit the open note               |
+| Ctrl/Cmd + D       | Duplicate the open note          |
+| Ctrl/Cmd + F       | Search notes                     |
+| Ctrl/Cmd + K       | Add or edit a link in the editor |
+| Ctrl/Cmd + Z / Y   | Undo / redo in the editor        |
+| Ctrl/Cmd + Enter   | Leave a code block in the editor |
+| Ctrl/Cmd + Alt + N | Quick note window from any app   |
+| Esc                | Close the open dialog or editor  |
 
 ## Where your data lives
 

@@ -81,7 +81,9 @@
     "strikethrough": "Strikethrough",
     "link": "Add link (Ctrl+K)",
     "quote": "Quote",
-    "divider": "Divider"
+    "divider": "Divider",
+    "focusMode": "Focus mode",
+    "focusModeExit": "Leave focus mode (Esc)"
   },
   "placeholders": {
     "noteTitle": "Note title...",
@@ -157,6 +159,8 @@
     "languageDesc": "Change application language",
     "autoSave": "Auto Save",
     "autoSaveDesc": "Automatically save notes while typing",
+    "autoFormat": "Automatic formatting",
+    "autoFormatDesc": "Turns “-”, “1.” and “[]” at the start of a line into lists",
     "onNoteDelete": "On note deletion",
     "onNoteDeleteDesc": "Choose what happens when a note is deleted",
     "openLastNote": "Open last remaining note",
@@ -426,7 +430,7 @@
     "activeDays": "Days written",
     "streak": "Current streak (days)",
     "longestStreak": "Longest streak (days)",
-    "wordsThisMonth": "Words this month",
+    "wordsLast30Days": "Words (30 days)",
     "today": "Today",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
@@ -435,7 +439,10 @@
     "wordsPerMonth": "Words per month",
     "words": "words",
     "no_mood": "No note has a mood yet",
-    "no_weather": "No note has the weather yet"
+    "no_weather": "No note has the weather yet",
+    "wordsTotal": "{count} words in 12 months",
+    "dayNo_mood": "No mood chosen for this day",
+    "dayNo_weather": "No weather chosen for this day"
   },
   "noteTemplates": {
     "choose": "New note from a template",
@@ -513,5 +520,71 @@
     "emoji": "Emoji",
     "date": "Date",
     "time": "Time"
+  },
+  "noteList": {
+    "empty": "No notes yet",
+    "writeFirst": "Write your first note",
+    "noMatch": "No matching notes"
+  },
+  "history": {
+    "current": "Current version",
+    "earlier": "Earlier version",
+    "view": "View",
+    "versionOf": "The version of {date}",
+    "restore": "Restore this version",
+    "restored": "Version restored; the previous one is kept in the history",
+    "lockedHint": "Earlier versions of locked notes are not kept, so they are never stored unencrypted",
+    "previewTitle": "You are looking at an earlier version",
+    "backToList": "History",
+    "showCurrent": "Current version",
+    "words": "{count} words"
+  },
+  "summary": {
+    "open": "Year in review",
+    "title": "{year} in review",
+    "subtitle": "What you wrote in a year",
+    "back": "Back to the overview",
+    "prev": "Previous year",
+    "next": "Next year",
+    "save": "Save as image",
+    "saved": "The summary was saved as an image",
+    "empty": "No notes written in {year}",
+    "notes": "notes",
+    "words": "words",
+    "days": "days you wrote",
+    "months": "Months",
+    "mood": "Your most frequent mood",
+    "moodShare": "{share}% of the notes with a mood",
+    "streak": "Your longest streak",
+    "streakDays": "{count} days in a row",
+    "tags": "Your most used tag",
+    "tagsSub": "In {count} notes",
+    "longest": "Your longest note",
+    "longestWords": "{count} words",
+    "heatmap": "Writing calendar",
+    "heatmapNone": "no writing",
+    "heatmapLess": "Less",
+    "heatmapMore": "More",
+    "heatmapBusiest": "Your busiest day: {date}, {count} words"
+  },
+  "quickNote": {
+    "title": "Quick note",
+    "titlePlaceholder": "Title",
+    "textPlaceholder": "Write what is on your mind…",
+    "save": "Save",
+    "expand": "Open in the app",
+    "close": "Close",
+    "hint": "{mod}+Enter saves · Esc closes",
+    "added": "Quick note added",
+    "failed": "The note could not be saved. Is Capnote open?"
+  },
+  "graph": {
+    "title": "Note graph",
+    "linked": "Linked",
+    "all": "All",
+    "fit": "Center",
+    "count": "{notes} notes · {links} links",
+    "links": "{count} links",
+    "empty": "No links between notes yet. Type [[ in a note and pick another note to link it; the links show here as a map."
   }
 }

@@ -37,25 +37,31 @@
   <body>
     <div class="titlebar">
       <!-- The title spans the whole bar and is part of the drag area. It comes first: the window
-           sets drag areas in page order, so the buttons after it stay clickable on top of it -->
+           sets drag areas in page order, so the buttons after it stay clickable on top of it.
+           The bar's buttons are for the mouse, like a window's own: Tab does not stop on them -->
       <span class="titlebar-title">Capnote</span>
       <div class="titlebar-start">
-        <button class="hamburger-btn" id="hamburgerBtn" data-i18n-title="titles.toggleSidebar">
+        <button
+          class="hamburger-btn"
+          id="hamburgerBtn"
+          data-i18n-title="titles.toggleSidebar"
+          tabindex="-1"
+        >
           <i class="fas fa-bars"></i>
         </button>
       </div>
       <div class="titlebar-controls">
-        <button class="titlebar-button minimize" id="minimizeBtn">
+        <button class="titlebar-button minimize" id="minimizeBtn" tabindex="-1">
           <svg class="titlebar-icon" viewBox="0 0 14 14" aria-hidden="true">
             <rect x="2" y="9" width="10" height="2" />
           </svg>
         </button>
-        <button class="titlebar-button maximize" id="maximizeBtn">
+        <button class="titlebar-button maximize" id="maximizeBtn" tabindex="-1">
           <svg class="titlebar-icon" viewBox="0 0 14 14" aria-hidden="true">
             <path d="M2 2h10v10H2zM4 4v6h6V4z" fill-rule="evenodd" />
           </svg>
         </button>
-        <button class="titlebar-button close" id="closeBtn">
+        <button class="titlebar-button close" id="closeBtn" tabindex="-1">
           <i class="fas fa-times"></i>
         </button>
       </div>
@@ -164,13 +170,6 @@
                   <button class="nav-control-btn" id="tagsNavBtn" data-i18n-title="nav.tags">
                     <i class="fas fa-tags"></i>
                   </button>
-                  <button
-                    class="nav-control-btn"
-                    id="archiveNavBtn"
-                    data-i18n-title="archive.title"
-                  >
-                    <i class="fas fa-box-archive"></i>
-                  </button>
                   <button class="nav-control-btn" id="sortBtn" data-i18n-title="titles.sort">
                     <i class="fas fa-sort-amount-down"></i>
                   </button>
@@ -223,11 +222,17 @@
           </nav>
         </div>
 
-        <!-- Fixed bottom: settings -->
+        <!-- Fixed bottom: settings, and the pages that are not about the list: archive and graph -->
         <div class="sidebar-footer">
           <button class="sidebar-settings" id="settingsNav">
             <i class="fas fa-gear"></i>
             <span data-i18n="nav.settings">Ayarlar</span>
+          </button>
+          <button class="sidebar-footer-tool" id="archiveNavBtn" data-i18n-title="archive.title">
+            <i class="fas fa-box-archive"></i>
+          </button>
+          <button class="sidebar-footer-tool" id="graphNavBtn" data-i18n-title="graph.title">
+            <i class="fas fa-circle-nodes"></i>
           </button>
         </div>
       </div>
@@ -242,6 +247,11 @@
               <div class="page-heading">
                 <h2 class="page-title" data-i18n="dashboard.title">Genel bakış</h2>
                 <p class="page-subtitle" id="dashboardDate"></p>
+              </div>
+              <div class="page-actions">
+                <button class="btn-tinted btn-small" id="summaryOpenBtn">
+                  <i class="fas fa-star"></i> <span data-i18n="summary.open">Yıllık özet</span>
+                </button>
               </div>
             </div>
             <div class="page-body">
@@ -276,29 +286,68 @@
                   </div>
                   <div class="calendar-weekdays" id="calendarWeekdays"></div>
                   <div class="calendar-grid" id="calendarGrid"></div>
-                  <div class="calendar-day-notes hidden" id="calendarDayNotes">
-                    <h4 class="section-label" id="calendarDayLabel"></h4>
-                    <div id="calendarDayList"></div>
-                  </div>
                 </section>
-                <div class="dashboard-side">
-                  <section class="card chart-card">
-                    <h3 class="section-label" data-i18n="dashboard.moods">Ruh hali dağılımı</h3>
-                    <div id="moodChart" class="bar-list"></div>
-                  </section>
-                  <section class="card chart-card">
-                    <h3 class="section-label" data-i18n="dashboard.weather">Hava durumu</h3>
-                    <div id="weatherChart" class="bar-list"></div>
-                  </section>
-                  <section class="card chart-card">
+                <!-- The words per month; a day chosen in the calendar shows its notes here instead -->
+                <section class="card chart-card words-card" id="wordsCard">
+                  <div class="chart-card-header">
                     <h3 class="section-label" data-i18n="dashboard.wordsPerMonth">
                       Aylık kelime sayısı
                     </h3>
-                    <div id="wordsChart" class="column-chart"></div>
+                    <span class="chart-card-total" id="wordsTotal"></span>
+                  </div>
+                  <div id="wordsChart" class="area-chart"></div>
+                  <div class="calendar-day-notes hidden" id="calendarDayNotes">
+                    <h4 class="calendar-day-label" id="calendarDayLabel"></h4>
+                    <div class="calendar-day-list" id="calendarDayList"></div>
+                  </div>
+                </section>
+                <div class="dashboard-side">
+                  <section class="card chart-card spread-card">
+                    <div class="chart-card-header">
+                      <h3 class="section-label" data-i18n="dashboard.moods">Ruh hali dağılımı</h3>
+                      <span class="chart-card-total" id="moodTotal"></span>
+                    </div>
+                    <div id="moodChart" class="bar-list"></div>
+                  </section>
+                  <section class="card chart-card spread-card">
+                    <div class="chart-card-header">
+                      <h3 class="section-label" data-i18n="dashboard.weather">Hava durumu</h3>
+                      <span class="chart-card-total" id="weatherTotal"></span>
+                    </div>
+                    <div id="weatherChart" class="bar-list"></div>
                   </section>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- The year in review: one card, to read or save as an image -->
+        <div id="summaryScreen" class="screen summary-screen hidden">
+          <div class="page-header">
+            <button class="btn-icon" id="summaryBackBtn" data-i18n-title="summary.back">
+              <i class="fas fa-arrow-left"></i>
+            </button>
+            <span class="page-icon tone-accent"><i class="fas fa-star"></i></span>
+            <div class="page-heading">
+              <h2 class="page-title" id="summaryTitle"></h2>
+              <p class="page-subtitle" data-i18n="summary.subtitle">Yılının özeti</p>
+            </div>
+            <div class="page-actions">
+              <button class="btn-icon" id="summaryPrevBtn" data-i18n-title="summary.prev">
+                <i class="fas fa-chevron-left"></i>
+              </button>
+              <button class="btn-icon" id="summaryNextBtn" data-i18n-title="summary.next">
+                <i class="fas fa-chevron-right"></i>
+              </button>
+              <button class="btn-tinted btn-small" id="summarySaveBtn">
+                <i class="fas fa-image"></i>
+                <span data-i18n="summary.save">Görsel olarak kaydet</span>
+              </button>
+            </div>
+          </div>
+          <div class="page-body">
+            <div class="summary-card" id="summaryCard"></div>
           </div>
         </div>
 
@@ -364,6 +413,29 @@
               <div id="tagNotesList" class="card-list"></div>
             </section>
           </div>
+        </div>
+
+        <!-- Note graph: the notes and their [[links]] as a map -->
+        <div id="graphScreen" class="screen graph-screen hidden">
+          <div class="page-header">
+            <span class="page-icon tone-sky"><i class="fas fa-circle-nodes"></i></span>
+            <div class="page-heading">
+              <h2 class="page-title" data-i18n="graph.title">Not grafiği</h2>
+              <p class="page-subtitle" id="graphSubtitle"></p>
+            </div>
+            <div class="page-actions">
+              <div class="segmented graph-range" id="graphRange">
+                <button class="segment active" data-show="linked" data-i18n="graph.linked">
+                  Bağlantılı
+                </button>
+                <button class="segment" data-show="all" data-i18n="graph.all">Tümü</button>
+              </div>
+              <button class="btn-icon" id="graphFitBtn" data-i18n-title="graph.fit">
+                <i class="fas fa-crosshairs"></i>
+              </button>
+            </div>
+          </div>
+          <div class="graph-canvas" id="graphCanvas"></div>
         </div>
 
         <!-- Archive: notes kept out of the list without deleting them -->
@@ -456,6 +528,24 @@
                 <i class="fas fa-trash"></i>
               </button>
             </div>
+          </div>
+          <!-- An earlier version shown in place of the note: what it is, and the ways out -->
+          <div class="version-banner hidden" id="versionBanner">
+            <span class="version-banner-icon"><i class="fas fa-clock-rotate-left"></i></span>
+            <div class="version-banner-text">
+              <strong data-i18n="history.previewTitle">Eski bir sürüme bakıyorsun</strong>
+              <span id="versionBannerDate"></span>
+            </div>
+            <button class="btn-secondary btn-small" id="versionListBtn">
+              <i class="fas fa-list"></i> <span data-i18n="history.backToList">Geçmiş</span>
+            </button>
+            <button class="btn-secondary btn-small" id="versionCloseBtn">
+              <span data-i18n="history.showCurrent">Güncel sürüm</span>
+            </button>
+            <button class="btn-primary btn-small" id="versionRestoreBtn">
+              <i class="fas fa-rotate-left"></i>
+              <span data-i18n="history.restore">Bu sürüme dön</span>
+            </button>
           </div>
           <div class="viewer-content">
             <div id="viewerText" class="formatted-content"></div>

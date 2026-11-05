@@ -32,6 +32,9 @@ import { NoteLinksFeature } from './features/note-links.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
+import { YearSummaryFeature } from './features/year-summary.js';
+import { QuickNoteFeature } from './features/quick-note.js';
+import { NoteGraphFeature } from './features/note-graph.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
@@ -126,11 +129,13 @@ export class CapnoteApp {
     this.calendarWeekdays = document.getElementById('calendarWeekdays');
     this.calendarGrid = document.getElementById('calendarGrid');
     this.calendarDayNotes = document.getElementById('calendarDayNotes');
+    this.wordsCard = document.getElementById('wordsCard');
     this.calendarDayLabel = document.getElementById('calendarDayLabel');
     this.calendarDayList = document.getElementById('calendarDayList');
     this.moodChart = document.getElementById('moodChart');
     this.weatherChart = document.getElementById('weatherChart');
     this.wordsChart = document.getElementById('wordsChart');
+    this.wordsTotal = document.getElementById('wordsTotal');
     this.noteEditor = document.getElementById('noteEditor');
     this.noteViewer = document.getElementById('noteViewer');
     this.notesList = document.getElementById('notesList');
@@ -217,6 +222,11 @@ export class CapnoteApp {
     this.lastModified = document.getElementById('lastModified');
     this.noteHistoryModal = document.getElementById('noteHistoryModal');
     this.historyBody = document.getElementById('historyBody');
+    this.versionBanner = document.getElementById('versionBanner');
+    this.versionBannerDate = document.getElementById('versionBannerDate');
+    this.versionListBtn = document.getElementById('versionListBtn');
+    this.versionCloseBtn = document.getElementById('versionCloseBtn');
+    this.versionRestoreBtn = document.getElementById('versionRestoreBtn');
     this.closeHistoryModal = document.getElementById('closeHistoryModal');
     this.historyCloseBtn = document.getElementById('historyCloseBtn');
 
@@ -263,10 +273,20 @@ export class CapnoteApp {
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
     this.startupPageSelect = document.getElementById('startupPageSelect');
     this.autoSaveToggle = document.getElementById('autoSaveToggle');
+    this.autoFormatToggle = document.getElementById('autoFormatToggle');
 
     // Folder elements
     this.addFolderBtn = document.getElementById('addFolderBtn');
     this.listContextMenu = document.getElementById('listContextMenu');
+    this.focusModeBtn = document.getElementById('focusModeBtn');
+    this.summaryScreen = document.getElementById('summaryScreen');
+    this.summaryCard = document.getElementById('summaryCard');
+    this.summaryTitle = document.getElementById('summaryTitle');
+    this.summaryOpenBtn = document.getElementById('summaryOpenBtn');
+    this.summaryBackBtn = document.getElementById('summaryBackBtn');
+    this.summaryPrevBtn = document.getElementById('summaryPrevBtn');
+    this.summaryNextBtn = document.getElementById('summaryNextBtn');
+    this.summarySaveBtn = document.getElementById('summarySaveBtn');
     this.folderModal = document.getElementById('folderModal');
     this.folderNameInput = document.getElementById('folderNameInput');
     this.createFolderBtn = document.getElementById('createFolderBtn');
@@ -286,6 +306,14 @@ export class CapnoteApp {
     this.tagsScreen = document.getElementById('tagsScreen');
     this.tagsNavBtn = document.getElementById('tagsNavBtn');
     this.archiveScreen = document.getElementById('archiveScreen');
+    this.graphScreen = document.getElementById('graphScreen');
+    this.moodTotal = document.getElementById('moodTotal');
+    this.weatherTotal = document.getElementById('weatherTotal');
+    this.graphCanvas = document.getElementById('graphCanvas');
+    this.graphSubtitle = document.getElementById('graphSubtitle');
+    this.graphRangeTabs = document.getElementById('graphRange');
+    this.graphFitBtn = document.getElementById('graphFitBtn');
+    this.graphNavBtn = document.getElementById('graphNavBtn');
     this.archiveList = document.getElementById('archiveList');
     this.archiveNavBtn = document.getElementById('archiveNavBtn');
     this.archiveViewBtn = document.getElementById('archiveViewBtn');
@@ -403,6 +431,9 @@ export class CapnoteApp {
     this.setupCustomDropdown();
     this.setupFormattingToolbar();
     this.setupToolbarMenus();
+    this.setupYearSummary();
+    this.setupQuickNote();
+    this.setupNoteGraph();
     this.setupMoodWeatherSelectors();
     this.setupModalEvents();
     this.setupKeyboardShortcuts();
@@ -665,6 +696,9 @@ applyFeatures(CapnoteApp, [
   TagsFeature,
   ArchiveFeature,
   ToolbarMenusFeature,
+  YearSummaryFeature,
+  QuickNoteFeature,
+  NoteGraphFeature,
   DashboardFeature,
   TemplatesFeature,
   MarkdownIoFeature,

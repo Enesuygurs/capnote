@@ -1,5 +1,16 @@
 /* Sidebar rows: notes, folders and notes inside folders share one 32px row */
 
+/* An empty list: no notes yet, or none matching the search */
+.notes-list-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-3);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
 .notes-list-container {
   position: relative;
 }
@@ -46,7 +57,9 @@
   color: var(--tone, var(--text-muted));
 }
 
-.note-item.active .nav-icon {
+/* The open note and every picked one: the icon in the row's accent text (or its own tone) */
+.note-item.active .nav-icon,
+.note-item.is-selected .nav-icon {
   color: var(--tone, inherit);
 }
 

@@ -16,6 +16,8 @@ export const DEFAULT_SETTINGS = {
   folderColorsBackup: null,
   noteSort: 'date-desc',
   autoSave: true,
+  // Line shortcuts while typing: "- " a bulleted list, "1. " a numbered one, "[] " a task...
+  autoFormat: true,
   onNoteDelete: 'lastNote',
   // What opens when the app starts: lastNote, home, newNote, todos or notifications
   startupPage: 'lastNote',
@@ -60,3 +62,6 @@ export const LEGACY_STORAGE_KEYS = {
 export const HISTORY_MERGE_MS = 10 * 60 * 1000;
 
 export const HISTORY_LIMIT = 100;
+// How many of the latest history entries keep the note's text from before that edit, so it can be
+// seen and restored; older entries keep only their time
+export const HISTORY_VERSIONS = 30;

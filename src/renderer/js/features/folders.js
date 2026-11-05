@@ -153,7 +153,10 @@ export class FoldersFeature {
     // Compute visible counts per folder and skip folders with zero visible notes
     const treatAsFilter = this.isViewFiltered();
 
+    // In the custom order the unpinned folders are among the notes (the notes list draws them)
+    const amongNotes = this.currentSort === 'manual';
     this.folders.forEach((folder) => {
+      if (amongNotes && !folder.isPinned) return;
       const visibleCount = this.getVisibleCountForFolder(folder.id);
       // If current filter/search should restrict visibility, hide folders with zero visible notes
       if (treatAsFilter && visibleCount === 0) return;
@@ -163,9 +166,17 @@ export class FoldersFeature {
         folder.isPinned && this.pinnedFoldersList ? this.pinnedFoldersList : this.foldersList;
       list.appendChild(folderElement);
     });
+    if (amongNotes) {
+      this.updateNotesList();
+      return;
+    }
     // Ensure folder notes are populated after rebuilding the DOM
     this.updateFolderNotes();
-    // Restore visibility according to header expanded state
+    this.restoreFolderExpansion();
+  }
+
+  // A folder shows its notes when its header is expanded
+  restoreFolderExpansion() {
     document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
       const folderId = container.getAttribute('data-folder-id');
       const header = document.querySelector(`.folder-item[data-folder-id="${folderId}"]`);
@@ -214,6 +225,15 @@ export class FoldersFeature {
     // Normalize ids
     sourceId = String(sourceId);
     targetId = String(targetId);
+    // In the custom order folders share the root list with the notes
+    if (this.currentSort === 'manual') {
+      const source = this.folders.find((f) => String(f.id) === sourceId);
+      const target = this.folders.find((f) => String(f.id) === targetId);
+      if (source && target && source !== target && !target.isPinned) {
+        this.placeInRootList([{ folder: source }], { folder: target }, insertBefore);
+        return;
+      }
+    }
     const srcIndex = this.folders.findIndex((f) => String(f.id) === sourceId);
     const tgtIndex = this.folders.findIndex((f) => String(f.id) === targetId);
     if (srcIndex === -1 || tgtIndex === -1 || srcIndex === tgtIndex) return;
@@ -345,6 +365,8 @@ export class FoldersFeature {
         ev.dataTransfer.effectAllowed = 'move';
         // Use a dedicated mime type for folder drags to avoid colliding with note drags
         ev.dataTransfer.setData('text/folder-id', String(folder.id));
+        // The notes of the root list read it during dragover, when the drag data cannot be read
+        this.draggedFolderId = folder.id;
         // add a dragging class to aid styling (optional)
         folderHeader.classList.add('dragging');
       } catch (err) {
@@ -352,7 +374,11 @@ export class FoldersFeature {
       }
     });
     folderHeader.addEventListener('dragend', () => {
+      this.draggedFolderId = null;
       folderHeader.classList.remove('dragging');
+      document
+        .querySelectorAll('.note-item.insert-before, .note-item.insert-after')
+        .forEach((el) => el.classList.remove('insert-before', 'insert-after'));
       // remove any drag-over / insert indicator classes left behind
       document
         .querySelectorAll(

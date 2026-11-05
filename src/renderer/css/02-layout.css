@@ -49,6 +49,9 @@
 }
 
 .sidebar-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
   padding: var(--space-2) var(--space-3) var(--space-3);
   flex-shrink: 0;
 }
@@ -93,6 +96,15 @@
   padding: var(--space-5) var(--gutter);
   border-bottom: 1px solid var(--divider);
   flex-shrink: 0;
+}
+
+/* A note is on paper, not on the page's white: inside the viewer and the editor the page and the
+   header gray are the note's own (the same as the page in the dark theme) */
+.note-viewer,
+.note-editor {
+  --surface: var(--note-paper);
+  --note-header: var(--note-paper-header);
+  background: var(--surface);
 }
 
 /* A note's header (its title, date and actions) sits on the page; in the editor only the toolbar

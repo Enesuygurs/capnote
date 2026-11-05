@@ -9,7 +9,7 @@ import { app, BrowserWindow } from 'electron';
 const ICONS_DIR = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'icons');
 const SOURCE_DIR = path.join(ICONS_DIR, 'source');
 
-// Every size is drawn from the one app icon, the same one the app shows on its home page
+// Every size is drawn from the one app icon, the same one the app shows in its sidebar
 const ICO_SIZES = [16, 24, 32, 48, 64, 128, 256];
 
 const PNG_OUTPUTS = [

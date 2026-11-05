@@ -36,7 +36,14 @@ app.name = 'Capnote';
 
 // Only one Capnote runs at a time; starting it again brings the existing window forward
 const isPrimaryInstance = app.requestSingleInstanceLock();
-if (!isPrimaryInstance) app.quit();
+if (!isPrimaryInstance) {
+  // Started from a terminal (npm run dev), say why the window does not open
+  console.log(
+    'Capnote is already running (maybe in the tray) and uses the same data; this copy closes ' +
+      'and brings that one forward. Quit it from the tray icon to start this one.'
+  );
+  app.quit();
+}
 app.on('second-instance', () => showMainWindow());
 
 registerUploadScheme();
@@ -119,7 +126,7 @@ registerNotificationIpc();
 registerAutostartIpc();
 registerExportIpc();
 registerUpdateIpc();
-registerQuickNoteIpc();
+registerQuickNoteIpc({ settings: () => getDataStore().read('settings') });
 registerDataTransferIpc();
 
 app.whenReady().then(() => {

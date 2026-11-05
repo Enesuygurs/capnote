@@ -41,6 +41,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   exportHtml: (payload) => ipcRenderer.invoke('export-html', payload),
   // Save a text file (note text or JSON, the full backup) where the user picks
   saveFile: (payload) => ipcRenderer.invoke('save-file', payload),
+  // A part of the window as a PNG (base64), and a PNG saved where the user picks
+  captureArea: (rect) => ipcRenderer.invoke('capture-area', rect),
+  savePng: (payload) => ipcRenderer.invoke('save-png', payload),
   // Export: choose where and as what (backup or Markdown), then write it; import: backups and
   // Markdown files the user picks
   chooseExport: (payload) => ipcRenderer.invoke('data:choose-export', payload),
@@ -68,7 +71,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Close-to-tray preference
   getCloseToTray: () => ipcRenderer.invoke('get-close-to-tray'),
   setCloseToTray: (enabled) => ipcRenderer.invoke('set-close-to-tray', enabled),
-  // Ctrl+Alt+N from anywhere opens a new note
+  // Ctrl+Alt+N from anywhere opens the quick note window; its note comes here to be added, or to
+  // be opened in the editor
+  onQuickNote: (callback) => ipcRenderer.on('quick-note:add', (event, note) => callback(note)),
+  onQuickNoteOpen: (callback) => ipcRenderer.on('quick-note:open', (event, note) => callback(note)),
   setQuickNoteShortcut: (enabled) => ipcRenderer.invoke('quick-note-shortcut:set', enabled),
   getQuickNoteShortcut: () => ipcRenderer.invoke('quick-note-shortcut:get'),
 });

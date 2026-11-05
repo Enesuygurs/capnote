@@ -25,15 +25,13 @@
 }
 
 /* ============ Formatting toolbar ============ */
-/* A line above and below sets the toolbar apart from the title and from the text */
+/* No lines: the toolbar's own soft tint (--note-header) sets it apart from the title and the text */
 .formatting-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2) var(--space-3);
   padding: var(--space-2) var(--gutter);
-  border-top: 1px solid var(--divider);
-  border-bottom: 1px solid var(--divider);
   flex-shrink: 0;
 }
 
@@ -235,6 +233,39 @@
   line-height: 1.7;
 }
 
+/* ============ Focus mode ============
+   Only the title and the text: the sidebar, the toolbar and the side panel are hidden, the text
+   sits in a column in the middle */
+.focus-mode .sidebar,
+.focus-mode .formatting-toolbar,
+.focus-mode .editor-sidebar,
+.focus-mode #toggleSidebar {
+  display: none !important;
+}
+
+/* The sidebar toggle has nothing to show here */
+.focus-mode .titlebar-start {
+  visibility: hidden;
+}
+
+.focus-mode .main-content {
+  margin-left: var(--space-2);
+}
+
+.focus-mode .rich-editor,
+.focus-mode .markdown-editor {
+  width: 100%;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* The header lines up with the text column */
+.focus-mode .editor-header {
+  padding-left: max(var(--gutter), calc((100% - 760px) / 2));
+  padding-right: max(var(--gutter), calc((100% - 760px) / 2));
+}
+
 /* ============ Properties panel ============
    Mood, weather, tags and reminders; a tinted column with labelled sections */
 .editor-sidebar {
@@ -260,59 +291,72 @@
   gap: var(--space-1);
 }
 
-/* Each mood and weather has its own icon color; the viewer's meta line uses the same ones */
+/* Each mood and weather has its own color (--mood-* and --weather-* in 01-base.css); the viewer,
+   the calendar and the charts use the same ones */
 [data-mood='happy'],
-[data-tone='happy'],
-[data-weather='sunny'],
-[data-tone='sunny'],
-[data-weather='partlyCloudy'],
-[data-tone='partlyCloudy'] {
-  --tone: var(--tone-amber);
+[data-tone='happy'] {
+  --tone: var(--mood-happy);
 }
 [data-mood='sad'],
-[data-tone='sad'],
-[data-weather='rainy'],
-[data-tone='rainy'] {
-  --tone: var(--tone-blue);
+[data-tone='sad'] {
+  --tone: var(--mood-sad);
 }
 [data-mood='angry'],
 [data-tone='angry'] {
-  --tone: var(--tone-red);
+  --tone: var(--mood-angry);
 }
 [data-mood='tired'],
-[data-tone='tired'],
-[data-weather='stormy'],
-[data-tone='stormy'] {
-  --tone: var(--tone-violet);
+[data-tone='tired'] {
+  --tone: var(--mood-tired);
 }
 [data-mood='inLove'],
 [data-tone='inLove'] {
-  --tone: var(--tone-rose);
+  --tone: var(--mood-in-love);
 }
 [data-mood='thoughtful'],
 [data-tone='thoughtful'] {
-  --tone: var(--tone-teal);
+  --tone: var(--mood-thoughtful);
 }
 [data-mood='cool'],
-[data-tone='cool'],
-[data-weather='snowy'],
-[data-tone='snowy'] {
-  --tone: var(--tone-sky);
+[data-tone='cool'] {
+  --tone: var(--mood-cool);
 }
 [data-mood='bored'],
-[data-tone='bored'],
+[data-tone='bored'] {
+  --tone: var(--mood-bored);
+}
+[data-weather='sunny'],
+[data-tone='sunny'] {
+  --tone: var(--weather-sunny);
+}
+[data-weather='partlyCloudy'],
+[data-tone='partlyCloudy'] {
+  --tone: var(--weather-partly-cloudy);
+}
 [data-weather='cloudy'],
 [data-tone='cloudy'] {
-  --tone: var(--tone-slate);
+  --tone: var(--weather-cloudy);
+}
+[data-weather='rainy'],
+[data-tone='rainy'] {
+  --tone: var(--weather-rainy);
+}
+[data-weather='stormy'],
+[data-tone='stormy'] {
+  --tone: var(--weather-stormy);
+}
+[data-weather='snowy'],
+[data-tone='snowy'] {
+  --tone: var(--weather-snowy);
 }
 
-/* Icons are neutral; a button shows its tone on hover, and the chosen one keeps that look */
+/* Each button shows its own color on a faint tint of it; hover deepens the tint */
 .mood-btn,
 .weather-btn {
   height: var(--control-md);
   border-radius: var(--radius-md);
-  background: var(--field);
-  color: var(--text-secondary);
+  background: color-mix(in srgb, var(--tone) 9%, transparent);
+  color: var(--tone);
   font-size: var(--fs-lg);
   cursor: pointer;
   display: flex;
@@ -323,14 +367,14 @@
 
 .mood-btn:hover,
 .weather-btn:hover {
-  background: color-mix(in srgb, var(--tone) 16%, transparent);
-  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 18%, transparent);
 }
 
+/* The chosen one: a stronger tint and a ring in its color */
 .mood-btn.active,
 .weather-btn.active {
-  background: color-mix(in srgb, var(--tone) 16%, transparent);
-  color: var(--tone);
+  background: color-mix(in srgb, var(--tone) 22%, transparent);
+  box-shadow: inset 0 0 0 2px var(--tone);
 }
 
 .tags-container,

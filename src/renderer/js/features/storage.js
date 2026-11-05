@@ -45,8 +45,17 @@ export class StorageFeature {
   }
 
   // What gets persisted: locked notes keep only their encrypted payload, never plaintext
+  // and none of their earlier versions (those stay in memory while the note is unlocked)
   serializeNotes() {
-    return this.notes.map((note) => (note.isLocked ? { ...note, content: '' } : note));
+    return this.notes.map((note) =>
+      note.isLocked
+        ? {
+            ...note,
+            content: '',
+            history: (note.history || []).map(({ version, ...entry }) => entry),
+          }
+        : note
+    );
   }
 
   async loadNotes() {

@@ -1,4 +1,5 @@
-// The note context menu opens on right-click, follows the note's state and runs its actions;
+// The note context menu opens on right-click, follows the note's state and runs its actions (Rename
+// edits the title in place);
 // list updates skipped during a resize are applied afterwards
 
 export async function run() {
@@ -43,8 +44,23 @@ export async function run() {
   const afterResize = [...a.notesList.querySelectorAll('.note-item-title')].some(
     (e) => e.textContent === 'Renamed during resize'
   );
+  // Rename: the title becomes a field in the list; Enter saves the new title
+  const renameId = a.notesList.querySelectorAll('.note-item')[1].dataset.noteId;
+  rightClick(a.notesList.querySelector(`[data-note-id="${renameId}"]`));
+  const renameLabel = label('rename');
+  menu.querySelector('[data-action="rename"]').click();
+  const field = a.notesList.querySelector(`[data-note-id="${renameId}"] .note-rename-input`);
+  const renaming = !!field && document.activeElement === field;
+  field.value = 'Yeni ad';
+  field.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+  await new Promise((r) => setTimeout(r, 100));
+  const renamed = a.notes.find((n) => n.id === renameId).title;
+
   return {
     opened,
+    renameLabel,
+    renaming,
+    renamed,
     before,
     closedAfterAction,
     favorite,
@@ -59,6 +75,9 @@ export async function run() {
 
 export const expected = {
   opened: true,
+  renameLabel: 'Yeniden Adlandır',
+  renaming: true,
+  renamed: 'Yeni ad',
   before: 'Favorilere ekle',
   closedAfterAction: true,
   favorite: true,

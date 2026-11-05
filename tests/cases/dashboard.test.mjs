@@ -1,6 +1,6 @@
 // The overview on the home page: totals, the writing streak (writing yesterday keeps it going),
-// words this month, a calendar with each day's mood whose days list their notes, how moods and
-// weather are spread, and the words of the last six months
+// the words of the last 30 days, a calendar with each day's mood whose days list their notes, how moods and
+// weather are spread, and the words of the last twelve months
 
 export async function run() {
   const a = window.app;
@@ -38,7 +38,7 @@ export async function run() {
       activeDays: tile('activeDays'),
       streak: tile('streak'),
       longest: tile('longestStreak'),
-      wordsThisMonth: tile('wordsThisMonth'),
+      wordsLast30Days: tile('wordsLast30Days'),
     },
     month: a.calendarTitle.textContent,
     todayMood: day('2026-06-15').querySelector('.calendar-day-mark')?.dataset.tone,
@@ -48,14 +48,32 @@ export async function run() {
       (r) => r.querySelector('.bar-value').textContent
     ),
     weather: a.weatherChart.querySelectorAll('.bar-row').length,
-    months: [...a.wordsChart.querySelectorAll('.column')].map((c) => c.title.split(': ')[1]),
+    months: [...a.wordsChart.querySelectorAll('.area-hit')].map((h) => h.dataset.words),
+    wordsTotal: a.wordsTotal.textContent,
   };
 
-  // A day with notes lists them; a click on one opens it
+  // A day with notes lists them in the words card in place of the chart; choosing it again
+  // brings the chart back; a click on a note opens it
+  const chartShown = () => getComputedStyle(a.wordsChart).display !== 'none';
   day('2026-06-14').click();
   result.dayList = [...a.calendarDayList.querySelectorAll('.calendar-note-title')].map(
     (t) => t.textContent
   );
+  result.dayInWordsCard = [a.wordsCard.contains(a.calendarDayNotes), chartShown()];
+  // Mood and weather count the chosen day only, and their headers name it
+  const moodRows = () =>
+    [...a.moodChart.querySelectorAll('.bar-row')].map(
+      (r) => r.querySelector('.bar-value').textContent
+    );
+  result.dayMoods = {
+    rows: moodRows(),
+    header: a.moodTotal.textContent,
+    weather: a.weatherChart.textContent.trim(),
+  };
+  day('2026-06-14').click();
+  result.chartBack = [chartShown(), a.calendarDayNotes.classList.contains('hidden')];
+  result.allMoodsBack = moodRows().length;
+  day('2026-06-14').click();
   // The previous month
   a.calendarPrevBtn.click();
   result.previousMonthMood = a.calendarGrid.querySelector(
@@ -76,15 +94,24 @@ export async function run() {
 
 export const expected = {
   overviewShown: true,
-  tiles: { notes: '5', activeDays: '5', streak: '3', longest: '3', wordsThisMonth: '100' },
+  tiles: { notes: '5', activeDays: '5', streak: '3', longest: '3', wordsLast30Days: '200' },
   month: 'Haziran 2026',
   todayMood: 'happy',
   plainDay: true,
   isToday: true,
   moods: ['2 · 50%', '1 · 25%', '1 · 25%'],
   weather: 1,
-  months: ['0 kelime', '0 kelime', '0 kelime', '0 kelime', '100 kelime', '100 kelime'],
+  months: [...Array(10).fill('0'), '100', '100'],
+  wordsTotal: '200 kelime, son 12 ay',
   dayList: ['Yesterday'],
+  dayInWordsCard: [true, false],
+  dayMoods: {
+    rows: ['1 · 100%'],
+    header: '14 Haziran · 1 not',
+    weather: 'Bu gün için hava durumu seçilmemiş',
+  },
+  allMoodsBack: 3,
+  chartBack: [true, true],
   previousMonthMood: 'tired',
   backToJune: 'Haziran 2026',
   opened: 'Yesterday',

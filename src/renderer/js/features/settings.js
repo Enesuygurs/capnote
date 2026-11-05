@@ -90,6 +90,7 @@ export class SettingsFeature {
     if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
     if (this.startupPageSelect) this.startupPageSelect.value = settings.startupPage;
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
+    if (this.autoFormatToggle) this.autoFormatToggle.checked = settings.autoFormat;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
     if (this.quickNoteShortcutToggle)
       this.quickNoteShortcutToggle.checked = settings.quickNoteShortcut;
@@ -164,6 +165,11 @@ export class SettingsFeature {
         this.setSetting('onNoteDelete', e.target.value);
       });
     }
+
+    // Line shortcuts while typing
+    this.autoFormatToggle?.addEventListener('change', (e) =>
+      this.setSetting('autoFormat', e.target.checked)
+    );
 
     // Auto save toggle
     if (this.autoSaveToggle) {
