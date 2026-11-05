@@ -79,6 +79,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     read: (filePath) => ipcRenderer.invoke('files:read', filePath),
     write: (payload) => ipcRenderer.invoke('files:write', payload),
     reveal: (filePath) => ipcRenderer.invoke('files:reveal', filePath),
+    trash: (filePath) => ipcRenderer.invoke('files:trash', filePath),
     setContextMenu: (enabled) => ipcRenderer.invoke('files:context-menu', enabled),
   },
   // Ctrl+Alt+N from anywhere opens the quick note window; its note comes here to be added, or to

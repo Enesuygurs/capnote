@@ -61,12 +61,14 @@ export class FileNotesFeature {
       note.fileKind = kind;
       note.isMarkdown = true;
       if (note.isArchived) note.isArchived = false;
+      this.addExtensionToTitle(note);
     } else {
       const now = new Date().toISOString();
       const counts = this.countWordsAndCharsFromHtml(this.escapeHtml(file.content));
       note = {
         id: this.newId(),
-        title: file.name.replace(/\.[^.]+$/, ''),
+        // The file's name as it is, with its extension (index.html, not index)
+        title: file.name,
         content: file.content,
         isMarkdown: true,
         filePath: file.path,
@@ -93,6 +95,15 @@ export class FileNotesFeature {
     this.updateStats();
     this.selectNote(note);
     this.editCurrentNote();
+  }
+
+  // File notes made before titles kept the extension are titled with the file's name without it;
+  // they get the full name (a title the user changed stays as it is). True when it changed.
+  addExtensionToTitle(note) {
+    const name = this.fileName(note);
+    if (note.title !== name.replace(/\.[^.]+$/, '') || note.title === name) return false;
+    note.title = name;
+    return true;
   }
 
   // Opening a file note reads its file again: changes made in another program show here
@@ -137,6 +148,24 @@ export class FileNotesFeature {
     this.showNotification(i18n.t('files.saveFailed', { name }), 'error');
   }
 
+  // The files of file notes being deleted go to the Recycle Bin (a file already gone is fine)
+  async trashNoteFiles(notes) {
+    const api = window.electronAPI?.files;
+    if (!api || !notes.length) return;
+    const results = await Promise.all(notes.map((n) => api.trash(n.filePath)));
+    const failed = notes.filter((n, i) => !results[i]?.ok && results[i]?.error !== 'missing');
+    if (failed.length) {
+      this.showNotification(
+        i18n.t('files.trashFailed', { name: this.fileName(failed[0]) }),
+        'error'
+      );
+    } else if (notes.length === 1) {
+      this.showNotification(i18n.t('files.trashed', { name: this.fileName(notes[0]) }), 'success');
+    } else {
+      this.showNotification(i18n.t('files.trashedMany', { count: notes.length }), 'success');
+    }
+  }
+
   revealFileNote(note = this.currentNote) {
     if (note?.filePath) window.electronAPI?.files?.reveal(note.filePath);
   }
@@ -144,6 +173,15 @@ export class FileNotesFeature {
   async setupFileNotes() {
     const api = window.electronAPI?.files;
     if (!api) return;
+    // Titles of earlier file notes get their extension
+    const renamed = this.notes.filter((n) => this.isFileNote(n) && this.addExtensionToTitle(n));
+    if (renamed.length) {
+      this.saveNotes();
+      this.updateNotesList();
+      if (this.currentNote && renamed.includes(this.currentNote) && this.isViewerOpen()) {
+        this.displayNote(this.currentNote);
+      }
+    }
     this.viewerFile?.addEventListener('click', () => this.revealFileNote());
     api.onOpen((file) => this.openExternalFile(file));
     // The files Capnote was started on, once the page is ready

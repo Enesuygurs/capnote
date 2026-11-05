@@ -37,6 +37,14 @@
 .viewer-file {
   gap: var(--space-1);
   cursor: pointer;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* The file's path; a long one is cut short (the whole path is in the tooltip) */
+.viewer-file span {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .viewer-file:hover {

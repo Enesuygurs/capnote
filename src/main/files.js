@@ -149,6 +149,20 @@ function registerFileIpc({ settings = () => ({}), notes = () => [] } = {}) {
     }
   });
 
+  // Deleting a file note can delete its file too: it goes to the Recycle Bin, not away for good
+  ipcMain.handle('files:trash', async (event, filePath) => {
+    if (typeof filePath !== 'string' || !known.has(keyOf(filePath)) || !isSupported(filePath))
+      return { ok: false };
+    if (!fs.existsSync(filePath)) return { ok: false, error: 'missing' };
+    try {
+      await shell.trashItem(path.resolve(filePath));
+      known.delete(keyOf(filePath));
+      return { ok: true };
+    } catch (err) {
+      return { ok: false, error: String(err.message || err) };
+    }
+  });
+
   ipcMain.handle('files:reveal', (event, filePath) => {
     if (typeof filePath === 'string' && known.has(keyOf(filePath)))
       shell.showItemInFolder(filePath);

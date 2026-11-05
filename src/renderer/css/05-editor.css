@@ -30,6 +30,14 @@
   display: none;
 }
 
+/* Only the preview of the file's own kind: Markdown for .md, the page for .html, none for .txt */
+.note-editor[data-file-kind='txt'] #toggleMarkdownBtn,
+.note-editor[data-file-kind='txt'] #toggleHtmlBtn,
+.note-editor[data-file-kind='md'] #toggleHtmlBtn,
+.note-editor[data-file-kind='html'] #toggleMarkdownBtn {
+  display: none;
+}
+
 /* No lines: the toolbar's own soft tint (--note-header) sets it apart from the title and the text */
 .formatting-toolbar {
   display: flex;

@@ -31,15 +31,12 @@ export class PreviewsFeature {
         this.showRichEditor();
       }
     } else {
-      // Get source text: prefer current rich editor text (so user edits immediately reflect preview)
+      // The source is the editor the note is written in, whether or not it is on screen now (another
+      // preview may be covering it): the plain text editor of a Markdown note, else the rich editor
       const sourceText =
-        this.markdownEditor && !this.markdownEditor.classList.contains('hidden')
+        this.currentNote?.isMarkdown && this.markdownEditor
           ? this.markdownEditor.value
-          : this.richEditor && this.richEditor.innerText
-            ? this.richEditor.innerText
-            : this.currentNote && this.currentNote.content
-              ? this.currentNote.content
-              : '';
+          : this.richEditor?.innerText || this.currentNote?.content || '';
       this.renderMarkdownPreview(sourceText);
       // Hide editors while showing preview
       this.hideRichEditor();
@@ -97,13 +94,24 @@ export class PreviewsFeature {
     }
     if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.classList.remove('active');
 
-    // Render raw HTML from current source: prefer markdownEditor (if editing markdown), else richEditor.innerHTML
+    // The source is the editor the note is written in, whether or not it is on screen now (the
+    // Markdown preview may be covering it)
     const sourceHtml =
-      this.markdownEditor && !this.markdownEditor.classList.contains('hidden')
+      this.currentNote?.isMarkdown && this.markdownEditor
         ? this.markdownEditor.value
-        : this.richEditor
-          ? this.richEditor.innerHTML
-          : '';
+        : this.richEditor?.innerHTML || '';
+
+    // An HTML file shows as its own page, as a browser would show it (without its scripts)
+    if (this.currentNote?.fileKind === 'html') {
+      this.htmlPreviewSource = sourceHtml;
+      this.htmlPreviewIsPage = true;
+      this.writeHtmlPreview(sourceHtml, { page: true });
+      this.hideRichEditor();
+      this.hideMarkdownEditor();
+      this.showHtmlPreview();
+      return;
+    }
+    this.htmlPreviewIsPage = false;
 
     // If sourceHtml is Markdown (note.isMarkdown), render via marked then show raw HTML
     try {
@@ -141,8 +149,9 @@ export class PreviewsFeature {
     if (this.toggleMarkdownBtn) this.toggleMarkdownBtn.classList.remove('active');
   }
 
-  // Writes the given HTML into the sandboxed preview frame, styled for the current theme
-  writeHtmlPreview(html) {
+  // Writes the given HTML into the sandboxed preview frame, styled for the current theme; a whole
+  // page (page: true, an HTML file) is written as it is, on a white page as in a browser
+  writeHtmlPreview(html, { page = false } = {}) {
     // Create or reuse a sandboxed iframe to isolate user HTML/CSS from the parent app
     let iframe = this.htmlPreview.querySelector('iframe.preview-iframe');
     if (!iframe) {
@@ -174,37 +183,36 @@ export class PreviewsFeature {
       ` ::-webkit-scrollbar{width:8px;height:8px;} ::-webkit-scrollbar-thumb{background:rgba(128,128,128,0.35);border-radius:4px;}` +
       `</style></head><body>${html}</body></html>`;
     // The frame element needs the same color scheme, or Chromium paints an opaque backdrop behind it
-    iframe.style.colorScheme = scheme;
+    iframe.style.colorScheme = page ? 'light' : scheme;
+    iframe.style.background = page ? '#fff' : '';
     // The sandboxed frame cannot be looked into: it says itself when the page has loaded
     delete iframe.dataset.loaded;
     iframe.onload = () => (iframe.dataset.loaded = 'true');
-    iframe.srcdoc = doc;
+    iframe.srcdoc = page ? html : doc;
   }
 
   // The preview frame keeps the colors it was written with; write it again when the theme changes
   refreshHtmlPreview() {
     if (!this.htmlPreview || this.htmlPreview.classList.contains('hidden')) return;
-    if (typeof this.htmlPreviewSource === 'string') this.writeHtmlPreview(this.htmlPreviewSource);
+    if (typeof this.htmlPreviewSource === 'string')
+      this.writeHtmlPreview(this.htmlPreviewSource, { page: !!this.htmlPreviewIsPage });
   }
 
-  // Editor visibility helpers
+  // Editor visibility helpers. The preview buttons are lit only while their preview is open.
   showMarkdownEditor() {
     if (!this.markdownEditor) return;
     this.markdownEditor.classList.remove('hidden');
     if (this.richEditor) this.richEditor.classList.add('hidden');
-    this.toggleMarkdownBtn.classList.toggle('active', true);
   }
 
   hideMarkdownEditor() {
     if (!this.markdownEditor) return;
     this.markdownEditor.classList.add('hidden');
-    this.toggleMarkdownBtn.classList.toggle('active', false);
   }
 
   showRichEditor() {
     if (this.richEditor) this.richEditor.classList.remove('hidden');
     if (this.markdownEditor) this.markdownEditor.classList.add('hidden');
-    this.toggleMarkdownBtn.classList.toggle('active', false);
   }
 
   hideRichEditor() {

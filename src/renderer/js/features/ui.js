@@ -5,7 +5,8 @@ export class UiFeature {
     // Confirm modal
     this.confirmBtn.addEventListener('click', () => {
       if (this.confirmCallback) {
-        this.confirmCallback();
+        // The callback is told whether the dialog's extra choice was ticked
+        this.confirmCallback(!!document.getElementById('confirmOptionCheck')?.checked);
       }
       this.hideModal(this.confirmModal);
     });
@@ -155,6 +156,10 @@ export class UiFeature {
     // a delay when users expected the popup to close right away.
     modal.classList.remove('show');
     modal.classList.add('hidden');
+    // The confirm dialog's extra choice belongs to the one confirmation that asked for it
+    if (modal === this.confirmModal) {
+      modal.querySelector('.confirm-option')?.classList.add('hidden');
+    }
     // Remove temporary enter key handler if present
     try {
       if (modal._enterKeyHandler) {
@@ -172,9 +177,16 @@ export class UiFeature {
     });
   }
 
-  showConfirm(message, callback) {
+  // option: the label of an extra choice (a checkbox, unticked) the callback receives as true/false
+  showConfirm(message, callback, { option } = {}) {
     this.confirmMessage.textContent = message;
     this.confirmCallback = callback;
+    const optionRow = this.confirmModal.querySelector('.confirm-option');
+    if (optionRow) {
+      optionRow.classList.toggle('hidden', !option);
+      optionRow.querySelector('input').checked = false;
+      document.getElementById('confirmOptionLabel').textContent = option || '';
+    }
     this.showModal(this.confirmModal);
   }
 

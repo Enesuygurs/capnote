@@ -648,24 +648,28 @@ export class CapnoteApp {
   }
 
   toggleEditorSidebar() {
-    this.isSidebarVisible = !this.isSidebarVisible;
-
-    if (this.isSidebarVisible) {
-      this.editorSidebar.classList.remove('hidden');
-      this.toggleSidebarBtn.classList.add('active');
-    } else {
-      this.editorSidebar.classList.add('hidden');
-      this.toggleSidebarBtn.classList.remove('active');
+    // A file note starts without the sidebar; opening it there lasts until another note opens and
+    // leaves the setting for notes as it is
+    if (this.isFileNote(this.currentNote)) {
+      this.fileNoteSidebarOpen = !this.fileNoteSidebarOpen;
+      this.applyEditorSidebar();
+      return;
     }
-
-    // Save preference
+    this.isSidebarVisible = !this.isSidebarVisible;
+    this.applyEditorSidebar();
     this.setSetting('editorSidebarVisible', this.isSidebarVisible);
+  }
+
+  // Show or hide the editor sidebar for the note in the editor
+  applyEditorSidebar(note = this.currentNote) {
+    const visible = this.isFileNote(note) ? !!this.fileNoteSidebarOpen : this.isSidebarVisible;
+    this.editorSidebar.classList.toggle('hidden', !visible);
+    this.toggleSidebarBtn.classList.toggle('active', visible);
   }
 
   loadSidebarPreference() {
     this.isSidebarVisible = this.settings.editorSidebarVisible;
-    this.editorSidebar.classList.toggle('hidden', !this.isSidebarVisible);
-    this.toggleSidebarBtn.classList.toggle('active', this.isSidebarVisible);
+    this.applyEditorSidebar();
   }
 }
 

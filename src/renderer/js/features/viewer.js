@@ -39,11 +39,11 @@ export class ViewerFeature {
       this.refreshNoteLinks(this.viewerText);
     }
     this.renderBacklinks(note);
-    // A file note names its file; a click shows it in its folder
+    // A file note shows its file's path; a click shows the file in its folder
     if (this.viewerFile) {
       this.viewerFile.classList.toggle('hidden', !note.filePath);
       if (note.filePath) {
-        this.viewerFile.querySelector('span').textContent = this.fileName(note);
+        this.viewerFile.querySelector('span').textContent = note.filePath;
         this.viewerFile.title = `${note.filePath}\n${i18n.t('files.reveal')}`;
         this.viewerFile.querySelector('i').className = this.fileNoteIcon(note);
       }

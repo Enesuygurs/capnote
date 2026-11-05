@@ -144,6 +144,8 @@ export class NotesFeature {
 
     this.showEditor();
     this.noteEditor?.classList.remove('is-file-note');
+    if (this.noteEditor) this.noteEditor.dataset.fileKind = '';
+    this.applyEditorSidebar(this.currentNote);
     this.clearEditor();
     this.resetEditorHistory?.();
     this.updateCurrentDate();
@@ -546,8 +548,17 @@ export class NotesFeature {
     // A locked note is deleted only with its password (or while it is unlocked)
     if (!(await this.confirmLockedNotePassword(note))) return;
 
-    this.showConfirm(`"${this.displayTitle(note)}" ${i18n.t('messages.confirmDelete')}`, () =>
-      this.performNoteDeletion(note)
+    // A file note can take its file with it (to the Recycle Bin); by default the file stays
+    const option = this.isFileNote(note)
+      ? i18n.t('files.deleteFileToo', { name: this.fileName(note) })
+      : undefined;
+    this.showConfirm(
+      `"${this.displayTitle(note)}" ${i18n.t('messages.confirmDelete')}`,
+      (deleteFile) => {
+        this.performNoteDeletion(note);
+        if (deleteFile && option) this.trashNoteFiles([note]);
+      },
+      { option }
     );
   }
 
