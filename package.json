@@ -1,6 +1,6 @@
 {
   "name": "capnote",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Capnote - a modern desktop notes and journal app",
   "main": "src/main/index.js",
   "type": "module",
