@@ -171,7 +171,7 @@
     "startupHome": "Home page",
     "startupNewNote": "New note",
     "quickNoteShortcut": "Quick note shortcut",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a new note, even while Capnote is in the background or the tray",
+    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a small always-on-top note window in the corner of the screen, from anywhere",
     "fileContextMenu": "Capnote in the right-click menu",
     "fileContextMenuDesc": "“Edit with Capnote” on .md, .txt and .html files"
   },

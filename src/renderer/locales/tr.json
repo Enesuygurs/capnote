@@ -171,7 +171,7 @@
     "startupHome": "Giriş sayfası",
     "startupNewNote": "Yeni not",
     "quickNoteShortcut": "Hızlı not kısayolu",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N, Capnote arka planda ya da tepsideyken bile yeni not açar",
+    "quickNoteShortcutDesc": "Ctrl+Alt+N, her yerden ekranın köşesinde küçük, her zaman üstte duran bir not penceresi açar",
     "fileContextMenu": "Sağ tık menüsünde Capnote",
     "fileContextMenuDesc": ".md, .txt ve .html dosyalarında “Capnote ile düzenle”"
   },
