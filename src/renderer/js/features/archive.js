@@ -11,7 +11,7 @@ export class ArchiveFeature {
     if (!notes.length) return;
     notes.forEach((note) => {
       note.isArchived = archived;
-      if (archived) note.isPinned = false;
+      if (archived) this.setPinned(note, false);
     });
     await this.saveNotes();
     this.updateNotesList();

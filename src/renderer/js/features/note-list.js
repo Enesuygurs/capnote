@@ -20,22 +20,28 @@ export class NoteListFeature {
     const navCountEl = document.getElementById('navNotesCount');
     this.setCount(navCountEl, this.getVisibleNotesCount(), { alwaysShow: true });
 
-    if (this.currentSort === 'manual') {
-      // The custom order: the notes and the (unpinned) folders share one list
-      this.rootListItems(sortedNotes).forEach(({ note, folder }) => {
-        if (note) {
-          this.notesList.appendChild(this.createNoteItem(note));
-        } else if (!this.isViewFiltered() || this.getVisibleCountForFolder(folder.id)) {
-          this.notesList.appendChild(this.createFolderElement(folder));
-        }
-      });
-      this.restoreFolderExpansion();
-    } else {
-      sortedNotes.forEach((note) => {
-        const noteElement = this.createNoteItem(note);
-        this.notesList.appendChild(noteElement);
-      });
-    }
+    // The custom order: the notes and the unpinned folders share one list; in the other orders the
+    // unpinned folders have their own list below the notes
+    const items =
+      this.currentSort === 'manual'
+        ? this.rootListItems(sortedNotes)
+        : sortedNotes.map((note) => ({ note }));
+    // On top, the pinned notes and pinned folders together, in the order they were pinned
+    const pinned = this.pinnedListItems([
+      ...items.filter((item) => item.note?.isPinned),
+      ...this.folders.filter((folder) => folder.isPinned).map((folder) => ({ folder })),
+    ]);
+    const rest = items.filter((item) => !item.note?.isPinned);
+    let hasFolders = false;
+    [...pinned, ...rest].forEach(({ note, folder }) => {
+      if (note) {
+        this.notesList.appendChild(this.createNoteItem(note));
+      } else if (!this.isViewFiltered() || this.getVisibleCountForFolder(folder.id)) {
+        this.notesList.appendChild(this.createFolderElement(folder));
+        hasFolders = true;
+      }
+    });
+    if (hasFolders) this.restoreFolderExpansion();
     this.renderEmptyNotesList();
 
     // Also update folder notes for custom folders
@@ -406,6 +412,21 @@ export class NoteListFeature {
   // The root list in the custom order: the given notes (no folder, sorted) and the unpinned
   // folders. A note or folder dragged into place has an order; notes without one come first (the
   // newest on top), folders without one after everything, in their own order.
+  // Pin or unpin a note or folder. When it was pinned is kept, so the pinned notes and folders
+  // stay in the order they were pinned in.
+  setPinned(item, pinned) {
+    item.isPinned = pinned;
+    if (pinned) item.pinnedAt = new Date().toISOString();
+    else delete item.pinnedAt;
+  }
+
+  // The pinned notes and folders of the root list together, in the order they were pinned (ones
+  // pinned before this was kept come first, in the order they had)
+  pinnedListItems(items) {
+    const when = (item) => Date.parse((item.note || item.folder).pinnedAt) || 0;
+    return items.sort((x, y) => when(x) - when(y));
+  }
+
   rootListItems(notes) {
     const items = [
       ...notes.map((note) => ({ note, key: note.isPinned ? -Infinity : (note.order ?? -1) })),
