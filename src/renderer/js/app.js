@@ -323,6 +323,7 @@ export class CapnoteApp {
     this.viewerArchived = document.getElementById('viewerArchived');
     this.viewerFile = document.getElementById('viewerFile');
     this.fileContextMenuToggle = document.getElementById('fileContextMenuToggle');
+    this.hardwareAccelerationToggle = document.getElementById('hardwareAccelerationToggle');
     this.tagFilter = document.getElementById('tagFilter');
     this.clearTagFilterBtn = document.getElementById('clearTagFilterBtn');
     this.tagsCloud = document.getElementById('tagsCloud');

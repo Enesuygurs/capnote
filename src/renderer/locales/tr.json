@@ -173,7 +173,10 @@
     "quickNoteShortcut": "Hızlı not kısayolu",
     "quickNoteShortcutDesc": "Ctrl+Alt+N, her yerden ekranın köşesinde küçük, her zaman üstte duran bir not penceresi açar",
     "fileContextMenu": "Sağ tık menüsünde Capnote",
-    "fileContextMenuDesc": ".md, .txt ve .html dosyalarında “Capnote ile düzenle”"
+    "fileContextMenuDesc": ".md, .txt ve .html dosyalarında “Capnote ile düzenle”",
+    "hardwareAcceleration": "Donanım hızlandırma",
+    "hardwareAccelerationDesc": "Pencereyi ekran kartıyla çizer. Kapatmak bellek kullanımını biraz azaltır.",
+    "hardwareAccelerationRestart": "Bu değişiklik Capnote yeniden başlatılınca geçerli olur. Şimdi yeniden başlatılsın mı?"
   },
   "modals": {
     "exportNote": "Notu Dışa Aktar",

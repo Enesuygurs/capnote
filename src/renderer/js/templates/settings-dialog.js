@@ -286,6 +286,19 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <span class="toggle-slider"></span>
                 </label>
               </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.hardwareAcceleration">Donanım hızlandırma</label>
+                  <small data-i18n="settings.hardwareAccelerationDesc"
+                    >Pencereyi ekran kartıyla çizer. Kapatmak bellek kullanımını biraz
+                    azaltır.</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="hardwareAccelerationToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
             </div>
           </section>
         </div>

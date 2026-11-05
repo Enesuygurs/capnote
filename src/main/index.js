@@ -87,7 +87,23 @@ function readDarkModePreference() {
   return !!(settings && settings.darkMode);
 }
 
+// Drawing with the graphics card is on unless turned off in the settings; off, Capnote uses a little
+// less memory (about 20-30 MB). It can only change before the app is ready, so a change in the
+// settings applies after a restart.
+function readHardwareAccelerationPreference() {
+  const settings = getDataStore().read('settings');
+  return !(settings && settings.hardwareAcceleration === false);
+}
+if (!readHardwareAccelerationPreference()) app.disableHardwareAcceleration();
+
 function registerStorageIpc() {
+  // Start Capnote again, for settings that apply only at startup
+  ipcMain.handle('app:relaunch', () => {
+    markQuitting();
+    app.relaunch();
+    app.quit();
+  });
+
   ipcMain.handle('storage:load', () => {
     const storage = getDataStore();
     return { initialized: storage.isInitialized(), data: storage.readAll() };

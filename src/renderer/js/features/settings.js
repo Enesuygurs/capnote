@@ -93,6 +93,8 @@ export class SettingsFeature {
     if (this.autoFormatToggle) this.autoFormatToggle.checked = settings.autoFormat;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
     if (this.fileContextMenuToggle) this.fileContextMenuToggle.checked = settings.fileContextMenu;
+    if (this.hardwareAccelerationToggle)
+      this.hardwareAccelerationToggle.checked = settings.hardwareAcceleration;
     if (this.quickNoteShortcutToggle)
       this.quickNoteShortcutToggle.checked = settings.quickNoteShortcut;
 
@@ -508,6 +510,19 @@ export class SettingsFeature {
       } else if (result && !result.ok) {
         this.showNotification(i18n.t('files.contextMenuFailed'), 'error');
       }
+    });
+
+    // Drawing with the graphics card can only change at startup: offer to restart now
+    this.hardwareAccelerationToggle?.addEventListener('change', (e) => {
+      this.setSetting('hardwareAcceleration', e.target.checked);
+      this.showConfirm(i18n.t('settings.hardwareAccelerationRestart'), async () => {
+        if (this.currentNote && this.isEditorOpen() && this.hasUnsavedChanges()) {
+          this.saveNote(true);
+        }
+        await this.saveNotes();
+        await this.persist('settings', this.settings);
+        window.electronAPI?.relaunch?.();
+      });
     });
 
     // Close to tray toggle: only wire on Windows (hide on macOS/Linux)
