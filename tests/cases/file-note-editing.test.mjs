@@ -189,7 +189,7 @@ export const expected = {
   migrate: [true, 'old.md', false, 'My notes'],
   dragOver: { marked: true, label: 'Not olarak aç' },
   deleteFileNote: {
-    label: /^“index\.html” dosyasını da sil \(Geri Dönüşüm Kutusu.na taşınır\)$/,
+    label: 'Dosyayı da sil',
     ticked: false,
   },
   deletePlainNote: null,

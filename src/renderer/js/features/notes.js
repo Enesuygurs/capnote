@@ -552,9 +552,7 @@ export class NotesFeature {
     if (!(await this.confirmLockedNotePassword(note))) return;
 
     // A file note can take its file with it (to the Recycle Bin); by default the file stays
-    const option = this.isFileNote(note)
-      ? i18n.t('files.deleteFileToo', { name: this.fileName(note) })
-      : undefined;
+    const option = this.isFileNote(note) ? i18n.t('files.deleteFileToo') : undefined;
     this.showConfirm(
       `"${this.displayTitle(note)}" ${i18n.t('messages.confirmDelete')}`,
       (deleteFile) => {
