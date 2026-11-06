@@ -34,6 +34,50 @@
   margin-left: var(--space-6);
 }
 
+/* ============ Compact list (a setting) ============
+   A tighter tree: 26px rows in smaller text, no icons or counts. A folder's open/close arrow sits in
+   the left gutter (pointing right when closed, down when open) so the names of folders and notes on
+   one level line up, and what is inside a folder hangs on a thin line down from its arrow. */
+.compact-list .note-item,
+.compact-list .folder-item {
+  height: 26px;
+  gap: 6px;
+  padding: 0 6px 0 22px;
+  border-radius: 4px;
+  font-size: var(--fs-md);
+}
+
+.compact-list .sidebar-nav .note-item,
+.compact-list .sidebar-nav .folder-item {
+  margin-bottom: 1px;
+}
+
+.compact-list .note-item > .nav-icon,
+.compact-list .folder-item > .nav-icon,
+.compact-list .folder-item .folder-count {
+  display: none;
+}
+
+.compact-list .folder-item .nav-expand {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  margin-top: -8px;
+  height: 16px;
+  line-height: 16px;
+}
+
+/* The pin of a pinned folder moves to the end of the row, where the count was */
+.compact-list .folder-pin {
+  margin-left: auto;
+}
+
+/* What is in a folder: indented, on a line down from the folder's arrow */
+.compact-list .folder-notes-container {
+  margin-left: 12px;
+  border-left: 1px solid var(--divider);
+}
+
 /* ============ Drag and drop (transient feedback) ============ */
 
 /* A pinned note or folder cannot be dragged: it shakes instead */

@@ -207,6 +207,19 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <span class="toggle-slider"></span>
                 </label>
               </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.compactList">Kompakt liste</label>
+                  <small data-i18n="settings.compactListDesc"
+                    >Notlar ve klasörler daha küçük satırlarda, oklu ve çizgili bir ağaç
+                    olarak</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="compactListToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
             </div>
           </section>
         </div>

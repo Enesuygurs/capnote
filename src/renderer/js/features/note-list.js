@@ -29,7 +29,9 @@ export class NoteListFeature {
     // On top, the pinned notes and pinned folders together, in the order they were pinned
     const pinned = this.pinnedListItems([
       ...items.filter((item) => item.note?.isPinned),
-      ...this.folders.filter((folder) => folder.isPinned).map((folder) => ({ folder })),
+      ...this.childFolders(null)
+        .filter((folder) => folder.isPinned)
+        .map((folder) => ({ folder })),
     ]);
     const rest = items.filter((item) => !item.note?.isPinned);
     let hasFolders = false;
@@ -145,9 +147,12 @@ export class NoteListFeature {
       this.renderPendingAfterResize = true;
       return;
     }
-    document
-      .querySelectorAll('.folder-notes-container[data-folder-id]')
-      .forEach((container) => this.renderFolderNotes(container));
+    // The top folders' containers: each one draws the folders inside it (and their notes)
+    document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
+      if (!container.parentElement.closest('.folder-notes-container')) {
+        this.renderFolderNotes(container);
+      }
+    });
   }
 
   isCreatedToday(note) {
@@ -396,6 +401,11 @@ export class NoteListFeature {
         e.preventDefault();
         e.stopPropagation();
         const folder = this.folders.find((f) => f.id === this.draggedFolderId);
+        if (folder && this.folderParentId(folder)) {
+          // A folder taken out of another one comes to the top of the list
+          delete folder.parentId;
+          delete folder.order;
+        }
         if (folder) this.placeInRootList([{ folder }], { note }, dropBefore(e));
         return;
       }
@@ -430,7 +440,7 @@ export class NoteListFeature {
   rootListItems(notes) {
     const items = [
       ...notes.map((note) => ({ note, key: note.isPinned ? -Infinity : (note.order ?? -1) })),
-      ...this.folders
+      ...this.childFolders(null)
         .filter((folder) => !folder.isPinned)
         .map((folder, i) => ({ folder, key: folder.order ?? 1e6 + i })),
     ];
@@ -450,7 +460,9 @@ export class NoteListFeature {
         ? this.rootListItems(this.getSortedNotes(rootNotes))
         : [
             ...this.getSortedNotes(rootNotes).map((note) => ({ note })),
-            ...this.folders.filter((f) => !f.isPinned).map((folder) => ({ folder })),
+            ...this.childFolders(null)
+              .filter((f) => !f.isPinned)
+              .map((folder) => ({ folder })),
           ];
     const rest = items.filter((item) => !moving.some((m) => same(m, item)));
     const at = rest.findIndex((item) => same(item, target));

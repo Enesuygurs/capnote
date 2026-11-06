@@ -39,6 +39,7 @@ import { NoteGraphFeature } from './features/note-graph.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
+import { FoldingFeature } from './features/folding.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -267,6 +268,7 @@ export class CapnoteApp {
     this.accentBlueBtn = document.getElementById('accentBlue');
     this.syncFolderAccentToggle = document.getElementById('syncFolderAccentToggle');
     this.hideNoteIconsToggle = document.getElementById('hideNoteIconsToggle');
+    this.compactListToggle = document.getElementById('compactListToggle');
     // System settings toggles
     this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
     this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
@@ -355,6 +357,7 @@ export class CapnoteApp {
     this.renameFolderMenuItem = document.getElementById('renameFolderMenuItem');
     this.changeFolderColorMenuItem = document.getElementById('changeFolderColorMenuItem');
     this.pinFolderMenuItem = document.getElementById('pinFolderMenuItem');
+    this.newSubfolderMenuItem = document.getElementById('newSubfolderMenuItem');
     this.folderColorModal = document.getElementById('folderColorModal');
     this.folderColorInput = document.getElementById('folderColorInput');
     this.saveFolderColorBtn = document.getElementById('saveFolderColorBtn');
@@ -696,6 +699,7 @@ applyFeatures(CapnoteApp, [
   EditorHistoryFeature,
   EditorToolsFeature,
   NoteLinksFeature,
+  FoldingFeature,
   TagsFeature,
   ArchiveFeature,
   ToolbarMenusFeature,

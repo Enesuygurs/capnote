@@ -82,7 +82,8 @@
     "quote": "Quote",
     "divider": "Divider",
     "focusMode": "Focus mode",
-    "focusModeExit": "Leave focus mode (Esc)"
+    "focusModeExit": "Leave focus mode (Esc)",
+    "toggleFold": "Collapse / expand"
   },
   "placeholders": {
     "noteTitle": "Note title...",
@@ -141,6 +142,8 @@
     "syncFolderAccentDesc": "Set all folder icon colors to accent color",
     "hideNoteIcons": "Hide note icons",
     "hideNoteIconsDesc": "No icons at the left of the notes in the note list",
+    "compactList": "Compact list",
+    "compactListDesc": "Notes and folders in smaller rows, as a tree with arrows and lines",
     "startAtLogin": "Start at login",
     "startAtLoginDesc": "Launch Capnote in background when you log in",
     "closeToTray": "Minimize to tray on close",
@@ -411,7 +414,11 @@
     "pin": "Pin folder",
     "unpin": "Unpin",
     "pinned": "Folder pinned",
-    "unpinned": "Folder unpinned"
+    "unpinned": "Folder unpinned",
+    "newSubfolder": "New subfolder",
+    "cannotMoveInside": "A folder cannot go into itself or into one of its own folders",
+    "moved": "Moved “{name}” to {folder}",
+    "dropToTop": "Take out of the folder"
   },
   "blockStyle": {
     "p": "Text",

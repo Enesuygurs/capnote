@@ -399,6 +399,10 @@ export const APP_DIALOGS = /* HTML */ `
 
   <!-- Folder context menu -->
   <div id="contextMenu" class="context-menu menu hidden" role="menu">
+    <div class="menu-item" id="newSubfolderMenuItem" role="menuitem">
+      <i class="fas fa-folder-plus"></i>
+      <span data-i18n="folders.newSubfolder">Yeni alt klasör</span>
+    </div>
     <div class="menu-item" id="pinFolderMenuItem" role="menuitem">
       <i class="fas fa-thumbtack tone-gold"></i>
       <span></span>
