@@ -487,13 +487,13 @@ export class NoteListFeature {
   pinZoneRows(item) {
     const group = this.pinGroupOf(item);
     if (group === 'root') {
-      return [...this.notesList.children]
-        .map((el) => (el.classList.contains('folder-container') ? el.firstElementChild : el))
-        .filter((el) => {
-          if (el?.classList.contains('note-item')) return el.classList.contains('pinned');
-          const id = el?.classList.contains('folder-item') && el.dataset.folderId;
-          return !!id && !!this.folders.find((f) => f.id === id)?.isPinned;
-        });
+      // A pinned folder counts whole: with what is in it, when it is open
+      return [...this.notesList.children].filter((el) => {
+        if (el.classList.contains('note-item')) return el.classList.contains('pinned');
+        const id =
+          el.classList.contains('folder-container') && el.firstElementChild?.dataset.folderId;
+        return !!id && !!this.folders.find((f) => f.id === id)?.isPinned;
+      });
     }
     const box = document.querySelector(`.folder-notes-container[data-folder-id="${group}"]`);
     return box ? [...box.children].filter((el) => el.matches('.note-item.pinned')) : [];
