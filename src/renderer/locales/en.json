@@ -415,6 +415,7 @@
     "unpin": "Unpin",
     "pinned": "Folder pinned",
     "unpinned": "Folder unpinned",
+    "newNote": "New note",
     "newSubfolder": "New subfolder",
     "cannotMoveInside": "A folder cannot go into itself or into one of its own folders",
     "moved": "Moved “{name}” to {folder}",

@@ -836,6 +836,10 @@ export class FoldersFeature {
 
     this.renameFolderMenuItem?.addEventListener('click', () => this.renameSelectedFolder());
 
+    this.newNoteInFolderMenuItem?.addEventListener('click', () => {
+      if (this.selectedFolderId) this.createNewNote({ folderId: this.selectedFolderId });
+    });
+
     this.newSubfolderMenuItem?.addEventListener('click', () => {
       if (this.selectedFolderId) this.showFolderModal(this.selectedFolderId);
     });

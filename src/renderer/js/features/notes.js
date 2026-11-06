@@ -94,7 +94,8 @@ export class NotesFeature {
     this.setActiveNoteInList(this.currentNote.id); // Only update active class
   }
 
-  createNewNote() {
+  // folderId: the folder the new note goes into (it opens, with the folders it is in)
+  createNewNote({ folderId = null } = {}) {
     this.leaveCurrentNote();
     // A search would hide the new note from the list: it is cleared
     if (this.searchInput?.value) {
@@ -126,6 +127,13 @@ export class NotesFeature {
         textAlign: 'left',
       },
     };
+    const folder = folderId && this.folders.find((f) => f.id === folderId);
+    if (folder) {
+      this.currentNote.folderId = folder.id;
+      // The folder and the folders it is in open, so the new note shows in the list
+      this.folderAncestors(folder).forEach((f) => (f.expanded = true));
+      this.saveFolders();
+    }
 
     // initialize history
     this.currentNote.history = [{ type: 'created', ts: this.currentNote.createdAt }];
