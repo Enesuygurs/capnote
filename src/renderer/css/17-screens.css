@@ -241,8 +241,8 @@
   color: var(--text-secondary);
 }
 
-/* A locked note in the viewer: a larger message in the middle of the page, its lock on a soft
-   circle in the lock's violet */
+/* A locked note in the viewer: a larger message in the middle of the page, its lock in the accent
+   color on a soft circle of it */
 .viewer-content:has(.locked-note-message) {
   display: flex;
 }
@@ -269,8 +269,8 @@
   height: 88px;
   margin-bottom: var(--space-2);
   border-radius: var(--radius-full);
-  background: color-mix(in srgb, var(--tone-violet) 14%, transparent);
-  color: var(--tone-violet);
+  background: var(--accent-tint);
+  color: var(--accent-color);
 }
 
 .locked-note-message .locked-note-icon i {
