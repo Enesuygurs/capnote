@@ -449,6 +449,21 @@ export class EditorFeature {
     return this.richEditor.contains(node);
   }
 
+  // Nothing written in the editor: empty, or one empty line (what stays after deleting
+  // everything). The placeholder shows then, on that line.
+  isEditorBlank() {
+    const ed = this.richEditor;
+    if (!ed.firstChild) return true;
+    if (ed.childNodes.length !== 1 || ed.textContent.trim()) return false;
+    const only = ed.firstChild;
+    return (
+      only.nodeType === Node.ELEMENT_NODE &&
+      (only.tagName === 'P' || only.tagName === 'DIV') &&
+      !only.className &&
+      !only.querySelector(':not(br)')
+    );
+  }
+
   // Typing, selection tracking, the title field and tags
   setupEditorEvents() {
     // Rich editor events
@@ -456,6 +471,15 @@ export class EditorFeature {
       this.updateWordCount();
       this.trackContentChanges();
     });
+
+    // The placeholder follows every change of the text: typing, loading a note, the tools
+    const markBlank = () => this.richEditor.classList.toggle('is-blank', this.isEditorBlank());
+    new MutationObserver(markBlank).observe(this.richEditor, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+    markBlank();
 
     // Track selection for formatter usage
     this.richEditor.addEventListener('mouseup', () => this.captureEditorSelection());
