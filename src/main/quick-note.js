@@ -41,6 +41,9 @@ function openQuickNote() {
   quickWindow = new BrowserWindow({
     ...cornerBounds(),
     frame: false,
+    // No shadow and no resize frame: on Windows they draw a gray border on the sides and the bottom
+    hasShadow: false,
+    thickFrame: false,
     resizable: false,
     minimizable: false,
     maximizable: false,
