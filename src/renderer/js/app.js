@@ -358,6 +358,7 @@ export class CapnoteApp {
     this.changeFolderColorMenuItem = document.getElementById('changeFolderColorMenuItem');
     this.pinFolderMenuItem = document.getElementById('pinFolderMenuItem');
     this.newSubfolderMenuItem = document.getElementById('newSubfolderMenuItem');
+    this.newNoteInFolderMenuItem = document.getElementById('newNoteInFolderMenuItem');
     this.folderColorModal = document.getElementById('folderColorModal');
     this.folderColorInput = document.getElementById('folderColorInput');
     this.saveFolderColorBtn = document.getElementById('saveFolderColorBtn');

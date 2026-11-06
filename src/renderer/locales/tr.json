@@ -415,6 +415,7 @@
     "unpin": "Sabitlemeyi kaldır",
     "pinned": "Klasör sabitlendi",
     "unpinned": "Klasörün sabitlemesi kaldırıldı",
+    "newNote": "Yeni not",
     "newSubfolder": "Yeni alt klasör",
     "cannotMoveInside": "Bir klasör kendi içine ya da kendi alt klasörüne taşınamaz",
     "moved": "“{name}” şuraya taşındı: {folder}",

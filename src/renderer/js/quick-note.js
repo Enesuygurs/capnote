@@ -60,6 +60,25 @@ text.addEventListener('keydown', (e) => {
   update();
 });
 
+// Ctrl+X with nothing selected cuts the line the caret is on, with its line break: the line
+// is selected and the browser's own cut does the rest (so it can be undone)
+text.addEventListener('keydown', (e) => {
+  if (!(e.ctrlKey || e.metaKey) || e.shiftKey || e.altKey || e.key.toLowerCase() !== 'x') return;
+  const area = text;
+  if (area.selectionStart !== area.selectionEnd) return;
+  const value = area.value;
+  const pos = area.selectionStart;
+  let start = value.lastIndexOf('\n', pos - 1) + 1;
+  let end = value.indexOf('\n', pos);
+  // The line break after it goes too; the last line takes the one before it
+  if (end >= 0) end += 1;
+  else {
+    end = value.length;
+    if (start > 0) start -= 1;
+  }
+  if (start !== end) area.setSelectionRange(start, end);
+});
+
 const note = () => ({ title: title.value.trim(), text: text.value });
 const isEmpty = () => !title.value.trim() && !text.value.trim();
 const update = () => {

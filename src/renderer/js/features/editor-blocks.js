@@ -279,6 +279,94 @@ export class EditorBlocksFeature {
     return true;
   }
 
+  // ============ Cutting a line ============
+  // Ctrl+X with nothing selected cuts the line the caret is on, as code editors do: it goes to the
+  // clipboard (with its formatting) and out of the note, and the caret moves to the next line. A
+  // line is a paragraph or heading, one item of a list or task list, or one line of a code block;
+  // in a table nothing is cut (the whole table would go).
+  handleCutLine(e, range) {
+    if (!(e.ctrlKey || e.metaKey) || e.shiftKey || e.altKey) return false;
+    if (e.key.toLowerCase() !== 'x' || !range.collapsed) return false;
+    const el =
+      range.startContainer.nodeType === Node.ELEMENT_NODE
+        ? range.startContainer
+        : range.startContainer.parentElement;
+    if (!el || el.closest('table')) return false;
+    const pre = el.closest('pre');
+    if (pre && this.richEditor.contains(pre)) return this.cutCodeLine(e, range);
+    const item = el.closest('li, .checklist-item');
+    const line = item && this.richEditor.contains(item) ? item : this.topBlockOf(el);
+    if (!line) return false;
+    e.preventDefault();
+
+    // Copy it as the browser copies a selection (text and formatting)
+    const sel = window.getSelection();
+    const all = document.createRange();
+    all.selectNodeContents(
+      line.matches('.checklist-item') ? line.querySelector('label') || line : line
+    );
+    sel.removeAllRanges();
+    sel.addRange(all);
+    document.execCommand('copy');
+
+    // Remove it, and a list or task list it leaves empty; the caret goes to the next line
+    const next = line.nextElementSibling;
+    const previous = line.previousElementSibling;
+    let container = line.parentElement;
+    let after = next;
+    let before = previous;
+    line.remove();
+    while (
+      container &&
+      container !== this.richEditor &&
+      container.matches('ul, ol, .checklist') &&
+      !container.children.length
+    ) {
+      const parent = container.parentElement;
+      after = after || container.nextElementSibling;
+      before = before || container.previousElementSibling;
+      container.remove();
+      container = parent;
+    }
+    if (!this.richEditor.textContent.trim() && !this.richEditor.querySelector('img, hr, table')) {
+      this.richEditor.innerHTML = '<p><br></p>';
+      after = this.richEditor.firstChild;
+    }
+    const target = (after?.isConnected && after) || (before?.isConnected && before) || null;
+    if (target) {
+      // Into the line itself: the first item of a list, the text of a task
+      const inner = target.matches('ul, ol, .checklist')
+        ? target.querySelector('li, .checklist-item') || target
+        : target;
+      const spot = inner.matches('.checklist-item') ? inner.querySelector('label') || inner : inner;
+      if (target === after) this.placeCaret(spot, 0);
+      else this.placeCaretAtEnd(spot);
+    }
+    this.updateWordCount?.();
+    this.trackContentChanges();
+    return true;
+  }
+
+  // One line of a code block: its text up to and with its line break, cut by the browser (so it
+  // goes to the clipboard and can be undone)
+  cutCodeLine(e, range) {
+    const node = range.startContainer;
+    if (node.nodeType !== Node.TEXT_NODE) return false;
+    const text = node.nodeValue;
+    const start = text.lastIndexOf('\n', range.startOffset - 1) + 1;
+    let end = text.indexOf('\n', range.startOffset);
+    end = end < 0 ? text.length : end + 1;
+    if (start === end) return false;
+    const line = document.createRange();
+    line.setStart(node, start);
+    line.setEnd(node, end);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(line);
+    // The browser's own cut follows the key press, on this selection
+    return false;
+  }
+
   // ============ Task list ============
   checklistItemHtml(content = '<br>') {
     const id = 'task_' + Date.now() + '_' + Math.random().toString(36).slice(2, 11);
@@ -539,6 +627,7 @@ export class EditorBlocksFeature {
         const range = this.caretRange();
         if (range) {
           const handled =
+            this.handleCutLine(e, range) ||
             this.handleCodeKeys(e, range) ||
             this.handleChecklistKeys(e, range) ||
             this.handleListKeys(e, range) ||
