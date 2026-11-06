@@ -141,7 +141,7 @@
     "syncFolderAccent": "Sync accent color with folder color",
     "syncFolderAccentDesc": "Set all folder icon colors to accent color",
     "hideNoteIcons": "Hide note icons",
-    "hideNoteIconsDesc": "No icons at the left of the notes in the note list",
+    "hideNoteIconsDesc": "No note icons in the list, but the lock and pin",
     "compactList": "Compact list",
     "compactListDesc": "Notes and folders in smaller rows, as a tree with arrows and lines",
     "startAtLogin": "Start at login",

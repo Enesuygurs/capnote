@@ -211,7 +211,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.hideNoteIcons">Not simgelerini gizle</label>
                   <small data-i18n="settings.hideNoteIconsDesc"
-                    >Not listesinde notların solundaki simgeler görünmesin</small
+                    >Kilit ve sabitleme dışındaki not simgeleri görünmesin</small
                   >
                 </div>
                 <label class="toggle-switch">
