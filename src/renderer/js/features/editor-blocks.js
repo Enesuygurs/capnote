@@ -313,6 +313,60 @@ export class EditorBlocksFeature {
     this.trackContentChanges();
   }
 
+  // Deleting across tasks (everything selected and deleted, a cut) can leave a task without its
+  // checkbox or its text, or a task list with no tasks; what is typed next would go into that
+  // half task. Such leftovers become plain lines again, where they were, the caret kept in them.
+  repairBrokenChecklists() {
+    const ed = this.richEditor;
+    const broken = [...ed.querySelectorAll('.checklist-item')].filter(
+      (item) =>
+        !item.querySelector(':scope > input[type="checkbox"]') ||
+        !item.querySelector(':scope > label')
+    );
+    const emptyLists = () =>
+      [...ed.querySelectorAll('.checklist')].filter((l) => !l.querySelector('.checklist-item'));
+    if (!broken.length && !emptyLists().length) return;
+    const sel = window.getSelection();
+    const range = sel && sel.rangeCount ? sel.getRangeAt(0) : null;
+    let caretLine = null;
+    broken.forEach((item) => {
+      const line = document.createElement('p');
+      const source = item.querySelector(':scope > label') || item;
+      [...source.childNodes].forEach((node) => {
+        if (!(node.nodeType === Node.ELEMENT_NODE && node.matches('input[type="checkbox"]'))) {
+          line.appendChild(node);
+        }
+      });
+      if (!line.textContent.trim() && !line.querySelector('img')) line.innerHTML = '<br>';
+      if (range && item.contains(range.startContainer)) caretLine = line;
+      const list = item.parentElement?.classList.contains('checklist') ? item.parentElement : null;
+      if (!list) {
+        item.replaceWith(line);
+        return;
+      }
+      // The tasks after it stay a task list, below the line
+      const after = [];
+      for (let next = item.nextSibling; next; next = next.nextSibling) after.push(next);
+      list.after(line);
+      if (after.length) {
+        const rest = list.cloneNode(false);
+        after.forEach((node) => rest.appendChild(node));
+        line.after(rest);
+      }
+      item.remove();
+    });
+    // A task list left with no tasks gives up what is in it (or goes)
+    emptyLists().forEach((list) => list.replaceWith(...list.childNodes));
+    // Nothing left but empty lines (everything was deleted): one empty line, as in a new note
+    const blankLine = (el) =>
+      el.nodeType === Node.ELEMENT_NODE && el.tagName === 'P' && !el.querySelector(':not(br)');
+    if (!ed.textContent.trim() && [...ed.childNodes].every(blankLine)) {
+      ed.innerHTML = '<p><br></p>';
+      caretLine = ed.firstChild;
+    }
+    if (caretLine && caretLine.isConnected) this.placeCaretAtEnd(caretLine);
+  }
+
   checklistItemToParagraph(item) {
     const list = item.closest('.checklist');
     const p = document.createElement('p');
@@ -470,6 +524,7 @@ export class EditorBlocksFeature {
       this.richEditor.innerHTML = '<p><br></p>';
       this.placeCaret(this.richEditor.firstChild, 0);
     });
+    this.richEditor.addEventListener('input', () => this.repairBrokenChecklists(), true);
     this.richEditor.addEventListener('input', () => this.wrapLooseLineAtCaret(), true);
 
     // Toolbar buttons keep the caret in the note (a pressed button would take the focus)

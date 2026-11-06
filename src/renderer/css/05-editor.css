@@ -225,14 +225,22 @@
 }
 
 .rich-editor {
+  position: relative;
   min-height: 100%;
   outline: none;
   white-space: pre-wrap;
 }
 
-.rich-editor:empty::before {
+/* Nothing written (empty, or one empty line left after deleting everything): the placeholder lies
+   over the first line, where the caret is, so it neither pushes the line down nor sits apart */
+.rich-editor.is-blank::before {
   content: attr(data-placeholder);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   color: var(--text-muted);
+  pointer-events: none;
 }
 
 /* An empty task's text keeps some width, so the caret shows when the text is clicked into */
