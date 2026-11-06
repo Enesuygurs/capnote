@@ -276,6 +276,7 @@ export class CapnoteApp {
     // General settings
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
     this.startupPageSelect = document.getElementById('startupPageSelect');
+    this.relockOnSelect = document.getElementById('relockOnSelect');
     this.autoSaveToggle = document.getElementById('autoSaveToggle');
     this.autoFormatToggle = document.getElementById('autoFormatToggle');
 

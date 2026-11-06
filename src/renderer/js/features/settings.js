@@ -100,6 +100,7 @@ export class SettingsFeature {
       this.toggleNativeNotifications.checked = settings.nativeNotifications;
     if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
     if (this.startupPageSelect) this.startupPageSelect.value = settings.startupPage;
+    if (this.relockOnSelect) this.relockOnSelect.value = settings.relockOn;
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
     if (this.autoFormatToggle) this.autoFormatToggle.checked = settings.autoFormat;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
@@ -166,6 +167,13 @@ export class SettingsFeature {
         return;
       }
       this.setSetting('quickNoteShortcut', enabled);
+    });
+
+    // When opened locked notes lock again; back to "when the note closes", the open ones (but the
+    // one on screen) lock now
+    this.relockOnSelect?.addEventListener('change', (e) => {
+      this.setSetting('relockOn', e.target.value);
+      if (e.target.value === 'leave') this.relockUnlockedNotes({ keepCurrent: true });
     });
 
     if (this.startupPageSelect) {

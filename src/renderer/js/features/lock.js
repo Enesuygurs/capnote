@@ -46,6 +46,8 @@ export class LockFeature {
    * Re-locks the current note when leaving it if it was unlocked for this session
    */
   autoLockCurrentNote() {
+    // Set to lock when the app closes: an opened note stays open until then
+    if (this.settings.relockOn === 'quit') return;
     if (
       this.currentNote &&
       this.currentNote.isLocked &&
@@ -94,6 +96,8 @@ export class LockFeature {
       this.saveLastViewedNote(note.id);
       this.showViewer();
       this.displayNote(note);
+      // Its lock in the list shows open
+      this.updateNotesList();
       this.setActiveNoteInList(this.currentNote.id);
 
       this.showNotification(i18n.t('messages.noteTemporarilyUnlocked'), 'info');
@@ -104,6 +108,19 @@ export class LockFeature {
       this.showNotification(i18n.t('messages.wrongPassword'), 'error');
     }
     return false;
+  }
+
+  // Lock again the locked notes opened in this session (all, or all but the one on screen)
+  relockUnlockedNotes({ keepCurrent = false } = {}) {
+    let changed = false;
+    [...this.unlockedNotes.keys()].forEach((id) => {
+      const note = this.notes.find((n) => String(n.id) === id);
+      if (!note || (keepCurrent && note === this.currentNote)) return;
+      this.unlockedNotes.delete(id);
+      if (note.isLocked) note.content = '';
+      changed = true;
+    });
+    if (changed) this.updateNotesList();
   }
 
   async toggleLock(noteId) {
