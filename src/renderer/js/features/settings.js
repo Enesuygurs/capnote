@@ -85,6 +85,9 @@ export class SettingsFeature {
     // Ensure we apply or restore folder colors based on the stored preference.
     this.applyFolderAccentSync(settings.syncFolderAccent);
 
+    if (this.hideNoteIconsToggle) this.hideNoteIconsToggle.checked = settings.hideNoteIcons;
+    document.body.classList.toggle('hide-note-icons', !!settings.hideNoteIcons);
+
     if (this.toggleNativeNotifications)
       this.toggleNativeNotifications.checked = settings.nativeNotifications;
     if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
@@ -457,6 +460,12 @@ export class SettingsFeature {
       this.setSetting('syncFolderAccent', enabled);
       this.applyFolderAccentSync(enabled);
       this.updateFoldersList();
+    });
+
+    // The icons at the left of the notes in the note list: shown, or hidden
+    this.hideNoteIconsToggle?.addEventListener('change', (e) => {
+      this.setSetting('hideNoteIcons', e.currentTarget.checked);
+      document.body.classList.toggle('hide-note-icons', e.currentTarget.checked);
     });
 
     // Native/system notifications toggle
