@@ -648,7 +648,7 @@ export class NotesFeature {
       }
     }
 
-    note.isPinned = !note.isPinned;
+    this.setPinned(note, !note.isPinned);
     // Not an edit: "last edited" stays as it was
 
     await this.saveNotes();

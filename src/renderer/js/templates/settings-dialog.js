@@ -195,6 +195,18 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <span class="toggle-slider"></span>
                 </label>
               </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.hideNoteIcons">Not simgelerini gizle</label>
+                  <small data-i18n="settings.hideNoteIconsDesc"
+                    >Not listesinde notların solundaki simgeler görünmesin</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="hideNoteIconsToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
             </div>
           </section>
         </div>

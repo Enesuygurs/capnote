@@ -110,11 +110,11 @@ export class SelectionFeature {
         return;
       }
       toPin.forEach((n) => {
-        n.isPinned = true;
+        this.setPinned(n, true);
       });
     } else {
       notes.forEach((n) => {
-        n.isPinned = false;
+        this.setPinned(n, false);
       });
     }
     await this.saveNotes();

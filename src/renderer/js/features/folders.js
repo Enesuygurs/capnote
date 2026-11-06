@@ -148,28 +148,22 @@ export class FoldersFeature {
     }
 
     this.foldersList.innerHTML = '';
-    if (this.pinnedFoldersList) this.pinnedFoldersList.innerHTML = '';
 
     // Compute visible counts per folder and skip folders with zero visible notes
     const treatAsFilter = this.isViewFiltered();
 
-    // In the custom order the unpinned folders are among the notes (the notes list draws them)
+    // The notes list draws the pinned folders (among the pinned notes, in the order they were
+    // pinned) and, in the custom order, the unpinned folders too (among the notes)
     const amongNotes = this.currentSort === 'manual';
     this.folders.forEach((folder) => {
-      if (amongNotes && !folder.isPinned) return;
+      if (folder.isPinned || amongNotes) return;
       const visibleCount = this.getVisibleCountForFolder(folder.id);
       // If current filter/search should restrict visibility, hide folders with zero visible notes
       if (treatAsFilter && visibleCount === 0) return;
-      const folderElement = this.createFolderElement(folder);
-      // Pinned folders sit above the notes
-      const list =
-        folder.isPinned && this.pinnedFoldersList ? this.pinnedFoldersList : this.foldersList;
-      list.appendChild(folderElement);
+      this.foldersList.appendChild(this.createFolderElement(folder));
     });
-    if (amongNotes) {
-      this.updateNotesList();
-      return;
-    }
+    this.updateNotesList();
+    if (amongNotes) return;
     // Ensure folder notes are populated after rebuilding the DOM
     this.updateFolderNotes();
     this.restoreFolderExpansion();
@@ -595,7 +589,7 @@ export class FoldersFeature {
     if (!folders.length) return;
     const value = !folders.every((f) => f.isPinned);
     folders.forEach((f) => {
-      f.isPinned = value;
+      this.setPinned(f, value);
     });
     await this.saveFolders();
     this.updateFoldersList();

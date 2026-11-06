@@ -30,6 +30,11 @@
 }
 
 .nav-item:hover,
+/* "Hide note icons" in the settings: the notes in the list (and in folders) without their icons */
+.hide-note-icons .note-item > .nav-icon {
+  display: none;
+}
+
 .note-item:hover {
   background: var(--tint-hover);
   color: var(--text-strong);

@@ -54,6 +54,11 @@
   gap: 2px;
 }
 
+/* Text style, font and size: a little room between the three boxes (8px) */
+.format-custom-select + .format-custom-select {
+  margin-left: 6px;
+}
+
 .format-btn {
   width: var(--control-sm);
   height: var(--control-sm);

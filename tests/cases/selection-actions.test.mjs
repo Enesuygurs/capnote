@@ -1,6 +1,6 @@
 // Selection actions: dropping a selection on a folder moves all of it, the menu shows only what
-// fits the selection, several notes can be pinned, folders can be pinned above the notes, and a
-// click on an empty part of the list clears the selection
+// fits the selection, several notes can be pinned, a folder can be pinned (after the notes pinned
+// before it, above the others), and a click on an empty part of the list clears the selection
 
 export async function run() {
   const a = window.app;
@@ -69,9 +69,17 @@ export async function run() {
   };
   a.hideSelectionMenu();
 
-  // Pin a folder: it moves above the notes
+  // Pin a folder: it joins the pinned notes, after the ones pinned before it
   await a.togglePinFolders(['fb']);
-  const pinnedFolderOnTop = !!a.pinnedFoldersList.querySelector('[data-folder-id="fb"]');
+  const rows = [...a.notesList.children];
+  const at = (sel) => rows.findIndex((row) => row.matches(sel) || row.querySelector(sel));
+  const folderAt = at('[data-folder-id="fb"]');
+  const pinnedFolderOnTop = {
+    inList: folderAt >= 0,
+    afterPinnedNotes:
+      folderAt > at(`[data-note-id="${n1.id}"]`) && folderAt > at(`[data-note-id="${n2.id}"]`),
+    onlyPinnedAbove: rows.slice(0, folderAt).every((row) => row.classList.contains('pinned')),
+  };
 
   // A click on an empty part of the list clears the selection
   a.sidebarContent.querySelector('.sidebar-nav').click();
@@ -98,6 +106,6 @@ export const expected = {
   duplicated: 2,
   copyTitles: ['N1 (Kopya)', 'N2 (Kopya)'],
   folderOnly: { unfile: false, favorite: false, pinFolders: true },
-  pinnedFolderOnTop: true,
+  pinnedFolderOnTop: { inList: true, afterPinnedNotes: true, onlyPinnedAbove: true },
   cleared: true,
 };

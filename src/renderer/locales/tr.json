@@ -139,6 +139,8 @@
     "accentColorDesc": "Vurgu renklerini değiştirin",
     "syncFolderAccent": "Vurgu rengini klasör rengiyle eşitle",
     "syncFolderAccentDesc": "Tüm klasör ikon renklerini vurgu rengine ayarla",
+    "hideNoteIcons": "Not simgelerini gizle",
+    "hideNoteIconsDesc": "Not listesinde notların solundaki simgeler görünmesin",
     "startAtLogin": "Başlangıçta çalıştır",
     "startAtLoginDesc": "Oturum açıldığında Capnote arka planda başlasın",
     "closeToTray": "Pencereyi kapatınca tepsiye küçült",

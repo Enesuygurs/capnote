@@ -266,6 +266,7 @@ export class CapnoteApp {
     this.accentPurpleBtn = document.getElementById('accentPurple');
     this.accentBlueBtn = document.getElementById('accentBlue');
     this.syncFolderAccentToggle = document.getElementById('syncFolderAccentToggle');
+    this.hideNoteIconsToggle = document.getElementById('hideNoteIconsToggle');
     // System settings toggles
     this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
     this.closeToTrayToggle = document.getElementById('closeToTrayToggle');
@@ -293,7 +294,6 @@ export class CapnoteApp {
     this.createFolderBtn = document.getElementById('createFolderBtn');
     this.cancelFolderBtn = document.getElementById('cancelFolderBtn');
     this.foldersList = document.getElementById('foldersList');
-    this.pinnedFoldersList = document.getElementById('pinnedFoldersList');
     this.importDataBtn = document.getElementById('importDataBtn');
     this.autoBackupsList = document.getElementById('autoBackupsList');
     this.exportDataBtn = document.getElementById('exportDataBtn');

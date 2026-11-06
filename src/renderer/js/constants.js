@@ -13,6 +13,8 @@ export const DEFAULT_SETTINGS = {
   darkMode: false,
   accentColor: null,
   syncFolderAccent: false,
+  // The icons at the left of the notes in the note list are hidden
+  hideNoteIcons: false,
   folderColorsBackup: null,
   noteSort: 'date-desc',
   autoSave: true,

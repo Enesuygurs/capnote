@@ -304,6 +304,7 @@ export class DashboardFeature {
   // day it is
   renderBarList(container, entries, field, totalLabel, day = null) {
     container.innerHTML = '';
+    container.classList.toggle('is-empty', !entries.length);
     const total = entries.reduce((sum, e) => sum + e.count, 0);
     if (totalLabel) {
       const count = total ? i18n.t('tags.notesCount', { count: total }) : '';
