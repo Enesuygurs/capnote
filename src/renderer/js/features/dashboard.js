@@ -287,6 +287,9 @@ export class DashboardFeature {
     if (icon) {
       row.querySelector('.calendar-note-mood').dataset.tone = note.mood;
       row.querySelector('.calendar-note-mood').appendChild(icon.cloneNode());
+    } else {
+      // A note with no mood: a plain note icon, so its title is not left after an empty gap
+      row.querySelector('.calendar-note-mood').innerHTML = '<i class="fas fa-file-lines"></i>';
     }
     row.querySelector('.calendar-note-title').textContent = this.displayTitle(note);
     row.querySelector('.calendar-note-time').textContent = new Date(
