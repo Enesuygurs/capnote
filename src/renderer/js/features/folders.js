@@ -461,12 +461,7 @@ export class FoldersFeature {
     // Make folder header draggable so folders can be reordered
     folderHeader.draggable = true;
     folderHeader.addEventListener('dragstart', (ev) => {
-      // A pinned folder stays where it is: the drag is refused with a shake
-      if (folder.isPinned) {
-        ev.preventDefault();
-        this.shakeRow(folderHeader);
-        return;
-      }
+      // A pinned folder moves among the pinned notes and folders (or into another folder)
       try {
         ev.dataTransfer.effectAllowed = 'move';
         // Use a dedicated mime type for folder drags to avoid colliding with note drags
@@ -517,12 +512,25 @@ export class FoldersFeature {
         return;
       }
 
+      // A pinned note or folder goes beside this one only if it is pinned too (and in its group)
+      const pinned = this.pinnedDragItem();
+      const besideAllowed = pinned ? this.canPlaceAmongPinned(pinned, { folder }) : true;
+      // For a dragged note: the top or bottom quarter of the row places it beside (pinned ones)
+      const headerEdge =
+        e.clientY < headerRect.top + headerRect.height / 4
+          ? 'before'
+          : e.clientY > headerRect.bottom - headerRect.height / 4
+            ? 'after'
+            : null;
+
       if (isFolderDrag) {
         // Near the top or bottom edge of the whole folder: a thin line where it goes beside it.
         // In the middle of the folder's row: it goes into this folder (not into itself or into a
         // folder inside it).
         folderHeader.classList.remove('drag-over');
-        if (nearTop) {
+        if ((nearTop || nearBottom) && !besideAllowed) {
+          folderHeader.classList.remove('insert-before', 'insert-after');
+        } else if (nearTop) {
           folderHeader.classList.add('insert-before');
           folderHeader.classList.remove('insert-after');
         } else if (nearBottom) {
@@ -540,6 +548,11 @@ export class FoldersFeature {
             s.classList.remove('insert-before', 'insert-after', 'drag-over');
           }
         });
+      } else if (pinned && besideAllowed && headerEdge) {
+        // A pinned note at the edge of a pinned folder: it goes before or after it
+        folderHeader.classList.remove('drag-over');
+        folderHeader.classList.toggle('insert-before', headerEdge === 'before');
+        folderHeader.classList.toggle('insert-after', headerEdge === 'after');
       } else {
         // For other drags (notes), preserve the previous behavior: show dashed border and no insertion line
         folderHeader.classList.add('drag-over');
@@ -598,9 +611,28 @@ export class FoldersFeature {
 
           // cleanup visual classes
           folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
+          // A pinned folder goes beside another pinned one only
+          const pinned = this.pinnedDragItem();
+          if (pinned) {
+            if (this.canPlaceAmongPinned(pinned, { folder })) {
+              this.placeAmongPinned(pinned, { folder }, insertBefore);
+            }
+            return;
+          }
           this.reorderFolders(sourceId, targetId, insertBefore);
         }
         return;
+      }
+
+      // A pinned note at the edge of a pinned folder goes before or after it
+      const pinnedNote = this.pinnedDragItem();
+      if (pinnedNote && this.canPlaceAmongPinned(pinnedNote, { folder })) {
+        const rect = folderHeader.getBoundingClientRect();
+        if (e.clientY < rect.top + rect.height / 4 || e.clientY > rect.bottom - rect.height / 4) {
+          folderHeader.classList.remove('insert-before', 'insert-after');
+          this.placeAmongPinned(pinnedNote, { folder }, e.clientY < rect.top + rect.height / 2);
+          return;
+        }
       }
 
       // Otherwise a note (or the selected notes) was dropped onto this folder

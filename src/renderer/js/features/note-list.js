@@ -254,9 +254,10 @@ export class NoteListFeature {
 
   getSortedNotes(notes) {
     return notes.sort((a, b) => {
-      // Always show pinned notes first
+      // Always show pinned notes first, in their own order
       if (a.isPinned && !b.isPinned) return -1;
       if (!a.isPinned && b.isPinned) return 1;
+      if (a.isPinned && b.isPinned) return this.pinKey(a) - this.pinKey(b);
 
       // Then sort by selected criteria
       switch (this.currentSort) {
@@ -348,12 +349,7 @@ export class NoteListFeature {
     });
 
     div.addEventListener('dragstart', (e) => {
-      // A pinned note stays where it is: the drag is refused with a shake
-      if (note.isPinned) {
-        e.preventDefault();
-        this.shakeRow(div);
-        return;
-      }
+      // A pinned note moves only among the pinned ones of its list
       e.dataTransfer.setData('text/plain', note.id);
       this.draggedNoteId = note.id;
       div.classList.add('dragging');
@@ -375,9 +371,22 @@ export class NoteListFeature {
       const rect = div.getBoundingClientRect();
       return e.clientY < rect.top + rect.height / 2;
     };
-    // A folder dragged over a note of the root list goes before or after it
-    const takesFolder = () => this.draggedFolderId && !note.folderId && !note.isPinned;
+    // A folder dragged over a note of the root list goes before or after it (a pinned folder only
+    // among the pinned notes and folders)
+    const takesFolder = () =>
+      this.draggedFolderId && !note.folderId && !note.isPinned && !this.pinnedDragItem();
     div.addEventListener('dragover', (e) => {
+      // A pinned note or folder dragged: it goes before or after a pinned note of its list only
+      const pinned = this.pinnedDragItem();
+      if (pinned) {
+        if (!this.canPlaceAmongPinned(pinned, { note })) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const before = dropBefore(e);
+        div.classList.toggle('insert-before', before);
+        div.classList.toggle('insert-after', !before);
+        return;
+      }
       if (takesFolder()) {
         e.preventDefault();
         e.stopPropagation();
@@ -397,6 +406,14 @@ export class NoteListFeature {
     div.addEventListener('dragleave', () => div.classList.remove('insert-before', 'insert-after'));
     div.addEventListener('drop', (e) => {
       div.classList.remove('insert-before', 'insert-after');
+      const pinned = this.pinnedDragItem();
+      if (pinned) {
+        if (!this.canPlaceAmongPinned(pinned, { note })) return;
+        e.preventDefault();
+        e.stopPropagation();
+        this.placeAmongPinned(pinned, { note }, dropBefore(e));
+        return;
+      }
       if (takesFolder()) {
         e.preventDefault();
         e.stopPropagation();
@@ -423,18 +440,84 @@ export class NoteListFeature {
   // folders. A note or folder dragged into place has an order; notes without one come first (the
   // newest on top), folders without one after everything, in their own order.
   // Pin or unpin a note or folder. When it was pinned is kept, so the pinned notes and folders
-  // stay in the order they were pinned in.
+  // stay in the order they were pinned in (a newly pinned one comes after the others).
   setPinned(item, pinned) {
     item.isPinned = pinned;
+    delete item.pinOrder;
     if (pinned) item.pinnedAt = new Date().toISOString();
     else delete item.pinnedAt;
   }
 
-  // The pinned notes and folders of the root list together, in the order they were pinned (ones
-  // pinned before this was kept come first, in the order they had)
+  // Where a pinned note or folder stands among the pinned ones: its place once they were put in
+  // order by dragging, else when it was pinned (ones pinned before this was kept come first)
+  pinKey(item) {
+    return item.pinOrder ?? (Date.parse(item.pinnedAt) || 0);
+  }
+
+  // The pinned notes and folders of the root list together, in their order
   pinnedListItems(items) {
-    const when = (item) => Date.parse((item.note || item.folder).pinnedAt) || 0;
-    return items.sort((x, y) => when(x) - when(y));
+    return items.sort((x, y) => this.pinKey(x.note || x.folder) - this.pinKey(y.note || y.folder));
+  }
+
+  // ============ Reordering the pinned ones ============
+  // A pinned note or folder is dragged only among the pinned ones of its list: the root list (its
+  // pinned notes and folders) or a folder (its pinned notes).
+
+  // The pinned note or folder being dragged, if it is one: { note } or { folder }
+  pinnedDragItem() {
+    if (this.draggedFolderId) {
+      const folder = this.folders.find((f) => f.id === this.draggedFolderId);
+      return folder?.isPinned ? { folder } : null;
+    }
+    if (this.draggedNoteId) {
+      const note = this.notes.find((n) => n.id === this.draggedNoteId);
+      return note?.isPinned ? { note } : null;
+    }
+    return null;
+  }
+
+  // Which pinned group an item is in: a folder's id, or the root list
+  pinGroupOf(item) {
+    return item.folder ? 'root' : item.note.folderId || 'root';
+  }
+
+  // Whether the dragged pinned item can be placed before or after this pinned one
+  canPlaceAmongPinned(dragged, target) {
+    const targetItem = target.note || target.folder;
+    if (!dragged || !targetItem?.isPinned) return false;
+    if ((dragged.note || dragged.folder) === targetItem) return false;
+    return this.pinGroupOf(dragged) === this.pinGroupOf(target);
+  }
+
+  // Put a pinned note or folder before or after another pinned one, and number the group in its
+  // new order
+  async placeAmongPinned(moving, target, before) {
+    const group = this.pinGroupOf(moving);
+    const items =
+      group === 'root'
+        ? this.pinnedListItems([
+            ...this.notes
+              .filter((n) => n.isPinned && !n.folderId && !n.isArchived)
+              .map((note) => ({ note })),
+            ...this.childFolders(null)
+              .filter((f) => f.isPinned)
+              .map((folder) => ({ folder })),
+          ])
+        : this.notes
+            .filter((n) => n.isPinned && n.folderId === group && !n.isArchived)
+            .sort((x, y) => this.pinKey(x) - this.pinKey(y))
+            .map((note) => ({ note }));
+    const of = (item) => item.note || item.folder;
+    const rest = items.filter((item) => of(item) !== of(moving));
+    const at = rest.findIndex((item) => of(item) === of(target));
+    if (at === -1) return;
+    rest.splice(at + (before ? 0 : 1), 0, moving);
+    rest.forEach((item, i) => {
+      of(item).pinOrder = i;
+    });
+    await Promise.all([this.saveNotes(), this.saveFolders()]);
+    this.updateNotesList();
+    this.updateFoldersList();
   }
 
   rootListItems(notes) {
