@@ -157,7 +157,7 @@
     "deleteAllFolders": "Delete All Folders",
     "deleteAllFoldersDesc": "Remove all folders and folder associations",
     "resetApp": "Reset App",
-    "resetAppDesc": "Return app to default state including notes, folders and settings",
+    "resetAppDesc": "Resets notes, folders and settings to the defaults",
     "versionLabel": "Version",
     "language": "Language",
     "languageDesc": "Change application language",
@@ -166,7 +166,7 @@
     "autoFormat": "Automatic formatting",
     "autoFormatDesc": "Turns “-”, “1.” and “[]” at the start of a line into lists",
     "onNoteDelete": "On note deletion",
-    "onNoteDeleteDesc": "Choose what happens when a note is deleted",
+    "onNoteDeleteDesc": "What opens after a note is deleted",
     "openLastNote": "Open last remaining note",
     "openHome": "Open home section",
     "startupPage": "Page on start",
@@ -175,11 +175,11 @@
     "startupHome": "Home page",
     "startupNewNote": "New note",
     "quickNoteShortcut": "Quick note shortcut",
-    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a small always-on-top note window in the corner of the screen, from anywhere",
+    "quickNoteShortcutDesc": "Ctrl+Alt+N opens a small note window from anywhere",
     "fileContextMenu": "Capnote in the right-click menu",
     "fileContextMenuDesc": "“Edit with Capnote” on .md, .txt and .html files",
     "hardwareAcceleration": "Hardware acceleration",
-    "hardwareAccelerationDesc": "Draws the window with the graphics card. Turning it off uses a little less memory.",
+    "hardwareAccelerationDesc": "Draws with the graphics card; off uses less memory",
     "hardwareAccelerationRestart": "This change applies when Capnote restarts. Restart now?"
   },
   "modals": {
@@ -486,9 +486,9 @@
   },
   "transfer": {
     "exportLabel": "Export",
-    "exportDesc": "Pick the type when saving: a Capnote backup of all data (.json), or a folder with each note as a Markdown (.md) file",
+    "exportDesc": "All data as one backup (.json) or Markdown files (.md)",
     "importLabel": "Import",
-    "importDesc": "Capnote backups (.json) and Markdown files (.md) are recognised by their type; pick both at once if you like",
+    "importDesc": "Capnote backups (.json) and Markdown files (.md)",
     "backupType": "Capnote backup (all data)",
     "markdownType": "Markdown (one file per note)",
     "importType": "Capnote backup or Markdown"

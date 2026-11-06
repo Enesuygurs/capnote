@@ -23,6 +23,12 @@
   visibility: visible;
 }
 
+/* Without the graphics card the blur is slow to draw (every hover redraws it): no blur */
+body.no-gpu .modal {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 .modal-content {
   width: 480px;
   max-width: 100%;

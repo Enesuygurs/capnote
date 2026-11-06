@@ -64,8 +64,10 @@
   color: var(--text-strong);
 }
 
-.settings-tab.active {
-  background: var(--accent-tint);
+/* The open tab: its text in the accent, on a plain grey */
+.settings-tab.active,
+.settings-tab.active:hover {
+  background: var(--tint-selected);
   color: var(--accent-text);
   font-weight: 500;
 }
