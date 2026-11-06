@@ -323,7 +323,7 @@ export class NoteListFeature {
     div.innerHTML = `
             <i class="${icon} nav-icon"></i>
             <span class="nav-text note-item-title">${this.escapeHtml(title)}</span>
-            ${note.isFavorite ? '<i class="fas fa-heart note-item-favorite tone-rose" aria-hidden="true"></i>' : ''}
+            ${note.isFavorite ? '<i class="fas fa-heart note-item-favorite tone-heart" aria-hidden="true"></i>' : ''}
         `;
 
     div.classList.toggle('is-selected', this.selectedNoteIds.has(note.id));

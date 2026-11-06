@@ -104,6 +104,8 @@ body.resizing .modal {
   /* Tones: each kind of thing keeps its own icon color (favorite, pin, lock, the tools, moods).
      An element picks one with a .tone-* class, which sets --tone */
   --tone-rose: #e11d48;
+  /* The favorite heart: a blood red */
+  --tone-heart: #d90429;
   --tone-red: #dc2626;
   --tone-amber: #d97706;
   /* Pins: the yellow of the default accent */
@@ -236,6 +238,7 @@ body.resizing .modal {
   --error-color: #ef4444;
 
   --tone-rose: #fb7185;
+  --tone-heart: #ff2e4c;
   --tone-red: #f87171;
   --tone-amber: #fbbf24;
   --tone-gold: #f59e0b;
@@ -291,6 +294,9 @@ body {
 /* Tone classes: set the --tone an element (or its icon rules) colors with */
 .tone-rose {
   --tone: var(--tone-rose);
+}
+.tone-heart {
+  --tone: var(--tone-heart);
 }
 .tone-red {
   --tone: var(--tone-red);

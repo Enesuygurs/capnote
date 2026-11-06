@@ -323,7 +323,7 @@ export const APP_DIALOGS = /* HTML */ `
   <!-- Note context menu (right-click on a note); labels are set when it opens -->
   <div id="noteContextMenu" class="context-menu menu hidden" role="menu">
     <button class="menu-item" data-action="favorite" role="menuitem">
-      <i class="fas fa-heart tone-rose"></i>
+      <i class="fas fa-heart tone-heart"></i>
       <span></span>
     </button>
     <button class="menu-item" data-action="pin" role="menuitem">
@@ -367,7 +367,7 @@ export const APP_DIALOGS = /* HTML */ `
   </div>
   <div id="selectionMenu" class="context-menu menu hidden" role="menu">
     <button class="menu-item" data-action="favorite" role="menuitem">
-      <i class="fas fa-heart tone-rose"></i>
+      <i class="fas fa-heart tone-heart"></i>
       <span></span>
     </button>
     <button class="menu-item" data-action="pin" role="menuitem">
