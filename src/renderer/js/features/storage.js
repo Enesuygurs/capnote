@@ -122,7 +122,23 @@ export class StorageFeature {
         expanded: f.expanded !== undefined ? f.expanded : true,
         ...f,
         id: String(f.id),
+        ...(f.parentId ? { parentId: String(f.parentId) } : {}),
       }));
+      // A folder in a folder that is gone, or in a loop of folders, goes to the top of the list
+      const ids = new Set(this.folders.map((f) => f.id));
+      this.folders.forEach((f) => {
+        if (f.parentId && !ids.has(f.parentId)) delete f.parentId;
+      });
+      this.folders.forEach((f) => {
+        const seen = new Set([f.id]);
+        for (let p = f.parentId; p; p = this.folders.find((x) => x.id === p)?.parentId) {
+          if (seen.has(p)) {
+            delete f.parentId;
+            break;
+          }
+          seen.add(p);
+        }
+      });
     } catch (error) {
       console.error('Loading folders failed:', error);
       this.folders = [];

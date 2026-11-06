@@ -163,7 +163,8 @@ export class SelectionFeature {
   // Delete notes and folders with the notes in them. A locked note that is not open is not deleted
   // without its password: it stays, and if its folder goes it moves to the root list.
   removeNotesAndFolders(noteIdList, folderIdList) {
-    const folderIds = new Set(folderIdList);
+    // A folder goes with the folders inside it
+    const folderIds = new Set(folderIdList.flatMap((id) => [id, ...this.folderDescendantIds(id)]));
     const noteIds = new Set(noteIdList);
     this.notes.forEach((n) => {
       if (n.folderId && folderIds.has(n.folderId)) noteIds.add(n.id);
@@ -201,7 +202,9 @@ export class SelectionFeature {
   deleteSelection() {
     const folderIds = new Set(this.selectedFolderIds);
     const noteIds = new Set(this.selectedNoteIds);
-    const inFolders = this.notes.filter((n) => n.folderId && folderIds.has(n.folderId));
+    // The notes in the selected folders and in the folders inside them
+    const inside = new Set([...folderIds].flatMap((id) => [id, ...this.folderDescendantIds(id)]));
+    const inFolders = this.notes.filter((n) => n.folderId && inside.has(n.folderId));
     inFolders.forEach((n) => noteIds.add(n.id));
     if (!noteIds.size && !folderIds.size) return;
 

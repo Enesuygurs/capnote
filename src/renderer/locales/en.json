@@ -411,7 +411,11 @@
     "pin": "Pin folder",
     "unpin": "Unpin",
     "pinned": "Folder pinned",
-    "unpinned": "Folder unpinned"
+    "unpinned": "Folder unpinned",
+    "newSubfolder": "New subfolder",
+    "cannotMoveInside": "A folder cannot go into itself or into one of its own folders",
+    "moved": "Moved “{name}” to {folder}",
+    "dropToTop": "Take out of the folder"
   },
   "blockStyle": {
     "p": "Text",

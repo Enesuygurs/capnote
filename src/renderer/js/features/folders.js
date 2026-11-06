@@ -3,12 +3,92 @@
 import { i18n } from '../i18n.js';
 
 export class FoldersFeature {
-  showFolderModal() {
+  // ============ The folder tree ============
+  // A folder can be in another one (its parentId); a folder without one, or whose parent is gone,
+  // is at the top of the list.
+
+  folderParentId(folder) {
+    const parentId = folder?.parentId;
+    return parentId && this.folders.some((f) => f.id === parentId) ? parentId : null;
+  }
+
+  // The folders right inside a folder (null: the top of the list), in their order
+  childFolders(parentId = null) {
+    return this.folders.filter((f) => this.folderParentId(f) === parentId);
+  }
+
+  // Every folder inside a folder, at any depth
+  folderDescendantIds(folderId) {
+    const ids = [];
+    const walk = (id) =>
+      this.childFolders(id).forEach((child) => {
+        ids.push(child.id);
+        walk(child.id);
+      });
+    walk(folderId);
+    return ids;
+  }
+
+  // The folder and its parents up to the top, the top one first
+  folderAncestors(folder) {
+    const chain = [];
+    const seen = new Set();
+    for (
+      let f = folder;
+      f && !seen.has(f.id);
+      f = this.folders.find((x) => x.id === this.folderParentId(f))
+    ) {
+      seen.add(f.id);
+      chain.unshift(f);
+    }
+    return chain;
+  }
+
+  // Whether a dragged folder can go into this one: not into itself, not into a folder inside it,
+  // and not where it already is
+  canNestFolder(folderId, parentId) {
+    const folder = this.folders.find((f) => f.id === folderId);
+    if (!folder || !parentId || folderId === parentId) return false;
+    if (this.folderParentId(folder) === parentId) return false;
+    return !this.folderDescendantIds(folderId).includes(parentId);
+  }
+
+  // Put a folder into another one (null: the top of the list). A folder cannot go into itself or
+  // into one of its own folders. A folder in another one is not pinned.
+  async moveFolder(folderId, parentId) {
+    const folder = this.folders.find((f) => f.id === folderId);
+    if (!folder) return;
+    const target = parentId || null;
+    if (target === folderId || (target && this.folderDescendantIds(folderId).includes(target))) {
+      this.showNotification(i18n.t('folders.cannotMoveInside'), 'warning');
+      return;
+    }
+    if (this.folderParentId(folder) === target) return;
+    if (target) {
+      folder.parentId = target;
+      if (folder.isPinned) this.setPinned(folder, false);
+      const parent = this.folders.find((f) => f.id === target);
+      if (parent) parent.expanded = true;
+    } else {
+      delete folder.parentId;
+    }
+    // Its custom place belonged to the other list
+    delete folder.order;
+    await this.saveFolders();
+    this.updateFoldersList();
+    const where = target ? this.folders.find((f) => f.id === target)?.name : i18n.t('nav.notes');
+    this.showNotification(i18n.t('folders.moved', { name: folder.name, folder: where }), 'success');
+  }
+
+  showFolderModal(parentId = null) {
     this._renamingFolderId = null;
+    // A new folder goes into this one (null: the top of the list)
+    this._newFolderParentId = parentId;
     // Ensure modal title/button show create mode
     const titleEl = this.folderModal.querySelector('.modal-title h3');
     const createBtn = document.getElementById('createFolderBtn');
-    if (titleEl) titleEl.textContent = i18n.t('messages.newFolder');
+    if (titleEl)
+      titleEl.textContent = i18n.t(parentId ? 'folders.newSubfolder' : 'messages.newFolder');
     if (createBtn) createBtn.textContent = i18n.t('buttons.create');
     this.folderNameInput.value = '';
     this.showModal(this.folderModal);
@@ -48,10 +128,12 @@ export class FoldersFeature {
       return;
     }
 
-    // Check if folder name exists
-    // Renaming a folder to another capitalisation of its own name is allowed
+    // Two folders side by side (in the same folder) cannot share a name; renaming a folder to
+    // another capitalisation of its own name is allowed
+    const renaming = this.folders.find((f) => f.id === this._renamingFolderId);
+    const parentId = renaming ? this.folderParentId(renaming) : this._newFolderParentId || null;
     if (
-      this.folders.some(
+      this.childFolders(parentId).some(
         (folder) =>
           folder.id !== this._renamingFolderId && folder.name.toLowerCase() === name.toLowerCase()
       )
@@ -81,6 +163,13 @@ export class FoldersFeature {
       color: this.getRandomFolderColor(),
       expanded: true,
     };
+    if (parentId) {
+      folder.parentId = parentId;
+      // The folder it goes into opens, so the new one shows
+      const parent = this.folders.find((f) => f.id === parentId);
+      if (parent) parent.expanded = true;
+    }
+    this._newFolderParentId = null;
 
     this.folders.push(folder);
     await this.saveFolders();
@@ -155,7 +244,8 @@ export class FoldersFeature {
     // The notes list draws the pinned folders (among the pinned notes, in the order they were
     // pinned) and, in the custom order, the unpinned folders too (among the notes)
     const amongNotes = this.currentSort === 'manual';
-    this.folders.forEach((folder) => {
+    // Only the top folders: each folder draws the folders inside it
+    this.childFolders(null).forEach((folder) => {
       if (folder.isPinned || amongNotes) return;
       const visibleCount = this.getVisibleCountForFolder(folder.id);
       // If current filter/search should restrict visibility, hide folders with zero visible notes
@@ -182,8 +272,14 @@ export class FoldersFeature {
     });
   }
 
-  // Update the visible count badge for a specific folder in the sidebar
+  // Update the visible count badge for a folder and the folders it is in
   updateFolderCountInDOM(folderId) {
+    const folder = this.folders.find((f) => f.id === folderId);
+    if (!folder) return;
+    this.folderAncestors(folder).forEach((f) => this.updateOneFolderCount(f.id));
+  }
+
+  updateOneFolderCount(folderId) {
     if (!folderId) return;
     const countEl = document.querySelector(
       `.folder-item[data-folder-id="${folderId}"] .folder-count`
@@ -192,26 +288,11 @@ export class FoldersFeature {
     // Show visible count depending on current filter/search
     const visibleCount = this.getVisibleCountForFolder(folderId);
     countEl.textContent = visibleCount;
-    // If current filter or an active search hides empty folders, toggle visibility of the folder container
-    const treatAsFilter = this.isViewFiltered();
-    if (treatAsFilter) {
-      const folderContainer = document.querySelector(
-        `.folder-container:has(.folder-item[data-folder-id="${folderId}"])`
-      );
-      // Fallback for environments without :has support
-      const fallbackContainer =
-        folderContainer ||
-        document
-          .querySelector(`.folder-item[data-folder-id="${folderId}"]`)
-          ?.closest('.folder-container');
-      if (fallbackContainer) {
-        if (visibleCount === 0) {
-          // Remove/hide the folder container
-          fallbackContainer.style.display = 'none';
-        } else {
-          fallbackContainer.style.display = '';
-        }
-      }
+    // If current filter or an active search hides empty folders, toggle visibility of the folder
+    // container (the folder's own one, not one of the folders it is in)
+    if (this.isViewFiltered()) {
+      const folderContainer = countEl.closest('.folder-container');
+      if (folderContainer) folderContainer.style.display = visibleCount === 0 ? 'none' : '';
     }
   }
 
@@ -219,14 +300,30 @@ export class FoldersFeature {
     // Normalize ids
     sourceId = String(sourceId);
     targetId = String(targetId);
-    // In the custom order folders share the root list with the notes
-    if (this.currentSort === 'manual') {
-      const source = this.folders.find((f) => String(f.id) === sourceId);
-      const target = this.folders.find((f) => String(f.id) === targetId);
-      if (source && target && source !== target && !target.isPinned) {
-        this.placeInRootList([{ folder: source }], { folder: target }, insertBefore);
-        return;
+    const source = this.folders.find((f) => String(f.id) === sourceId);
+    const target = this.folders.find((f) => String(f.id) === targetId);
+    if (!source || !target || source === target) return;
+    // Placed beside a folder, it goes where that folder is (not into a folder inside itself)
+    const parentId = this.folderParentId(target);
+    if (
+      parentId &&
+      (parentId === source.id || this.folderDescendantIds(source.id).includes(parentId))
+    ) {
+      return;
+    }
+    if (this.folderParentId(source) !== parentId) {
+      if (parentId) {
+        source.parentId = parentId;
+        if (source.isPinned) this.setPinned(source, false);
+      } else {
+        delete source.parentId;
       }
+      delete source.order;
+    }
+    // In the custom order the top folders share the root list with the notes
+    if (this.currentSort === 'manual' && !parentId && !target.isPinned) {
+      this.placeInRootList([{ folder: source }], { folder: target }, insertBefore);
+      return;
     }
     const srcIndex = this.folders.findIndex((f) => String(f.id) === sourceId);
     const tgtIndex = this.folders.findIndex((f) => String(f.id) === targetId);
@@ -259,18 +356,33 @@ export class FoldersFeature {
     );
   }
 
+  // The visible notes of a folder and of the folders inside it
   getVisibleCountForFolder(folderId) {
-    return this.visibleFolderNotes(folderId).length;
+    return [folderId, ...this.folderDescendantIds(folderId)].reduce(
+      (sum, id) => sum + this.visibleFolderNotes(id).length,
+      0
+    );
   }
 
-  // Fill a folder's notes container and hide the folder when filtering leaves it empty
+  // Fill a folder's container: the folders inside it first, then its notes. A folder that
+  // filtering leaves empty (with nothing visible in its folders either) is hidden.
   renderFolderNotes(container) {
     const folderId = container.getAttribute('data-folder-id');
     container.innerHTML = '';
+    const filtered = this.isViewFiltered();
+    this.childFolders(folderId).forEach((child) => {
+      if (filtered && this.getVisibleCountForFolder(child.id) === 0) return;
+      const element = this.createFolderElement(child);
+      container.appendChild(element);
+      this.renderFolderNotes(element.querySelector('.folder-notes-container'));
+    });
     const notes = this.getSortedNotes(this.visibleFolderNotes(folderId));
     notes.forEach((note) => container.appendChild(this.createNoteItem(note, true)));
     const wrapper = container.closest('.folder-container');
-    if (wrapper) wrapper.style.display = this.isViewFiltered() && notes.length === 0 ? 'none' : '';
+    if (wrapper) {
+      wrapper.style.display =
+        filtered && this.getVisibleCountForFolder(folderId) === 0 ? 'none' : '';
+    }
   }
 
   createFolderElement(folder) {
@@ -406,8 +518,9 @@ export class FoldersFeature {
       }
 
       if (isFolderDrag) {
-        // For folder drag, show only the thin insertion line (insert-before/after) when cursor is near
-        // the top or bottom edge of the whole folder container. Do not show insertion when hovering over notes.
+        // Near the top or bottom edge of the whole folder: a thin line where it goes beside it.
+        // In the middle of the folder's row: it goes into this folder (not into itself or into a
+        // folder inside it).
         folderHeader.classList.remove('drag-over');
         if (nearTop) {
           folderHeader.classList.add('insert-before');
@@ -416,8 +529,10 @@ export class FoldersFeature {
           folderHeader.classList.add('insert-after');
           folderHeader.classList.remove('insert-before');
         } else {
-          // in the middle of the folder (over notes) - hide insertion cues
           folderHeader.classList.remove('insert-before', 'insert-after');
+          if (this.canNestFolder(this.draggedFolderId, folder.id)) {
+            folderHeader.classList.add('drag-over');
+          }
         }
 
         siblings.forEach((s) => {
@@ -473,9 +588,10 @@ export class FoldersFeature {
           const nearTop = e.clientY - containerRect.top <= edgeThreshold;
           const nearBottom = containerRect.bottom - e.clientY <= edgeThreshold;
 
-          // A drop away from the top and bottom edges is not an insertion
+          // A drop in the middle of the folder's row puts the dragged folder into this one
           if (!nearTop && !nearBottom) {
             folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
+            if (this.canNestFolder(sourceId, targetId)) this.moveFolder(sourceId, targetId);
             return;
           }
           const insertBefore = nearTop;
@@ -585,7 +701,8 @@ export class FoldersFeature {
   }
 
   async togglePinFolders(folderIds) {
-    const folders = this.folders.filter((f) => folderIds.includes(f.id));
+    // Only folders at the top of the list are pinned
+    const folders = this.folders.filter((f) => folderIds.includes(f.id) && !this.folderParentId(f));
     if (!folders.length) return;
     const value = !folders.every((f) => f.isPinned);
     folders.forEach((f) => {
@@ -611,6 +728,8 @@ export class FoldersFeature {
       this.pinFolderMenuItem.querySelector('span').textContent = i18n.t(
         folder?.isPinned ? 'folders.unpin' : 'folders.pin'
       );
+      // Only a folder at the top of the list can be pinned
+      this.pinFolderMenuItem.hidden = !!(folder && this.folderParentId(folder));
     }
     this.positionMenu(this.contextMenu, x, y);
   }
@@ -626,10 +745,9 @@ export class FoldersFeature {
     const folder = this.folders.find((f) => f.id === this.selectedFolderId);
     if (!folder) return;
 
-    // Count notes that truly belong to this folder. Folderless notes have a null folderId.
-    const notesInFolder = this.notes.filter(
-      (note) => note.folderId && String(note.folderId) === String(this.selectedFolderId)
-    );
+    // The notes in this folder and in the folders inside it (they are deleted with it)
+    const inside = new Set([folder.id, ...this.folderDescendantIds(folder.id)]);
+    const notesInFolder = this.notes.filter((note) => note.folderId && inside.has(note.folderId));
     const noteCount = notesInFolder.length;
 
     const message =
@@ -718,6 +836,10 @@ export class FoldersFeature {
 
     this.renameFolderMenuItem?.addEventListener('click', () => this.renameSelectedFolder());
 
+    this.newSubfolderMenuItem?.addEventListener('click', () => {
+      if (this.selectedFolderId) this.showFolderModal(this.selectedFolderId);
+    });
+
     this.pinFolderMenuItem?.addEventListener('click', () => {
       if (this.selectedFolderId) this.togglePinFolders([this.selectedFolderId]);
     });
@@ -755,7 +877,20 @@ export class FoldersFeature {
         return this.notes.some((n) => ids.includes(n.id) && n.folderId) ? ids : null;
       };
 
+      // A folder in another one, dragged outside every folder: it goes to the top of the list
+      const draggedSubfolder = (e) => {
+        if (!this.isDraggingFolder(e) || e.target.closest('.folder-container')) return null;
+        const folder = this.folders.find((f) => f.id === this.draggedFolderId);
+        return folder && this.folderParentId(folder) ? folder : null;
+      };
+
       area.addEventListener('dragover', (e) => {
+        if (draggedSubfolder(e)) {
+          e.preventDefault();
+          notesListContainer.dataset.dropLabel = i18n.t('folders.dropToTop');
+          notesListContainer.classList.add('drag-over');
+          return;
+        }
         if (!draggedFolderNote(e)) {
           notesListContainer.classList.remove('drag-over');
           return;
@@ -771,6 +906,12 @@ export class FoldersFeature {
 
       area.addEventListener('drop', (e) => {
         notesListContainer.classList.remove('drag-over');
+        const subfolder = draggedSubfolder(e);
+        if (subfolder) {
+          e.preventDefault();
+          this.moveFolder(subfolder.id, null);
+          return;
+        }
         const ids = draggedFolderNote(e);
         if (!ids) return;
         e.preventDefault();

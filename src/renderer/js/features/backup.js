@@ -157,12 +157,16 @@ export class BackupFeature {
       // Remap folder IDs to avoid collisions when merging
       const folderIdMap = {};
       if (Array.isArray(data.folders) && importOptions.folders) {
+        const added = [];
         data.folders.forEach((f) => {
-          // A folder with the same name takes the imported notes instead of a copy of it
-          const sameName = this.folders.find(
-            (existing) =>
-              String(existing.name || '').toLowerCase() === String(f.name || '').toLowerCase()
-          );
+          // A top folder with the same name as one at the top here takes the imported notes
+          // instead of a copy of it
+          const sameName =
+            !f.parentId &&
+            this.childFolders(null).find(
+              (existing) =>
+                String(existing.name || '').toLowerCase() === String(f.name || '').toLowerCase()
+            );
           if (sameName) {
             folderIdMap[f.id] = sameName.id;
             return;
@@ -172,6 +176,13 @@ export class BackupFeature {
           const newFolder = { ...f, id: newId };
           newFolder.expanded = newFolder.expanded !== undefined ? newFolder.expanded : true;
           this.folders.push(newFolder);
+          added.push({ folder: newFolder, parentId: f.parentId });
+        });
+        // The imported folders keep their places in each other, under their new ids
+        added.forEach(({ folder, parentId }) => {
+          const mapped = parentId && folderIdMap[parentId];
+          if (mapped && mapped !== folder.id) folder.parentId = mapped;
+          else delete folder.parentId;
         });
       }
 
@@ -313,6 +324,9 @@ export class BackupFeature {
       // Nothing may point at what a replace removed: notes in missing folders go to the root
       // list, reminders and notifications of missing notes go, the open note closes
       const folderIds = new Set(this.folders.map((f) => f.id));
+      this.folders.forEach((f) => {
+        if (f.parentId && !folderIds.has(f.parentId)) delete f.parentId;
+      });
       this.notes.forEach((n) => {
         if (n.folderId && !folderIds.has(n.folderId)) n.folderId = null;
       });

@@ -213,16 +213,18 @@ export class MarkdownIoFeature {
         locked += 1;
         return;
       }
+      // A folder in other folders is a folder in those folders
       const folder = this.folders.find((f) => f.id === note.folderId);
-      const dir = folder ? `${safe(folder.name)}/` : '';
+      const path = folder ? this.folderAncestors(folder).map((f) => safe(f.name)) : [];
+      const dir = path.map((part) => `${part}/`).join('');
       let name = `${dir}${safe(this.displayTitle(note))}`;
       let candidate = `${name}.md`;
       for (let i = 2; used.has(candidate.toLowerCase()); i++) candidate = `${name} (${i}).md`;
       used.add(candidate.toLowerCase());
-      // Images in a folder point one level up, where "attachments" is
+      // Images in a folder point up to the top, where "attachments" is
       const content = this.noteToMarkdown(note).replace(
         /\]\(attachments\//g,
-        `](${folder ? '../' : ''}attachments/`
+        `](${'../'.repeat(path.length)}attachments/`
       );
       files.push({ path: candidate, content });
     });

@@ -411,7 +411,11 @@
     "pin": "Klasörü sabitle",
     "unpin": "Sabitlemeyi kaldır",
     "pinned": "Klasör sabitlendi",
-    "unpinned": "Klasörün sabitlemesi kaldırıldı"
+    "unpinned": "Klasörün sabitlemesi kaldırıldı",
+    "newSubfolder": "Yeni alt klasör",
+    "cannotMoveInside": "Bir klasör kendi içine ya da kendi alt klasörüne taşınamaz",
+    "moved": "“{name}” şuraya taşındı: {folder}",
+    "dropToTop": "Klasörden çıkar"
   },
   "blockStyle": {
     "p": "Metin",
