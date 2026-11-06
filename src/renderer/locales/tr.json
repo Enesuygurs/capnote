@@ -538,7 +538,8 @@
   "noteList": {
     "empty": "Henüz not yok",
     "writeFirst": "İlk notunu yaz",
-    "noMatch": "Eşleşen not yok"
+    "noMatch": "Eşleşen not yok",
+    "pinnedZone": "Sabitlenmişler"
   },
   "history": {
     "current": "Şu anki sürüm",

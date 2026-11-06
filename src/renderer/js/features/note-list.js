@@ -313,7 +313,7 @@ export class NoteListFeature {
     div.title = title;
 
     const icon = note.isLocked
-      ? 'fas fa-lock'
+      ? 'fas fa-lock tone-accent'
       : note.isPinned
         ? 'fas fa-thumbtack tone-gold'
         : note.filePath
@@ -353,6 +353,7 @@ export class NoteListFeature {
       e.dataTransfer.setData('text/plain', note.id);
       this.draggedNoteId = note.id;
       div.classList.add('dragging');
+      if (note.isPinned) this.showPinZone({ note });
       // A note in a folder can be dropped on the root list, which then needs room even if empty.
       // Changing the layout during dragstart cancels the drag, so wait a frame.
       if (note.folderId) {
@@ -360,6 +361,7 @@ export class NoteListFeature {
       }
     });
     div.addEventListener('dragend', () => {
+      this.hidePinZone();
       this.draggedNoteId = null;
       div.classList.remove('dragging');
       document.body.classList.remove('dragging-folder-note');
@@ -479,6 +481,62 @@ export class NoteListFeature {
   // Which pinned group an item is in: a folder's id, or the root list
   pinGroupOf(item) {
     return item.folder ? 'root' : item.note.folderId || 'root';
+  }
+
+  // The rows of a pinned group: the pinned notes (and, in the root list, folders) of a list
+  pinZoneRows(item) {
+    const group = this.pinGroupOf(item);
+    if (group === 'root') {
+      // A pinned folder counts whole: with what is in it, when it is open
+      return [...this.notesList.children].filter((el) => {
+        if (el.classList.contains('note-item')) return el.classList.contains('pinned');
+        const id =
+          el.classList.contains('folder-container') && el.firstElementChild?.dataset.folderId;
+        return !!id && !!this.folders.find((f) => f.id === id)?.isPinned;
+      });
+    }
+    const box = document.querySelector(`.folder-notes-container[data-folder-id="${group}"]`);
+    return box ? [...box.children].filter((el) => el.matches('.note-item.pinned')) : [];
+  }
+
+  // While a pinned note or folder is dragged, the pinned ones of its list (the only place it can
+  // go) are marked with a frame that follows the list as it scrolls
+  showPinZone(item) {
+    this.hidePinZone();
+    const zone = document.createElement('div');
+    zone.className = 'pin-zone';
+    zone.dataset.label = i18n.t('noteList.pinnedZone');
+    const place = () => {
+      const rects = this.pinZoneRows(item).map((row) => row.getBoundingClientRect());
+      if (!rects.length) {
+        zone.hidden = true;
+        return;
+      }
+      const top = Math.min(...rects.map((r) => r.top));
+      const bottom = Math.max(...rects.map((r) => r.bottom));
+      const left = Math.min(...rects.map((r) => r.left));
+      const right = Math.max(...rects.map((r) => r.right));
+      Object.assign(zone.style, {
+        top: `${top - 3}px`,
+        left: `${left - 3}px`,
+        width: `${right - left + 6}px`,
+        height: `${bottom - top + 6}px`,
+      });
+      zone.hidden = false;
+      this.pinZoneFrame = requestAnimationFrame(place);
+    };
+    // Changing the page while the drag starts cancels it: the frame comes a moment later
+    this.pinZoneFrame = requestAnimationFrame(() => {
+      document.body.appendChild(zone);
+      place();
+    });
+    this.pinZone = zone;
+  }
+
+  hidePinZone() {
+    cancelAnimationFrame(this.pinZoneFrame);
+    this.pinZone?.remove();
+    this.pinZone = null;
   }
 
   // Whether the dragged pinned item can be placed before or after this pinned one
