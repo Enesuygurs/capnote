@@ -29,8 +29,9 @@
   transition: background var(--transition-fast);
 }
 
-/* "Hide note icons" in the settings: the notes in the list (and in folders) without their icons */
-.hide-note-icons .note-item > .nav-icon {
+/* "Hide note icons" in the settings: the notes in the list (and in folders) without their icons;
+   a lock (shut or open) and a pin still show, they tell the note's state */
+.hide-note-icons .note-item > .nav-icon:not(.fa-lock, .fa-lock-open, .fa-thumbtack) {
   display: none;
 }
 
