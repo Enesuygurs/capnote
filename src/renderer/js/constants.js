@@ -23,6 +23,8 @@ export const DEFAULT_SETTINGS = {
   // Line shortcuts while typing: "- " a bulleted list, "1. " a numbered one, "[] " a task...
   autoFormat: true,
   onNoteDelete: 'lastNote',
+  // When an opened locked note locks again: 'leave' (another note opens) or 'quit' (the app closes)
+  relockOn: 'leave',
   // What opens when the app starts: lastNote, home, newNote, todos or notifications
   startupPage: 'lastNote',
   nativeNotifications: true,

@@ -67,6 +67,18 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
+                  <label data-i18n="settings.relockOn">Kilitli notlar yeniden kilitlensin</label>
+                  <small data-i18n="settings.relockOnDesc"
+                    >Açılan kilitli not ne zaman kilitlensin</small
+                  >
+                </div>
+                <select id="relockOnSelect" class="select-small">
+                  <option value="leave" data-i18n="settings.relockOnLeave">Not kapanınca</option>
+                  <option value="quit" data-i18n="settings.relockOnQuit">Uygulama kapanınca</option>
+                </select>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
                   <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
                   <small data-i18n="settings.onNoteDeleteDesc"
                     >Not silindiğinde ne olacağını seç</small
