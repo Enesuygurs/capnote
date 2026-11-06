@@ -241,6 +241,56 @@
   color: var(--text-secondary);
 }
 
+/* A locked note in the viewer: a larger message in the middle of the page, its lock on a soft
+   circle in the lock's violet */
+.viewer-content:has(.locked-note-message) {
+  display: flex;
+}
+
+#viewerText:has(> .locked-note-message) {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.formatted-content .locked-note-message {
+  gap: var(--space-3);
+  max-width: 420px;
+  padding: var(--space-6);
+  font-size: var(--fs-base);
+}
+
+.locked-note-message .locked-note-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-full);
+  background: color-mix(in srgb, var(--tone-violet) 14%, transparent);
+  color: var(--tone-violet);
+}
+
+.locked-note-message .locked-note-icon i {
+  margin: 0;
+  font-size: 36px;
+  opacity: 1;
+}
+
+.formatted-content .locked-note-message h3 {
+  margin: 0;
+  font-size: var(--fs-2xl);
+  color: var(--text-strong);
+}
+
+.formatted-content .locked-note-message p {
+  margin: 0;
+  font-size: var(--fs-base);
+  color: var(--text-muted);
+}
+
 /* ============ Tags ============ */
 .tag-cloud {
   display: flex;

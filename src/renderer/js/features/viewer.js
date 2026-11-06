@@ -12,8 +12,8 @@ export class ViewerFeature {
     // Check if note is locked and not temporarily unlocked
     if (this.isNoteLockedForView(note)) {
       this.viewerText.innerHTML = `
-                <div class="empty-state empty-state-large">
-                    <i class="fas fa-lock"></i>
+                <div class="empty-state locked-note-message">
+                    <span class="locked-note-icon"><i class="fas fa-lock"></i></span>
                     <h3>${i18n.t('messages.noteIsLocked')}</h3>
                     <p>${i18n.t('messages.unlockFromList')}</p>
                 </div>
