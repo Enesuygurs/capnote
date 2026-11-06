@@ -412,6 +412,13 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
   font-size: var(--fs-sm);
 }
 
+/* The right-click menus have plain icons; only the delete item keeps its red */
+:is(#noteContextMenu, #contextMenu, #selectionMenu, #listContextMenu)
+  .menu-item:not(.menu-item-danger)
+  i {
+  color: var(--text-muted);
+}
+
 .sort-dropdown {
   position: absolute;
   z-index: var(--z-dropdown);

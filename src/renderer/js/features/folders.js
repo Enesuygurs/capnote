@@ -461,7 +461,8 @@ export class FoldersFeature {
     // Make folder header draggable so folders can be reordered
     folderHeader.draggable = true;
     folderHeader.addEventListener('dragstart', (ev) => {
-      // A pinned folder moves among the pinned notes and folders (or into another folder)
+      // A pinned folder moves only among the pinned notes and folders, which are marked
+      if (folder.isPinned) this.showPinZone({ folder });
       try {
         ev.dataTransfer.effectAllowed = 'move';
         // Use a dedicated mime type for folder drags to avoid colliding with note drags
@@ -475,6 +476,7 @@ export class FoldersFeature {
       }
     });
     folderHeader.addEventListener('dragend', () => {
+      this.hidePinZone();
       this.draggedFolderId = null;
       folderHeader.classList.remove('dragging');
       document
@@ -522,6 +524,18 @@ export class FoldersFeature {
           : e.clientY > headerRect.bottom - headerRect.height / 4
             ? 'after'
             : null;
+
+      // A pinned note or folder stays among the pinned ones: it goes before or after a pinned one
+      // of its group only, not into a folder (elsewhere it cannot be dropped)
+      if (pinned) {
+        const edge = isFolderDrag ? (nearTop ? 'before' : nearBottom ? 'after' : null) : headerEdge;
+        const allowed = besideAllowed && !!edge;
+        folderHeader.classList.remove('drag-over');
+        folderHeader.classList.toggle('insert-before', allowed && edge === 'before');
+        folderHeader.classList.toggle('insert-after', allowed && edge === 'after');
+        if (!allowed) e.dataTransfer.dropEffect = 'none';
+        return;
+      }
 
       if (isFolderDrag) {
         // Near the top or bottom edge of the whole folder: a thin line where it goes beside it.
@@ -604,7 +618,9 @@ export class FoldersFeature {
           // A drop in the middle of the folder's row puts the dragged folder into this one
           if (!nearTop && !nearBottom) {
             folderHeader.classList.remove('drag-over', 'insert-before', 'insert-after');
-            if (this.canNestFolder(sourceId, targetId)) this.moveFolder(sourceId, targetId);
+            if (this.canNestFolder(sourceId, targetId) && !this.pinnedDragItem()) {
+              this.moveFolder(sourceId, targetId);
+            }
             return;
           }
           const insertBefore = nearTop;
@@ -634,6 +650,8 @@ export class FoldersFeature {
           return;
         }
       }
+      // A pinned note does not go into a folder by dragging
+      if (pinnedNote) return;
 
       // Otherwise a note (or the selected notes) was dropped onto this folder
       const noteId = this.draggedNoteId || e.dataTransfer.getData('text/plain');
@@ -907,6 +925,7 @@ export class FoldersFeature {
     if (notesListContainer && area) {
       // The dragged notes, if any of them is in a folder
       const draggedFolderNote = (e) => {
+        if (this.pinnedDragItem()) return null;
         if (this.isDraggingFolder(e) || e.target.closest('.folder-container')) return null;
         if (!this.draggedNoteId) return null;
         const ids = this.draggedNoteIds(this.draggedNoteId);

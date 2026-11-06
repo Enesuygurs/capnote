@@ -94,6 +94,16 @@
   margin-top: var(--space-4);
 }
 
+/* A hidden message takes no room: the field sits right under the title */
+.form-message[hidden] + .form-group {
+  margin-top: 0;
+}
+
+/* The password dialog: the field close under its title */
+#passwordModal .modal-body {
+  padding-top: var(--space-4);
+}
+
 .form-group label {
   display: block;
   margin-bottom: var(--space-2);

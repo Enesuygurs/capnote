@@ -170,12 +170,9 @@ export class LockFeature {
 
   showPasswordModal(title, message = '') {
     this.passwordModalTitle.textContent = title;
-    if (message) {
-      this.passwordMessage.textContent = message;
-      this.passwordMessage.style.display = 'block';
-    } else {
-      this.passwordMessage.style.display = 'none';
-    }
+    // No message: it is hidden, and the field below it takes no room above it
+    this.passwordMessage.textContent = message;
+    this.passwordMessage.hidden = !message;
     this.passwordInput.value = '';
     this.passwordModal.classList.remove('hidden');
 

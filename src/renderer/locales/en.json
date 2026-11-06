@@ -538,7 +538,8 @@
   "noteList": {
     "empty": "No notes yet",
     "writeFirst": "Write your first note",
-    "noMatch": "No matching notes"
+    "noMatch": "No matching notes",
+    "pinnedZone": "Pinned"
   },
   "history": {
     "current": "Current version",
