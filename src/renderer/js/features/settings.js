@@ -87,6 +87,12 @@ export class SettingsFeature {
 
     if (this.hideNoteIconsToggle) this.hideNoteIconsToggle.checked = settings.hideNoteIcons;
     document.body.classList.toggle('hide-note-icons', !!settings.hideNoteIcons);
+    // Drawn without the graphics card (the setting as it was when the app started): no blur
+    // behind dialogs, which is slow to draw without it
+    if (this.startedWithoutGpu === undefined) {
+      this.startedWithoutGpu = settings.hardwareAcceleration === false;
+      document.body.classList.toggle('no-gpu', this.startedWithoutGpu);
+    }
     if (this.compactListToggle) this.compactListToggle.checked = settings.compactList;
     document.body.classList.toggle('compact-list', !!settings.compactList);
 

@@ -278,8 +278,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.quickNoteShortcut">Hızlı not kısayolu</label>
                   <small data-i18n="settings.quickNoteShortcutDesc"
-                    >Ctrl+Alt+N, her yerden ekranın köşesinde küçük, her zaman üstte duran bir not
-                    penceresi açar</small
+                    >Ctrl+Alt+N ile her yerden küçük bir not penceresi açar</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -291,7 +290,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.closeToTray">Pencereyi kapatınca tepsiye küçült</label>
                   <small data-i18n="settings.closeToTrayDesc"
-                    >Kapat düğmesine basınca uygulama sistem tepsisinde çalışmaya devam etsin</small
+                    >Kapat düğmesi uygulamayı sistem tepsisine küçültür</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -341,8 +340,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="transfer.exportLabel">Dışa aktar</label>
                   <small data-i18n="transfer.exportDesc"
-                    >Kaydederken türü seçin: tüm verilerin Capnote yedeği (.json) ya da her notun
-                    ayrı bir Markdown (.md) dosyası olduğu bir klasör</small
+                    >Tek yedek (.json) ya da Markdown dosyaları (.md)</small
                   >
                 </div>
                 <button id="exportDataBtn" class="btn-tinted btn-small">
@@ -354,8 +352,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="transfer.importLabel">İçe aktar</label>
                   <small data-i18n="transfer.importDesc"
-                    >Capnote yedekleri (.json) ve Markdown dosyaları (.md) türlerine göre tanınır;
-                    birlikte de seçilebilir</small
+                    >Capnote yedekleri (.json) ve Markdown dosyaları (.md)</small
                   >
                 </div>
                 <button id="importDataBtn" class="btn-tinted btn-small">
@@ -406,7 +403,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.resetApp">Uygulamayı Sıfırla</label>
                   <small data-i18n="settings.resetAppDesc"
-                    >Notlar, klasörler ve ayarlar dahil uygulamayı varsayılan haline döndürür</small
+                    >Notlar, klasörler ve ayarlar dahil her şeyi sıfırlar</small
                   >
                 </div>
                 <button id="clearAllContentBtn" class="btn-outline btn-small btn-danger">
