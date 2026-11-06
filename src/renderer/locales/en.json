@@ -82,7 +82,8 @@
     "quote": "Quote",
     "divider": "Divider",
     "focusMode": "Focus mode",
-    "focusModeExit": "Leave focus mode (Esc)"
+    "focusModeExit": "Leave focus mode (Esc)",
+    "toggleFold": "Collapse / expand"
   },
   "placeholders": {
     "noteTitle": "Note title...",

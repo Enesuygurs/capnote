@@ -37,6 +37,8 @@ export class ViewerFeature {
       this.attachCopyButtonsToPre(this.viewerText);
       // Links to other notes show their current titles
       this.refreshNoteLinks(this.viewerText);
+      // Lists with items under them and headings fold (an earlier version keeps no folds)
+      this.makeFoldable(this.viewerText, note.isVersionPreview ? null : note.id);
     }
     this.renderBacklinks(note);
     // A file note is its file, not a full note: no copy, history, export or archive

@@ -52,6 +52,8 @@ export class PreviewsFeature {
       this.markdownPreview.innerHTML = this.sanitizeHtml(html);
       // attach copy buttons to any code blocks in the preview
       this.attachCopyButtonsToPre(this.markdownPreview);
+      // Lists with items under them and headings fold, as in the viewer
+      this.makeFoldable(this.markdownPreview, `preview:${this.currentNote?.id || ''}`);
     } catch (e) {
       this.markdownPreview.textContent = md;
     }

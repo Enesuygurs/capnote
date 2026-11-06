@@ -82,7 +82,8 @@
     "quote": "Alıntı",
     "divider": "Ayırıcı çizgi",
     "focusMode": "Odak modu",
-    "focusModeExit": "Odak modundan çık (Esc)"
+    "focusModeExit": "Odak modundan çık (Esc)",
+    "toggleFold": "Daralt / genişlet"
   },
   "placeholders": {
     "noteTitle": "Not başlığı...",
