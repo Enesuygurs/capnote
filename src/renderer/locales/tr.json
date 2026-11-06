@@ -141,6 +141,8 @@
     "syncFolderAccentDesc": "Tüm klasör ikon renklerini vurgu rengine ayarla",
     "hideNoteIcons": "Not simgelerini gizle",
     "hideNoteIconsDesc": "Not listesinde notların solundaki simgeler görünmesin",
+    "compactList": "Kompakt liste",
+    "compactListDesc": "Notlar ve klasörler daha küçük satırlarda, oklu ve çizgili bir ağaç olarak",
     "startAtLogin": "Başlangıçta çalıştır",
     "startAtLoginDesc": "Oturum açıldığında Capnote arka planda başlasın",
     "closeToTray": "Pencereyi kapatınca tepsiye küçült",

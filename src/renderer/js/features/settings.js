@@ -87,6 +87,8 @@ export class SettingsFeature {
 
     if (this.hideNoteIconsToggle) this.hideNoteIconsToggle.checked = settings.hideNoteIcons;
     document.body.classList.toggle('hide-note-icons', !!settings.hideNoteIcons);
+    if (this.compactListToggle) this.compactListToggle.checked = settings.compactList;
+    document.body.classList.toggle('compact-list', !!settings.compactList);
 
     if (this.toggleNativeNotifications)
       this.toggleNativeNotifications.checked = settings.nativeNotifications;
@@ -466,6 +468,12 @@ export class SettingsFeature {
     this.hideNoteIconsToggle?.addEventListener('change', (e) => {
       this.setSetting('hideNoteIcons', e.currentTarget.checked);
       document.body.classList.toggle('hide-note-icons', e.currentTarget.checked);
+    });
+
+    // The compact note list: smaller rows and a folder tree with arrows and lines
+    this.compactListToggle?.addEventListener('change', (e) => {
+      this.setSetting('compactList', e.currentTarget.checked);
+      document.body.classList.toggle('compact-list', e.currentTarget.checked);
     });
 
     // Native/system notifications toggle

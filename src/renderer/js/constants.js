@@ -15,6 +15,8 @@ export const DEFAULT_SETTINGS = {
   syncFolderAccent: false,
   // The icons at the left of the notes in the note list are hidden
   hideNoteIcons: false,
+  // A tighter note list: smaller rows, a folder tree with arrows and lines
+  compactList: false,
   folderColorsBackup: null,
   noteSort: 'date-desc',
   autoSave: true,

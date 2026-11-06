@@ -267,6 +267,7 @@ export class CapnoteApp {
     this.accentBlueBtn = document.getElementById('accentBlue');
     this.syncFolderAccentToggle = document.getElementById('syncFolderAccentToggle');
     this.hideNoteIconsToggle = document.getElementById('hideNoteIconsToggle');
+    this.compactListToggle = document.getElementById('compactListToggle');
     // System settings toggles
     this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
     this.closeToTrayToggle = document.getElementById('closeToTrayToggle');

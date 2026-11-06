@@ -141,6 +141,8 @@
     "syncFolderAccentDesc": "Set all folder icon colors to accent color",
     "hideNoteIcons": "Hide note icons",
     "hideNoteIconsDesc": "No icons at the left of the notes in the note list",
+    "compactList": "Compact list",
+    "compactListDesc": "Notes and folders in smaller rows, as a tree with arrows and lines",
     "startAtLogin": "Start at login",
     "startAtLoginDesc": "Launch Capnote in background when you log in",
     "closeToTray": "Minimize to tray on close",
