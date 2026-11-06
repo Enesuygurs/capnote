@@ -80,20 +80,30 @@ Output goes to `dist/`.
 
 Installed copies on Windows and Linux check GitHub Releases for a newer version, download it in the background and install it on restart (Settings → About shows the status). macOS updates need a signed app, so the macOS build does not update itself.
 
-Releases are built and published by GitHub Actions ([`.github/workflows/release.yml`](.github/workflows/release.yml)):
+Releases are built and published by hand, from a Windows machine with the [GitHub CLI](https://cli.github.com/) signed in:
 
-1. On `main`, raise the version and tag it:
+1. Raise the version on a branch and merge it into `main`:
    ```bash
-   npm version patch -m "chore(release): %s"   # 1.0.0 -> 1.0.1; minor or major for bigger steps
+   npm version minor --no-git-tag-version   # 1.1.0 -> 1.2.0; patch or major as fits
    ```
-   This changes `package.json`, commits it and creates the tag `v1.0.1`.
-2. Push the commit and the tag:
+2. Check the code:
    ```bash
-   git push --follow-tags
+   npm test
+   npm run test:visual
    ```
-3. The **Release** workflow starts on the tag (follow it in the repository's Actions tab). It checks the code, builds the Windows installer and the Linux AppImage at the same time and publishes them, with the `latest.yml` files the updater reads, as the release `v1.0.1`, with notes listing the changes. If a step fails, no release is published; fix it, delete the tag (`git push --delete origin v1.0.1` and `git tag -d v1.0.1`) and tag again.
+3. Tag the release on `main` and push the tag:
+   ```bash
+   git tag -a v1.2.0 -m "Capnote 1.2.0"
+   git push origin v1.2.0
+   ```
+4. Make a draft release with notes listing the changes, build the installer and upload it (with the `latest.yml` the updater reads) to the draft, then publish it:
+   ```bash
+   gh release create v1.2.0 --draft --verify-tag --title "Capnote 1.2.0" --generate-notes
+   GH_TOKEN=$(gh auth token) npx electron-builder --win --publish always
+   gh release edit v1.2.0 --draft=false --latest
+   ```
 
-To try a build without releasing, run the workflow by hand (Actions → Release → Run workflow); the packages are then kept as downloads of that run. `npm run release` still builds and uploads from your own machine, to a draft release, with a token in `GH_TOKEN`.
+The Linux AppImage is built on Linux the same way (`npx electron-builder --linux --publish always`). To try a build without releasing, use `npm run build-win`.
 
 ## License
 
