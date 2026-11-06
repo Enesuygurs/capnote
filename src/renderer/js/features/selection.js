@@ -216,9 +216,7 @@ export class SelectionFeature {
     // be locked, so all of them are deleted
     const fileNotes = this.notes.filter((n) => noteIds.has(n.id) && this.isFileNote(n));
     const option = fileNotes.length
-      ? fileNotes.length === 1
-        ? i18n.t('files.deleteFileToo', { name: this.fileName(fileNotes[0]) })
-        : i18n.t('files.deleteFilesToo', { count: fileNotes.length })
+      ? i18n.t(fileNotes.length === 1 ? 'files.deleteFileToo' : 'files.deleteFilesToo')
       : undefined;
 
     this.showConfirm(
