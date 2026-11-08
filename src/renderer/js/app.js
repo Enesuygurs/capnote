@@ -30,6 +30,7 @@ import { EditorHistoryFeature } from './features/editor-history.js';
 import { EditorToolsFeature } from './features/editor-tools.js';
 import { NoteLinksFeature } from './features/note-links.js';
 import { NoteFilesFeature } from './features/note-files.js';
+import { FolderLockFeature } from './features/folder-lock.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
@@ -62,6 +63,9 @@ export class CapnoteApp {
     this.isResizing = false; // Flag to prevent re-renders during resize
     // Passwords of locked notes unlocked in this session (memory only, never persisted)
     this.unlockedNotes = new Map();
+    // Locked folders opened in this session: id -> password; notes being encrypted into one
+    this.unlockedFolders = new Map();
+    this.folderSeals = new WeakMap();
     // Notes and folders picked with Ctrl/Cmd+click
     this.selectedNoteIds = new Set();
     this.selectedFolderIds = new Set();
@@ -364,6 +368,8 @@ export class CapnoteApp {
     this.changeFolderColorMenuItem = document.getElementById('changeFolderColorMenuItem');
     this.pinFolderMenuItem = document.getElementById('pinFolderMenuItem');
     this.newSubfolderMenuItem = document.getElementById('newSubfolderMenuItem');
+    this.lockFolderMenuItem = document.getElementById('lockFolderMenuItem');
+    this.relockFolderMenuItem = document.getElementById('relockFolderMenuItem');
     this.newNoteInFolderMenuItem = document.getElementById('newNoteInFolderMenuItem');
     this.folderColorModal = document.getElementById('folderColorModal');
     this.folderColorInput = document.getElementById('folderColorInput');
@@ -439,6 +445,7 @@ export class CapnoteApp {
     this.setupEditorTools();
     this.setupNoteLinks();
     this.setupNoteFiles();
+    this.setupFolderLock();
     this.setupTags();
     this.setupArchive();
     this.setupDashboard();
@@ -708,6 +715,7 @@ applyFeatures(CapnoteApp, [
   EditorToolsFeature,
   NoteLinksFeature,
   NoteFilesFeature,
+  FolderLockFeature,
   FoldingFeature,
   TagsFeature,
   ArchiveFeature,

@@ -59,6 +59,7 @@ export class FoldersFeature {
     const folder = this.folders.find((f) => f.id === folderId);
     if (!folder) return;
     const target = parentId || null;
+    if (this.blockedByFolderLock(target)) return;
     if (target === folderId || (target && this.folderDescendantIds(folderId).includes(target))) {
       this.showNotification(i18n.t('folders.cannotMoveInside'), 'warning');
       return;
@@ -369,6 +370,12 @@ export class FoldersFeature {
   renderFolderNotes(container) {
     const folderId = container.getAttribute('data-folder-id');
     container.innerHTML = '';
+    // A folder that is locked now shows nothing of what is in it
+    if (this.isFolderLockedForView(folderId)) {
+      const wrapper = container.closest('.folder-container');
+      if (wrapper) wrapper.style.display = this.isViewFiltered() ? 'none' : '';
+      return;
+    }
     const filtered = this.isViewFiltered();
     this.childFolders(folderId).forEach((child) => {
       if (filtered && this.getVisibleCountForFolder(child.id) === 0) return;
@@ -395,11 +402,15 @@ export class FoldersFeature {
 
     // The same count the badge shows after a move: the notes visible under the filter
     const noteCount = this.getVisibleCountForFolder(folder.id);
+    // Locked now: closed, no count; a click asks its password under it
+    const lockedNow = this.isFolderLockedForView(folder.id);
+    folderHeader.classList.toggle('is-locked', lockedNow);
 
     folderHeader.innerHTML = `
             <i class="fas fa-folder nav-icon" style="color: ${this.safeColor(folder.color)}"></i>
             <span class="nav-text">${this.escapeHtml(folder.name)}</span>
             ${folder.isPinned ? '<i class="fas fa-thumbtack folder-pin tone-gold" aria-hidden="true"></i>' : ''}
+            ${folder.isLocked ? `<i class="fas ${lockedNow ? 'fa-lock' : 'fa-lock-open'} folder-lock tone-accent" aria-hidden="true"></i>` : ''}
             <span class="folder-count">${noteCount}</span>
             <i class="fas fa-chevron-down nav-expand"></i>
         `;
@@ -413,7 +424,7 @@ export class FoldersFeature {
     // Initialize expanded state from folder.expanded; while searching, a folder (shown only when
     // it holds results) is open without changing its saved state
     const chevron = folderHeader.querySelector('.nav-expand');
-    if (folder.expanded || this.currentSearchTerm()) {
+    if (!lockedNow && (folder.expanded || this.currentSearchTerm())) {
       folderHeader.classList.add('expanded');
       notesContainer.style.display = 'block';
       if (chevron) chevron.style.transform = 'rotate(0deg)';
@@ -432,6 +443,19 @@ export class FoldersFeature {
         return;
       }
       this.clearSelection();
+      if (this.isFolderLockedForView(folder.id)) {
+        this.toggleFolderUnlockRow(folder, folderHeader);
+        return;
+      }
+      // An opened locked folder locks again when it is closed (unless set to lock on quit)
+      if (
+        folder.isLocked &&
+        folderHeader.classList.contains('expanded') &&
+        this.settings.relockOn !== 'quit'
+      ) {
+        this.relockFolder(folder);
+        return;
+      }
       folder.expanded = !folderHeader.classList.contains('expanded');
       folderHeader.classList.toggle('expanded', folder.expanded);
       if (chevron) chevron.style.transform = folder.expanded ? 'rotate(0deg)' : 'rotate(-90deg)';
@@ -677,6 +701,7 @@ export class FoldersFeature {
   // Move notes into a folder (null: the root list)
   async moveNotesToFolder(noteIds, folderId) {
     const targetFolderId = folderId || null;
+    if (this.blockedByFolderLock(targetFolderId)) return;
     const notes = this.notes.filter(
       (n) => noteIds.includes(n.id) && (n.folderId || null) !== targetFolderId
     );
@@ -781,6 +806,7 @@ export class FoldersFeature {
       // Only a folder at the top of the list can be pinned
       this.pinFolderMenuItem.hidden = !!(folder && this.folderParentId(folder));
     }
+    this.updateFolderLockMenu(folder);
     this.positionMenu(this.contextMenu, x, y);
   }
 
@@ -794,6 +820,11 @@ export class FoldersFeature {
 
     const folder = this.folders.find((f) => f.id === this.selectedFolderId);
     if (!folder) return;
+    // A locked folder is opened before it can be deleted
+    if (this.blockedByFolderLock(folder.id)) {
+      this.hideContextMenu();
+      return;
+    }
 
     // The notes in this folder and in the folders inside it (they are deleted with it)
     const inside = new Set([folder.id, ...this.folderDescendantIds(folder.id)]);

@@ -192,7 +192,7 @@ export class NoteLinksFeature {
     const term = this.normalizeForSearch(query);
     const current = this.currentNote;
     return this.notes
-      .filter((n) => n !== current && n.id !== current?.id)
+      .filter((n) => n !== current && n.id !== current?.id && !this.isNoteHiddenByFolderLock(n))
       .map((n) => ({ note: n, title: this.normalizeForSearch(this.displayTitle(n)) }))
       .filter(({ title }) => !term || title.includes(term))
       .sort((x, y) => Number(y.title.startsWith(term)) - Number(x.title.startsWith(term)))
@@ -319,7 +319,11 @@ export class NoteLinksFeature {
   backlinksOf(note) {
     const marker = `data-note-id="${note.id}"`;
     return this.notes.filter(
-      (n) => n.id !== note.id && !this.isNoteLockedForView(n) && (n.content || '').includes(marker)
+      (n) =>
+        n.id !== note.id &&
+        !this.isNoteLockedForView(n) &&
+        !this.isNoteHiddenByFolderLock(n) &&
+        (n.content || '').includes(marker)
     );
   }
 

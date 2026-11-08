@@ -27,7 +27,7 @@ const svg = (tag, attrs = {}) => {
 export class NoteGraphFeature {
   // The notes in the graph and their links (each pair once, either direction)
   noteGraph({ unlinked = false } = {}) {
-    const notes = this.notes.filter((n) => !n.isArchived);
+    const notes = this.notes.filter((n) => !n.isArchived && !this.isNoteHiddenByFolderLock(n));
     const ids = new Set(notes.map((n) => n.id));
     const byTitle = new Map(notes.map((n) => [(n.title || '').trim().toLowerCase(), n.id]));
     const pairs = new Map();

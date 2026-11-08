@@ -86,6 +86,11 @@ export class NotesFeature {
   }
 
   openNote(note) {
+    // A note in a folder that is locked now does not open (its folder is opened first)
+    if (this.isNoteHiddenByFolderLock(note)) {
+      this.showWelcome();
+      return;
+    }
     this.leaveCurrentNote(note);
 
     this.currentNote = note;
@@ -478,6 +483,10 @@ export class NotesFeature {
   }
 
   selectNote(note) {
+    if (this.isNoteHiddenByFolderLock(note)) {
+      this.showNotification(i18n.t('folderLock.noteInLockedFolder'), 'warning');
+      return;
+    }
     this.leaveCurrentNote(note);
 
     // Check if note is locked
