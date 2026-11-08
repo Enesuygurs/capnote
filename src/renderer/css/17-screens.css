@@ -276,8 +276,8 @@
   height: 88px;
   margin-bottom: var(--space-2);
   border-radius: var(--radius-full);
-  background: var(--accent-tint);
-  color: var(--accent-color);
+  background: color-mix(in srgb, var(--tone-lock) 14%, transparent);
+  color: var(--tone-lock);
 }
 
 .locked-note-message .locked-note-icon i {

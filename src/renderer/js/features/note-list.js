@@ -326,8 +326,8 @@ export class NoteListFeature {
       ? 'fas fa-thumbtack tone-gold'
       : note.isLocked && !note.lockedByFolder
         ? this.unlockedNotes.has(String(note.id))
-          ? 'fas fa-lock-open tone-accent'
-          : 'fas fa-lock tone-accent'
+          ? 'fas fa-lock-open tone-lock'
+          : 'fas fa-lock tone-lock'
         : note.filePath
           ? this.fileNoteIcon(note)
           : 'fas fa-file-lines';
