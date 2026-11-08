@@ -331,7 +331,6 @@
     "noteLocked": "Not kilitlendi",
     "noteUnlocked": "Not kilidi açıldı",
     "wrongPassword": "Yanlış şifre!",
-    "noteTemporarilyUnlocked": "Not geçici olarak açıldı",
     "noActiveReminders": "Aktif hatırlatma bulunmuyor",
     "confirmDelete": "notunu silmek istediğinizden emin misiniz?",
     "folderColorUpdated": "Klasör rengi güncellendi",
@@ -340,7 +339,6 @@
     "noteIsLocked": "Bu not kilitli",
     "newFolder": "Yeni Klasör",
     "maxPinnedNotes": "En fazla {count} not sabitlenebilir",
-    "unlockFromList": "İçeriği görüntülemek için not listesinden kilidi açın.",
     "addToFavorites": "Favorilere ekle",
     "removeFromFavorites": "Favorilerden çıkar",
     "addedToFavorites": "Favorilere eklendi!",
@@ -435,6 +433,13 @@
     "noMatch": "Eşleşen not yok",
     "missing": "Bu not artık yok",
     "backlinks": "Bağlı Notlar:"
+  },
+  "lockedNote": {
+    "hint": "İçeriği görmek için şifreni gir",
+    "password": "Şifre",
+    "unlock": "Kilidi aç",
+    "show": "Şifreyi göster",
+    "hide": "Şifreyi gizle"
   },
   "noteFiles": {
     "label": "Ekler:",

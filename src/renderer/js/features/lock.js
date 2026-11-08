@@ -74,40 +74,114 @@ export class LockFeature {
     return false;
   }
 
-  async unlockNoteForViewing(note) {
-    const password = await this.showPasswordModal(i18n.t('messages.noteIsLocked'));
-    const plain = password === null ? null : await this.decryptNote(note, password);
-    if (plain !== null) {
-      // Temporarily unlock the note for viewing (session only)
-      note.content = plain;
-      this.unlockedNotes.set(String(note.id), password);
+  // A locked note opens on its own page, which asks its password (no dialog). Asked for to edit
+  // it, the editor opens once the password is right. False: it is not open yet.
+  async unlockNoteForViewing(note, { thenEdit = false } = {}) {
+    this.currentNote = note;
+    this.pendingEditAfterUnlock = thenEdit ? note.id : null;
+    this.saveLastViewedNote(note.id);
+    this.showViewer();
+    this.displayNote(note);
+    this.setActiveNoteInList(note.id);
+    return false;
+  }
 
-      // Continue with note selection
-      this.currentNote = note;
-      this.originalNoteState = {
-        title: note.title,
-        content: note.content,
-        mood: note.mood,
-        weather: note.weather,
-        tags: [...(note.tags || [])],
-        formatting: { ...(note.formatting || this.getDefaultFormatting()) },
-      };
+  // The page of a locked note: its lock, what it is, the password field and the button
+  lockedNotePageHtml() {
+    const t = (key) => this.escapeHtml(i18n.t(key));
+    return `
+      <div class="empty-state locked-note-message">
+        <span class="locked-note-icon"><i class="fas fa-lock"></i></span>
+        <h3>${t('messages.noteIsLocked')}</h3>
+        <p>${t('lockedNote.hint')}</p>
+        <form class="locked-note-form" autocomplete="off">
+          <div class="locked-note-field">
+            <i class="fas fa-key"></i>
+            <input type="password" class="locked-note-input" placeholder="${t('lockedNote.password')}"
+              aria-label="${t('lockedNote.password')}" spellcheck="false" />
+            <button type="button" class="locked-note-eye" title="${t('lockedNote.show')}">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <button type="submit" class="btn-primary locked-note-submit">
+            <i class="fas fa-lock-open"></i><span>${t('lockedNote.unlock')}</span>
+          </button>
+          <p class="locked-note-error" hidden>${t('messages.wrongPassword')}</p>
+        </form>
+      </div>
+    `;
+  }
 
-      this.saveLastViewedNote(note.id);
-      this.showViewer();
-      this.displayNote(note);
-      // Its lock in the list shows open
+  wireLockedNotePage(note) {
+    const form = this.viewerText.querySelector('.locked-note-form');
+    if (!form) return;
+    const input = form.querySelector('.locked-note-input');
+    const error = form.querySelector('.locked-note-error');
+    const field = form.querySelector('.locked-note-field');
+    const eye = form.querySelector('.locked-note-eye');
+    eye.addEventListener('click', () => {
+      const shown = input.type === 'text';
+      input.type = shown ? 'password' : 'text';
+      eye.querySelector('i').className = shown ? 'fas fa-eye' : 'fas fa-eye-slash';
+      eye.title = i18n.t(shown ? 'lockedNote.show' : 'lockedNote.hide');
+      input.focus();
+    });
+    input.addEventListener('input', () => {
+      error.hidden = true;
+      field.classList.remove('is-wrong');
+    });
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const password = input.value;
+      if (!password) {
+        input.focus();
+        return;
+      }
+      form.classList.add('is-busy');
+      const opened = await this.unlockWithPassword(note, password);
+      form.classList.remove('is-busy');
+      if (opened || !form.isConnected) return;
+      // Wrong: said under the field, which shakes; the password is selected to type again
+      error.hidden = false;
+      field.classList.remove('is-wrong');
+      void field.offsetWidth;
+      field.classList.add('is-wrong');
+      input.select();
+    });
+    // The field takes the keyboard when the page shows (not while a dialog is open)
+    requestAnimationFrame(() => {
+      if (input.isConnected && !document.querySelector('.modal:not(.hidden)')) input.focus();
+    });
+  }
+
+  // Open a locked note for this session with its password. True when the password is right.
+  async unlockWithPassword(note, password) {
+    const plain = await this.decryptNote(note, password);
+    if (plain === null) return false;
+    note.content = plain;
+    this.unlockedNotes.set(String(note.id), password);
+    // Another note may have been opened while the password was checked
+    if (this.currentNote !== note) {
       this.updateNotesList();
-      this.setActiveNoteInList(this.currentNote.id);
-
-      this.showNotification(i18n.t('messages.noteTemporarilyUnlocked'), 'info');
       return true;
     }
-    if (password !== null) {
-      // null means cancelled
-      this.showNotification(i18n.t('messages.wrongPassword'), 'error');
+    this.originalNoteState = {
+      title: note.title,
+      content: note.content,
+      mood: note.mood,
+      weather: note.weather,
+      tags: [...(note.tags || [])],
+      formatting: { ...(note.formatting || this.getDefaultFormatting()) },
+    };
+    this.displayNote(note);
+    // Its lock in the list shows open
+    this.updateNotesList();
+    this.setActiveNoteInList(note.id);
+    if (this.pendingEditAfterUnlock === note.id) {
+      this.pendingEditAfterUnlock = null;
+      this.editCurrentNote();
     }
-    return false;
+    return true;
   }
 
   // Lock again the locked notes opened in this session (all, or all but the one on screen)

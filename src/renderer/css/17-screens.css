@@ -291,6 +291,106 @@
   color: var(--text-muted);
 }
 
+/* The password on the page: a field with a key and a show button, the button under it as wide */
+.locked-note-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 300px;
+  max-width: 100%;
+  margin-top: var(--space-3);
+}
+
+.locked-note-field {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-lg);
+  padding: 0 var(--space-1) 0 var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--field);
+  transition: var(--transition-fast);
+}
+
+.locked-note-field:hover {
+  background: var(--field-hover);
+}
+
+.locked-note-field:focus-within {
+  box-shadow: var(--focus-ring);
+}
+
+/* The form's icons at text size (the page's big lock rule is for the circle) */
+.locked-note-form i {
+  margin: 0;
+  font-size: var(--fs-md);
+  opacity: 1;
+}
+
+.locked-note-field > i {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+.locked-note-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: none;
+  color: var(--text-primary);
+  font-size: var(--fs-base);
+  outline: none;
+}
+
+.locked-note-input::placeholder {
+  color: var(--text-muted);
+}
+
+.locked-note-eye {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-sm);
+  height: var(--control-sm);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.locked-note-eye:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.locked-note-submit {
+  justify-content: center;
+  height: var(--control-lg);
+  gap: var(--space-2);
+}
+
+.locked-note-form.is-busy .locked-note-submit {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* A wrong password: the field in red, shaking once, and the message under the button */
+.locked-note-field.is-wrong {
+  box-shadow: 0 0 0 2px var(--error-color);
+  animation: row-shake 320ms ease;
+}
+
+.formatted-content .locked-note-message .locked-note-error {
+  color: var(--error-color);
+  font-size: var(--fs-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .locked-note-field.is-wrong {
+    animation: none;
+  }
+}
+
 /* ============ Tags ============ */
 .tag-cloud {
   display: flex;
