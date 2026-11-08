@@ -138,6 +138,16 @@
   padding: var(--space-3) 0;
 }
 
+/* A setting that changes nothing now (another one covers it): faded, its switch off limits */
+.setting-item.is-inactive label,
+.setting-item.is-inactive .toggle-switch {
+  opacity: 0.5;
+}
+
+.setting-item.is-inactive .toggle-switch {
+  pointer-events: none;
+}
+
 .setting-info {
   flex: 1;
   min-width: 0;
