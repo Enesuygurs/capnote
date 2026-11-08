@@ -63,6 +63,7 @@ export class EditorHistoryFeature {
     try {
       this.richEditor.innerHTML = snapshot.html;
       this.upgradeImagesInEditor();
+      this.prepareNoteLinks();
       this.restoreCheckboxStates();
       this.richEditor.focus();
       if (snapshot.caret !== null) this.placeCaretAtTextOffset(this.richEditor, snapshot.caret);
