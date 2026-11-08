@@ -312,13 +312,14 @@ export class NoteListFeature {
     // Long titles are shortened by CSS; the full title shows as a tooltip
     div.title = title;
 
-    // A locked note shows its lock, open while it is opened for this session
-    const icon = note.isLocked
-      ? this.unlockedNotes.has(String(note.id))
-        ? 'fas fa-lock-open tone-accent'
-        : 'fas fa-lock tone-accent'
-      : note.isPinned
-        ? 'fas fa-thumbtack tone-gold'
+    // A pinned note shows its pin (even when locked); a locked one its lock, open while it is opened
+    // for this session
+    const icon = note.isPinned
+      ? 'fas fa-thumbtack tone-gold'
+      : note.isLocked
+        ? this.unlockedNotes.has(String(note.id))
+          ? 'fas fa-lock-open tone-accent'
+          : 'fas fa-lock tone-accent'
         : note.filePath
           ? this.fileNoteIcon(note)
           : 'fas fa-file-lines';
