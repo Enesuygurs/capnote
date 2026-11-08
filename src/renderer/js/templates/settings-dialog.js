@@ -278,7 +278,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.startAtLogin">Başlangıçta çalıştır</label>
                   <small data-i18n="settings.startAtLoginDesc"
-                    >Oturum açıldığında Capnote arka planda başlasın</small
+                    >Oturum açıldığında Capnote sistem tepsisinde başlasın</small
                   >
                 </div>
                 <label class="toggle-switch">

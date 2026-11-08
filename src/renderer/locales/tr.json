@@ -145,7 +145,7 @@
     "compactList": "Kompakt liste",
     "compactListDesc": "Notlar ve klasörler daha küçük satırlarda, oklu ve çizgili bir ağaç olarak",
     "startAtLogin": "Başlangıçta çalıştır",
-    "startAtLoginDesc": "Oturum açıldığında Capnote arka planda başlasın",
+    "startAtLoginDesc": "Oturum açıldığında Capnote sistem tepsisinde başlasın",
     "closeToTray": "Pencereyi kapatınca tepsiye küçült",
     "closeToTrayDesc": "Kapat düğmesi uygulamayı sistem tepsisine küçültür",
     "systemNotifications": "Sistem bildirimleri",
