@@ -115,6 +115,18 @@ export const NOTE_DIALOGS = /* HTML */ `
 
   <!-- Notes suggested while typing "[[" in the editor -->
   <div id="noteLinkMenu" class="context-menu menu note-link-menu hidden" role="listbox"></div>
+  <div id="noteFileMenu" class="context-menu menu hidden" role="menu">
+    <button type="button" class="menu-item" data-action="open">
+      <i class="fas fa-up-right-from-square"></i><span data-i18n="noteFiles.open">Aç</span>
+    </button>
+    <button type="button" class="menu-item" data-action="save">
+      <i class="fas fa-download"></i><span data-i18n="noteFiles.saveAs">Farklı kaydet</span>
+    </button>
+    <div class="menu-divider"></div>
+    <button type="button" class="menu-item menu-item-danger" data-action="remove">
+      <i class="fas fa-trash"></i><span data-i18n="noteFiles.remove">Kaldır</span>
+    </button>
+  </div>
 
   <!-- Link dialog -->
   <div id="linkModal" class="modal hidden">

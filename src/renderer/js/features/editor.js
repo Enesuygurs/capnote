@@ -83,6 +83,7 @@ export class EditorFeature {
 
   loadNoteInEditor(note) {
     this.clearSavedSelection();
+    this.renderNoteFiles(note);
     this.noteTitle.value = note.title;
     // Load either raw markdown or HTML depending on note.isMarkdown
     if (note.isMarkdown) {
@@ -253,8 +254,9 @@ export class EditorFeature {
     const hasMood = content.mood;
     const hasWeather = content.weather;
     const hasTags = content.tags && content.tags.length > 0;
+    const hasFiles = this.noteFiles(this.currentNote).length > 0;
 
-    return !hasTitle && !hasContent && !hasMood && !hasWeather && !hasTags;
+    return !hasTitle && !hasContent && !hasMood && !hasWeather && !hasTags && !hasFiles;
   }
 
   enableSaveButton() {

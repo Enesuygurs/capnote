@@ -436,6 +436,21 @@
     "missing": "This note no longer exists",
     "backlinks": "Linked notes:"
   },
+  "noteFiles": {
+    "label": "Files:",
+    "add": "Attach file",
+    "open": "Open",
+    "saveAs": "Save as",
+    "remove": "Remove",
+    "removeConfirm": "Remove \"{name}\" from this note?",
+    "removed": "File removed",
+    "added": "{count} file(s) attached",
+    "saved": "File saved",
+    "missing": "File not found",
+    "full": "This note's files have reached the 250 MB limit",
+    "tooBig": "Over the 250 MB per note limit, not attached: {name}",
+    "failed": "Could not attach: {name}"
+  },
   "tags": {
     "subtitle": "Pick a tag to see its notes here and in the list",
     "empty": "No tags yet. Add tags to notes from the editor's side panel.",

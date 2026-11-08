@@ -41,6 +41,7 @@ export class ViewerFeature {
       this.makeFoldable(this.viewerText, note.isVersionPreview ? null : note.id);
     }
     this.renderBacklinks(note);
+    this.renderNoteFiles(note);
     // A file note is its file, not a full note: no copy, history, export or archive
     ['duplicateNoteBtn', 'historyBtn', 'exportNoteBtn', 'archiveViewBtn'].forEach((id) => {
       const btn = document.getElementById(id);

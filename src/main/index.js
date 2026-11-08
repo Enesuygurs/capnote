@@ -24,6 +24,7 @@ import { registerExportIpc } from './export-pdf.js';
 import { startUpdater, registerUpdateIpc } from './updater.js';
 import { setQuickNoteShortcut, registerQuickNoteIpc } from './quick-note.js';
 import { registerDataTransferIpc } from './data-transfer.js';
+import { registerNoteFilesIpc } from './note-files.js';
 import { filesFromArgv, openFiles, registerFileIpc, setContextMenu } from './files.js';
 
 // Development mode is 'npm run dev' from a source checkout: hot reload and DevTools
@@ -149,6 +150,7 @@ registerExportIpc();
 registerUpdateIpc();
 registerQuickNoteIpc({ settings: () => getDataStore().read('settings') });
 registerDataTransferIpc();
+registerNoteFilesIpc();
 registerFileIpc({
   settings: () => getDataStore().read('settings'),
   notes: () => getDataStore().read('notes'),

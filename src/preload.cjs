@@ -36,6 +36,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   // Copy a file the user dropped or picked (a DOM File) into the app uploads folder
   saveDroppedFile: (file) => ipcRenderer.invoke('save-dropped-file', webUtils.getPathForFile(file)),
+  // Files attached to a note: pick or drop them (copied in while they fit in `room` bytes),
+  // open one, save a copy
+  noteFiles: {
+    pick: (options) => ipcRenderer.invoke('note-files:pick', options),
+    add: (files, room) =>
+      ipcRenderer.invoke('note-files:add', {
+        paths: [...files].map((file) => webUtils.getPathForFile(file)).filter(Boolean),
+        room,
+      }),
+    open: (name) => ipcRenderer.invoke('note-files:open', name),
+    saveAs: (payload) => ipcRenderer.invoke('note-files:save-as', payload),
+  },
   // Export a note body to PDF (main process shows the save dialog)
   exportPdf: (payload) => ipcRenderer.invoke('export-pdf', payload),
   exportHtml: (payload) => ipcRenderer.invoke('export-html', payload),

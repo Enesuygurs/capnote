@@ -248,6 +248,55 @@ ol[style*='text-align: right'] li {
   color: var(--text-strong);
 }
 
+/* Files attached to a note: the same kind of bar, under the linked notes. A file is a chip with
+   its type's icon, its name (cut when long) and its size; a + at the end adds more. */
+.note-files-size {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 400;
+}
+
+.chip.note-file,
+.chip.note-file-add {
+  flex-shrink: 0;
+  gap: var(--space-1);
+  cursor: pointer;
+}
+
+.chip.note-file {
+  max-width: 260px;
+}
+
+.note-file-name {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.chip.note-file i,
+.chip.note-file small,
+.chip.note-file-add {
+  color: var(--text-muted);
+}
+
+.chip.note-file small {
+  flex-shrink: 0;
+  font-size: var(--fs-xs);
+}
+
+.chip.note-file:hover,
+.chip.note-file-add:hover {
+  background: var(--field-hover);
+  color: var(--text-strong);
+}
+
+/* Files dragged over the open note: it takes them */
+.note-viewer.files-drag-over {
+  outline: 2px dashed var(--accent-color);
+  outline-offset: -6px;
+}
+
 /* Quotes and rules are part of the content, so they keep their lines */
 .formatted-content blockquote,
 .rich-editor blockquote,

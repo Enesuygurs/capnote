@@ -206,6 +206,10 @@ export const NOTE_EDITOR = /* HTML */ `
               <span data-i18n="toolbar.image">Görsel</span>
             </button>
             <input id="browseImageInput" class="hidden" type="file" accept="image/*" />
+            <button class="format-btn" id="addNoteFileBtn" data-i18n-title="noteFiles.add">
+              <i class="fas fa-paperclip"></i>
+              <span data-i18n="noteFiles.add">Dosya ekle</span>
+            </button>
             <button class="format-btn" id="openEmojiBtn" data-i18n-title="toolbar.emoji">
               <i class="fas fa-face-smile"></i>
               <span data-i18n="toolbar.emoji">Emoji</span>
@@ -557,6 +561,16 @@ export const NOTE_EDITOR = /* HTML */ `
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Files attached to the note -->
+    <div id="editorFiles" class="backlinks note-files hidden">
+      <span class="backlinks-label">
+        <i class="fas fa-paperclip"></i>
+        <span data-i18n="noteFiles.label">Ekler:</span>
+        <small class="note-files-size"></small>
+      </span>
+      <div class="backlinks-list note-files-list"></div>
     </div>
   </div>
 `;
