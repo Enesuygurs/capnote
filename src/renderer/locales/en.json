@@ -172,7 +172,7 @@
     "relockOnQuit": "When the app quits",
     "onNoteDelete": "On note deletion",
     "onNoteDeleteDesc": "Sets what is shown after a note is deleted",
-    "openLastNote": "First note in the list",
+    "openLastNote": "Last opened note",
     "openHome": "Home page",
     "startupPage": "Page on start",
     "startupPageDesc": "Sets the page shown when Capnote opens",

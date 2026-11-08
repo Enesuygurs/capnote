@@ -73,6 +73,7 @@ export class NotesFeature {
   // was unlocked. Opening the same note again keeps it unlocked.
   leaveCurrentNote(next = null) {
     this.cancelAutoSave?.();
+    this.rememberOpenedNote(next);
     if (next !== this.currentNote && this.discardFreshEmptyNote()) return;
     if (
       this.currentNote &&
@@ -83,6 +84,36 @@ export class NotesFeature {
       this.saveNote(true);
     }
     if (next !== this.currentNote) this.autoLockCurrentNote();
+  }
+
+  // The notes opened before, the latest last: after a delete the one opened before it opens
+  rememberOpenedNote(next) {
+    const note = this.currentNote;
+    if (!note || note === next || !this.notes.includes(note)) return;
+    this.recentNoteIds = (this.recentNoteIds || []).filter((id) => id !== note.id);
+    this.recentNoteIds.push(note.id);
+    if (this.recentNoteIds.length > 50) this.recentNoteIds.shift();
+  }
+
+  // The note opened last that still exists and can be shown (not one of `except`)
+  previousOpenedNote(except = []) {
+    const skip = new Set(except);
+    const ids = this.recentNoteIds || [];
+    for (let i = ids.length - 1; i >= 0; i--) {
+      if (skip.has(ids[i])) continue;
+      const note = this.notes.find((n) => n.id === ids[i]);
+      if (note && !note.isArchived && !this.isNoteHiddenByFolderLock(note)) return note;
+    }
+    return null;
+  }
+
+  // After the open note was deleted: the note opened before it, or the home page (as set)
+  openAfterDelete(deletedIds) {
+    this.currentNote = null;
+    const previous =
+      this.settings.onNoteDelete === 'home' ? null : this.previousOpenedNote(deletedIds);
+    if (previous) this.openNote(previous);
+    else this.showWelcome();
   }
 
   openNote(note) {
@@ -599,15 +630,7 @@ export class NotesFeature {
     this.updateStats();
 
     // If the deleted note was open, follow the "on note delete" setting
-    if (this.currentNote && this.currentNote.id === note.id) {
-      this.currentNote = null;
-      if (this.settings.onNoteDelete !== 'home' && this.notes.length > 0) {
-        // The note at the top of the list as it is shown now
-        this.openNote(this.getSortedNotes(this.getFilteredNotes())[0] || this.notes[0]);
-      } else {
-        this.showWelcome();
-      }
-    }
+    if (this.currentNote && this.currentNote.id === note.id) this.openAfterDelete([note.id]);
 
     this.showNotification(i18n.t('messages.noteDeleted'), 'success');
   }
