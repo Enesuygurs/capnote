@@ -80,6 +80,17 @@
   position: relative;
 }
 
+/* The tabs and the open tab still scroll (wheel, keys, touchpad), with no scrollbar showing */
+.settings-nav,
+.settings-content {
+  scrollbar-width: none;
+}
+
+.settings-nav::-webkit-scrollbar,
+.settings-content::-webkit-scrollbar {
+  display: none;
+}
+
 .settings-close {
   position: absolute;
   top: var(--space-6);
