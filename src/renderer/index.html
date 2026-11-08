@@ -435,6 +435,18 @@
           <div class="graph-canvas" id="graphCanvas"></div>
         </div>
 
+        <!-- A locked folder: its name, and its password asked in the middle -->
+        <div id="folderLockScreen" class="screen folder-lock-screen hidden">
+          <div class="page-header">
+            <span class="page-icon" id="folderLockIcon"><i class="fas fa-folder"></i></span>
+            <div class="page-heading">
+              <h2 class="page-title" id="folderLockTitle"></h2>
+              <p class="page-subtitle" data-i18n="folderLock.subtitle">Kilitli klasör</p>
+            </div>
+          </div>
+          <div class="page-body formatted-content folder-lock-body" id="folderLockBody"></div>
+        </div>
+
         <!-- Archive: notes kept out of the list without deleting them -->
         <div id="archiveScreen" class="screen archive-screen hidden">
           <div class="page-header">

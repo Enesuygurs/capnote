@@ -88,14 +88,13 @@ export class LockFeature {
     return false;
   }
 
-  // The page of a locked note: its lock, what it is, the password field and the button
-  lockedNotePageHtml() {
+  // The page of a locked note or folder: its lock, what it is, the password field and the button
+  lockedNotePageHtml(titleKey = 'messages.noteIsLocked') {
     const t = (key) => this.escapeHtml(i18n.t(key));
     return `
       <div class="empty-state locked-note-message">
         <span class="locked-note-icon"><i class="fas fa-lock"></i></span>
-        <h3>${t('messages.noteIsLocked')}</h3>
-        <p>${t('lockedNote.hint')}</p>
+        <h3>${t(titleKey)}</h3>
         <form class="locked-note-form" autocomplete="off">
           <div class="locked-note-field">
             <i class="fas fa-key"></i>
@@ -115,7 +114,12 @@ export class LockFeature {
   }
 
   wireLockedNotePage(note) {
-    const form = this.viewerText.querySelector('.locked-note-form');
+    this.wireLockPage(this.viewerText, (password) => this.unlockWithPassword(note, password));
+  }
+
+  // The form of a lock page; unlock(password) answers whether it opened
+  wireLockPage(root, unlock) {
+    const form = root.querySelector('.locked-note-form');
     if (!form) return;
     const input = form.querySelector('.locked-note-input');
     const error = form.querySelector('.locked-note-error');
@@ -140,7 +144,7 @@ export class LockFeature {
         return;
       }
       form.classList.add('is-busy');
-      const opened = await this.unlockWithPassword(note, password);
+      const opened = await unlock(password);
       form.classList.remove('is-busy');
       if (opened || !form.isConnected) return;
       // Wrong: said under the field, which shakes; the password is selected to type again

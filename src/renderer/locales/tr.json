@@ -428,13 +428,14 @@
     "remove": "Kilidi kaldır",
     "relock": "Şimdi kilitle",
     "setPassword": "Klasör için şifre belirle",
-    "passwordToRemove": "Klasörün kilidini kaldırmak için şifre",
-    "password": "Klasör şifresi",
+    "passwordToRemove": "Kilidi Kaldır",
     "locked": "\"{name}\" kilitlendi",
     "removed": "\"{name}\" klasörünün kilidi kaldırıldı",
     "unlockFirst": "Bu klasör kilitli; önce kilidini aç",
     "noteInLockedFolder": "Bu not kilitli bir klasörde; önce klasörün kilidini aç",
-    "lockedWithFolder": "Bu not klasörünün kilidiyle korunuyor; kilidi klasörden değiştir"
+    "lockedWithFolder": "Bu not klasörünün kilidiyle korunuyor; kilidi klasörden değiştir",
+    "isLocked": "Bu klasör kilitli",
+    "subtitle": "Kilitli klasör"
   },
   "blockStyle": {
     "p": "Metin",
@@ -448,7 +449,6 @@
     "backlinks": "Bağlı Notlar:"
   },
   "lockedNote": {
-    "hint": "İçeriği görmek için şifreni gir",
     "password": "Şifre",
     "unlock": "Kilidi aç",
     "show": "Şifreyi göster",

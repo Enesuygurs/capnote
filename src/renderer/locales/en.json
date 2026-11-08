@@ -428,13 +428,14 @@
     "remove": "Remove lock",
     "relock": "Lock now",
     "setPassword": "Set a password for the folder",
-    "passwordToRemove": "Password to remove the folder's lock",
-    "password": "Folder password",
+    "passwordToRemove": "Remove Lock",
     "locked": "\"{name}\" is locked",
     "removed": "The lock of \"{name}\" is removed",
     "unlockFirst": "This folder is locked; unlock it first",
     "noteInLockedFolder": "This note is in a locked folder; unlock the folder first",
-    "lockedWithFolder": "This note is protected by its folder's lock; change it from the folder"
+    "lockedWithFolder": "This note is protected by its folder's lock; change it from the folder",
+    "isLocked": "This folder is locked",
+    "subtitle": "Locked folder"
   },
   "blockStyle": {
     "p": "Text",
@@ -448,7 +449,6 @@
     "backlinks": "Linked notes:"
   },
   "lockedNote": {
-    "hint": "Enter the password to see it",
     "password": "Password",
     "unlock": "Unlock",
     "show": "Show password",
