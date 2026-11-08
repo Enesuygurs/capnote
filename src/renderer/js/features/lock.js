@@ -171,8 +171,10 @@ export class LockFeature {
     if (plain === null) return false;
     note.content = plain;
     this.unlockedNotes.set(String(note.id), password);
-    // Its images show while it is open
+    // Its images show while it is open (and are encrypted now if they were locked before images
+    // were encrypted)
     await this.openNoteImages(note, password);
+    await this.sealNoteImages(note, password);
     // Its title back, encrypted or not as the setting says now
     const hadMeta = !!note.sealedMeta;
     await this.settleNoteMeta(note, password);
