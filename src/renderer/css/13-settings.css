@@ -217,3 +217,43 @@
 #accentBlue {
   background: #3b82f6;
 }
+
+/* ============ Dark theme ============
+   A deep window: the tab column the darkest (as the app's sidebar), the open tab a shade lighter,
+   each group a distinct card with a thin edge. The tab icons sit on deep tiles of their tone with
+   white icons (the light pastel tones of the dark theme are for text, not for tiles). */
+[data-theme='dark'] .modal-content.settings-modal {
+  background: #181818;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06),
+    var(--shadow-modal);
+}
+
+[data-theme='dark'] .settings-nav {
+  background: #121212;
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .settings-tab i {
+  background: color-mix(in srgb, var(--tone, var(--text-muted)) 82%, #000000);
+}
+
+[data-theme='dark'] .settings-tab.active,
+[data-theme='dark'] .settings-tab.active:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] .settings-group {
+  background: #202020;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+[data-theme='dark'] .settings-modal .select-small,
+[data-theme='dark'] .settings-modal select {
+  background-color: #2a2a2a;
+}
+
+[data-theme='dark'] .settings-modal .select-small:hover,
+[data-theme='dark'] .settings-modal select:hover {
+  background-color: #313131;
+}
