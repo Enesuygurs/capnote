@@ -115,10 +115,6 @@
   outline: none;
 }
 
-.note-rename-input::selection {
-  background: var(--accent-tint-strong);
-}
-
 /* A favorite: a small heart at the end of the row */
 .note-item-favorite {
   flex-shrink: 0;
