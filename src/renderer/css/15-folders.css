@@ -72,9 +72,11 @@
   margin-left: auto;
 }
 
-/* What is in a folder: indented, on a line down from the folder's arrow */
+/* What is in a folder: indented, on a line down from the folder's arrow; a small gap after the line,
+   so a hovered or open row's tint does not sit on it */
 .compact-list .folder-notes-container {
   margin-left: 12px;
+  padding-left: 4px;
   border-left: 1px solid var(--divider);
 }
 
