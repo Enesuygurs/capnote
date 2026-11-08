@@ -168,7 +168,8 @@ export const expected = {
   mdOff: { lit: false, editor: true },
   noHistory: ['created'],
   txt: noButtons,
-  plain: { md: true, sidebarBtn: true, focus: true, sidebar: true, toolbar: true },
+  // An ordinary note formats Markdown as it is typed: no preview button
+  plain: { md: false, sidebarBtn: true, focus: true, sidebar: true, toolbar: true },
   viewer: {
     file: {
       duplicateNoteBtn: false,

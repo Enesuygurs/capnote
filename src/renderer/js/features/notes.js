@@ -416,7 +416,7 @@ export class NotesFeature {
     if (!note || this.isNoteLockedForView(note) || this.isFileNote(note)) return;
 
     const duplicate = this.makeDuplicate(note);
-    await this.copyNoteImages(duplicate, note);
+    if (note.isLocked) await this.copyNoteImages(duplicate, note);
     this.notes.unshift(duplicate);
     this.saveNotes();
     this.updateNotesList();
@@ -431,7 +431,9 @@ export class NotesFeature {
   async duplicateNotes(notes) {
     const sources = notes.filter((n) => !this.isNoteLockedForView(n) && !this.isFileNote(n));
     const copies = sources.map((n) => this.makeDuplicate(n));
-    await Promise.all(copies.map((copy, i) => this.copyNoteImages(copy, sources[i])));
+    if (sources.some((n) => n.isLocked)) {
+      await Promise.all(copies.map((copy, i) => this.copyNoteImages(copy, sources[i])));
+    }
     if (!copies.length) return;
     this.notes.unshift(...copies);
     this.saveNotes();

@@ -27,11 +27,9 @@ export async function run() {
   const a = window.app;
   const raw = JSON.stringify((await window.electronAPI.storage.load()).data.notes);
   const n = a.notes[0];
-  setTimeout(() => {
-    a.passwordInput.value = 'old';
-    a.handlePasswordConfirm();
-  }, 30);
-  const ok = await a.unlockNoteForViewing(n);
+  // The password is typed on the note's page
+  await a.unlockNoteForViewing(n);
+  const ok = await a.unlockWithPassword(n, 'old');
   return {
     leaksPlain: raw.includes('legacy secret'),
     hasPassword: raw.includes('"password"'),

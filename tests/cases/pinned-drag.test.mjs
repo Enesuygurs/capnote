@@ -1,5 +1,5 @@
-// Pinned notes and folders cannot be dragged: the drag is cancelled and the row shakes, without
-// replaying its appear animation (which blinked the row out)
+// Pinned notes and folders are dragged among the pinned ones (their own order), without replaying
+// their appear animation (which blinked the row out); a selection drag leaves pinned notes behind
 
 export async function run() {
   const a = window.app;
@@ -50,9 +50,9 @@ export async function run() {
 }
 
 export const expected = {
-  pinnedNote: { refused: true, shakes: true, appearsAgain: false },
+  pinnedNote: { refused: false, shakes: false, appearsAgain: false },
   looseNote: { refused: false, shakes: false, appearsAgain: false },
-  pinnedFolder: { refused: true, shakes: true, appearsAgain: false },
+  pinnedFolder: { refused: false, shakes: false, appearsAgain: false },
   looseFolder: { refused: false, shakes: false, appearsAgain: false },
   draggedOnlyLoose: true,
 };
