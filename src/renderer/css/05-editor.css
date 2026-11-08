@@ -30,11 +30,15 @@
   display: none;
 }
 
-/* Of the view buttons a file note keeps only the Markdown preview, and only for a Markdown file:
-   no sidebar, no focus mode */
+/* A file note has no sidebar and no focus mode */
 .note-editor.is-file-note #toggleSidebar,
-.note-editor.is-file-note #focusModeBtn,
-.note-editor.is-file-note:not([data-file-kind='md']) #toggleMarkdownBtn {
+.note-editor.is-file-note #focusModeBtn {
+  display: none;
+}
+
+/* The Markdown preview is only for notes written in Markdown (a .md file); an ordinary note
+   formats headings, rules and lists as they are typed */
+.note-editor:not(.is-markdown-note) #toggleMarkdownBtn {
   display: none;
 }
 

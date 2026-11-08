@@ -151,7 +151,7 @@ export class NotesFeature {
     this.setActiveNoteInList(this.currentNote.id);
 
     this.showEditor();
-    this.noteEditor?.classList.remove('is-file-note');
+    this.noteEditor?.classList.remove('is-file-note', 'is-markdown-note');
     if (this.noteEditor) this.noteEditor.dataset.fileKind = '';
     this.applyEditorSidebar(this.currentNote);
     this.clearEditor();
