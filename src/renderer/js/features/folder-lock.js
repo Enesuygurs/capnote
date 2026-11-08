@@ -180,7 +180,10 @@ export class FolderLockFeature {
     await Promise.all(
       opened
         .filter(({ plain }) => plain !== null)
-        .map(({ note }) => this.openNoteImages(note, password))
+        .map(async ({ note }) => {
+          await this.openNoteImages(note, password);
+          await this.sealNoteImages(note, password);
+        })
     );
     // Titles and the folder's name back, encrypted or not as the setting says now
     await Promise.all(
