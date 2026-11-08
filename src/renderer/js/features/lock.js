@@ -23,6 +23,8 @@ export class LockFeature {
     const request = {};
     this.sealRequests.set(note, request);
     const encrypted = await encrypt(note.content || '', password);
+    // Its title and details too, when titles of locked notes are hidden
+    await this.sealNoteMeta(note, password);
     if (this.sealRequests.get(note) !== request) return;
     note.encrypted = encrypted;
     this.saveNotes();
@@ -57,6 +59,7 @@ export class LockFeature {
     ) {
       this.unlockedNotes.delete(String(this.currentNote.id));
       this.currentNote.content = '';
+      this.blankNoteMeta(this.currentNote);
       this.updateNotesList();
       // Its text must not stay visible: show it locked
       if (this.isEditorOpen() || this.isViewerOpen()) {
@@ -166,6 +169,10 @@ export class LockFeature {
     if (plain === null) return false;
     note.content = plain;
     this.unlockedNotes.set(String(note.id), password);
+    // Its title back, encrypted or not as the setting says now
+    const hadMeta = !!note.sealedMeta;
+    await this.settleNoteMeta(note, password);
+    if (hadMeta !== !!note.sealedMeta) this.saveNotes();
     // Another note may have been opened while the password was checked
     if (this.currentNote !== note) {
       this.updateNotesList();
@@ -199,7 +206,10 @@ export class LockFeature {
       // Notes of an opened locked folder lock with the folder
       if (note.lockedByFolder) return;
       this.unlockedNotes.delete(id);
-      if (note.isLocked) note.content = '';
+      if (note.isLocked) {
+        note.content = '';
+        this.blankNoteMeta(note);
+      }
       changed = true;
     });
     if (changed) this.updateNotesList();
@@ -229,9 +239,11 @@ export class LockFeature {
         return;
       }
 
+      await this.openNoteMeta(note, password);
       note.content = plain;
       note.isLocked = false;
       delete note.encrypted;
+      delete note.sealedMeta;
       this.unlockedNotes.delete(String(note.id));
       this.showNotification(i18n.t('messages.noteUnlocked'), 'success');
     } else {
@@ -247,11 +259,13 @@ export class LockFeature {
 
       note.attachments = this.extractUploadNames(note.content);
       note.encrypted = await encrypt(note.content || '', password);
+      await this.sealNoteMeta(note, password);
       note.content = '';
       note.isLocked = true;
       // Its earlier versions are plain text: they go
       note.history = (note.history || []).map(({ version, ...entry }) => entry);
       this.unlockedNotes.delete(String(note.id));
+      this.blankNoteMeta(note);
       this.showNotification(i18n.t('messages.noteLocked'), 'success');
     }
 

@@ -11,6 +11,8 @@ import { i18n } from '../i18n.js';
 export class NotesFeature {
   // A note's title as shown: an untitled note is named in the current language
   displayTitle(note) {
+    // A locked note whose title is hidden shows "Kilitli not"
+    if (this.isNoteTitleHidden?.(note)) return i18n.t('lockedNote.hiddenTitle');
     return (note && note.title) || i18n.t('messages.untitledNote');
   }
 

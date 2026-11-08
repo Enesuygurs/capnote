@@ -49,11 +49,11 @@ export class StorageFeature {
   serializeNotes() {
     return this.notes.map((note) =>
       note.isLocked
-        ? {
+        ? this.serializeNoteMeta({
             ...note,
             content: '',
             history: (note.history || []).map(({ version, ...entry }) => entry),
-          }
+          })
         : note
     );
   }
@@ -154,7 +154,7 @@ export class StorageFeature {
   }
 
   async saveFolders() {
-    await this.persist('folders', this.folders, 'messages.foldersSaveError');
+    await this.persist('folders', this.serializeFolders(), 'messages.foldersSaveError');
     // A folder moved into or out of a locked one: its notes take the lock
     if (this.syncFolderLocks?.()) await this.saveNotes();
   }
@@ -190,7 +190,11 @@ export class StorageFeature {
   }
 
   async saveReminders() {
-    await this.persist('reminders', this.reminders, 'messages.remindersSaveError');
+    await this.persist(
+      'reminders',
+      this.withoutHiddenTitles(this.reminders),
+      'messages.remindersSaveError'
+    );
   }
 
   async loadNotifications() {
@@ -212,7 +216,7 @@ export class StorageFeature {
   }
 
   async saveNotifications() {
-    await this.persist('notifications', this.notifications);
+    await this.persist('notifications', this.withoutHiddenTitles(this.notifications));
   }
 
   async loadTodos() {

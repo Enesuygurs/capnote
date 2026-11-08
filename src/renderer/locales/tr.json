@@ -170,6 +170,8 @@
     "relockOnDesc": "Açılan kilidin ne zaman yeniden kapanacağını belirler",
     "relockOnLeave": "Kapatılınca",
     "relockOnQuit": "Çıkış yapılınca",
+    "hideLockedTitles": "Kilitli notlarda başlıkları gizle",
+    "hideLockedTitlesDesc": "Başlıkları, etiketleri ve klasör adlarını da şifreler",
     "onNoteDelete": "Not silindiğinde",
     "onNoteDeleteDesc": "Bir not silindikten sonra gösterilecek sayfayı belirler",
     "openLastNote": "Son açılan not",
@@ -436,7 +438,8 @@
     "noteInLockedFolder": "Bu not kilitli bir klasörde. Önce klasörün kilidini açın.",
     "lockedWithFolder": "Bu not, bulunduğu klasörün kilidiyle korunuyor. Kilidi klasörün menüsünden yönetebilirsiniz.",
     "isLocked": "Bu klasör kilitli",
-    "subtitle": "Kilitli klasör"
+    "subtitle": "Kilitli klasör",
+    "hiddenName": "Kilitli klasör"
   },
   "blockStyle": {
     "p": "Metin",
@@ -453,7 +456,8 @@
     "password": "Şifre",
     "unlock": "Kilidi aç",
     "show": "Şifreyi göster",
-    "hide": "Şifreyi gizle"
+    "hide": "Şifreyi gizle",
+    "hiddenTitle": "Kilitli not"
   },
   "noteFiles": {
     "label": "Ekler:",

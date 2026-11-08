@@ -79,6 +79,20 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
+                  <label data-i18n="settings.hideLockedTitles"
+                    >Kilitli notlarda başlıkları gizle</label
+                  >
+                  <small data-i18n="settings.hideLockedTitlesDesc"
+                    >Başlıkları, etiketleri ve klasör adlarını da şifreler</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="hideLockedTitlesToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
                   <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
                   <small data-i18n="settings.onNoteDeleteDesc"
                     >Bir not silindikten sonra gösterilecek sayfayı belirler</small

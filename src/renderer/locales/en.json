@@ -170,6 +170,8 @@
     "relockOnDesc": "Sets when notes and folders lock again",
     "relockOnLeave": "When closed",
     "relockOnQuit": "When the app quits",
+    "hideLockedTitles": "Hide titles of locked notes",
+    "hideLockedTitlesDesc": "Encrypts titles, tags and folder names too",
     "onNoteDelete": "On note deletion",
     "onNoteDeleteDesc": "Sets what is shown after a note is deleted",
     "openLastNote": "Last opened note",
@@ -436,7 +438,8 @@
     "noteInLockedFolder": "This note is in a locked folder. Unlock the folder first.",
     "lockedWithFolder": "This note is protected by its folder's lock. Manage the lock from the folder's menu.",
     "isLocked": "This folder is locked",
-    "subtitle": "Locked folder"
+    "subtitle": "Locked folder",
+    "hiddenName": "Locked folder"
   },
   "blockStyle": {
     "p": "Text",
@@ -453,7 +456,8 @@
     "password": "Password",
     "unlock": "Unlock",
     "show": "Show password",
-    "hide": "Hide password"
+    "hide": "Hide password",
+    "hiddenTitle": "Locked note"
   },
   "noteFiles": {
     "label": "Files:",

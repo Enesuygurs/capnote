@@ -228,6 +228,8 @@ export class NoteListFeature {
   // "#word" in the search must match one of the note's tags (a tag starting with the word, so "#wo"
   // finds "work") or a "#word" written in its text; the rest of the search is matched as usual
   noteMatchesSearch(note, searchTerm) {
+    // A locked note with a hidden title is not found by its title or tags
+    if (this.isNoteTitleHidden?.(note)) return false;
     const words = searchTerm.split(/\s+/).filter(Boolean);
     const hashtags = words.filter((w) => w.length > 1 && w.startsWith('#'));
     const rest = words.filter((w) => !w.startsWith('#')).join(' ');

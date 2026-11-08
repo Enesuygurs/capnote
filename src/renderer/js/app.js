@@ -31,6 +31,7 @@ import { EditorToolsFeature } from './features/editor-tools.js';
 import { NoteLinksFeature } from './features/note-links.js';
 import { NoteFilesFeature } from './features/note-files.js';
 import { FolderLockFeature } from './features/folder-lock.js';
+import { LockMetaFeature } from './features/lock-meta.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
@@ -282,6 +283,7 @@ export class CapnoteApp {
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
     this.startupPageSelect = document.getElementById('startupPageSelect');
     this.relockOnSelect = document.getElementById('relockOnSelect');
+    this.hideLockedTitlesToggle = document.getElementById('hideLockedTitlesToggle');
     this.autoSaveToggle = document.getElementById('autoSaveToggle');
     this.autoFormatToggle = document.getElementById('autoFormatToggle');
 
@@ -720,6 +722,7 @@ applyFeatures(CapnoteApp, [
   NoteLinksFeature,
   NoteFilesFeature,
   FolderLockFeature,
+  LockMetaFeature,
   FoldingFeature,
   TagsFeature,
   ArchiveFeature,
