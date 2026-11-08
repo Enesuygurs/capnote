@@ -99,6 +99,7 @@ export class EditorFeature {
       this.richEditor.querySelectorAll('.code-copy-btn').forEach((btn) => btn.remove());
       // ensure any images in loaded content are wrapped and wired for resizing
       this.upgradeImagesInEditor();
+      this.prepareNoteLinks();
       if (this.markdownEditor) this.markdownEditor.value = '';
     }
     this.setEditorFormatting(note.formatting || this.getDefaultFormatting());

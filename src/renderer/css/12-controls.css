@@ -356,8 +356,15 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
   max-width: 320px;
 }
 
+/* A long title is cut with an ellipsis; the icon keeps its width, so every icon lines up */
+.note-link-menu .menu-item i {
+  flex-shrink: 0;
+}
+
 .note-link-menu .menu-item span {
+  min-width: 0;
   overflow: hidden;
+  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
