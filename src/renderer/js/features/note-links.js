@@ -340,9 +340,19 @@ export class NoteLinksFeature {
       chip.className = 'chip backlink';
       chip.innerHTML = '<i class="fas fa-file-lines"></i><span></span>';
       chip.querySelector('span').textContent = this.displayTitle(source);
-      chip.addEventListener('click', () => this.selectNote(source));
+      chip.addEventListener('click', () => this.openLinkedNoteById(source.id));
       list.appendChild(chip);
     });
+  }
+
+  // A linked note by its id, if it still exists (a strip drawn earlier may hold a deleted one)
+  openLinkedNoteById(id) {
+    const note = this.notes.find((n) => n.id === id);
+    if (note) this.selectNote(note);
+    else {
+      this.showNotification(i18n.t('noteLinks.missing'), 'warning');
+      this.renderBacklinks(this.currentNote);
+    }
   }
 
   openLinkedNote(link) {

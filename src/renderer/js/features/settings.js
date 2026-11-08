@@ -62,6 +62,7 @@ export class SettingsFeature {
   showSettingsModal() {
     this.showModal(this.settingsModal);
     this.renderAutoBackups();
+    this.updateIconSettingsState();
   }
 
   loadSettings() {
@@ -95,6 +96,7 @@ export class SettingsFeature {
     }
     if (this.compactListToggle) this.compactListToggle.checked = settings.compactList;
     document.body.classList.toggle('compact-list', !!settings.compactList);
+    this.updateIconSettingsState();
 
     if (this.toggleNativeNotifications)
       this.toggleNativeNotifications.checked = settings.nativeNotifications;
@@ -129,6 +131,23 @@ export class SettingsFeature {
 
     // Keep the main process in sync with the stored close-to-tray preference
     window.electronAPI?.setCloseToTray?.(settings.closeToTray);
+  }
+
+  // The compact list shows no icons: the folder color and note icon settings change nothing
+  // there, so they rest (greyed out, saying why) while it is on
+  updateIconSettingsState() {
+    const compact = !!this.settings?.compactList;
+    [this.syncFolderAccentToggle, this.hideNoteIconsToggle].forEach((toggle) => {
+      if (!toggle) return;
+      toggle.disabled = compact;
+      const item = toggle.closest('.setting-item');
+      item?.classList.toggle('is-inactive', compact);
+      const desc = item?.querySelector('.setting-info small');
+      if (!desc) return;
+      if (!desc.dataset.i18nOwn) desc.dataset.i18nOwn = desc.dataset.i18n;
+      desc.dataset.i18n = compact ? 'settings.noIconsInCompact' : desc.dataset.i18nOwn;
+      desc.textContent = i18n.t(desc.dataset.i18n);
+    });
   }
 
   setupSettingsEventListeners() {
@@ -488,6 +507,7 @@ export class SettingsFeature {
     this.compactListToggle?.addEventListener('change', (e) => {
       this.setSetting('compactList', e.currentTarget.checked);
       document.body.classList.toggle('compact-list', e.currentTarget.checked);
+      this.updateIconSettingsState();
     });
 
     // Native/system notifications toggle

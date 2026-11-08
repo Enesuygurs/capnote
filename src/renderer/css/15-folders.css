@@ -94,11 +94,21 @@
 }
 
 /* What is in a folder: indented, on a line down from the folder's arrow; a small gap after the line,
-   so a hovered or open row's tint does not sit on it */
+   so a hovered or open row's tint does not sit on it. Its rows start closer to the line, their
+   arrows moved in with them, so names on one level still line up. */
 .compact-list .folder-notes-container {
   margin-left: 12px;
-  padding-left: 4px;
+  padding-left: 3px;
   border-left: 1px solid var(--divider);
+}
+
+.compact-list .folder-notes-container .note-item,
+.compact-list .folder-notes-container .folder-item {
+  padding-left: 16px;
+}
+
+.compact-list .folder-notes-container .folder-item .nav-expand {
+  left: 0;
 }
 
 /* ============ Drag and drop (transient feedback) ============ */

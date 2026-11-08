@@ -144,6 +144,7 @@
     "hideNoteIconsDesc": "No note icons in the list, but the lock and pin",
     "compactList": "Compact list",
     "compactListDesc": "Notes and folders in smaller rows, as a tree with arrows and lines",
+    "noIconsInCompact": "The compact list shows no icons anyway",
     "startAtLogin": "Start at login",
     "startAtLoginDesc": "Start Capnote in the tray when you log in",
     "closeToTray": "Minimize to tray on close",

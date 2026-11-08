@@ -144,6 +144,7 @@
     "hideNoteIconsDesc": "Kilit ve sabitleme dışındaki not simgeleri görünmesin",
     "compactList": "Kompakt liste",
     "compactListDesc": "Notlar ve klasörler daha küçük satırlarda, oklu ve çizgili bir ağaç olarak",
+    "noIconsInCompact": "Kompakt listede simgeler zaten gösterilmiyor",
     "startAtLogin": "Başlangıçta çalıştır",
     "startAtLoginDesc": "Oturum açıldığında Capnote sistem tepsisinde başlasın",
     "closeToTray": "Pencereyi kapatınca tepsiye küçült",

@@ -48,6 +48,10 @@ export class NoteListFeature {
 
     // Also update folder notes for custom folders
     this.updateFolderNotes();
+    // The open note's linked notes follow the list (a deleted or moved note leaves its strip)
+    if (this.currentNote && this.isViewerOpen?.() && !this.currentNote.isVersionPreview) {
+      this.renderBacklinks?.(this.currentNote);
+    }
   }
 
   // Nothing in the list: no notes yet (a way to write the first one), or none matching the

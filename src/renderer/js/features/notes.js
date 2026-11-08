@@ -483,6 +483,11 @@ export class NotesFeature {
   }
 
   selectNote(note) {
+    // A note that is no longer stored (deleted) does not open
+    if (!note || !this.notes.includes(note)) {
+      this.showNotification(i18n.t('noteLinks.missing'), 'warning');
+      return;
+    }
     if (this.isNoteHiddenByFolderLock(note)) {
       this.showNotification(i18n.t('folderLock.noteInLockedFolder'), 'warning');
       return;
