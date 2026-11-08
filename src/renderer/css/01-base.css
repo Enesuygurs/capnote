@@ -112,6 +112,8 @@ body.resizing .modal {
   --tone-amber: #d97706;
   /* Pins: the yellow of the default accent */
   --tone-gold: #f59e0b;
+  /* Locks keep one color, whatever the accent is */
+  --tone-lock: #f59e0b;
   --tone-green: #16a34a;
   --tone-teal: #0d9488;
   --tone-sky: #0284c7;
@@ -337,6 +339,11 @@ body {
 /* The accent the user chose (the year in review's icon) */
 .tone-accent {
   --tone: var(--accent-color);
+}
+
+/* Locks: one fixed color, not the accent */
+.tone-lock {
+  --tone: var(--tone-lock);
 }
 
 /* ============ Titlebar ============
