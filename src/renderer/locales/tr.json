@@ -172,7 +172,7 @@
     "relockOnQuit": "Çıkış yapılınca",
     "onNoteDelete": "Not silindiğinde",
     "onNoteDeleteDesc": "Bir not silindikten sonra gösterilecek sayfayı belirler",
-    "openLastNote": "Listedeki ilk not",
+    "openLastNote": "Son açılan not",
     "openHome": "Giriş sayfası",
     "startupPage": "Açılışta gösterilecek sayfa",
     "startupPageDesc": "Capnote açıldığında gösterilecek sayfayı belirler",

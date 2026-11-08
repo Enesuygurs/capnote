@@ -187,12 +187,7 @@ export class SelectionFeature {
     this.updateFoldersList();
     this.updateStats();
 
-    if (this.currentNote && noteIds.has(this.currentNote.id)) {
-      this.currentNote = null;
-      const next = this.getSortedNotes(this.getFilteredNotes())[0] || this.notes[0];
-      if (this.settings.onNoteDelete !== 'home' && next) this.openNote(next);
-      else this.showWelcome();
-    }
+    if (this.currentNote && noteIds.has(this.currentNote.id)) this.openAfterDelete([...noteIds]);
     if (kept.length) {
       this.showNotification(i18n.t('selection.lockedKept', { count: kept.length }), 'warning');
     }

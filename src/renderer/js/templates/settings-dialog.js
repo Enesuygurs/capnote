@@ -85,9 +85,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   >
                 </div>
                 <select id="onNoteDeleteSelect" class="select-small">
-                  <option value="lastNote" data-i18n="settings.openLastNote">
-                    Listedeki ilk not
-                  </option>
+                  <option value="lastNote" data-i18n="settings.openLastNote">Son açılan not</option>
                   <option value="home" data-i18n="settings.openHome">Giriş sayfası</option>
                 </select>
               </div>
