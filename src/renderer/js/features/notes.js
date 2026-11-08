@@ -292,7 +292,7 @@ export class NotesFeature {
     if (!this.currentNote) return;
     // Editing a locked note requires the password, same as viewing it
     if (this.isNoteLockedForView(this.currentNote)) {
-      const unlocked = await this.unlockNoteForViewing(this.currentNote);
+      const unlocked = await this.unlockNoteForViewing(this.currentNote, { thenEdit: true });
       if (!unlocked) return;
     }
 

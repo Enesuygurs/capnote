@@ -331,7 +331,6 @@
     "noteLocked": "Note locked",
     "noteUnlocked": "Note unlocked",
     "wrongPassword": "Wrong password!",
-    "noteTemporarilyUnlocked": "Note temporarily unlocked",
     "noActiveReminders": "No active reminders",
     "confirmDelete": "are you sure you want to delete the note?",
     "folderColorUpdated": "Folder color updated",
@@ -340,7 +339,6 @@
     "noteIsLocked": "This note is locked",
     "newFolder": "New Folder",
     "maxPinnedNotes": "Maximum {count} notes can be pinned",
-    "unlockFromList": "Unlock from the note list to view content.",
     "addToFavorites": "Add to favorites",
     "removeFromFavorites": "Remove from favorites",
     "addedToFavorites": "Added to favorites!",
@@ -435,6 +433,13 @@
     "noMatch": "No matching note",
     "missing": "This note no longer exists",
     "backlinks": "Linked notes:"
+  },
+  "lockedNote": {
+    "hint": "Enter the password to see it",
+    "password": "Password",
+    "unlock": "Unlock",
+    "show": "Show password",
+    "hide": "Hide password"
   },
   "noteFiles": {
     "label": "Files:",

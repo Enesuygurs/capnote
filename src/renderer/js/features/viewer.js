@@ -11,13 +11,9 @@ export class ViewerFeature {
 
     // Check if note is locked and not temporarily unlocked
     if (this.isNoteLockedForView(note)) {
-      this.viewerText.innerHTML = `
-                <div class="empty-state locked-note-message">
-                    <span class="locked-note-icon"><i class="fas fa-lock"></i></span>
-                    <h3>${i18n.t('messages.noteIsLocked')}</h3>
-                    <p>${i18n.t('messages.unlockFromList')}</p>
-                </div>
-            `;
+      // The password is asked on the note's own page, under its lock
+      this.viewerText.innerHTML = this.lockedNotePageHtml();
+      this.wireLockedNotePage(note);
     } else if (note.fileKind && this.fileNoteViewerHtml(note) !== null) {
       // A text or HTML file shows as the file would
       this.viewerText.innerHTML = this.fileNoteViewerHtml(note);
