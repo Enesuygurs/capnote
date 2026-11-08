@@ -294,6 +294,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Selected text anywhere (notes, fields, lists) on the accent color */
+::selection {
+  background: var(--accent-color);
+  color: var(--text-on-accent);
+}
+
 /* Tone classes: set the --tone an element (or its icon rules) colors with */
 .tone-rose {
   --tone: var(--tone-rose);
