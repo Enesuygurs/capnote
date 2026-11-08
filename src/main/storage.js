@@ -1,7 +1,8 @@
 /**
  * App data storage: one JSON file per collection inside userData/data.
  * Writes are atomic (temp file + rename), the previous version is kept as .bak,
- * and a copy of all files is taken once per day (the last 7 days are kept).
+ * and a copy of all files is taken once per day (the last 7 days are kept). A locked note is
+ * kept encrypted in those copies too.
  * A daily copy can be restored; the data from before the restore is kept in
  * backups/before-restore, so a restore can be undone the same way.
  */
@@ -69,6 +70,52 @@ class JsonStore {
     fs.writeFileSync(tmp, JSON.stringify(value), 'utf8');
     if (fs.existsSync(file)) fs.copyFileSync(file, `${file}.bak`);
     fs.renameSync(tmp, file);
+    if (key === 'notes') this.sealOlderCopies(value);
+  }
+
+  // A locked note must not stay readable in an older copy (the daily backups, the .bak of the
+  // last write): there such a note is put in as it is stored now, encrypted. Runs when the locked
+  // notes change, not on every save.
+  sealOlderCopies(notes) {
+    const locked = new Map(
+      (Array.isArray(notes) ? notes : []).filter((n) => n && n.isLocked).map((n) => [n.id, n])
+    );
+    const signature = [...locked.values()]
+      .map((n) => `${n.id}:${n.encrypted?.iv || ''}:${n.sealedMeta?.iv || ''}`)
+      .sort()
+      .join('|');
+    if (signature === this.sealedSignature) return;
+    this.sealedSignature = signature;
+    if (!locked.size) return;
+    const readable = (copy, note) =>
+      !copy.isLocked ||
+      !!String(copy.content || '').trim() ||
+      (copy.history || []).some((entry) => entry && entry.version) ||
+      (!!note.sealedMeta && (!!copy.title || (copy.tags || []).length > 0));
+    const files = [
+      `${this.fileFor('notes')}.bak`,
+      ...this.backupIds().map((id) => path.join(this.backupDir, id, 'notes.json')),
+    ];
+    files.forEach((file) => {
+      try {
+        if (!fs.existsSync(file)) return;
+        const copies = this.readFile(file);
+        if (!Array.isArray(copies)) return;
+        let changed = false;
+        const sealed = copies.map((copy) => {
+          const note = copy && locked.get(copy.id);
+          if (!note || !readable(copy, note)) return copy;
+          changed = true;
+          return note;
+        });
+        if (!changed) return;
+        const tmp = `${file}.tmp`;
+        fs.writeFileSync(tmp, JSON.stringify(sealed), 'utf8');
+        fs.renameSync(tmp, file);
+      } catch (err) {
+        console.warn('Sealing an older copy failed:', file, err);
+      }
+    });
   }
 
   // Copy all collections into backups/YYYY-MM-DD once a day and prune old days
