@@ -7,6 +7,49 @@ import { ICONS_DIR } from './paths.js';
 
 const usesLoginItems = process.platform === 'darwin' || process.platform === 'win32';
 
+// Started by the login item: the window stays hidden, Capnote waits in the tray. macOS has its own
+// "open as hidden"; Windows gets this argument on the login item.
+const HIDDEN_ARG = '--hidden';
+const loginArgs = process.platform === 'win32' ? [HIDDEN_ARG] : [];
+
+function startedAtLogin() {
+  if (process.argv.includes(HIDDEN_ARG)) return true;
+  try {
+    return process.platform === 'darwin' && !!app.getLoginItemSettings().wasOpenedAsHidden;
+  } catch {
+    return false;
+  }
+}
+
+// On, with or without the argument (login items set before it had none)
+function loginItemOn() {
+  return (
+    !!app.getLoginItemSettings({ args: loginArgs }).openAtLogin ||
+    !!app.getLoginItemSettings().openAtLogin
+  );
+}
+
+function setLoginItem(openAtLogin) {
+  app.setLoginItemSettings({ openAtLogin, openAsHidden: true, args: loginArgs });
+  // Turning it off also clears an older entry without the argument
+  if (!openAtLogin) app.setLoginItemSettings({ openAtLogin: false });
+}
+
+// A login item from before the argument: written again with it, so it starts in the tray too
+function refreshLoginItem() {
+  if (process.platform !== 'win32') return;
+  try {
+    if (
+      !app.getLoginItemSettings({ args: loginArgs }).openAtLogin &&
+      app.getLoginItemSettings().openAtLogin
+    ) {
+      setLoginItem(true);
+    }
+  } catch {
+    // Leave it as it is
+  }
+}
+
 function linuxAutostartEntry() {
   return path.join(app.getPath('home'), '.config', 'autostart', 'capnote.desktop');
 }
@@ -53,7 +96,7 @@ function writeLinuxAutostartEntry(entry) {
 function registerAutostartIpc() {
   ipcMain.handle('get-start-at-login', () => {
     try {
-      if (usesLoginItems) return { enabled: !!app.getLoginItemSettings().openAtLogin };
+      if (usesLoginItems) return { enabled: loginItemOn() };
       return { enabled: fs.existsSync(linuxAutostartEntry()) };
     } catch {
       return { enabled: false };
@@ -64,7 +107,7 @@ function registerAutostartIpc() {
     try {
       const openAtLogin = !!enabled;
       if (usesLoginItems) {
-        app.setLoginItemSettings({ openAtLogin, openAsHidden: true });
+        setLoginItem(openAtLogin);
         return { ok: true };
       }
       const entry = linuxAutostartEntry();
@@ -77,4 +120,4 @@ function registerAutostartIpc() {
   });
 }
 
-export { registerAutostartIpc };
+export { registerAutostartIpc, startedAtLogin, refreshLoginItem };

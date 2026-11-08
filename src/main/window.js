@@ -110,7 +110,7 @@ const MIN_SIZE = { width: 1200, height: 970 };
 // Window background before the page paints: the app's light and dark --chrome colors
 const BACKGROUND = { light: '#f1f2f4', dark: '#121212' };
 
-function createMainWindow({ darkMode = false, devTools = false } = {}) {
+function createMainWindow({ darkMode = false, devTools = false, hidden = false } = {}) {
   // Determine icon path (prefer .ico on Windows if available)
   let iconPath = path.join(ICONS_DIR, 'capnote-512.png');
   if (process.platform === 'win32') {
@@ -155,6 +155,11 @@ function createMainWindow({ darkMode = false, devTools = false } = {}) {
   mainWindow.loadFile(path.join(RENDERER_DIR, 'index.html'));
 
   mainWindow.once('ready-to-show', () => {
+    // Hidden (started at login): it stays in the tray; maximized again when it is first shown
+    if (hidden) {
+      if (state && state.maximized) mainWindow.once('show', () => mainWindow.maximize());
+      return;
+    }
     if (state && state.maximized) mainWindow.maximize();
     mainWindow.show();
   });

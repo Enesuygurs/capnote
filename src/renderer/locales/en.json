@@ -145,7 +145,7 @@
     "compactList": "Compact list",
     "compactListDesc": "Notes and folders in smaller rows, as a tree with arrows and lines",
     "startAtLogin": "Start at login",
-    "startAtLoginDesc": "Launch Capnote in background when you log in",
+    "startAtLoginDesc": "Start Capnote in the tray when you log in",
     "closeToTray": "Minimize to tray on close",
     "closeToTrayDesc": "Keep app running in system tray when close button is pressed",
     "systemNotifications": "System notifications",

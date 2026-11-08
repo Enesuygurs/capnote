@@ -19,7 +19,7 @@ import {
 } from './window.js';
 import { createTray, registerTrayIpc } from './tray.js';
 import { registerNotificationIpc } from './notifications.js';
-import { registerAutostartIpc } from './autostart.js';
+import { registerAutostartIpc, startedAtLogin, refreshLoginItem } from './autostart.js';
 import { registerExportIpc } from './export-pdf.js';
 import { startUpdater, registerUpdateIpc } from './updater.js';
 import { setQuickNoteShortcut, registerQuickNoteIpc } from './quick-note.js';
@@ -158,8 +158,14 @@ app.whenReady().then(() => {
   if (!isPrimaryInstance) return;
   handleUploadProtocol();
   setCloseToTray(readCloseToTrayPreference());
-  createMainWindow({ darkMode: readDarkModePreference(), devTools: isDev });
+  // Started with Windows: only the tray icon, the window opens from there
+  createMainWindow({
+    darkMode: readDarkModePreference(),
+    devTools: isDev,
+    hidden: startedAtLogin(),
+  });
   createTray();
+  refreshLoginItem();
   setQuickNoteShortcut(readQuickNotePreference());
   // A file Capnote was started on, and the right-click menu entry (installed app, Windows)
   openFiles(filesFromArgv(process.argv));
