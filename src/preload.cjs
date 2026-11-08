@@ -38,6 +38,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveDroppedFile: (file) => ipcRenderer.invoke('save-dropped-file', webUtils.getPathForFile(file)),
   // Files attached to a note: pick or drop them (copied in while they fit in `room` bytes),
   // open one, save a copy
+  // The images of locked notes: encrypt them, show them while the note is open, decrypt them back
+  lockedImages: {
+    seal: (names, password) => ipcRenderer.invoke('locked-images:seal', { names, password }),
+    unseal: (names, password) => ipcRenderer.invoke('locked-images:unseal', { names, password }),
+    open: (names, password) => ipcRenderer.invoke('locked-images:open', { names, password }),
+    close: (names) => ipcRenderer.invoke('locked-images:close', names),
+    copy: (names) => ipcRenderer.invoke('locked-images:copy', names),
+  },
   noteFiles: {
     pick: (options) => ipcRenderer.invoke('note-files:pick', options),
     add: (files, room) =>

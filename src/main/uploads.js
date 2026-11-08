@@ -7,6 +7,7 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import { ipcMain, protocol, net } from 'electron';
 import { uploadsDir } from './paths.js';
+import { lockedImageResponse, LOCKED_IMAGE_SUFFIX } from './locked-images.js';
 
 // Largest file accepted into the uploads folder
 const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
@@ -45,10 +46,12 @@ function safeUploadName(name) {
 
 // Serves capnote-file URLs; must run once the app is ready
 function handleUploadProtocol() {
-  protocol.handle('capnote-file', (request) => {
+  protocol.handle('capnote-file', async (request) => {
     const filePath = uploadPathFromUrl(request.url);
-    if (!filePath || !fs.existsSync(filePath)) return new Response('Not found', { status: 404 });
-    return net.fetch(pathToFileURL(filePath).href);
+    if (filePath && fs.existsSync(filePath)) return net.fetch(pathToFileURL(filePath).href);
+    // An image of a locked note: decrypted in memory while the note is open
+    const locked = filePath && (await lockedImageResponse(path.basename(filePath)));
+    return locked || new Response('Not found', { status: 404 });
   });
 }
 
@@ -82,6 +85,12 @@ function registerUploadIpc({ keepAlso = () => [] } = {}) {
       const safe = safeUploadName(name);
       const file = safe && path.join(uploadsDir(), safe);
       if (file && fs.existsSync(file)) files[safe] = fs.readFileSync(file).toString('base64');
+      // An image of a locked note goes into the backup as it is, encrypted
+      else if (file && fs.existsSync(file + LOCKED_IMAGE_SUFFIX)) {
+        files[safe + LOCKED_IMAGE_SUFFIX] = fs
+          .readFileSync(file + LOCKED_IMAGE_SUFFIX)
+          .toString('base64');
+      }
     });
     return files;
   });
@@ -112,7 +121,8 @@ function registerUploadIpc({ keepAlso = () => [] } = {}) {
     if (!fs.existsSync(dir)) return 0;
     let removed = 0;
     fs.readdirSync(dir).forEach((name) => {
-      if (keep.has(name)) return;
+      // An encrypted image of a locked note counts as the image it was
+      if (keep.has(name) || keep.has(name.replace(LOCKED_IMAGE_SUFFIX, ''))) return;
       const file = path.join(dir, name);
       const stat = fs.statSync(file);
       if (stat.isFile() && Date.now() - stat.mtimeMs > ORPHAN_MIN_AGE_MS) {

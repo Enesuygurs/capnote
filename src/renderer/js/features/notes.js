@@ -411,11 +411,12 @@ export class NotesFeature {
   }
 
   // Duplicate a note (the open one by default) and open the copy
-  duplicateNote(note = this.currentNote) {
+  async duplicateNote(note = this.currentNote) {
     // A file note is its file: it is not copied
     if (!note || this.isNoteLockedForView(note) || this.isFileNote(note)) return;
 
     const duplicate = this.makeDuplicate(note);
+    await this.copyNoteImages(duplicate, note);
     this.notes.unshift(duplicate);
     this.saveNotes();
     this.updateNotesList();
@@ -427,10 +428,10 @@ export class NotesFeature {
   }
 
   // Duplicate several notes; locked ones are skipped (they cannot be read without a password)
-  duplicateNotes(notes) {
-    const copies = notes
-      .filter((n) => !this.isNoteLockedForView(n) && !this.isFileNote(n))
-      .map((n) => this.makeDuplicate(n));
+  async duplicateNotes(notes) {
+    const sources = notes.filter((n) => !this.isNoteLockedForView(n) && !this.isFileNote(n));
+    const copies = sources.map((n) => this.makeDuplicate(n));
+    await Promise.all(copies.map((copy, i) => this.copyNoteImages(copy, sources[i])));
     if (!copies.length) return;
     this.notes.unshift(...copies);
     this.saveNotes();
@@ -463,6 +464,10 @@ export class NotesFeature {
       isArchived: false, // A copy shows in the list, even of an archived note
     };
     delete duplicate.encrypted;
+    // Not locked: none of the original's lock goes with it (a copy in a locked folder is
+    // encrypted again by that folder)
+    delete duplicate.lockedByFolder;
+    delete duplicate.sealedMeta;
     delete duplicate.order;
     // A copy of a file note is a note of its own, not linked to the file
     delete duplicate.filePath;

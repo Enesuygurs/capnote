@@ -23,8 +23,9 @@ export class LockFeature {
     const request = {};
     this.sealRequests.set(note, request);
     const encrypted = await encrypt(note.content || '', password);
-    // Its title and details too, when titles of locked notes are hidden
+    // Its title and details too, when titles of locked notes are hidden, and new images
     await this.sealNoteMeta(note, password);
+    await this.sealNoteImages(note, password);
     if (this.sealRequests.get(note) !== request) return;
     note.encrypted = encrypted;
     this.saveNotes();
@@ -60,6 +61,7 @@ export class LockFeature {
       this.unlockedNotes.delete(String(this.currentNote.id));
       this.currentNote.content = '';
       this.blankNoteMeta(this.currentNote);
+      this.closeNoteImages(this.currentNote);
       this.updateNotesList();
       // Its text must not stay visible: show it locked
       if (this.isEditorOpen() || this.isViewerOpen()) {
@@ -169,6 +171,8 @@ export class LockFeature {
     if (plain === null) return false;
     note.content = plain;
     this.unlockedNotes.set(String(note.id), password);
+    // Its images show while it is open
+    await this.openNoteImages(note, password);
     // Its title back, encrypted or not as the setting says now
     const hadMeta = !!note.sealedMeta;
     await this.settleNoteMeta(note, password);
@@ -209,6 +213,7 @@ export class LockFeature {
       if (note.isLocked) {
         note.content = '';
         this.blankNoteMeta(note);
+        this.closeNoteImages(note);
       }
       changed = true;
     });
@@ -240,6 +245,7 @@ export class LockFeature {
       }
 
       await this.openNoteMeta(note, password);
+      await this.unsealNoteImages(note, password);
       note.content = plain;
       note.isLocked = false;
       delete note.encrypted;
@@ -260,6 +266,8 @@ export class LockFeature {
       note.attachments = this.extractUploadNames(note.content);
       note.encrypted = await encrypt(note.content || '', password);
       await this.sealNoteMeta(note, password);
+      await this.sealNoteImages(note, password);
+      this.closeNoteImages(note);
       note.content = '';
       note.isLocked = true;
       // Its earlier versions are plain text: they go
