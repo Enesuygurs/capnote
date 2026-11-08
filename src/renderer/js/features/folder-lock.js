@@ -1,7 +1,7 @@
 // Locked folders. A folder is locked with a password: the notes in it (and in the folders inside
 // it) are encrypted with that password, as a locked note is, and the folder shows closed in the
-// list with a lock, its notes out of every list, search and view. Its password is typed under the
-// folder in the list; that opens it for this session. It locks again when it is closed (or when
+// list with a lock, its notes out of every list, search and view. A click on it opens its page,
+// which asks its password; that opens it for this session. It locks again when it is closed (or when
 // the app closes, as the setting for locked notes says), or from its menu.
 //
 // A note in a locked folder keeps lockedByFolder: the id of the folder whose password encrypted
@@ -225,50 +225,33 @@ export class FolderLockFeature {
       this.currentNote = null;
       this.showWelcome();
     }
+    // The page of a folder whose lock was taken off is left
+    const onPage = this.folderById(this.lockedFolderOnPage);
+    if (this.currentScreen === 'folderLock' && !(onPage && this.isFolderLockedForView(onPage.id))) {
+      this.lockedFolderOnPage = null;
+      this.showWelcome();
+    }
   }
 
-  // The password row under a locked folder in the list
-  toggleFolderUnlockRow(folder, header) {
-    const container = header.parentElement;
-    const open = container.querySelector(':scope > .folder-unlock');
-    if (open) {
-      open.remove();
-      return;
-    }
-    document.querySelectorAll('.folder-unlock').forEach((row) => row.remove());
-    const row = document.createElement('form');
-    row.className = 'folder-unlock';
-    row.autocomplete = 'off';
-    row.innerHTML = `
-      <i class="fas fa-key"></i>
-      <input type="password" class="folder-unlock-input" spellcheck="false" />
-      <button type="submit" class="folder-unlock-btn"><i class="fas fa-arrow-right"></i></button>
-    `;
-    const input = row.querySelector('input');
-    input.placeholder = i18n.t('folderLock.password');
-    input.setAttribute('aria-label', i18n.t('folderLock.password'));
-    row.querySelector('button').title = i18n.t('lockedNote.unlock');
-    header.after(row);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        row.remove();
+  // A locked folder's page: its name and color at the top, its password in the middle
+  showFolderLockPage(folder) {
+    if (!this.folderLockScreen) return;
+    // The open note's edits are kept as when another note opens
+    this.leaveCurrentNote?.();
+    this.lockedFolderOnPage = folder.id;
+    this.folderLockTitle.textContent = folder.name;
+    // Its icon in the folder's color, on a soft tint of it
+    this.folderLockIcon.style.setProperty('--tone', this.safeColor(folder.color));
+    this.folderLockBody.innerHTML = this.lockedNotePageHtml('folderLock.isLocked');
+    this.showScreen('folderLock');
+    this.wireLockPage(this.folderLockBody, async (password) => {
+      const opened = await this.unlockFolder(folder, password);
+      if (opened && this.currentScreen === 'folderLock') {
+        this.lockedFolderOnPage = null;
+        this.showWelcome();
       }
+      return opened;
     });
-    input.addEventListener('input', () => row.classList.remove('is-wrong'));
-    row.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      if (!input.value) return;
-      row.classList.add('is-busy');
-      const ok = await this.unlockFolder(folder, input.value);
-      row.classList.remove('is-busy');
-      if (ok || !row.isConnected) return;
-      row.classList.remove('is-wrong');
-      void row.offsetWidth;
-      row.classList.add('is-wrong');
-      input.select();
-    });
-    input.focus();
   }
 
   // The folder menu's lock items: lock / remove the lock, and lock now for an opened one

@@ -38,65 +38,6 @@
   display: none;
 }
 
-/* Its password, typed on a row under it */
-.folder-unlock {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: var(--control-sm);
-  margin: 2px 0 var(--space-1) var(--space-6);
-  padding: 0 2px 0 var(--space-2);
-  border-radius: var(--radius-md);
-  background: var(--field);
-  box-shadow: var(--focus-ring);
-}
-
-.folder-unlock > i {
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-}
-
-.folder-unlock-input {
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  background: none;
-  color: var(--text-primary);
-  font-size: var(--fs-md);
-  outline: none;
-}
-
-.folder-unlock-input::placeholder {
-  color: var(--text-muted);
-}
-
-.folder-unlock-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-sm);
-  background: var(--accent-color);
-  color: var(--text-on-accent);
-  font-size: var(--fs-xs);
-  cursor: pointer;
-}
-
-.folder-unlock.is-busy .folder-unlock-btn {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-.folder-unlock.is-wrong {
-  box-shadow: 0 0 0 2px var(--error-color);
-  animation: row-shake 320ms ease;
-}
-
-.compact-list .folder-unlock {
-  margin-left: 12px;
-}
-
 .nav-expand {
   width: 16px;
   flex-shrink: 0;

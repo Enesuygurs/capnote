@@ -247,6 +247,13 @@
   display: flex;
 }
 
+/* A locked folder's page: the same lock message, in the middle of the page */
+.folder-lock-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #viewerText:has(> .locked-note-message) {
   flex: 1;
   display: flex;

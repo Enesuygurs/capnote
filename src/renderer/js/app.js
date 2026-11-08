@@ -315,6 +315,10 @@ export class CapnoteApp {
     this.tagsScreen = document.getElementById('tagsScreen');
     this.tagsNavBtn = document.getElementById('tagsNavBtn');
     this.archiveScreen = document.getElementById('archiveScreen');
+    this.folderLockScreen = document.getElementById('folderLockScreen');
+    this.folderLockTitle = document.getElementById('folderLockTitle');
+    this.folderLockIcon = document.getElementById('folderLockIcon');
+    this.folderLockBody = document.getElementById('folderLockBody');
     this.graphScreen = document.getElementById('graphScreen');
     this.moodTotal = document.getElementById('moodTotal');
     this.weatherTotal = document.getElementById('weatherTotal');

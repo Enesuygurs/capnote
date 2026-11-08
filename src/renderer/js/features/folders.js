@@ -444,7 +444,7 @@ export class FoldersFeature {
       }
       this.clearSelection();
       if (this.isFolderLockedForView(folder.id)) {
-        this.toggleFolderUnlockRow(folder, folderHeader);
+        this.showFolderLockPage(folder);
         return;
       }
       // An opened locked folder locks again when it is closed (unless set to lock on quit)

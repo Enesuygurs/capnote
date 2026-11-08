@@ -23,6 +23,7 @@ export class ScreensFeature {
       summary: this.summaryScreen,
       graph: this.graphScreen,
       todos: this.todosScreen,
+      folderLock: this.folderLockScreen,
     };
     Object.entries(screens).forEach(([key, el]) => el?.classList.toggle('hidden', key !== name));
     if (name !== 'editor' && this.isFocusMode()) this.setFocusMode(false);
