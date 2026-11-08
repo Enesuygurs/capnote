@@ -436,6 +436,21 @@
     "missing": "Bu not artık yok",
     "backlinks": "Bağlı Notlar:"
   },
+  "noteFiles": {
+    "label": "Ekler:",
+    "add": "Dosya ekle",
+    "open": "Aç",
+    "saveAs": "Farklı kaydet",
+    "remove": "Kaldır",
+    "removeConfirm": "\"{name}\" bu nottan kaldırılsın mı?",
+    "removed": "Dosya kaldırıldı",
+    "added": "{count} dosya eklendi",
+    "saved": "Dosya kaydedildi",
+    "missing": "Dosya bulunamadı",
+    "full": "Bu notun ekleri 250 MB sınırına ulaştı",
+    "tooBig": "Not başına 250 MB sınırını aşıyor, eklenmedi: {name}",
+    "failed": "Eklenemedi: {name}"
+  },
   "tags": {
     "subtitle": "Bir etiket seçin, notları listede ve burada görün",
     "empty": "Henüz etiket yok. Notlara editörün sağ panelinden etiket ekleyebilirsiniz.",

@@ -535,8 +535,18 @@ export class EditorInsertFeature {
       this.richEditor.classList.remove('drag-over');
       const dt = e.dataTransfer;
       if (!dt || !dt.files || dt.files.length === 0) return;
-      for (let i = 0; i < dt.files.length; i++) {
-        const f = dt.files[i];
+      const isImage = (f) =>
+        (f.type || '').toLowerCase().startsWith('image/') ||
+        /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(f.name);
+      const all = [...dt.files];
+      // Other files are attached to the note (its "Ekler"), images go into the text
+      const others = all.filter((f) => !isImage(f));
+      if (others.length && this.canAttachFiles(this.currentNote)) {
+        this.dropNoteFiles(this.currentNote, others);
+      }
+      const images = this.canAttachFiles(this.currentNote) ? all.filter(isImage) : all;
+      for (let i = 0; i < images.length; i++) {
+        const f = images[i];
         try {
           // ask main process to copy file into app uploads and return a file:// URL
           const saved = await window.electronAPI.saveDroppedFile(f);

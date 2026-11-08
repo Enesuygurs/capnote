@@ -148,6 +148,7 @@ export class NotesFeature {
     this.updateNotesList();
     this.updateFoldersList();
     this.updateStats();
+    this.renderNoteFiles(this.currentNote);
     this.setActiveNoteInList(this.currentNote.id);
 
     this.showEditor();
@@ -195,7 +196,8 @@ export class NotesFeature {
       !body.querySelector('img, table, hr, input, pre, iframe') &&
       !note.mood &&
       !note.weather &&
-      !(note.tags || []).length
+      !(note.tags || []).length &&
+      !this.noteFiles(note).length
     );
   }
 
@@ -413,6 +415,7 @@ export class NotesFeature {
       tags: [...(note.tags || [])],
       formatting: { ...(note.formatting || this.getDefaultFormatting()) },
       attachments: [...(note.attachments || [])],
+      attachedFiles: this.noteFiles(note).map((file) => ({ ...file })),
       history: [{ type: 'created', ts: now }],
       createdAt: now,
       updatedAt: now,

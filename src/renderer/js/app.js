@@ -29,6 +29,7 @@ import { EditorBlocksFeature } from './features/editor-blocks.js';
 import { EditorHistoryFeature } from './features/editor-history.js';
 import { EditorToolsFeature } from './features/editor-tools.js';
 import { NoteLinksFeature } from './features/note-links.js';
+import { NoteFilesFeature } from './features/note-files.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
@@ -332,6 +333,10 @@ export class CapnoteApp {
     this.tagNotesLabel = document.getElementById('tagNotesLabel');
     this.tagNotesList = document.getElementById('tagNotesList');
     this.viewerBacklinks = document.getElementById('viewerBacklinks');
+    this.viewerFiles = document.getElementById('viewerFiles');
+    this.editorFiles = document.getElementById('editorFiles');
+    this.noteFileMenu = document.getElementById('noteFileMenu');
+    this.addNoteFileBtn = document.getElementById('addNoteFileBtn');
     this.linkTextInput = document.getElementById('linkTextInput');
     this.linkUrlInput = document.getElementById('linkUrlInput');
     this.applyLinkBtn = document.getElementById('applyLinkBtn');
@@ -433,6 +438,7 @@ export class CapnoteApp {
     this.setupEditorHistory();
     this.setupEditorTools();
     this.setupNoteLinks();
+    this.setupNoteFiles();
     this.setupTags();
     this.setupArchive();
     this.setupDashboard();
@@ -701,6 +707,7 @@ applyFeatures(CapnoteApp, [
   EditorHistoryFeature,
   EditorToolsFeature,
   NoteLinksFeature,
+  NoteFilesFeature,
   FoldingFeature,
   TagsFeature,
   ArchiveFeature,

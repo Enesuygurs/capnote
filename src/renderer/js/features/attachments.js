@@ -37,6 +37,8 @@ export class AttachmentsFeature {
     if (this.notes.some((note) => note.isLocked && !Array.isArray(note.attachments))) return;
     const keep = new Set();
     this.notes.forEach((note) => (note.attachments || []).forEach((name) => keep.add(name)));
+    // The files attached to notes (their "Ekler")
+    this.notes.forEach((note) => this.noteFiles(note).forEach((file) => keep.add(file.name)));
     // Files of earlier versions stay too, so a restored version gets its images back
     this.notes.forEach((note) =>
       (note.history || []).forEach((h) => {

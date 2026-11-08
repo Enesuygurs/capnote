@@ -169,6 +169,8 @@ class JsonStore {
       for (const note of notes) {
         if (note && note.isLocked && !Array.isArray(note.attachments)) return null;
         (note?.attachments || []).forEach((name) => names.add(name));
+        // Files attached to the note (its "Ekler")
+        (note?.attachedFiles || []).forEach((file) => file?.name && names.add(file.name));
       }
     }
     return [...names];
