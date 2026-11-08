@@ -51,7 +51,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.startupPage">Açılışta gösterilecek sayfa</label>
                   <small data-i18n="settings.startupPageDesc"
-                    >Capnote açıldığında ilk ne görünsün</small
+                    >Capnote açıldığında gösterilecek sayfayı belirler</small
                   >
                 </div>
                 <select id="startupPageSelect" class="select-small">
@@ -67,35 +67,35 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
-                  <label data-i18n="settings.relockOn">Kilitli notlar yeniden kilitlensin</label>
+                  <label data-i18n="settings.relockOn">Yeniden kilitleme</label>
                   <small data-i18n="settings.relockOnDesc"
-                    >Açılan kilitli not ne zaman kilitlensin</small
+                    >Açılan kilidin ne zaman yeniden kapanacağını belirler</small
                   >
                 </div>
                 <select id="relockOnSelect" class="select-small">
-                  <option value="leave" data-i18n="settings.relockOnLeave">Not kapanınca</option>
-                  <option value="quit" data-i18n="settings.relockOnQuit">Uygulama kapanınca</option>
+                  <option value="leave" data-i18n="settings.relockOnLeave">Kapatılınca</option>
+                  <option value="quit" data-i18n="settings.relockOnQuit">Çıkış yapılınca</option>
                 </select>
               </div>
               <div class="setting-item">
                 <div class="setting-info">
                   <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
                   <small data-i18n="settings.onNoteDeleteDesc"
-                    >Not silindiğinde ne olacağını seç</small
+                    >Bir not silindikten sonra gösterilecek sayfayı belirler</small
                   >
                 </div>
                 <select id="onNoteDeleteSelect" class="select-small">
                   <option value="lastNote" data-i18n="settings.openLastNote">
-                    Son kalan notu aç
+                    Listedeki ilk not
                   </option>
-                  <option value="home" data-i18n="settings.openHome">Ana sayfa bölümünü aç</option>
+                  <option value="home" data-i18n="settings.openHome">Giriş sayfası</option>
                 </select>
               </div>
               <div class="setting-item">
                 <div class="setting-info">
                   <label data-i18n="settings.autoSave">Otomatik Kaydetme</label>
                   <small data-i18n="settings.autoSaveDesc"
-                    >Notları yazarken otomatik olarak kaydet</small
+                    >Notları yazarken otomatik olarak kaydeder</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -124,7 +124,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
               <div class="setting-item">
                 <div class="setting-info">
                   <label data-i18n="settings.language">Dil</label>
-                  <small data-i18n="settings.languageDesc">Uygulama dilini değiştir</small>
+                  <small data-i18n="settings.languageDesc">Arayüz dilini değiştirir</small>
                 </div>
                 <select id="languageSelect" class="select-small">
                   <option value="tr">Türkçe</option>
@@ -143,7 +143,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
               <div class="setting-item">
                 <div class="setting-info">
                   <label data-i18n="settings.darkMode">Karanlık Mod</label>
-                  <small data-i18n="settings.darkModeDesc">Gözlerinizi yormasın</small>
+                  <small data-i18n="settings.darkModeDesc">Arayüzü koyu renklerle gösterir</small>
                 </div>
                 <label class="toggle-switch">
                   <input type="checkbox" id="darkModeToggle" />
@@ -153,7 +153,9 @@ export const SETTINGS_DIALOG = /* HTML */ `
               <div class="setting-item">
                 <div class="setting-info">
                   <label data-i18n="settings.accentColor">Vurgu Rengi</label>
-                  <small data-i18n="settings.accentColorDesc">Vurgu renklerini değiştirin</small>
+                  <small data-i18n="settings.accentColorDesc"
+                    >Arayüzün vurgu rengini belirler</small
+                  >
                 </div>
                 <div class="theme-swatches">
                   <button
@@ -199,7 +201,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                     >Vurgu rengini klasör rengiyle eşitle</label
                   >
                   <small data-i18n="settings.syncFolderAccentDesc"
-                    >Tüm klasör ikon renklerini vurgu rengine ayarla</small
+                    >Tüm klasör simgelerini vurgu renginde gösterir</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -211,7 +213,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.hideNoteIcons">Not simgelerini gizle</label>
                   <small data-i18n="settings.hideNoteIconsDesc"
-                    >Kilit ve sabitleme dışındaki not simgeleri görünmesin</small
+                    >Kilit ve sabitleme dışındaki not simgelerini gizler</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -223,8 +225,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.compactList">Kompakt liste</label>
                   <small data-i18n="settings.compactListDesc"
-                    >Notlar ve klasörler daha küçük satırlarda, oklu ve çizgili bir ağaç
-                    olarak</small
+                    >Notları ve klasörleri daha sık, ağaç görünümünde listeler</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -245,7 +246,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.systemNotifications">Sistem bildirimleri</label>
                   <small data-i18n="settings.systemNotificationsDesc"
-                    >Hatırlatmalar için işletim sistemi bildirimlerini göster</small
+                    >Hatırlatmalar için işletim sistemi bildirimlerini gösterir</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -257,7 +258,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.testNotification">Test bildirimi gönder</label>
                   <small data-i18n="settings.testNotificationDesc"
-                    >Hemen bir test bildirimi göster</small
+                    >Örnek bir bildirim gösterir</small
                   >
                 </div>
                 <button type="button" id="testNativeNotifBtn" class="btn btn-tinted btn-small">
@@ -278,7 +279,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.startAtLogin">Başlangıçta çalıştır</label>
                   <small data-i18n="settings.startAtLoginDesc"
-                    >Oturum açıldığında Capnote sistem tepsisinde başlasın</small
+                    >Capnote oturum açıldığında sistem tepsisinde başlar</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -290,7 +291,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.quickNoteShortcut">Hızlı not kısayolu</label>
                   <small data-i18n="settings.quickNoteShortcutDesc"
-                    >Ctrl+Alt+N ile her yerden küçük bir not penceresi açar</small
+                    >Ctrl+Alt+N ile her yerden hızlı not penceresini açar</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -314,7 +315,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.fileContextMenu">Sağ tık menüsünde Capnote</label>
                   <small data-i18n="settings.fileContextMenuDesc"
-                    >.md, .txt ve .html dosyalarında “Capnote ile düzenle”</small
+                    >.md, .txt ve .html dosyalarına “Capnote ile düzenle” seçeneği ekler</small
                   >
                 </div>
                 <label class="toggle-switch">
@@ -326,8 +327,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.hardwareAcceleration">Donanım hızlandırma</label>
                   <small data-i18n="settings.hardwareAccelerationDesc"
-                    >Pencereyi ekran kartıyla çizer. Kapatmak bellek kullanımını biraz
-                    azaltır.</small
+                    >Pencereyi ekran kartıyla çizer; kapatıldığında daha az bellek kullanır</small
                   >
                 </div>
                 <label class="toggle-switch">
