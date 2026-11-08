@@ -76,7 +76,8 @@ export class FolderLockFeature {
       const target = note.folderId ? this.nearestLockedFolder(note.folderId) : null;
       if (!target) {
         if (note.lockedByFolder) {
-          // Out of every locked folder: plain again
+          // Out of every locked folder: plain again, its images too
+          this.unsealNoteImages(note, this.unlockedNotes.get(String(note.id)));
           note.isLocked = false;
           delete note.encrypted;
           delete note.lockedByFolder;
@@ -109,6 +110,7 @@ export class FolderLockFeature {
     note.lockedByFolder = folder.id;
     note.history = (note.history || []).map(({ version, ...entry }) => entry);
     this.unlockedNotes.set(String(note.id), password);
+    await this.sealNoteImages(note, password);
     await this.saveNotes();
     // Written to while it was encrypted: encrypted again with the latest text
     if ((note.content || '') !== content) this.resealNote(note);
@@ -135,6 +137,9 @@ export class FolderLockFeature {
       notes.map(async (note) => {
         const encrypted = await encrypt(note.content || '', password);
         await this.sealNoteMeta(note, password);
+        note.attachments = this.extractUploadNames(note.content);
+        await this.sealNoteImages(note, password);
+        this.closeNoteImages(note);
         return { note, encrypted };
       })
     );
@@ -172,6 +177,11 @@ export class FolderLockFeature {
       note.content = plain;
       this.unlockedNotes.set(String(note.id), password);
     });
+    await Promise.all(
+      opened
+        .filter(({ plain }) => plain !== null)
+        .map(({ note }) => this.openNoteImages(note, password))
+    );
     // Titles and the folder's name back, encrypted or not as the setting says now
     await Promise.all(
       opened
@@ -206,6 +216,7 @@ export class FolderLockFeature {
       this.unlockedNotes.delete(String(note.id));
       note.content = '';
       this.blankNoteMeta(note);
+      this.closeNoteImages(note);
     });
     folder.expanded = false;
     this.saveFolders();
@@ -229,6 +240,7 @@ export class FolderLockFeature {
     // Its notes take the lock of a locked folder above it, or none (only those that opened)
     this.notes.forEach((note) => {
       if (note.lockedByFolder !== folder.id || !this.unlockedNotes.has(String(note.id))) return;
+      this.unsealNoteImages(note, this.unlockedNotes.get(String(note.id)));
       note.isLocked = false;
       delete note.encrypted;
       delete note.lockedByFolder;

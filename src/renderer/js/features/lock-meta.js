@@ -135,6 +135,70 @@ export class LockMetaFeature {
     );
   }
 
+  // ============ Images of locked notes ============
+  // A locked note's images are encrypted with its password (in the main process); while it is open
+  // they show, decrypted in memory. An image another note shows too stays as it is.
+  lockedImageApi() {
+    return window.electronAPI?.lockedImages || null;
+  }
+
+  noteImageNames(note) {
+    return (note?.attachments || []).filter((name) =>
+      /\.(png|jpe?g|gif|webp|bmp|svg|avif|ico)$/i.test(name)
+    );
+  }
+
+  ownImageNames(note) {
+    const shared = new Set();
+    this.notes.forEach((other) => {
+      if (other === note) return;
+      (other.attachments || []).forEach((name) => shared.add(name));
+      (other.history || []).forEach((entry) => {
+        if (entry.version)
+          this.extractUploadNames(entry.version.content).forEach((n) => shared.add(n));
+      });
+    });
+    return this.noteImageNames(note).filter((name) => !shared.has(name));
+  }
+
+  async sealNoteImages(note, password) {
+    const api = this.lockedImageApi();
+    if (!api || !password) return;
+    try {
+      await api.seal(this.ownImageNames(note), password);
+    } catch (err) {
+      console.warn('Encrypting images failed:', err);
+    }
+  }
+
+  async openNoteImages(note, password) {
+    const api = this.lockedImageApi();
+    if (api && password) await api.open(this.noteImageNames(note), password).catch(() => {});
+  }
+
+  closeNoteImages(note) {
+    const api = this.lockedImageApi();
+    if (api) api.close(this.noteImageNames(note)).catch(() => {});
+  }
+
+  async unsealNoteImages(note, password) {
+    const api = this.lockedImageApi();
+    if (api && password) await api.unseal(this.noteImageNames(note), password).catch(() => {});
+  }
+
+  // A copy of an open locked note gets plain copies of its images (its own files)
+  async copyNoteImages(copy, source) {
+    const api = this.lockedImageApi();
+    if (!api || !source.isLocked) return;
+    const map = await api.copy(this.noteImageNames(source)).catch(() => ({}));
+    Object.entries(map || {}).forEach(([from, to]) => {
+      const a = `capnote-file://upload/${encodeURIComponent(from)}`;
+      const b = `capnote-file://upload/${encodeURIComponent(to)}`;
+      copy.content = (copy.content || '').split(a).join(b);
+    });
+    copy.attachments = this.extractUploadNames(copy.content);
+  }
+
   // The setting changed: the notes and folders open now follow it at once
   async applyHiddenTitlesSetting() {
     const jobs = [];
