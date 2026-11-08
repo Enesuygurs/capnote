@@ -80,6 +80,7 @@ export class FolderLockFeature {
           note.isLocked = false;
           delete note.encrypted;
           delete note.lockedByFolder;
+          delete note.sealedMeta;
           this.unlockedNotes.delete(String(note.id));
           changed = true;
         }
@@ -97,6 +98,7 @@ export class FolderLockFeature {
     this.folderSeals.set(note, folder.id);
     const content = note.content || '';
     const encrypted = await encrypt(content, password);
+    await this.sealNoteMeta(note, password);
     this.folderSeals.delete(note);
     // Moved again meanwhile, or the folder locked or changed: the next sync decides
     if (this.nearestLockedFolder(note.folderId)?.id !== folder.id) return;
@@ -130,9 +132,15 @@ export class FolderLockFeature {
       return nearest === folder && !this.isNoteLockedForView(note);
     });
     const sealed = await Promise.all(
-      notes.map(async (note) => ({ note, encrypted: await encrypt(note.content || '', password) }))
+      notes.map(async (note) => {
+        const encrypted = await encrypt(note.content || '', password);
+        await this.sealNoteMeta(note, password);
+        return { note, encrypted };
+      })
     );
+    const name = folder.name;
     folder.lockCheck = await encrypt(LOCK_CHECK, password);
+    await this.sealFolderName(folder, password);
     folder.isLocked = true;
     sealed.forEach(({ note, encrypted }) => {
       note.attachments = this.extractUploadNames(note.content);
@@ -142,12 +150,14 @@ export class FolderLockFeature {
       note.history = (note.history || []).map(({ version, ...entry }) => entry);
       note.content = '';
       this.unlockedNotes.delete(String(note.id));
+      this.blankNoteMeta(note);
     });
+    this.blankFolderName(folder);
     folder.expanded = false;
     await this.saveFolders();
     await this.saveNotes();
     this.afterFolderLockChange();
-    this.showNotification(i18n.t('folderLock.locked', { name: folder.name }), 'success');
+    this.showNotification(i18n.t('folderLock.locked', { name }), 'success');
   }
 
   // Open a locked folder for this session. True when the password is right.
@@ -162,8 +172,17 @@ export class FolderLockFeature {
       note.content = plain;
       this.unlockedNotes.set(String(note.id), password);
     });
+    // Titles and the folder's name back, encrypted or not as the setting says now
+    await Promise.all(
+      opened
+        .filter(({ plain }) => plain !== null)
+        .map(({ note }) => this.settleNoteMeta(note, password))
+    );
+    await this.openFolderName(folder, password);
+    await this.sealFolderName(folder, password);
     this.unlockedFolders.set(folder.id, password);
     folder.expanded = true;
+    await this.saveNotes();
     await this.saveFolders();
     this.updateNotesList();
     this.updateFoldersList();
@@ -178,11 +197,15 @@ export class FolderLockFeature {
     if (this.isEditorOpen() && this.currentNote?.folderId && inside.has(this.currentNote.folderId))
       this.saveNote(true);
     const closing = new Set([...inside].filter((id) => this.unlockedFolders.has(id)));
-    closing.forEach((id) => this.unlockedFolders.delete(id));
+    closing.forEach((id) => {
+      this.unlockedFolders.delete(id);
+      this.blankFolderName(this.folderById(id));
+    });
     this.notes.forEach((note) => {
       if (!note.lockedByFolder || !closing.has(note.lockedByFolder)) return;
       this.unlockedNotes.delete(String(note.id));
       note.content = '';
+      this.blankNoteMeta(note);
     });
     folder.expanded = false;
     this.saveFolders();
@@ -202,12 +225,14 @@ export class FolderLockFeature {
     this.unlockedFolders.delete(folder.id);
     folder.isLocked = false;
     delete folder.lockCheck;
+    delete folder.sealedName;
     // Its notes take the lock of a locked folder above it, or none (only those that opened)
     this.notes.forEach((note) => {
       if (note.lockedByFolder !== folder.id || !this.unlockedNotes.has(String(note.id))) return;
       note.isLocked = false;
       delete note.encrypted;
       delete note.lockedByFolder;
+      delete note.sealedMeta;
       this.unlockedNotes.delete(String(note.id));
     });
     await this.saveFolders();
@@ -239,7 +264,7 @@ export class FolderLockFeature {
     // The open note's edits are kept as when another note opens
     this.leaveCurrentNote?.();
     this.lockedFolderOnPage = folder.id;
-    this.folderLockTitle.textContent = folder.name;
+    this.folderLockTitle.textContent = this.folderDisplayName(folder);
     // Its icon in the folder's color, on a soft tint of it
     this.folderLockIcon.style.setProperty('--tone', this.safeColor(folder.color));
     this.folderLockBody.innerHTML = this.lockedNotePageHtml('folderLock.isLocked');

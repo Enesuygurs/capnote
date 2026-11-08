@@ -103,6 +103,8 @@ export class SettingsFeature {
     if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
     if (this.startupPageSelect) this.startupPageSelect.value = settings.startupPage;
     if (this.relockOnSelect) this.relockOnSelect.value = settings.relockOn;
+    if (this.hideLockedTitlesToggle)
+      this.hideLockedTitlesToggle.checked = !!settings.hideLockedTitles;
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
     if (this.autoFormatToggle) this.autoFormatToggle.checked = settings.autoFormat;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
@@ -190,6 +192,12 @@ export class SettingsFeature {
 
     // When opened locked notes lock again; back to "when the note closes", the open ones (but the
     // one on screen) lock now
+    // Titles of locked notes and folders: hidden and encrypted, or shown
+    this.hideLockedTitlesToggle?.addEventListener('change', (e) => {
+      this.setSetting('hideLockedTitles', e.currentTarget.checked);
+      this.applyHiddenTitlesSetting();
+    });
+
     this.relockOnSelect?.addEventListener('change', (e) => {
       this.setSetting('relockOn', e.target.value);
       if (e.target.value === 'leave') this.relockUnlockedNotes({ keepCurrent: true });

@@ -25,6 +25,8 @@ export const DEFAULT_SETTINGS = {
   onNoteDelete: 'lastNote',
   // When an opened locked note locks again: 'leave' (another note opens) or 'quit' (the app closes)
   relockOn: 'leave',
+  // Locked notes and folders show no title: their titles are encrypted too
+  hideLockedTitles: false,
   // What opens when the app starts: lastNote, home, newNote, todos or notifications
   startupPage: 'lastNote',
   nativeNotifications: true,

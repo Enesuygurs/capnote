@@ -408,7 +408,7 @@ export class FoldersFeature {
 
     folderHeader.innerHTML = `
             <i class="fas fa-folder nav-icon" style="color: ${this.safeColor(folder.color)}"></i>
-            <span class="nav-text">${this.escapeHtml(folder.name)}</span>
+            <span class="nav-text">${this.escapeHtml(this.folderDisplayName(folder))}</span>
             ${folder.isPinned ? '<i class="fas fa-thumbtack folder-pin tone-gold" aria-hidden="true"></i>' : ''}
             ${folder.isLocked ? `<i class="fas ${lockedNow ? 'fa-lock' : 'fa-lock-open'} folder-lock tone-accent" aria-hidden="true"></i>` : ''}
             <span class="folder-count">${noteCount}</span>
