@@ -203,6 +203,26 @@ export class LockFeature {
     return true;
   }
 
+  // Lock an opened locked note again now (one in a locked folder locks with its whole folder)
+  relockNote(note) {
+    if (!note?.isLocked || this.isNoteLockedForView(note)) return;
+    if (note.lockedByFolder) {
+      this.relockFolder(this.folderById(note.lockedByFolder));
+      return;
+    }
+    // Its edits are kept first (encrypted with the password it is open with)
+    if (this.currentNote === note && this.isEditorOpen()) this.saveNote(true);
+    this.unlockedNotes.delete(String(note.id));
+    note.content = '';
+    this.blankNoteMeta(note);
+    this.closeNoteImages(note);
+    this.updateNotesList();
+    if (this.currentNote === note) {
+      this.showViewer();
+      this.displayNote(note);
+    }
+  }
+
   // Lock again the locked notes opened in this session (all, or all but the one on screen)
   relockUnlockedNotes({ keepCurrent = false } = {}) {
     let changed = false;

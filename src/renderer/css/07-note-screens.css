@@ -977,3 +977,36 @@
 .note-viewer.is-version-preview .viewer-actions {
   visibility: hidden;
 }
+
+/* The archive page: a heading over the folders and over the notes; an archived folder's card has its
+   icon in the folder's color and its notes as chips to open */
+.archive-section {
+  margin: var(--space-2) 0 var(--space-1);
+}
+
+.archive-section:first-child {
+  margin-top: 0;
+}
+
+.list-card.archive-folder {
+  align-items: flex-start;
+}
+
+.archive-folder-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-md);
+  height: var(--control-md);
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, currentColor 14%, transparent);
+  font-size: var(--fs-lg);
+}
+
+.archive-folder-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}

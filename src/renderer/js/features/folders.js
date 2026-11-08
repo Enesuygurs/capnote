@@ -17,6 +17,11 @@ export class FoldersFeature {
     return this.folders.filter((f) => this.folderParentId(f) === parentId);
   }
 
+  // The folders the list shows inside a folder: an archived one is on the archive page
+  listedFolders(parentId = null) {
+    return this.childFolders(parentId).filter((f) => !f.isArchived);
+  }
+
   // Every folder inside a folder, at any depth
   folderDescendantIds(folderId) {
     const ids = [];
@@ -246,7 +251,7 @@ export class FoldersFeature {
     // pinned) and, in the custom order, the unpinned folders too (among the notes)
     const amongNotes = this.currentSort === 'manual';
     // Only the top folders: each folder draws the folders inside it
-    this.childFolders(null).forEach((folder) => {
+    this.listedFolders(null).forEach((folder) => {
       if (folder.isPinned || amongNotes) return;
       const visibleCount = this.getVisibleCountForFolder(folder.id);
       // If current filter/search should restrict visibility, hide folders with zero visible notes
@@ -377,7 +382,7 @@ export class FoldersFeature {
       return;
     }
     const filtered = this.isViewFiltered();
-    this.childFolders(folderId).forEach((child) => {
+    this.listedFolders(folderId).forEach((child) => {
       if (filtered && this.getVisibleCountForFolder(child.id) === 0) return;
       const element = this.createFolderElement(child);
       container.appendChild(element);
