@@ -549,13 +549,18 @@
   },
   "archive": {
     "title": "Arşiv",
-    "subtitle": "Listede görünmeyen notlar; açın ya da arşivden çıkarın",
+    "subtitle": "Listede görünmeyen notlar ve klasörler; açın ya da arşivden çıkarın",
     "archive": "Arşivle",
     "unarchive": "Arşivden çıkar",
     "badge": "Arşivde",
-    "empty": "Arşivde not yok",
+    "empty": "Arşivde not veya klasör yok",
     "archived": "{count} not arşivlendi",
-    "unarchived": "{count} not arşivden çıkarıldı"
+    "unarchived": "{count} not arşivden çıkarıldı",
+    "folders": "Klasörler",
+    "notes": "Notlar",
+    "folderMeta": "{count} not",
+    "folderArchived": "“{name}” klasörü arşivlendi",
+    "folderUnarchived": "“{name}” klasörü arşivden çıkarıldı"
   },
   "listMenu": {
     "newNote": "Yeni not",

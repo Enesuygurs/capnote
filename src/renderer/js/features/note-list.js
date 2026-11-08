@@ -29,7 +29,7 @@ export class NoteListFeature {
     // On top, the pinned notes and pinned folders together, in the order they were pinned
     const pinned = this.pinnedListItems([
       ...items.filter((item) => item.note?.isPinned),
-      ...this.childFolders(null)
+      ...this.listedFolders(null)
         .filter((folder) => folder.isPinned)
         .map((folder) => ({ folder })),
     ]);
@@ -569,7 +569,7 @@ export class NoteListFeature {
             ...this.notes
               .filter((n) => n.isPinned && !n.folderId && !n.isArchived)
               .map((note) => ({ note })),
-            ...this.childFolders(null)
+            ...this.listedFolders(null)
               .filter((f) => f.isPinned)
               .map((folder) => ({ folder })),
           ])
@@ -593,7 +593,7 @@ export class NoteListFeature {
   rootListItems(notes) {
     const items = [
       ...notes.map((note) => ({ note, key: note.isPinned ? -Infinity : (note.order ?? -1) })),
-      ...this.childFolders(null)
+      ...this.listedFolders(null)
         .filter((folder) => !folder.isPinned)
         .map((folder, i) => ({ folder, key: folder.order ?? 1e6 + i })),
     ];
@@ -613,7 +613,7 @@ export class NoteListFeature {
         ? this.rootListItems(this.getSortedNotes(rootNotes))
         : [
             ...this.getSortedNotes(rootNotes).map((note) => ({ note })),
-            ...this.childFolders(null)
+            ...this.listedFolders(null)
               .filter((f) => !f.isPinned)
               .map((folder) => ({ folder })),
           ];
@@ -694,6 +694,9 @@ export class NoteListFeature {
     label('favorite', note.isFavorite ? 'messages.removeFromFavorites' : 'messages.addToFavorites');
     label('pin', note.isPinned ? 'messages.unpinNote' : 'messages.pinNote');
     label('lock', note.isLocked ? 'messages.unlockNote' : 'messages.lockNote');
+    // An opened locked note can be locked again at once (one in a locked folder, with its folder)
+    this.noteContextMenu.querySelector('[data-action="relock"]').hidden =
+      !note.isLocked || this.isNoteLockedForView(note);
     // A locked note cannot be copied or renamed without its password
     this.noteContextMenu.querySelector('[data-action="duplicate"]').disabled =
       this.isNoteLockedForView(note);
@@ -808,6 +811,7 @@ export class NoteListFeature {
         favorite: () => this.toggleFavorite(noteId),
         pin: () => this.togglePin(noteId),
         lock: () => this.toggleLock(noteId),
+        relock: () => this.relockNote(note),
         // The title edited in place in the list, as with a double-click
         rename: () =>
           this.startRenameNote(

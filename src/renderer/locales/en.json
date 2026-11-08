@@ -549,13 +549,18 @@
   },
   "archive": {
     "title": "Archive",
-    "subtitle": "Notes kept out of the list; open them or bring them back",
+    "subtitle": "Notes and folders kept out of the list; open them or unarchive them",
     "archive": "Archive",
     "unarchive": "Unarchive",
     "badge": "Archived",
-    "empty": "No archived notes",
+    "empty": "No notes or folders in the archive",
     "archived": "{count} notes archived",
-    "unarchived": "{count} notes unarchived"
+    "unarchived": "{count} notes unarchived",
+    "folders": "Folders",
+    "notes": "Notes",
+    "folderMeta": "{count} notes",
+    "folderArchived": "“{name}” was archived",
+    "folderUnarchived": "“{name}” was unarchived"
   },
   "listMenu": {
     "newNote": "New note",

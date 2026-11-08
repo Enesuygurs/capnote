@@ -346,6 +346,10 @@ export const APP_DIALOGS = /* HTML */ `
       <i class="fas fa-lock"></i>
       <span></span>
     </button>
+    <button class="menu-item" data-action="relock" role="menuitem" hidden>
+      <i class="fas fa-lock"></i>
+      <span data-i18n="folderLock.relock">Şimdi kilitle</span>
+    </button>
     <button class="menu-item" data-action="rename" role="menuitem">
       <i class="fas fa-pen"></i>
       <span data-i18n="modals.renameFolder">Yeniden Adlandır</span>
@@ -430,6 +434,10 @@ export const APP_DIALOGS = /* HTML */ `
     <div class="menu-item" id="relockFolderMenuItem" role="menuitem" hidden>
       <i class="fas fa-lock"></i>
       <span data-i18n="folderLock.relock">Şimdi kilitle</span>
+    </div>
+    <div class="menu-item" id="archiveFolderMenuItem" role="menuitem">
+      <i class="fas fa-box-archive"></i>
+      <span data-i18n="archive.archive">Arşivle</span>
     </div>
     <div class="menu-item" id="changeFolderColorMenuItem" role="menuitem">
       <i class="fas fa-palette"></i>
