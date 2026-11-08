@@ -101,7 +101,11 @@ export async function run() {
   void boxes;
 
   // Hiding the note icons
-  const icon = () => getComputedStyle(a.notesList.querySelector('.note-item .nav-icon')).display;
+  // An ordinary note's icon (a lock or a pin stays when icons are hidden)
+  const icon = () =>
+    getComputedStyle(
+      a.notesList.querySelector('.note-item .nav-icon:not(.fa-lock, .fa-lock-open, .fa-thumbtack)')
+    ).display;
   r.iconsShown = icon() !== 'none';
   a.hideNoteIconsToggle.checked = true;
   a.hideNoteIconsToggle.dispatchEvent(new Event('change'));

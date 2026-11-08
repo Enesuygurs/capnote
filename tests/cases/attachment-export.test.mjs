@@ -63,7 +63,10 @@ export async function run() {
     // The seed uploaded three files; the one no note uses stays out of the backup
     files: files.length,
     withImageIncluded: files.includes(noteFiles('With image')[0]),
-    lockedImageIncluded: files.includes(noteFiles('Locked image')[0]),
+    // A locked note's image is in the backup encrypted, as "<name>.cnlock"
+    lockedImageIncluded:
+      files.includes(noteFiles('Locked image')[0]) ||
+      files.includes(noteFiles('Locked image')[0] + '.cnlock'),
     lockedStaysEncrypted: locked.content === '' && !!locked.encrypted,
     filesAreBase64: Object.values(backup.attachments).every((data) =>
       /^[A-Za-z0-9+/]+=*$/.test(data)

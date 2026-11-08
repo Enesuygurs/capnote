@@ -28,12 +28,15 @@ export async function run() {
     memoryContent: n.content,
   };
 
-  answer('nope');
+  // The password is asked on the note's page, not in a dialog
   await a.unlockNoteForViewing(n);
+  r.pageAsks =
+    !!a.viewerText.querySelector('.locked-note-form') &&
+    a.passwordModal.classList.contains('hidden');
+  await a.unlockWithPassword(n, 'nope');
   r.wrongPwRejected = a.isNoteLockedForView(n);
 
-  answer('pw1');
-  await a.unlockNoteForViewing(n);
+  await a.unlockWithPassword(n, 'pw1');
   r.unlockedView = a.viewerText.textContent.includes('top secret');
 
   await a.editCurrentNote();
@@ -87,6 +90,7 @@ export const expected = {
     hasCipher: true,
     memoryContent: '',
   },
+  pageAsks: true,
   wrongPwRejected: true,
   unlockedView: true,
   afterEdit: {
