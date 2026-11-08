@@ -423,6 +423,19 @@
     "moved": "Moved “{name}” to {folder}",
     "dropToTop": "Take out of the folder"
   },
+  "folderLock": {
+    "lock": "Lock",
+    "remove": "Remove lock",
+    "relock": "Lock now",
+    "setPassword": "Set a password for the folder",
+    "passwordToRemove": "Password to remove the folder's lock",
+    "password": "Folder password",
+    "locked": "\"{name}\" is locked",
+    "removed": "The lock of \"{name}\" is removed",
+    "unlockFirst": "This folder is locked; unlock it first",
+    "noteInLockedFolder": "This note is in a locked folder; unlock the folder first",
+    "lockedWithFolder": "This note is protected by its folder's lock; change it from the folder"
+  },
   "blockStyle": {
     "p": "Text",
     "h1": "Heading 1",

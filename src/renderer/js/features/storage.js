@@ -146,6 +146,8 @@ export class StorageFeature {
   }
 
   async saveNotes() {
+    // Notes moved into or out of locked folders take their lock first
+    this.syncFolderLocks?.();
     // Ensure overview stats reflect the latest notes immediately
     this.updateStats();
     await this.persist('notes', this.serializeNotes(), 'messages.notesSaveError');
@@ -153,6 +155,8 @@ export class StorageFeature {
 
   async saveFolders() {
     await this.persist('folders', this.folders, 'messages.foldersSaveError');
+    // A folder moved into or out of a locked one: its notes take the lock
+    if (this.syncFolderLocks?.()) await this.saveNotes();
   }
 
   async loadReminders() {

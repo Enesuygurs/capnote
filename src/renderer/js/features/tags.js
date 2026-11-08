@@ -14,6 +14,7 @@ export class TagsFeature {
   allTags() {
     const tags = new Map();
     this.notes.forEach((note) => {
+      if (this.isNoteHiddenByFolderLock(note)) return;
       new Set((note.tags || []).map((t) => this.tagKey(t))).forEach((key) => {
         if (!key) return;
         const name = note.tags.find((t) => this.tagKey(t) === key);

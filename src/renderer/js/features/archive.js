@@ -40,7 +40,7 @@ export class ArchiveFeature {
     const list = this.archiveList;
     list.innerHTML = '';
     const notes = this.notes
-      .filter((note) => note.isArchived)
+      .filter((note) => note.isArchived && !this.isNoteHiddenByFolderLock(note))
       .sort((x, y) => new Date(y.updatedAt || y.createdAt) - new Date(x.updatedAt || x.createdAt));
     if (!notes.length) {
       list.innerHTML = `<div class="empty-state empty-state-large"><i class="fas fa-box-archive"></i><p>${i18n.t('archive.empty')}</p></div>`;

@@ -193,6 +193,7 @@ export class DashboardFeature {
 
     const byDay = new Map();
     this.notes.forEach((note) => {
+      if (this.isNoteHiddenByFolderLock(note)) return;
       const key = this.dayKey(note.createdAt);
       if (!byDay.has(key)) byDay.set(key, []);
       byDay.get(key).push(note);

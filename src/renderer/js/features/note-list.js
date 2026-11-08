@@ -168,6 +168,8 @@ export class NoteListFeature {
   matchesCurrentView(note, searchTerm = this.currentSearchTerm()) {
     // Archived notes stay out of the list; the archive page shows them
     if (note.isArchived) return false;
+    // So do the notes of a folder that is locked now
+    if (this.isNoteHiddenByFolderLock(note)) return false;
     if (this.currentFilter === 'today' && !this.isCreatedToday(note)) return false;
     if (this.currentFilter === 'favorites' && !note.isFavorite) return false;
     if (this.currentTag && !this.noteHasTag(note, this.currentTag)) return false;
@@ -316,7 +318,7 @@ export class NoteListFeature {
     // for this session
     const icon = note.isPinned
       ? 'fas fa-thumbtack tone-gold'
-      : note.isLocked
+      : note.isLocked && !note.lockedByFolder
         ? this.unlockedNotes.has(String(note.id))
           ? 'fas fa-lock-open tone-accent'
           : 'fas fa-lock tone-accent'

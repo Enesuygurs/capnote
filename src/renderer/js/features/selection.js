@@ -207,6 +207,8 @@ export class SelectionFeature {
     const inFolders = this.notes.filter((n) => n.folderId && inside.has(n.folderId));
     inFolders.forEach((n) => noteIds.add(n.id));
     if (!noteIds.size && !folderIds.size) return;
+    // A locked folder is opened before it can be deleted
+    if ([...folderIds].some((id) => this.blockedByFolderLock(id))) return;
 
     const message = folderIds.size
       ? i18n.t('selection.confirmDeleteWithFolders', {

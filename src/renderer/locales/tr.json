@@ -423,6 +423,19 @@
     "moved": "“{name}” şuraya taşındı: {folder}",
     "dropToTop": "Klasörden çıkar"
   },
+  "folderLock": {
+    "lock": "Kilitle",
+    "remove": "Kilidi kaldır",
+    "relock": "Şimdi kilitle",
+    "setPassword": "Klasör için şifre belirle",
+    "passwordToRemove": "Klasörün kilidini kaldırmak için şifre",
+    "password": "Klasör şifresi",
+    "locked": "\"{name}\" kilitlendi",
+    "removed": "\"{name}\" klasörünün kilidi kaldırıldı",
+    "unlockFirst": "Bu klasör kilitli; önce kilidini aç",
+    "noteInLockedFolder": "Bu not kilitli bir klasörde; önce klasörün kilidini aç",
+    "lockedWithFolder": "Bu not klasörünün kilidiyle korunuyor; kilidi klasörden değiştir"
+  },
   "blockStyle": {
     "p": "Metin",
     "h1": "Başlık 1",

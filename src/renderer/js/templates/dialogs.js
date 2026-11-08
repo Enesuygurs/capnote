@@ -423,6 +423,14 @@ export const APP_DIALOGS = /* HTML */ `
       <i class="fas fa-thumbtack tone-gold"></i>
       <span></span>
     </div>
+    <div class="menu-item" id="lockFolderMenuItem" role="menuitem">
+      <i class="fas fa-lock"></i>
+      <span data-i18n="folderLock.lock">Kilitle</span>
+    </div>
+    <div class="menu-item" id="relockFolderMenuItem" role="menuitem" hidden>
+      <i class="fas fa-lock"></i>
+      <span data-i18n="folderLock.relock">Şimdi kilitle</span>
+    </div>
     <div class="menu-item" id="changeFolderColorMenuItem" role="menuitem">
       <i class="fas fa-palette"></i>
       <span data-i18n="modals.changeFolderColor">Klasör Rengini Değiştir</span>

@@ -48,6 +48,8 @@ export class LockFeature {
   autoLockCurrentNote() {
     // Set to lock when the app closes: an opened note stays open until then
     if (this.settings.relockOn === 'quit') return;
+    // A note in a locked folder is open while its folder is
+    if (this.currentNote?.lockedByFolder) return;
     if (
       this.currentNote &&
       this.currentNote.isLocked &&
@@ -190,6 +192,8 @@ export class LockFeature {
     [...this.unlockedNotes.keys()].forEach((id) => {
       const note = this.notes.find((n) => String(n.id) === id);
       if (!note || (keepCurrent && note === this.currentNote)) return;
+      // Notes of an opened locked folder lock with the folder
+      if (note.lockedByFolder) return;
       this.unlockedNotes.delete(id);
       if (note.isLocked) note.content = '';
       changed = true;
@@ -203,6 +207,11 @@ export class LockFeature {
     // A file note's text is in its file, unencrypted, so locking it would protect nothing
     if (note.filePath) {
       this.showNotification(i18n.t('files.noLock'), 'warning');
+      return;
+    }
+    // Locked with its folder: the folder's lock is changed from the folder
+    if (note.lockedByFolder) {
+      this.showNotification(i18n.t('folderLock.lockedWithFolder'), 'info');
       return;
     }
 
