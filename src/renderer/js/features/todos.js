@@ -28,6 +28,7 @@ export class TodosFeature {
       index,
       text: (item.querySelector('label')?.textContent || '').trim(),
       done: !!item.querySelector('input[type="checkbox"]')?.hasAttribute('checked'),
+      priority: item.dataset.priority || '',
     }));
   }
 
@@ -43,7 +44,12 @@ export class TodosFeature {
     const groups = this.taskNotes()
       .map((note) => {
         const tasks = this.tasksOfNote(note).filter((t) => t.text || !t.done);
-        return { note, tasks: tasks.filter((t) => this.showDoneTasks || !t.done), all: tasks };
+        // The most urgent first (P1, P2, P3, then the rest), in their order otherwise
+        const rank = (t) => (t.priority ? Number(t.priority) : 9);
+        const shown = tasks
+          .filter((t) => this.showDoneTasks || !t.done)
+          .sort((a, b) => rank(a) - rank(b) || a.index - b.index);
+        return { note, tasks: shown, all: tasks };
       })
       .filter((group) => group.tasks.length)
       .sort(
@@ -76,6 +82,9 @@ export class TodosFeature {
         const row = document.createElement('label');
         row.className = 'task-row';
         row.classList.toggle('is-done', task.done);
+        row.dataset.noteId = note.id;
+        row.dataset.index = task.index;
+        if (task.priority) row.dataset.priority = task.priority;
         row.innerHTML = '<input type="checkbox"><span></span>';
         const box = row.querySelector('input');
         box.checked = task.done;

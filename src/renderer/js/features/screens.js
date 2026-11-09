@@ -6,6 +6,8 @@ export class ScreensFeature {
   // Show exactly one of the main screens and highlight its sidebar entry (if it has one)
   showScreen(name) {
     this.hideEmojiPanel();
+    this.placeTaskFlag?.(null);
+    this.hideTaskPriorityMenu?.();
     this.hideNoteLinkMenu?.();
     this.hideReminderPickers?.();
     // An open list (text style, font) or toolbar menu does not wait for the editor to come back
@@ -109,7 +111,7 @@ export class ScreensFeature {
     this.clearSavedSelection();
   }
 
-  // One page: the reminders that came due (unread ones marked) and those still to come
+  // One page: the reminders still to come, then those that came due (unread ones marked)
   showRemindersScreen() {
     this.showScreen('reminders');
     // Fire anything that came due since the last check, so nothing past shows as upcoming
@@ -118,7 +120,7 @@ export class ScreensFeature {
     this.updateRemindersView();
   }
 
-  // The came-due reminders are the top of the reminders page
+  // The came-due reminders are a section of the reminders page: it opens scrolled to them
   showNotificationsScreen() {
     this.showRemindersScreen();
     this.notificationsSection?.scrollIntoView({ block: 'start' });

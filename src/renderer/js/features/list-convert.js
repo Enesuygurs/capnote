@@ -69,6 +69,7 @@ export class ListConvertFeature {
           kind: 'task',
           html: label ? label.innerHTML : '',
           checked: !!box?.checked,
+          priority: item.dataset.priority || '',
           touched: this.rangeTouches(range, item, 0, item, item.childNodes.length),
         });
       });
@@ -147,6 +148,7 @@ export class ListConvertFeature {
           box.checked = true;
           box.setAttribute('checked', 'checked');
         }
+        if (lines[i].priority) box.parentElement.dataset.priority = lines[i].priority;
       });
       return [list];
     }

@@ -509,3 +509,68 @@ li.foldable.is-folded > ol,
 .fold-hidden {
   display: none !important;
 }
+
+/* ============ Task priorities ============
+   P1 red, P2 orange, P3 blue (none: the usual box). The box takes a soft tint of its color and is
+   filled with it when done; the same in a note, in the editor and on the tasks page. */
+:root {
+  --priority-1: #e5484d;
+  --priority-2: #f76b15;
+  --priority-3: #3e7bfa;
+}
+
+:is(.checklist-item, .task-row, .task-flag, .task-priority-menu .menu-item)[data-priority='1'] {
+  --priority: var(--priority-1);
+}
+
+:is(.checklist-item, .task-row, .task-flag, .task-priority-menu .menu-item)[data-priority='2'] {
+  --priority: var(--priority-2);
+}
+
+:is(.checklist-item, .task-row, .task-flag, .task-priority-menu .menu-item)[data-priority='3'] {
+  --priority: var(--priority-3);
+}
+
+:is(.checklist-item, .task-row)[data-priority] > input[type='checkbox'] {
+  background: color-mix(in srgb, var(--priority) 22%, transparent);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--priority) 70%, transparent);
+}
+
+:is(.checklist-item, .task-row)[data-priority] > input[type='checkbox']:checked {
+  background: var(--priority);
+  box-shadow: none;
+}
+
+/* The flag beside the task under the pointer: its priority's color, gray without one */
+.task-flag {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-raised);
+  box-shadow: var(--panel-shadow);
+  color: var(--priority, var(--text-muted));
+  font-size: var(--fs-xs);
+  cursor: pointer;
+}
+
+.task-flag:hover {
+  background: var(--tint-strong);
+}
+
+.task-flag[hidden] {
+  display: none;
+}
+
+.task-priority-menu .menu-item i {
+  color: var(--priority, var(--text-muted)) !important;
+}
+
+.task-priority-menu .menu-item.active {
+  background: var(--tint-hover);
+  font-weight: 600;
+}
