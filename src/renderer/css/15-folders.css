@@ -38,8 +38,9 @@
   margin-left: 0;
 }
 
-.folder-item.is-locked .folder-count,
-.folder-item.is-locked .nav-expand {
+/* Locked now: no count (its notes cannot be counted while hidden), its arrow closed, so it still
+   reads as a folder */
+.folder-item.is-locked .folder-count {
   display: none;
 }
 
