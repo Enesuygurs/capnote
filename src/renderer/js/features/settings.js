@@ -101,6 +101,8 @@ export class SettingsFeature {
     if (this.toggleNativeNotifications)
       this.toggleNativeNotifications.checked = settings.nativeNotifications;
     if (this.onNoteDeleteSelect) this.onNoteDeleteSelect.value = settings.onNoteDelete;
+    // The notifications page is part of the reminders page now
+    if (settings.startupPage === 'notifications') settings.startupPage = 'reminders';
     if (this.startupPageSelect) this.startupPageSelect.value = settings.startupPage;
     if (this.relockOnSelect) this.relockOnSelect.value = settings.relockOn;
     if (this.hideLockedTitlesToggle)

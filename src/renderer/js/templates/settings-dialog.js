@@ -62,7 +62,6 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <option value="newNote" data-i18n="settings.startupNewNote">Yeni not</option>
                   <option value="todos" data-i18n="nav.todos">Yapılacaklar</option>
                   <option value="reminders" data-i18n="nav.reminders">Hatırlatmalar</option>
-                  <option value="notifications" data-i18n="nav.notifications">Bildirimler</option>
                 </select>
               </div>
               <div class="setting-item">

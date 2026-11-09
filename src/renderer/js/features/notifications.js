@@ -40,9 +40,12 @@ export class NotificationsFeature {
 
   updateNotificationsView() {
     if (!this.notificationsList) return;
+    // On the reminders page: the section shows only when something came due
+    this.notificationsSection?.classList.toggle('hidden', this.notifications.length === 0);
+    if (this.markAllReadBtn) this.markAllReadBtn.hidden = !this.notifications.some((n) => !n.read);
 
     if (this.notifications.length === 0) {
-      this.notificationsList.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>${i18n.t('messages.noNotifications')}</p></div>`;
+      this.notificationsList.innerHTML = '';
       return;
     }
 
@@ -69,7 +72,7 @@ export class NotificationsFeature {
           ${
             n.noteId && this.notes.some((note) => note.id === n.noteId)
               ? `<button class="btn-secondary btn-small view-notification-note-btn" data-note-id="${n.noteId}" data-notification-id="${n.id}">
-            <i class="fas fa-eye"></i> ${i18n.t('messages.view')}
+            <i class="fas fa-eye"></i> ${i18n.t('messages.viewNote')}
           </button>`
               : ''
           }
@@ -120,6 +123,7 @@ export class NotificationsFeature {
   updateActiveNotificationsCount() {
     const unread = this.notifications.filter((n) => !n.read).length;
     this.setCount(this.activeNotificationsCount, unread, { emphasize: true });
+    if (this.markAllReadBtn) this.markAllReadBtn.hidden = !unread;
   }
 
   markAllNotificationsRead() {

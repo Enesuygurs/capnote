@@ -16,7 +16,6 @@ export class ScreensFeature {
       welcome: this.welcomeScreen,
       editor: this.noteEditor,
       viewer: this.noteViewer,
-      notifications: this.notificationsScreen,
       reminders: this.remindersScreen,
       tags: this.tagsScreen,
       archive: this.archiveScreen,
@@ -31,7 +30,6 @@ export class ScreensFeature {
     this.currentScreen = name;
 
     const navItems = {
-      notifications: this.notificationsNav,
       reminders: this.remindersNav,
       tags: this.tagsNavBtn,
       archive: this.archiveNavBtn,
@@ -53,7 +51,6 @@ export class ScreensFeature {
     // The other pages are drawn again, so they show what changed meanwhile
     const reopen = {
       reminders: () => this.showRemindersScreen(),
-      notifications: () => this.showNotificationsScreen(),
       todos: () => this.showTodosScreen(),
       tags: () => this.showTagsScreen(),
       archive: () => this.showArchiveScreen(),
@@ -112,17 +109,19 @@ export class ScreensFeature {
     this.clearSavedSelection();
   }
 
+  // One page: the reminders that came due (unread ones marked) and those still to come
   showRemindersScreen() {
     this.showScreen('reminders');
     // Fire anything that came due since the last check, so nothing past shows as upcoming
     this.checkDueReminders();
+    this.updateNotificationsView();
     this.updateRemindersView();
   }
 
+  // The came-due reminders are the top of the reminders page
   showNotificationsScreen() {
-    this.showScreen('notifications');
-    this.checkDueReminders();
-    this.updateNotificationsView();
+    this.showRemindersScreen();
+    this.notificationsSection?.scrollIntoView({ block: 'start' });
   }
 
   showTodosScreen() {
