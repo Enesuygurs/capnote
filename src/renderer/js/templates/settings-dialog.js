@@ -79,6 +79,18 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
+                  <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
+                  <small data-i18n="settings.onNoteDeleteDesc"
+                    >Bir not silindikten sonra gösterilecek sayfayı belirler</small
+                  >
+                </div>
+                <select id="onNoteDeleteSelect" class="select-small">
+                  <option value="lastNote" data-i18n="settings.openLastNote">Son açılan not</option>
+                  <option value="home" data-i18n="settings.openHome">Giriş sayfası</option>
+                </select>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
                   <label data-i18n="settings.hideLockedTitles"
                     >Kilitli notlarda başlıkları gizle</label
                   >
@@ -90,18 +102,6 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <input type="checkbox" id="hideLockedTitlesToggle" />
                   <span class="toggle-slider"></span>
                 </label>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
-                  <small data-i18n="settings.onNoteDeleteDesc"
-                    >Bir not silindikten sonra gösterilecek sayfayı belirler</small
-                  >
-                </div>
-                <select id="onNoteDeleteSelect" class="select-small">
-                  <option value="lastNote" data-i18n="settings.openLastNote">Son açılan not</option>
-                  <option value="home" data-i18n="settings.openHome">Giriş sayfası</option>
-                </select>
               </div>
               <div class="setting-item">
                 <div class="setting-info">
@@ -154,16 +154,6 @@ export const SETTINGS_DIALOG = /* HTML */ `
             <div class="settings-group">
               <div class="setting-item">
                 <div class="setting-info">
-                  <label data-i18n="settings.darkMode">Karanlık Mod</label>
-                  <small data-i18n="settings.darkModeDesc">Arayüzü koyu renklerle gösterir</small>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="darkModeToggle" />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
                   <label data-i18n="settings.accentColor">Vurgu Rengi</label>
                   <small data-i18n="settings.accentColorDesc"
                     >Arayüzün vurgu rengini belirler</small
@@ -206,6 +196,16 @@ export const SETTINGS_DIALOG = /* HTML */ `
                     data-color="#3b82f6"
                   ></button>
                 </div>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.darkMode">Karanlık Mod</label>
+                  <small data-i18n="settings.darkModeDesc">Arayüzü koyu renklerle gösterir</small>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="darkModeToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
               </div>
               <div class="setting-item">
                 <div class="setting-info">
