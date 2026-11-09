@@ -412,7 +412,11 @@ export class FoldersFeature {
     folderHeader.classList.toggle('is-locked', lockedNow);
 
     folderHeader.innerHTML = `
-            <i class="fas fa-folder nav-icon" style="color: ${this.safeColor(folder.color)}"></i>
+            ${
+              lockedNow
+                ? '<i class="fas fa-lock nav-icon tone-lock" aria-hidden="true"></i>'
+                : `<i class="fas fa-folder nav-icon" style="color: ${this.safeColor(folder.color)}"></i>`
+            }
             <span class="nav-text">${this.escapeHtml(this.folderDisplayName(folder))}</span>
             ${folder.isPinned ? '<i class="fas fa-thumbtack folder-pin tone-gold" aria-hidden="true"></i>' : ''}
             ${folder.isLocked ? `<i class="fas ${lockedNow ? 'fa-lock' : 'fa-lock-open'} folder-lock tone-lock" aria-hidden="true"></i>` : ''}
@@ -887,7 +891,8 @@ export class FoldersFeature {
       // Update all folder header icons for this folder id (force priority to override CSS rules)
       const headers = document.querySelectorAll(`.folder-item[data-folder-id="${folderId}"]`);
       headers.forEach((header) => {
-        const icons = header.querySelectorAll('.nav-icon');
+        // A locked folder shows its lock in the lock color, not its own color
+        const icons = header.querySelectorAll('.nav-icon:not(.fa-lock)');
         icons.forEach((icon) => {
           try {
             // set with priority to override any stylesheet rules
