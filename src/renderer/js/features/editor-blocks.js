@@ -566,6 +566,172 @@ export class EditorBlocksFeature {
     return true;
   }
 
+  // ============ Blocks that are one piece (a divider, a code block, a table) ============
+  // Backspace at the start of the line right after such a block (or Delete at the end of the line
+  // right before it) does not delete it at once: the first press selects it (an outline shows
+  // it), the second deletes it. Any other key or a click lets it go.
+  atomicBlockNextTo(range, backwards) {
+    if (!range.collapsed) return null;
+    // The caret at the very start (or end) of whatever block it is in: a line, a heading, a quote,
+    // a list or a task list (its first or last item)
+    const top = this.topBlockOf(range.startContainer);
+    if (!top || top.matches('hr, pre, table')) return null;
+    const text = top.textContent.replace(new RegExp(ZW, 'g'), '');
+    const offset = this.textOffsetIn(top, range);
+    if (backwards ? offset !== 0 : offset < text.length) return null;
+    const block = backwards ? top.previousElementSibling : top.nextElementSibling;
+    return block && block.matches('hr, pre, table') ? block : null;
+  }
+
+  selectAtomicBlock(block) {
+    this.selectedBlock = block;
+    let mark = this.blockSelectionMark;
+    if (!mark) {
+      mark = document.createElement('div');
+      mark.className = 'block-selection';
+      this.blockSelectionMark = mark;
+    }
+    const holder = this.richEditor.parentElement;
+    holder.appendChild(mark);
+    const box = block.getBoundingClientRect();
+    const area = holder.getBoundingClientRect();
+    mark.style.top = `${box.top - area.top + holder.scrollTop - 4}px`;
+    mark.style.left = `${box.left - area.left + holder.scrollLeft - 4}px`;
+    mark.style.width = `${box.width + 8}px`;
+    mark.style.height = `${box.height + 8}px`;
+    mark.hidden = false;
+  }
+
+  clearAtomicBlockSelection() {
+    this.selectedBlock = null;
+    if (this.blockSelectionMark) this.blockSelectionMark.hidden = true;
+  }
+
+  handleAtomicBlockKeys(e, range) {
+    const selected = this.selectedBlock?.isConnected ? this.selectedBlock : null;
+    if (e.key !== 'Backspace' && e.key !== 'Delete') {
+      // Arrows, typing and anything else leave the block as it is
+      if (selected && !['Shift', 'Control', 'Alt', 'Meta'].includes(e.key))
+        this.clearAtomicBlockSelection();
+      return false;
+    }
+    if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return false;
+    if (selected) {
+      // Second press: the selected block goes; the caret stays on its line
+      e.preventDefault();
+      this.clearAtomicBlockSelection();
+      selected.remove();
+      this.trackContentChanges();
+      return true;
+    }
+    const block = this.atomicBlockNextTo(range, e.key === 'Backspace');
+    if (block) {
+      e.preventDefault();
+      this.selectAtomicBlock(block);
+      return true;
+    }
+    return this.mergeTextLines(e, range);
+  }
+
+  // The text holder of a line the caret is in: a task's text, a list item (top-level, without a
+  // list inside it) or a line of the note (paragraph, heading, quote)
+  textUnitOf(node) {
+    const el = node?.nodeType === Node.ELEMENT_NODE ? node : node?.parentElement;
+    if (!el || !this.richEditor.contains(el)) return null;
+    const label = el.closest('.checklist-item > label');
+    if (label && label.closest('.checklist')?.parentElement === this.richEditor) return label;
+    const li = el.closest('li');
+    if (li) {
+      return li.parentElement.parentElement === this.richEditor && !li.querySelector('ul, ol')
+        ? li
+        : null;
+    }
+    const top = this.topBlockOf(node);
+    return this.isTextLine(top) ? top : null;
+  }
+
+  isTextLine(el) {
+    return (
+      !!el &&
+      /^(P|H[1-6]|BLOCKQUOTE)$/.test(el.tagName) &&
+      !el.querySelector('p, div, ul, ol, table, pre, blockquote, .checklist, img, hr')
+    );
+  }
+
+  // The line next to a unit across its block's edge (null inside a list: the browser joins items)
+  neighbourUnit(unit, backwards) {
+    let block = unit;
+    if (unit.matches('label')) {
+      const item = unit.parentElement;
+      if (backwards ? item.previousElementSibling : item.nextElementSibling) return null;
+      block = item.parentElement;
+    } else if (unit.matches('li')) {
+      if (backwards ? unit.previousElementSibling : unit.nextElementSibling) return null;
+      block = unit.parentElement;
+    }
+    const other = backwards ? block.previousElementSibling : block.nextElementSibling;
+    if (!other) return null;
+    if (this.isTextLine(other)) return other;
+    if (other.matches('.checklist')) {
+      const items = other.querySelectorAll(':scope > .checklist-item > label');
+      return items[backwards ? items.length - 1 : 0] || null;
+    }
+    if (other.matches('ul, ol')) {
+      const items = other.querySelectorAll(':scope > li');
+      const li = items[backwards ? items.length - 1 : 0];
+      return li && !li.querySelector('ul, ol') ? li : null;
+    }
+    return null;
+  }
+
+  // Backspace at the start of a line (or Delete at the end of one) joins it with the line across
+  // the edge. The browser does it for plain lines and list items, but when a heading or a quote is
+  // one of them it copies that line's look (size, weight, color) into the text as inline styles:
+  // then the text alone moves, and the upper line keeps its kind.
+  mergeTextLines(e, range) {
+    if (!range.collapsed) return false;
+    const backwards = e.key === 'Backspace';
+    const unit = this.textUnitOf(range.startContainer);
+    if (!unit) return false;
+    const text = unit.textContent.replace(new RegExp(ZW, 'g'), '');
+    const offset = this.textOffsetIn(unit, range);
+    if (backwards ? offset !== 0 : offset < text.length) return false;
+    const other = this.neighbourUnit(unit, backwards);
+    if (!other) return false;
+    const [upper, lower] = backwards ? [other, unit] : [unit, other];
+    const styled = (el) => !!el.closest('h1, h2, h3, h4, h5, h6, blockquote');
+    const lines = this.isTextLine(upper) && this.isTextLine(lower);
+    // Delete before a task list brings its first task up, as it does with a list item
+    const taskBelow = !backwards && lower.matches('label');
+    if (!styled(upper) && !styled(lower) && !taskBelow) return false;
+    e.preventDefault();
+    const empty = (el) => !el.textContent.replace(new RegExp(ZW, 'g'), '').trim();
+    // An empty line above gives its place (and kind) to the line below
+    if (lines && empty(upper) && upper.tagName === 'P') {
+      upper.replaceWith(lower);
+      this.placeCaret(lower, 0);
+      this.trackContentChanges();
+      return true;
+    }
+    upper.querySelectorAll(':scope > br:last-child').forEach((br) => br.remove());
+    const join = upper.childNodes.length;
+    if (!empty(lower)) [...lower.childNodes].forEach((node) => upper.appendChild(node));
+    // The lower line goes (its task, its item; a list or task list left empty too)
+    const gone = lower.matches('label') ? lower.parentElement : lower;
+    const holder = gone.parentElement;
+    gone.remove();
+    if (
+      holder !== this.richEditor &&
+      holder.matches('ul, ol, .checklist') &&
+      !holder.children.length
+    )
+      holder.remove();
+    if (!upper.childNodes.length) upper.innerHTML = '<br>';
+    this.placeCaret(upper, Math.min(join, upper.childNodes.length));
+    this.trackContentChanges();
+    return true;
+  }
+
   // ============ Getting past a block ============
   // ArrowDown/ArrowUp that cannot move (the caret is in the last/first block) makes a line there
   handleEdgeArrows(e) {
@@ -633,6 +799,7 @@ export class EditorBlocksFeature {
         const range = this.caretRange();
         if (range) {
           const handled =
+            this.handleAtomicBlockKeys(e, range) ||
             this.handleCutLine(e, range) ||
             this.handleCodeKeys(e, range) ||
             this.handleChecklistKeys(e, range) ||
@@ -649,6 +816,9 @@ export class EditorBlocksFeature {
     );
 
     this.richEditor.addEventListener('mousedown', (e) => this.handleClickBelow(e));
+    // A click or leaving the editor lets a selected block go
+    this.richEditor.addEventListener('mousedown', () => this.clearAtomicBlockSelection());
+    this.richEditor.addEventListener('blur', () => this.clearAtomicBlockSelection());
 
     // Clicking a task's text places the caret; only the box itself ticks it
     this.richEditor.addEventListener('click', (e) => {

@@ -825,3 +825,17 @@
 #noteContentEditable .img-wrap .img-handle {
   display: block;
 }
+
+/* A divider, code block or table selected by Backspace/Delete (the next press deletes it) */
+.block-selection {
+  position: absolute;
+  z-index: 1;
+  border-radius: var(--radius-md);
+  box-shadow: 0 0 0 2px var(--accent-color);
+  background: var(--accent-tint);
+  pointer-events: none;
+}
+
+.block-selection[hidden] {
+  display: none;
+}
