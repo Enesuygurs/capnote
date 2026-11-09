@@ -60,7 +60,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   </option>
                   <option value="home" data-i18n="settings.startupHome">Giriş sayfası</option>
                   <option value="newNote" data-i18n="settings.startupNewNote">Yeni not</option>
-                  <option value="todos" data-i18n="nav.todos">Yapılacaklar</option>
+                  <option value="todos" data-i18n="nav.todos">Görevler</option>
                   <option value="reminders" data-i18n="nav.reminders">Hatırlatmalar</option>
                 </select>
               </div>

@@ -1,4 +1,4 @@
-// Messages for sections, folders, untitled notes and moves are translated
+// Messages for folders, untitled notes, moves and the tasks page are translated
 
 export async function run() {
   const a = window.app;
@@ -6,9 +6,6 @@ export async function run() {
   window.addEventListener('error', (e) => errors.push(e.message));
   a.languageSelect.value = 'en';
   a.languageSelect.dispatchEvent(new Event('change'));
-  a.todoSectionInput.value = 'Work';
-  a.addTodoSection();
-  const sectionToast = a.notificationText.textContent;
   a.createNewNote();
   a.noteTitle.value = '';
   a.richEditor.innerHTML = '<p>x</p>';
@@ -28,14 +25,13 @@ export async function run() {
   a.showTodosScreen();
   return {
     errors,
-    sectionToast,
     folderToast,
     moveToast,
     untitled: a.displayTitle(a.currentNote),
     storedTitle: a.currentNote.title,
     editorTemplates: a.richEditor.innerText.replace(/\s+/g, ' ').trim(),
-    todoCount: document.querySelector('.todo-section-count')?.textContent,
-    emptySection: document.querySelector('.todos-list')?.textContent.trim(),
+    tasksTitle: document.querySelector('#todosScreen .page-title')?.textContent,
+    tasksButton: a.showDoneTasksBtn.textContent.trim(),
     weekday: a._weekdayShort(1),
     recurrence: a._recurrenceLabel('weekly'),
     param: (await import(new URL('js/i18n.js', location.href).href)).i18n.t(
@@ -47,14 +43,13 @@ export async function run() {
 
 export const expected = {
   errors: [],
-  sectionToast: 'Section added',
   folderToast: 'Folder "Docs" created',
   moveToast: '"Untitled Note" moved to Docs',
   untitled: 'Untitled Note',
   storedTitle: '',
   editorTemplates: 'xHeader 1Header 2',
-  todoCount: '0 tasks',
-  emptySection: 'No tasks in this section',
+  tasksTitle: 'Tasks',
+  tasksButton: 'Show completed',
   weekday: 'Mon',
   recurrence: 'Weekly',
   param: 'Renamed to "X"',

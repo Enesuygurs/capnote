@@ -73,7 +73,8 @@ export async function run() {
       typeof folder.id,
       typeof a.reminders[0].id,
       typeof a.reminders[0].noteId,
-      typeof a.todoSections[0].todos[0].id,
+      // The to-do section moved into a note (the tasks page reads notes)
+      typeof a.notes.find((n) => (n.content || '').includes('>x</label>'))?.id,
     ],
     inFolderLinked: inFolder.folderId === folder.id,
     rootFolderId: root.folderId,

@@ -1,261 +1,175 @@
-// To-do sections and tasks
+// The tasks page: every task of every note in one place. It keeps no list of its own: it reads the
+// task lists written in the notes, grouped by note (the note opens from its group), and ticking a
+// task here ticks it in its note. Notes that cannot be read now (locked, in a locked folder),
+// archived notes and file notes are left out. The header's icon counts the tasks still open.
+//
+// The older to-do page kept its own sections; what was in them moves into a note on start.
 
 import { i18n } from '../i18n.js';
 
 export class TodosFeature {
-  renderTodosSections() {
-    if (!this.todosSectionsContainer) return;
+  // The notes whose tasks show here
+  taskNotes() {
+    return this.notes.filter(
+      (note) =>
+        !note.isArchived &&
+        !note.filePath &&
+        !note.isMarkdown &&
+        !this.isNoteLockedForView(note) &&
+        !this.isNoteHiddenByFolderLock(note) &&
+        (note.content || '').includes('checklist-item')
+    );
+  }
 
-    if (this.todoSections.length === 0) {
-      this.todosSectionsContainer.innerHTML = `
-        <div class="empty-state empty-state-large">
-          <i class="fas fa-list-check"></i>
-          <p>${i18n.t('todos.noTodos')}</p>
-        </div>
-      `;
+  // A note's tasks, in order: { index, text, done }
+  tasksOfNote(note) {
+    const body = this.parseInertHtml(note.content || '');
+    return [...body.querySelectorAll('.checklist-item')].map((item, index) => ({
+      index,
+      text: (item.querySelector('label')?.textContent || '').trim(),
+      done: !!item.querySelector('input[type="checkbox"]')?.hasAttribute('checked'),
+    }));
+  }
+
+  renderTodosSections() {
+    const box = this.todosSectionsContainer;
+    if (!box) return;
+    if (this.showDoneTasksBtn) {
+      this.showDoneTasksBtn.classList.toggle('active', !!this.showDoneTasks);
+      this.showDoneTasksBtn.querySelector('span').textContent = i18n.t(
+        this.showDoneTasks ? 'todos.hideDone' : 'todos.showDone'
+      );
+    }
+    const groups = this.taskNotes()
+      .map((note) => {
+        const tasks = this.tasksOfNote(note).filter((t) => t.text || !t.done);
+        return { note, tasks: tasks.filter((t) => this.showDoneTasks || !t.done), all: tasks };
+      })
+      .filter((group) => group.tasks.length)
+      .sort(
+        (a, b) =>
+          new Date(b.note.updatedAt || b.note.createdAt) -
+          new Date(a.note.updatedAt || a.note.createdAt)
+      );
+    box.innerHTML = '';
+    if (!groups.length) {
+      box.innerHTML = `<div class="empty-state empty-state-large"><i class="fas fa-list-check"></i><p></p><small></small></div>`;
+      box.querySelector('p').textContent = i18n.t('todos.noTodos');
+      box.querySelector('small').textContent = i18n.t('todos.noTodosHint');
       return;
     }
-
-    this.todosSectionsContainer.innerHTML = this.todoSections
-      .map((section) => {
-        const activeTodos = section.todos.filter((t) => !t.completed).length;
-        const todosHtml =
-          section.todos.length === 0
-            ? `<p class="empty-hint">${i18n.t('todos.noTodosInSection')}</p>`
-            : section.todos
-                .map(
-                  (todo) => `
-          <div class="todo-item ${todo.completed ? 'completed' : ''}" data-todo-id="${todo.id}" data-section-id="${section.id}">
-            <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} data-action="toggle" data-todo-id="${todo.id}" data-section-id="${section.id}">
-            <span class="todo-text" data-todo-id="${todo.id}">${this.escapeHtml(todo.text)}</span>
-            <input type="text" class="todo-edit-input hidden" value="${this.escapeHtml(todo.text)}" data-todo-id="${todo.id}" data-section-id="${section.id}">
-            <div class="todo-actions">
-              <button class="btn-icon btn-icon-xs edit-todo" data-action="edit" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${i18n.t('actions.edit')}">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn-icon btn-icon-xs btn-icon-danger delete-todo" data-action="delete" data-todo-id="${todo.id}" data-section-id="${section.id}" title="${i18n.t('actions.delete')}">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          </div>
-        `
-                )
-                .join('');
-
-        return `
-        <div class="card todo-section" data-section-id="${section.id}">
-          <div class="todo-section-header">
-            <div class="todo-section-title">
-              <h3>${this.escapeHtml(section.name)}</h3>
-              <span class="chip todo-section-count">${i18n.t('todos.taskCount', { count: activeTodos })}</span>
-            </div>
-            <button class="btn-icon btn-icon-sm btn-icon-danger delete-section" data-action="delete-section" data-section-id="${section.id}" title="${i18n.t('actions.delete')}">
-              <i class="fas fa-trash"></i>
-            </button>
-          </div>
-          <div class="todos-list">
-            ${todosHtml}
-          </div>
-          <div class="input-row">
-            <input type="text" class="form-input todo-input" placeholder="${i18n.t('placeholders.newTodo')}" data-section-id="${section.id}">
-            <button class="btn-primary add-todo-btn" data-section-id="${section.id}">
-              <i class="fas fa-plus"></i> ${i18n.t('buttons.add')}
-            </button>
-          </div>
-        </div>
-      `;
-      })
-      .join('');
-
-    // Add event listeners
-    this.attachTodoEventListeners();
-  }
-
-  attachTodoEventListeners() {
-    // Section delete buttons
-    this.todosSectionsContainer
-      .querySelectorAll('[data-action="delete-section"]')
-      .forEach((btn) => {
-        btn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          this.deleteTodoSection(btn.dataset.sectionId);
-        });
+    groups.forEach(({ note, tasks, all }) => {
+      const section = document.createElement('section');
+      section.className = 'list-card task-group';
+      section.dataset.noteId = note.id;
+      const open = all.filter((t) => !t.done).length;
+      section.innerHTML = `<button type="button" class="task-group-title"><i class="fas fa-file-lines"></i><span></span><small></small></button><div class="task-group-list"></div>`;
+      section.querySelector('.task-group-title span').textContent = this.displayTitle(note);
+      section.querySelector('.task-group-title small').textContent = i18n.t('todos.openCount', {
+        count: open,
       });
-
-    // Add todo buttons
-    this.todosSectionsContainer.querySelectorAll('.add-todo-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        const sectionId = btn.dataset.sectionId;
-        const input = this.todosSectionsContainer.querySelector(
-          `.todo-input[data-section-id="${sectionId}"]`
-        );
-        this.addTodoToSection(sectionId, input.value);
+      section
+        .querySelector('.task-group-title')
+        .addEventListener('click', () => this.selectNote(note));
+      const list = section.querySelector('.task-group-list');
+      tasks.forEach((task) => {
+        const row = document.createElement('label');
+        row.className = 'task-row';
+        row.classList.toggle('is-done', task.done);
+        row.innerHTML = '<input type="checkbox"><span></span>';
+        const box = row.querySelector('input');
+        box.checked = task.done;
+        row.querySelector('span').textContent = task.text || '…';
+        box.addEventListener('change', () => this.setTaskDone(note, task, box.checked));
+        list.appendChild(row);
       });
-    });
-
-    // Todo input enter key
-    this.todosSectionsContainer.querySelectorAll('.todo-input').forEach((input) => {
-      input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && input.value.trim()) {
-          this.addTodoToSection(input.dataset.sectionId, input.value);
-        }
-      });
-    });
-
-    // Todo action buttons
-    this.todosSectionsContainer.querySelectorAll('[data-action]').forEach((btn) => {
-      if (btn.dataset.action === 'delete-section') return; // Already handled
-
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const action = btn.dataset.action;
-        const todoId = btn.dataset.todoId;
-        const sectionId = btn.dataset.sectionId;
-
-        if (action === 'toggle') {
-          this.toggleTodoComplete(sectionId, todoId);
-        } else if (action === 'edit') {
-          this.editTodo(sectionId, todoId);
-        } else if (action === 'delete') {
-          this.deleteTodo(sectionId, todoId);
-        }
-      });
-    });
-
-    // Todo edit inputs
-    this.todosSectionsContainer.querySelectorAll('.todo-edit-input').forEach((input) => {
-      const finish = (save) => {
-        if (input.dataset.done) return;
-        input.dataset.done = '1';
-        if (save) this.saveTodoEdit(input.dataset.sectionId, input.dataset.todoId, input.value);
-        else this.renderTodosSections();
-      };
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') finish(true);
-        else if (e.key === 'Escape') finish(false);
-      });
-      input.addEventListener('blur', () => finish(true));
+      box.appendChild(section);
     });
   }
 
-  addTodoSection() {
-    const name = this.todoSectionInput.value.trim();
-    if (!name) return;
-
-    const newSection = {
-      id: this.newId(),
-      name: name,
-      todos: [],
-    };
-
-    this.todoSections.push(newSection);
-    this.saveTodos();
-    this.todoSectionInput.value = '';
-    this.renderTodosSections();
-    this.showNotification(i18n.t('todos.sectionAdded'), 'success');
-  }
-
-  deleteTodoSection(sectionId) {
-    this.todoSections = this.todoSections.filter((s) => s.id !== sectionId);
-    this.saveTodos();
-    this.renderTodosSections();
-    this.updateTodosCount();
-    this.showNotification(i18n.t('todos.sectionDeleted'), 'success');
-  }
-
-  addTodoToSection(sectionId, text) {
-    const trimmedText = text.trim();
-    if (!trimmedText) return;
-
-    const section = this.todoSections.find((s) => s.id === sectionId);
-    if (!section) return;
-
-    const newTodo = {
-      id: this.newId(),
-      text: trimmedText,
-      completed: false,
-      createdAt: new Date().toISOString(),
-    };
-
-    section.todos.unshift(newTodo);
-    this.saveTodos();
-    this.renderTodosSections();
-    this.updateTodosCount();
-    this.showNotification(i18n.t('todos.todoAdded'), 'success');
-  }
-
-  toggleTodoComplete(sectionId, todoId) {
-    const section = this.todoSections.find((s) => s.id === sectionId);
-    if (!section) return;
-
-    const todo = section.todos.find((t) => t.id === todoId);
-    if (!todo) return;
-
-    todo.completed = !todo.completed;
-    this.saveTodos();
-    this.renderTodosSections();
-    this.updateTodosCount();
-
-    if (todo.completed) {
-      this.showNotification(i18n.t('todos.todoCompleted'), 'success');
-    }
-  }
-
-  editTodo(sectionId, todoId) {
-    const todoItem = this.todosSectionsContainer.querySelector(
-      `.todo-item[data-todo-id="${todoId}"][data-section-id="${sectionId}"]`
-    );
-    if (!todoItem) return;
-
-    const textSpan = todoItem.querySelector('.todo-text');
-    const editInput = todoItem.querySelector('.todo-edit-input');
-    const editBtn = todoItem.querySelector('.edit-todo');
-
-    if (editInput.classList.contains('hidden')) {
-      // Start editing
-      textSpan.classList.add('hidden');
-      editInput.classList.remove('hidden');
-      editInput.focus();
-      editInput.select();
-      editBtn.innerHTML = '<i class="fas fa-check"></i>';
-    } else {
-      // Save edit
-      this.saveTodoEdit(sectionId, todoId, editInput.value);
-    }
-  }
-
-  saveTodoEdit(sectionId, todoId, newText) {
-    const text = newText.trim();
-    const section = this.todoSections.find((s) => s.id === sectionId);
-    const todo = section?.todos.find((t) => t.id === todoId);
-    // Nothing to save: show the row as it was
-    if (!todo || !text || text === todo.text) {
+  // Tick (or untick) a task in its note
+  async setTaskDone(note, task, done) {
+    const body = this.parseInertHtml(note.content || '');
+    const item = body.querySelectorAll('.checklist-item')[task.index];
+    const label = (item?.querySelector('label')?.textContent || '').trim();
+    const input = item?.querySelector('input[type="checkbox"]');
+    // The note changed since the page was drawn: drawn again, nothing changed
+    if (!item || !input || label !== task.text) {
       this.renderTodosSections();
       return;
     }
-
-    todo.text = text;
-    this.saveTodos();
-    this.renderTodosSections();
-    this.showNotification(i18n.t('todos.todoUpdated'), 'success');
-  }
-
-  deleteTodo(sectionId, todoId) {
-    const section = this.todoSections.find((s) => s.id === sectionId);
-    if (!section) return;
-
-    section.todos = section.todos.filter((t) => t.id !== todoId);
-    this.saveTodos();
-    this.renderTodosSections();
+    if (done) input.setAttribute('checked', 'checked');
+    else input.removeAttribute('checked');
+    note.content = body.innerHTML;
+    note.updatedAt = new Date().toISOString();
+    // A note open in the editor shows the change too
+    if (note === this.currentNote && this.isEditorOpen?.()) {
+      const live = this.richEditor.querySelectorAll('.checklist-item input[type="checkbox"]')[
+        task.index
+      ];
+      if (live) live.checked = done;
+    }
+    if (note.isLocked) this.resealNote(note);
+    await this.saveNotes();
     this.updateTodosCount();
-    this.showNotification(i18n.t('todos.todoDeleted'), 'success');
+    // The row stays a moment (its tick seen), then the list follows
+    setTimeout(() => this.renderTodosSections(), done && !this.showDoneTasks ? 450 : 0);
   }
 
+  // The header icon's count: the tasks still open
   updateTodosCount() {
-    const open = this.todoSections.reduce(
-      (sum, section) => sum + section.todos.filter((t) => !t.completed).length,
+    if (!this.todosCount) return;
+    const open = this.taskNotes().reduce(
+      (sum, note) => sum + this.tasksOfNote(note).filter((t) => !t.done && t.text).length,
       0
     );
     this.setCount(this.todosCount, open);
+  }
+
+  // The older to-do page's sections go into a note ("Yapılacaklar"), a heading and a task list
+  // per section, ticked ones still ticked; then they are cleared
+  async migrateTodoSections() {
+    const sections = (this.todoSections || []).filter((s) => (s.todos || []).length);
+    if (!sections.length) return false;
+    const html = sections
+      .map((section) => {
+        const items = section.todos
+          .map((todo) => {
+            const box = document.createElement('div');
+            box.innerHTML = this.checklistItemHtml(this.escapeHtml(todo.text || ''));
+            if (todo.completed) box.querySelector('input').setAttribute('checked', 'checked');
+            return box.innerHTML;
+          })
+          .join('');
+        return `<h3>${this.escapeHtml(section.name || '')}</h3><div class="checklist">${items}</div>`;
+      })
+      .join('');
+    const now = new Date().toISOString();
+    this.notes.unshift({
+      id: this.newId(),
+      title: i18n.t('todos.migratedTitle'),
+      content: html + '<p><br></p>',
+      createdAt: now,
+      updatedAt: now,
+      isFavorite: false,
+      mood: null,
+      weather: null,
+      tags: [],
+      isLocked: false,
+      folderId: null,
+      formatting: { ...this.getDefaultFormatting() },
+      history: [{ type: 'created', ts: now }],
+    });
+    this.todoSections = [];
+    await this.saveNotes();
+    await this.saveTodos();
+    return true;
+  }
+
+  setupTasksPage() {
+    this.showDoneTasksBtn?.addEventListener('click', () => {
+      this.showDoneTasks = !this.showDoneTasks;
+      this.renderTodosSections();
+    });
   }
 }

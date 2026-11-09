@@ -72,7 +72,11 @@ export async function run() {
     appNotes: a.notes.map((n) => [n.title, n.folderId]),
     appFolders: a.folders.map((f) => f.name),
     appReminders: a.reminders.length,
-    appTodos: a.todoSections.map((s) => s.todos.map((t) => t.text).join()),
+    // The old to-dos moved into a note of their own
+    appTodos: a.notes
+      .filter((n) => (n.content || '').includes('checklist-item'))
+      .map((n) => [n.title, n.content.includes('keep me')]),
+    todoSectionsLeft: a.todoSections.length,
     storedNotes: stored.notes.length,
     storedTodos: stored.todos.length,
     lockedEncrypted: !!stored.notes.find((n) => n.title === 'Old secret').encrypted,
@@ -108,14 +112,16 @@ export const expected = {
   openedNote: 'Old note',
   legacySettingKeysLeft: [],
   appNotes: [
+    ['To-dos', null],
     ['Old note', '9.5'],
     ['Old secret', null],
   ],
   appFolders: ['Old folder'],
   appReminders: 1,
-  appTodos: ['keep me'],
-  storedNotes: 2,
-  storedTodos: 1,
+  appTodos: [['To-dos', true]],
+  todoSectionsLeft: 0,
+  storedNotes: 3,
+  storedTodos: 0,
   lockedEncrypted: true,
   plaintextOnDisk: false,
   localStorageCleared: true,

@@ -126,6 +126,8 @@ export class ScreensFeature {
 
   showTodosScreen() {
     this.hideAllModals();
+    // Edits of a note open in the editor are kept first, so its tasks show as they are now
+    if (this.isEditorOpen() && this.currentNote && this.hasUnsavedChanges?.()) this.saveNote(true);
     this.showScreen('todos');
     this.renderTodosSections();
   }

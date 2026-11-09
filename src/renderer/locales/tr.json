@@ -4,7 +4,7 @@
     "newNote": "Yeni Not",
     "notifications": "Bildirimler",
     "reminders": "Hatırlatmalar",
-    "todos": "Yapılacaklar",
+    "todos": "Görevler",
     "allNotes": "Tümü",
     "today": "Bugün",
     "favorites": "Favoriler",
@@ -256,9 +256,9 @@
     "upcoming": "Yaklaşanlar"
   },
   "todos": {
-    "todosTitle": "Yapılacaklar Listesi",
-    "todosSubtitle": "Görevlerinizi takip edin",
-    "noTodos": "Henüz görev eklemediniz",
+    "todosTitle": "Görevler",
+    "todosSubtitle": "Notlarınızdaki görevler",
+    "noTodos": "Notlarınızda tamamlanmamış görev yok",
     "todoAdded": "Görev eklendi",
     "todoDeleted": "Görev silindi",
     "todoUpdated": "Görev güncellendi",
@@ -266,7 +266,12 @@
     "sectionAdded": "Bölüm eklendi",
     "sectionDeleted": "Bölüm silindi",
     "noTodosInSection": "Bu bölümde görev yok",
-    "taskCount": "{count} görev"
+    "taskCount": "{count} görev",
+    "noTodosHint": "Bir notta görev listesi oluşturduğunuzda burada görünür.",
+    "showDone": "Tamamlananları göster",
+    "hideDone": "Tamamlananları gizle",
+    "openCount": "{count} açık",
+    "migratedTitle": "Yapılacaklar"
   },
   "emojiCategories": {
     "all": "Tümü",

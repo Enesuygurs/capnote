@@ -106,6 +106,8 @@ export class CapnoteApp {
     this.setupSettingsEventListeners();
     this.setupResizeOptimization();
     this.loadSettings();
+    // The older to-do page's tasks move into a note (the tasks page reads the notes)
+    await this.migrateTodoSections();
     window.electronAPI?.setLanguage?.(i18n.getLanguage());
     this.loadSidebarPreference();
     this.initializeHamburgerIcon();
@@ -214,8 +216,7 @@ export class CapnoteApp {
     this.todosScreen = document.getElementById('todosScreen');
     this.todosNav = document.getElementById('todosNav');
     this.todosSectionsContainer = document.getElementById('todosSectionsContainer');
-    this.todoSectionInput = document.getElementById('todoSectionInput');
-    this.addTodoSectionBtn = document.getElementById('addTodoSectionBtn');
+    this.showDoneTasksBtn = document.getElementById('showDoneTasksBtn');
     this.todosCount = document.getElementById('todosCount');
 
     // Notifications elements
@@ -452,6 +453,7 @@ export class CapnoteApp {
     this.setupEditorTools();
     this.setupNoteLinks();
     this.setupNoteFiles();
+    this.setupTasksPage();
     this.setupFolderLock();
     this.setupTags();
     this.setupArchive();
@@ -616,6 +618,8 @@ export class CapnoteApp {
 
   // The overview on the home page follows the notes
   updateStats() {
+    // The tasks page's count follows the notes
+    this.updateTodosCount?.();
     if (this.welcomeScreen && !this.welcomeScreen.classList.contains('hidden'))
       this.renderDashboard();
   }

@@ -87,16 +87,6 @@ export class EditorFormattingFeature {
     if (this.todosNav) {
       this.todosNav.addEventListener('click', () => this.showTodosScreen());
     }
-    if (this.addTodoSectionBtn) {
-      this.addTodoSectionBtn.addEventListener('click', () => this.addTodoSection());
-    }
-    if (this.todoSectionInput) {
-      this.todoSectionInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && this.todoSectionInput.value.trim()) {
-          this.addTodoSection();
-        }
-      });
-    }
 
     // The bell: the reminders page (came due and to come)
     this.remindersNav?.addEventListener('click', () => this.showRemindersScreen());
