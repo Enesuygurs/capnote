@@ -32,6 +32,7 @@ import { NoteLinksFeature } from './features/note-links.js';
 import { NoteFilesFeature } from './features/note-files.js';
 import { FolderLockFeature } from './features/folder-lock.js';
 import { LockMetaFeature } from './features/lock-meta.js';
+import { ListConvertFeature } from './features/list-convert.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
@@ -724,6 +725,7 @@ applyFeatures(CapnoteApp, [
   NoteFilesFeature,
   FolderLockFeature,
   LockMetaFeature,
+  ListConvertFeature,
   FoldingFeature,
   TagsFeature,
   ArchiveFeature,

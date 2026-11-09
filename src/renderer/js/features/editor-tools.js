@@ -65,7 +65,11 @@ export class EditorToolsFeature {
   insertDivider() {
     const hr = this.insertBlockAtCaret('<hr>');
     if (!hr) return;
-    this.placeCaret(this.paragraphNextTo(hr), 0);
+    // The caret goes to the start of the line below it
+    const next = hr.nextElementSibling;
+    if (next && /^(P|DIV|H[1-6])$/.test(next.tagName) && !next.matches('.checklist'))
+      this.placeCaret(next, 0);
+    else this.placeCaret(this.paragraphNextTo(hr), 0);
     this.trackContentChanges();
   }
 

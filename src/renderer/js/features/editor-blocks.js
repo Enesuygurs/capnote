@@ -62,38 +62,35 @@ export class EditorBlocksFeature {
   // Insert a block at the caret on its own line: the line it is in is split around it (an empty
   // line is replaced), and a line follows it. Done by hand: the browser's insertHTML turns a
   // block inside a paragraph into styled inline text.
+  // Put a block (a table, a divider, a code block, a task list) where the caret is. Nothing written
+  // is deleted or split: an empty line becomes the block, else the block goes below the line the
+  // selection ends in (below its whole list or task list).
   insertBlockAtCaret(html) {
     this.restoreEditorSelection();
     this.richEditor.focus();
     if (!this.caretRange()) this.placeCaretAtEnd(this.richEditor);
     const range = this.caretRange();
-    range.deleteContents();
 
     const holder = document.createElement('div');
     holder.innerHTML = html;
     const block = holder.firstElementChild;
-    const line = this.topBlockOf(range.startContainer);
+    const line = this.topBlockOf(range.endContainer);
+    const isEmptyLine = (el) =>
+      /^(P|DIV|H[1-6])$/.test(el.tagName) &&
+      !el.matches(BLOCKS) &&
+      !el.textContent.replace(/\u200b/g, '').trim() &&
+      !el.querySelector('img, input, table, hr');
 
     if (!line) {
-      range.insertNode(block);
-    } else if (line.matches(BLOCKS)) {
-      line.after(block);
+      this.richEditor.appendChild(block);
+    } else if (isEmptyLine(line)) {
+      line.replaceWith(block);
     } else {
-      // Move what follows the caret into a copy of the line after the block
-      const tail = document.createRange();
-      tail.setStart(range.startContainer, range.startOffset);
-      tail.setEnd(line, line.childNodes.length);
-      const rest = tail.extractContents();
       line.after(block);
-      const hasContent = (el) => el.textContent.trim() || el.querySelector?.('img');
-      if (rest.textContent.trim() || rest.querySelector('img')) {
-        const after = line.cloneNode(false);
-        after.appendChild(rest);
-        block.after(after);
-      }
-      if (!hasContent(line)) line.remove();
     }
-    this.paragraphNextTo(block);
+    // A line to type in below it, unless a line of text already follows
+    const next = block.nextElementSibling;
+    if (!next || next.matches(BLOCKS)) this.paragraphNextTo(block);
     return block;
   }
 
@@ -170,6 +167,9 @@ export class EditorBlocksFeature {
 
   // ============ Code block ============
   insertCodeBlockInRich() {
+    // Selected lines go into the code block, a line each; else an empty one is added
+    this.restoreEditorSelection();
+    if (this.caretRange() && !this.caretRange().collapsed && this.convertLines('code')) return;
     const block = this.insertBlockAtCaret(`<pre><code>${ZW}</code></pre>`);
     if (!block) return;
     this.placeCaret(block.querySelector('code').firstChild, 1);
@@ -233,6 +233,9 @@ export class EditorBlocksFeature {
     this.restoreEditorSelection();
     this.richEditor.focus();
     if (!this.caretRange()) this.placeCaretAtEnd(this.richEditor);
+    // Every selected line becomes an item (or a line again); the browser's command only for a
+    // table cell or a code block
+    if (this.convertLines(type)) return;
     // The caret's place in its line, as a text position: the command moves it to the start
     const lineOf = (r) =>
       r && (r.startContainer.parentElement?.closest('li') || this.topBlockOf(r.startContainer));
@@ -377,6 +380,9 @@ export class EditorBlocksFeature {
   insertChecklist() {
     this.restoreEditorSelection();
     this.richEditor.focus();
+    if (!this.caretRange()) this.placeCaretAtEnd(this.richEditor);
+    // Every selected line becomes a task (or a line again)
+    if (this.convertLines('task')) return;
     const range = this.caretRange();
     const item = range && range.startContainer.parentElement?.closest('.checklist-item');
     if (item) {
