@@ -287,6 +287,7 @@ export class CapnoteApp {
     this.startupPageSelect = document.getElementById('startupPageSelect');
     this.relockOnSelect = document.getElementById('relockOnSelect');
     this.hideLockedTitlesToggle = document.getElementById('hideLockedTitlesToggle');
+    this.lockedMoodToggle = document.getElementById('lockedMoodToggle');
     this.autoSaveToggle = document.getElementById('autoSaveToggle');
     this.autoFormatToggle = document.getElementById('autoFormatToggle');
 

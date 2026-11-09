@@ -49,7 +49,7 @@ export async function run() {
 export const expected = {
   version: 2,
   exportedTodos: 0,
-  settingsKeys: 19,
+  settingsKeys: 20,
   afterMerge: ['Yapılacaklar:true'],
   tooNewToast:
     "Veriler içe aktarılırken hata oluştu: Bu yedek Capnote'un daha yeni bir sürümüyle alınmış. İçe aktarmak için uygulamayı güncelleyin.",

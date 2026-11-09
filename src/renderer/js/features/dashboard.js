@@ -67,10 +67,17 @@ export class DashboardFeature {
     return months;
   }
 
+  // Whether a note's mood and weather count in the overview (a locked note's only when the
+  // setting allows it)
+  moodCounts(note) {
+    return !note.isLocked || this.settings.lockedMoodInOverview !== false;
+  }
+
   // How many notes have each mood (or weather), most first (all notes, or the ones given)
   spreadOf(field, findButton, notes = this.notes) {
     const counts = new Map();
     notes.forEach((note) => {
+      if (!this.moodCounts(note)) return;
       if (note[field]) counts.set(note[field], (counts.get(note[field]) || 0) + 1);
     });
     return [...counts.entries()]
@@ -224,7 +231,7 @@ export class DashboardFeature {
       if (notes.length) {
         // The day's mood: the latest note of the day that has one
         const withMood = notes
-          .filter((n) => n.mood)
+          .filter((n) => n.mood && this.moodCounts(n))
           .sort((x, y) => new Date(y.createdAt) - new Date(x.createdAt))[0];
         const button = withMood && this.findMoodButton(withMood.mood);
         const mark = document.createElement('span');
@@ -282,7 +289,7 @@ export class DashboardFeature {
     const row = document.createElement('button');
     row.type = 'button';
     row.className = 'calendar-note';
-    const icon = this.findMoodButton(note.mood)?.querySelector('i');
+    const icon = this.moodCounts(note) ? this.findMoodButton(note.mood)?.querySelector('i') : null;
     row.innerHTML =
       '<span class="calendar-note-mood"></span><span class="calendar-note-title"></span><span class="calendar-note-time"></span>';
     if (icon) {

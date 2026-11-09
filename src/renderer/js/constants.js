@@ -27,6 +27,8 @@ export const DEFAULT_SETTINGS = {
   relockOn: 'leave',
   // Locked notes and folders show no title: their titles are encrypted too
   hideLockedTitles: false,
+  // Locked notes' moods and weather count in the overview's spreads and calendar
+  lockedMoodInOverview: true,
   // What opens when the app starts: lastNote, home, newNote, todos or notifications
   startupPage: 'lastNote',
   nativeNotifications: true,

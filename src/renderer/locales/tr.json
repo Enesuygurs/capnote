@@ -172,6 +172,8 @@
     "relockOnQuit": "Çıkış yapılınca",
     "hideLockedTitles": "Kilitli notlarda başlıkları gizle",
     "hideLockedTitlesDesc": "Başlıkları, etiketleri ve klasör adlarını da şifreler",
+    "lockedMoodInOverview": "Kilitli notlar genel bakışta",
+    "lockedMoodInOverviewDesc": "Ruh hali ve hava durumu dağılımlarına kilitli notları da dahil eder",
     "onNoteDelete": "Not silindiğinde",
     "onNoteDeleteDesc": "Bir not silindikten sonra gösterilecek sayfayı belirler",
     "openLastNote": "Son açılan not",

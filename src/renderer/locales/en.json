@@ -172,6 +172,8 @@
     "relockOnQuit": "When the app quits",
     "hideLockedTitles": "Hide titles of locked notes",
     "hideLockedTitlesDesc": "Encrypts titles, tags and folder names too",
+    "lockedMoodInOverview": "Locked notes in the overview",
+    "lockedMoodInOverviewDesc": "Counts locked notes in the mood and weather spreads",
     "onNoteDelete": "On note deletion",
     "onNoteDeleteDesc": "Sets what is shown after a note is deleted",
     "openLastNote": "Last opened note",
