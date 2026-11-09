@@ -76,7 +76,7 @@
       <div class="sidebar" id="sidebar">
         <!-- Fixed top: the header, the main action, search and the list filter -->
         <div class="sidebar-top">
-          <!-- Header: the app mark (also the home button), then to-dos, reminders and notifications -->
+          <!-- Header: the app mark (also the home button), then to-dos and reminders -->
           <div class="sidebar-header">
             <button class="app-brand" id="homeBtn" data-i18n-title="titles.home">
               <img class="app-brand-icon" src="../../assets/icons/source/capnote.svg" alt="" />
@@ -87,20 +87,13 @@
                 <i class="fas fa-list-check"></i>
                 <span class="nav-count hidden" id="todosCount">0</span>
               </button>
+              <!-- Reminders: the ones that came due (the count of unread ones) and those to come -->
               <button
                 class="sidebar-tool tone-amber"
                 id="remindersNav"
                 data-i18n-title="nav.reminders"
               >
                 <i class="fas fa-bell"></i>
-                <span class="nav-count hidden" id="activeRemindersCount">0</span>
-              </button>
-              <button
-                class="sidebar-tool tone-red"
-                id="notificationsNav"
-                data-i18n-title="nav.notifications"
-              >
-                <i class="fas fa-inbox"></i>
                 <span class="nav-count hidden" id="activeNotificationsCount">0</span>
               </button>
             </div>
@@ -352,14 +345,14 @@
           </div>
         </div>
 
-        <!-- Notifications screen -->
-        <div id="notificationsScreen" class="screen notifications-screen hidden">
+        <!-- Reminders: those that came due (unread ones marked) and those still to come -->
+        <div id="remindersScreen" class="screen reminders-screen hidden">
           <div class="page-header">
-            <span class="page-icon tone-red"><i class="fas fa-inbox"></i></span>
+            <span class="page-icon tone-amber"><i class="fas fa-bell"></i></span>
             <div class="page-heading">
-              <h2 class="page-title" data-i18n="nav.notifications">Bildirimler</h2>
-              <p class="page-subtitle" data-i18n="notifications.subtitle">
-                Zamanı gelen hatırlatmalar
+              <h2 class="page-title" data-i18n="notifications.remindersTitle">Hatırlatmalar</h2>
+              <p class="page-subtitle" data-i18n="notifications.remindersSubtitle">
+                Zamanı gelen ve yaklaşan hatırlatmalar
               </p>
             </div>
             <div class="page-actions">
@@ -370,27 +363,18 @@
             </div>
           </div>
           <div class="page-body">
-            <div id="notificationsList" class="card-list">
-              <!-- Notifications are rendered here -->
-            </div>
-          </div>
-        </div>
-
-        <!-- Reminders screen: the reminders still to come -->
-        <div id="remindersScreen" class="screen reminders-screen hidden">
-          <div class="page-header">
-            <span class="page-icon tone-amber"><i class="fas fa-bell"></i></span>
-            <div class="page-heading">
-              <h2 class="page-title" data-i18n="notifications.remindersTitle">Hatırlatmalar</h2>
-              <p class="page-subtitle" data-i18n="notifications.remindersSubtitle">
-                Notlarınız için ayarlanmış hatırlatmalar
-              </p>
-            </div>
-          </div>
-          <div class="page-body">
-            <div id="remindersList" class="card-list">
-              <!-- Upcoming reminders are rendered here -->
-            </div>
+            <section class="page-section hidden" id="notificationsSection">
+              <h3 class="section-label page-section-label" data-i18n="notifications.incoming">
+                Gelenler
+              </h3>
+              <div id="notificationsList" class="card-list"></div>
+            </section>
+            <section class="page-section">
+              <h3 class="section-label page-section-label" data-i18n="notifications.upcoming">
+                Yaklaşanlar
+              </h3>
+              <div id="remindersList" class="card-list"></div>
+            </section>
           </div>
         </div>
 

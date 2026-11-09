@@ -251,7 +251,9 @@
     "title": "Notifications",
     "subtitle": "Reminders that came due",
     "remindersTitle": "Reminders",
-    "remindersSubtitle": "Reminders set for your notes"
+    "remindersSubtitle": "Reminders that came due and those to come",
+    "incoming": "Came due",
+    "upcoming": "Upcoming"
   },
   "todos": {
     "todosTitle": "To-Do List",

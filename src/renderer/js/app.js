@@ -200,7 +200,6 @@ export class CapnoteApp {
     this.remindersList = document.getElementById('remindersList');
     this.remindersScreen = document.getElementById('remindersScreen');
     this.remindersNav = document.getElementById('remindersNav');
-    this.activeRemindersCount = document.getElementById('activeRemindersCount');
     this.reminderDatetime = document.getElementById('reminderDatetime');
     this.reminderRecurrence = document.getElementById('reminderRecurrence');
     this.reminderDateBtn = document.getElementById('reminderDateBtn');
@@ -220,8 +219,8 @@ export class CapnoteApp {
     this.todosCount = document.getElementById('todosCount');
 
     // Notifications elements
-    this.notificationsScreen = document.getElementById('notificationsScreen');
-    this.notificationsNav = document.getElementById('notificationsNav');
+    // Came-due reminders are a section of the reminders page
+    this.notificationsSection = document.getElementById('notificationsSection');
     this.notificationsList = document.getElementById('notificationsList');
     this.activeNotificationsCount = document.getElementById('activeNotificationsCount');
     this.markAllReadBtn = document.getElementById('markAllReadBtn');

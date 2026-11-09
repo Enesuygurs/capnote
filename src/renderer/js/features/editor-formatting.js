@@ -98,10 +98,7 @@ export class EditorFormattingFeature {
       });
     }
 
-    // Notifications event listeners
-    if (this.notificationsNav) {
-      this.notificationsNav.addEventListener('click', () => this.showNotificationsScreen());
-    }
+    // The bell: the reminders page (came due and to come)
     this.remindersNav?.addEventListener('click', () => this.showRemindersScreen());
 
     // Mark all as read button

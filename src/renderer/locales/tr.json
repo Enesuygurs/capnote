@@ -251,7 +251,9 @@
     "title": "Bildirimler",
     "subtitle": "Zamanı gelen hatırlatmalar",
     "remindersTitle": "Hatırlatmalar",
-    "remindersSubtitle": "Notlarınız için ayarlanmış hatırlatmalar"
+    "remindersSubtitle": "Zamanı gelen ve yaklaşan hatırlatmalar",
+    "incoming": "Gelenler",
+    "upcoming": "Yaklaşanlar"
   },
   "todos": {
     "todosTitle": "Yapılacaklar Listesi",
