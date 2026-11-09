@@ -345,7 +345,7 @@
           </div>
         </div>
 
-        <!-- Reminders: those that came due (unread ones marked) and those still to come -->
+        <!-- Reminders: those still to come first, then those that came due (unread ones marked) -->
         <div id="remindersScreen" class="screen reminders-screen hidden">
           <div class="page-header">
             <span class="page-icon tone-amber"><i class="fas fa-bell"></i></span>
@@ -363,17 +363,17 @@
             </div>
           </div>
           <div class="page-body">
-            <section class="page-section hidden" id="notificationsSection">
-              <h3 class="section-label page-section-label" data-i18n="notifications.incoming">
-                Gelenler
-              </h3>
-              <div id="notificationsList" class="card-list"></div>
-            </section>
             <section class="page-section">
               <h3 class="section-label page-section-label" data-i18n="notifications.upcoming">
                 Yaklaşanlar
               </h3>
               <div id="remindersList" class="card-list"></div>
+            </section>
+            <section class="page-section hidden" id="notificationsSection">
+              <h3 class="section-label page-section-label" data-i18n="notifications.incoming">
+                Gelenler
+              </h3>
+              <div id="notificationsList" class="card-list"></div>
             </section>
           </div>
         </div>

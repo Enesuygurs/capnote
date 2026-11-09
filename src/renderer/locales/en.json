@@ -273,6 +273,12 @@
     "openCount": "{count} open",
     "migratedTitle": "To-dos"
   },
+  "tasks": {
+    "priority1": "Priority 1 · Urgent",
+    "priority2": "Priority 2 · High",
+    "priority3": "Priority 3 · Medium",
+    "priorityNone": "No priority"
+  },
   "emojiCategories": {
     "all": "All",
     "smileys": "Smileys",

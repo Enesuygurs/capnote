@@ -33,6 +33,7 @@ import { NoteFilesFeature } from './features/note-files.js';
 import { FolderLockFeature } from './features/folder-lock.js';
 import { LockMetaFeature } from './features/lock-meta.js';
 import { ListConvertFeature } from './features/list-convert.js';
+import { TaskPriorityFeature } from './features/task-priority.js';
 import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
@@ -454,6 +455,7 @@ export class CapnoteApp {
     this.setupNoteLinks();
     this.setupNoteFiles();
     this.setupTasksPage();
+    this.setupTaskPriority();
     this.setupFolderLock();
     this.setupTags();
     this.setupArchive();
@@ -632,6 +634,7 @@ export class CapnoteApp {
     this.updateRemindersView();
     this.updateNotificationsView();
     this.renderTodosSections();
+    this.relabelTaskPriorityMenu?.();
     this.updateTagsDisplay();
     this.renderUpdateState();
 
@@ -729,6 +732,7 @@ applyFeatures(CapnoteApp, [
   FolderLockFeature,
   LockMetaFeature,
   ListConvertFeature,
+  TaskPriorityFeature,
   FoldingFeature,
   TagsFeature,
   ArchiveFeature,

@@ -273,6 +273,12 @@
     "openCount": "{count} açık",
     "migratedTitle": "Yapılacaklar"
   },
+  "tasks": {
+    "priority1": "Öncelik 1 · Acil",
+    "priority2": "Öncelik 2 · Yüksek",
+    "priority3": "Öncelik 3 · Orta",
+    "priorityNone": "Öncelik yok"
+  },
   "emojiCategories": {
     "all": "Tümü",
     "smileys": "Gülücükler",
