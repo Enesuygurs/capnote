@@ -17,8 +17,13 @@
   margin-left: 0;
 }
 
-/* A locked folder: a lock in the accent color before its count (open while it is opened); locked
-   now it has no count and no arrow */
+/* A locked folder: locked now, a lock in place of its folder icon (no count, no arrow); opened, its
+   folder icon again and an open lock before its count. The compact list has no icons, so there
+   the lock stays at the end of the row either way. */
+.folder-item.is-locked:not(.compact-list *) .folder-lock {
+  display: none;
+}
+
 .folder-lock {
   margin-left: auto;
   font-size: var(--fs-xs);
