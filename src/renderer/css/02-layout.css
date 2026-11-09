@@ -87,13 +87,16 @@
 }
 
 /* ============ Page header ============
-   The same on every screen: title + subtitle or meta on the left, actions on the right */
+   The same on every screen: title + subtitle or meta on the left, actions on the right. One
+   height for all of them (a note's, the editor's, the pages'), so nothing below it moves when the
+   screen changes; it only grows when its content wraps in a narrow window. */
 .page-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  padding: var(--space-5) var(--gutter);
+  min-height: var(--page-header-height);
+  padding: var(--space-3) var(--gutter);
   border-bottom: 1px solid var(--divider);
   flex-shrink: 0;
 }

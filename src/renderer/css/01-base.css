@@ -112,6 +112,8 @@ body.resizing .modal {
   --tone-amber: #d97706;
   /* Pins: the yellow of the default accent */
   --tone-gold: #f59e0b;
+  /* The header of every screen, one height */
+  --page-header-height: 100px;
   /* Locks keep one color, whatever the accent is */
   --tone-lock: #f59e0b;
   --tone-green: #16a34a;

@@ -14,6 +14,7 @@ export class NoteLinksFeature {
     link.dataset.noteId = note.id;
     link.href = '#';
     link.contentEditable = 'false';
+    link.draggable = false;
     link.textContent = this.displayTitle(note);
     return link;
   }
@@ -33,6 +34,7 @@ export class NoteLinksFeature {
       }
       if (link.textContent !== text || link.children.length) link.textContent = text;
       if (link.getAttribute('contenteditable') !== 'false') link.contentEditable = 'false';
+      if (link.getAttribute('draggable') !== 'false') link.draggable = false;
     });
   }
 
@@ -362,6 +364,15 @@ export class NoteLinksFeature {
   }
 
   setupNoteLinks() {
+    // A note link is a place in the app, not an address: it is never dragged out (onto the
+    // desktop, into another app); dragging over it selects text as usual
+    document.addEventListener(
+      'dragstart',
+      (e) => {
+        if (e.target?.closest?.('a.note-link, .chip.backlink')) e.preventDefault();
+      },
+      true
+    );
     this.richEditor.addEventListener('input', (e) => {
       if (e.inputType === 'insertText' && e.data === ']') this.linkTypedNoteTitle();
       // A pasted or dropped link is made one piece too

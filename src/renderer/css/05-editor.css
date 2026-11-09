@@ -3,7 +3,6 @@
 /* The header matches the viewer's so nothing moves when switching; the toolbar closes the region */
 .editor-header {
   border-bottom: 0;
-  padding-bottom: var(--space-4);
 }
 
 /* The previews and the side panel toggle sit with the editor's actions, a gap before Cancel */

@@ -241,24 +241,29 @@
   color: var(--text-secondary);
 }
 
-/* A locked note in the viewer: a larger message in the middle of the page, its lock in the accent
-   color on a soft circle of it */
+/* A locked note's page and a locked folder's page: the same lock message at the same place, a
+   fixed distance under the header (not centered, which moved it with what is under the page),
+   its lock on a soft circle of the lock color */
 .viewer-content:has(.locked-note-message) {
   display: flex;
 }
 
-/* A locked folder's page: the same lock message, in the middle of the page */
 .folder-lock-body {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
+  padding: var(--gutter);
 }
 
 #viewerText:has(> .locked-note-message) {
   flex: 1;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: flex-start;
+}
+
+.formatted-content .locked-note-message {
+  margin-top: clamp(24px, 12vh, 120px);
 }
 
 .formatted-content .locked-note-message {
@@ -288,7 +293,8 @@
 
 .formatted-content .locked-note-message h3 {
   margin: 0;
-  font-size: var(--fs-2xl);
+  font-size: var(--fs-3xl);
+  line-height: 32px;
   color: var(--text-strong);
 }
 
