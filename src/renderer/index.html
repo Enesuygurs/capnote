@@ -35,6 +35,10 @@
     <link rel="stylesheet" href="css/18-dark-theme.css" />
   </head>
   <body>
+    <!-- Where focus starts. When Windows hands the window the keyboard (opening it, switching to it)
+         the page's first stop takes focus, with a focus ring: this invisible stop takes it, so no
+         button lights up. Tab from here goes on to the first button as usual. -->
+    <div class="focus-start" tabindex="0" role="presentation"></div>
     <div class="titlebar">
       <!-- The title spans the whole bar and is part of the drag area. It comes first: the window
            sets drag areas in page order, so the buttons after it stay clickable on top of it.
