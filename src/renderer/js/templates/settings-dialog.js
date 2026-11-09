@@ -118,7 +118,7 @@ export const SETTINGS_DIALOG = /* HTML */ `
                 <div class="setting-info">
                   <label data-i18n="settings.autoFormat">Otomatik biçimlendirme</label>
                   <small data-i18n="settings.autoFormatDesc"
-                    >Satır başındaki “-”, “1.” ve “[]” işaretlerini listeye dönüştürür</small
+                    >Satır başı işaretlerini listeye, adresleri bağlantıya dönüştürür</small
                   >
                 </div>
                 <label class="toggle-switch">

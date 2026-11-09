@@ -165,7 +165,7 @@
     "autoSave": "Otomatik Kaydetme",
     "autoSaveDesc": "Notları yazarken otomatik olarak kaydeder",
     "autoFormat": "Otomatik biçimlendirme",
-    "autoFormatDesc": "Satır başındaki “-”, “1.” ve “[]” işaretlerini listeye dönüştürür",
+    "autoFormatDesc": "Satır başı işaretlerini listeye, adresleri bağlantıya dönüştürür",
     "relockOn": "Yeniden kilitleme",
     "relockOnDesc": "Açılan kilidin ne zaman yeniden kapanacağını belirler",
     "relockOnLeave": "Kapatılınca",

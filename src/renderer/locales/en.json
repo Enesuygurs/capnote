@@ -165,7 +165,7 @@
     "autoSave": "Auto Save",
     "autoSaveDesc": "Saves notes automatically as you type",
     "autoFormat": "Automatic formatting",
-    "autoFormatDesc": "Turns “-”, “1.” and “[]” at the start of a line into lists",
+    "autoFormatDesc": "Turns line markers into lists and addresses into links",
     "relockOn": "Re-lock",
     "relockOnDesc": "Sets when notes and folders lock again",
     "relockOnLeave": "When closed",
