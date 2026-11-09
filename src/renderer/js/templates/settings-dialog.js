@@ -104,6 +104,20 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
+                  <label data-i18n="settings.lockedMoodInOverview"
+                    >Kilitli notlar genel bakışta</label
+                  >
+                  <small data-i18n="settings.lockedMoodInOverviewDesc"
+                    >Ruh hali ve hava durumu dağılımlarına kilitli notları da dahil eder</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="lockedMoodToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
                   <label data-i18n="settings.autoSave">Otomatik Kaydetme</label>
                   <small data-i18n="settings.autoSaveDesc"
                     >Notları yazarken otomatik olarak kaydeder</small

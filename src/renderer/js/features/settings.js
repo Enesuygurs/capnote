@@ -107,6 +107,8 @@ export class SettingsFeature {
     if (this.relockOnSelect) this.relockOnSelect.value = settings.relockOn;
     if (this.hideLockedTitlesToggle)
       this.hideLockedTitlesToggle.checked = !!settings.hideLockedTitles;
+    if (this.lockedMoodToggle)
+      this.lockedMoodToggle.checked = settings.lockedMoodInOverview !== false;
     if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
     if (this.autoFormatToggle) this.autoFormatToggle.checked = settings.autoFormat;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
@@ -198,6 +200,12 @@ export class SettingsFeature {
     this.hideLockedTitlesToggle?.addEventListener('change', (e) => {
       this.setSetting('hideLockedTitles', e.currentTarget.checked);
       this.applyHiddenTitlesSetting();
+    });
+
+    // Locked notes in the overview's mood and weather
+    this.lockedMoodToggle?.addEventListener('change', (e) => {
+      this.setSetting('lockedMoodInOverview', e.currentTarget.checked);
+      if (!this.welcomeScreen.classList.contains('hidden')) this.renderDashboard();
     });
 
     this.relockOnSelect?.addEventListener('change', (e) => {

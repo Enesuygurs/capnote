@@ -77,9 +77,13 @@ export class ViewerFeature {
       minute: '2-digit',
     });
 
-    // Mood and weather
-    this.showMoodWeatherIcon(this.viewerMood, this.findMoodButton(note.mood));
-    this.showMoodWeatherIcon(this.viewerWeather, this.findWeatherButton(note.weather));
+    // Mood and weather (a locked note shows them only once it is opened)
+    const lockedNow = this.isNoteLockedForView(note);
+    this.showMoodWeatherIcon(this.viewerMood, lockedNow ? null : this.findMoodButton(note.mood));
+    this.showMoodWeatherIcon(
+      this.viewerWeather,
+      lockedNow ? null : this.findWeatherButton(note.weather)
+    );
 
     // Tags
     this.displayViewerTags(note.tags || []);
