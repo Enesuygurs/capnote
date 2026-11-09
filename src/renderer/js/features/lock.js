@@ -90,6 +90,7 @@ export class LockFeature {
     this.showViewer();
     this.displayNote(note);
     this.setActiveNoteInList(note.id);
+    this.revealNoteInList(note);
     return false;
   }
 

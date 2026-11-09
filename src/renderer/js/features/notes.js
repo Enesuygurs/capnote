@@ -130,6 +130,7 @@ export class NotesFeature {
     this.showViewer();
     this.displayNote(note);
     this.setActiveNoteInList(this.currentNote.id); // Only update active class
+    this.revealNoteInList(note);
   }
 
   // folderId: the folder the new note goes into (it opens, with the folders it is in)
@@ -557,6 +558,7 @@ export class NotesFeature {
     this.showViewer();
     this.displayNote(note);
     this.setActiveNoteInList(this.currentNote.id); // Only update active class
+    this.revealNoteInList(note);
     if (note.filePath) this.refreshFileNote(note);
   }
 

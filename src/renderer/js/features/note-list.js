@@ -74,6 +74,23 @@ export class NoteListFeature {
   }
 
   // Update only the active state in existing DOM note lists without full re-render
+  // A note that opens is shown in the list: the folders it is in open (a closed one would hide
+  // it), and its row scrolls into view
+  revealNoteInList(note) {
+    if (!note) return;
+    const closed = note.folderId
+      ? this.folderChain(note.folderId).filter((f) => !f.expanded && !f.isArchived)
+      : [];
+    if (closed.length && !this.isNoteHiddenByFolderLock(note)) {
+      closed.forEach((f) => (f.expanded = true));
+      this.saveFolders();
+      this.updateFoldersList();
+      this.setActiveNoteInList(note.id);
+    }
+    const row = document.querySelector(`.sidebar-nav .note-item[data-note-id="${note.id}"]`);
+    row?.scrollIntoView({ block: 'nearest' });
+  }
+
   setActiveNoteInList(noteId) {
     // Clear previous active in main notes list
     const prevActive = this.notesList.querySelector('.note-item.active');
