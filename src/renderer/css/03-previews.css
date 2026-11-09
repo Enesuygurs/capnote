@@ -109,19 +109,31 @@
   margin: var(--space-2) 0;
 }
 
+/* A task: its box on the first line of its text; a long text goes on below as plain lines (the box
+   is not centered on the whole text, which left it between two lines). A one-line task is as
+   tall as before (a small control). */
 .checklist-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-2);
-  min-height: var(--control-sm);
+  padding-block: calc((var(--control-sm) - 1lh) / 2);
 }
 
 .checklist-item input[type='checkbox'] {
+  flex-shrink: 0;
   width: 16px;
   height: 16px;
   margin: 0;
   cursor: pointer;
   accent-color: var(--accent-color);
+}
+
+/* In the middle of the first line (the text's font and line height, so 1lh is a line of it); more
+   specific than the app's checkbox rule, which sets no margin */
+.checklist .checklist-item input[type='checkbox'] {
+  font: inherit;
+  line-height: inherit;
+  margin-top: calc((1lh - 16px) / 2);
 }
 
 .checklist-item label {
