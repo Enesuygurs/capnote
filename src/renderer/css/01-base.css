@@ -298,6 +298,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* The page's invisible first focus stop (see index.html): no size, no ring */
+.focus-start {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  outline: none;
+  pointer-events: none;
+}
+
 /* Selected text anywhere (notes, fields, lists) on the accent color */
 ::selection {
   background: var(--accent-color);
