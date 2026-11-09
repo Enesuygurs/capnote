@@ -357,6 +357,8 @@ export class BackupFeature {
       this.updateNotificationsView();
       this.updateActiveRemindersCount();
       this.updateActiveNotificationsCount();
+      // Imported to-do sections go into a note too
+      await this.migrateTodoSections();
       this.renderTodosSections();
       this.updateTodosCount();
 

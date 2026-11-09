@@ -4,7 +4,7 @@
     "newNote": "New Note",
     "notifications": "Notifications",
     "reminders": "Reminders",
-    "todos": "To-Do List",
+    "todos": "Tasks",
     "allNotes": "All",
     "today": "Today",
     "favorites": "Favorites",
@@ -256,9 +256,9 @@
     "upcoming": "Upcoming"
   },
   "todos": {
-    "todosTitle": "To-Do List",
-    "todosSubtitle": "Keep track of your tasks",
-    "noTodos": "No tasks yet",
+    "todosTitle": "Tasks",
+    "todosSubtitle": "The tasks in your notes",
+    "noTodos": "No open tasks in your notes",
     "todoAdded": "Task added",
     "todoDeleted": "Task deleted",
     "todoUpdated": "Task updated",
@@ -266,7 +266,12 @@
     "sectionAdded": "Section added",
     "sectionDeleted": "Section deleted",
     "noTodosInSection": "No tasks in this section",
-    "taskCount": "{count} tasks"
+    "taskCount": "{count} tasks",
+    "noTodosHint": "Task lists you write in a note show here.",
+    "showDone": "Show completed",
+    "hideDone": "Hide completed",
+    "openCount": "{count} open",
+    "migratedTitle": "To-dos"
   },
   "emojiCategories": {
     "all": "All",

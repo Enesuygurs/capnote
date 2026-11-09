@@ -6,8 +6,8 @@ export async function run() {
   a.noteTitle.value = 'N';
   a.richEditor.innerHTML = '<p>n</p>';
   a.saveNote(true);
-  a.todoSectionInput.value = 'T';
-  a.addTodoSection();
+  // Tasks live in notes; an old to-do section is still cleared
+  a.todoSections = [{ id: 't', name: 'T', todos: [] }];
   a.setAccentColor('#8b5cf6');
   a.toggleDarkMode(true);
   a.toggleEditorSidebar();

@@ -452,31 +452,23 @@
         </div>
 
         <!-- Todos Screen -->
+        <!-- Tasks: the tasks of every note, grouped by note -->
         <div id="todosScreen" class="screen todos-screen hidden">
           <div class="page-header">
             <span class="page-icon tone-blue"><i class="fas fa-list-check"></i></span>
             <div class="page-heading">
-              <h2 class="page-title" data-i18n="nav.todos">Yapılacaklar</h2>
-              <p class="page-subtitle" data-i18n="todos.todosSubtitle">Görevlerinizi takip edin</p>
+              <h2 class="page-title" data-i18n="nav.todos">Görevler</h2>
+              <p class="page-subtitle" data-i18n="todos.todosSubtitle">Notlarınızdaki görevler</p>
+            </div>
+            <div class="page-actions">
+              <button id="showDoneTasksBtn" class="btn-tinted btn-small">
+                <i class="fas fa-check-double"></i>
+                <span data-i18n="todos.showDone">Tamamlananları göster</span>
+              </button>
             </div>
           </div>
           <div class="page-body">
-            <div class="input-row">
-              <input
-                type="text"
-                id="todoSectionInput"
-                placeholder="Yeni bölüm ekle..."
-                data-i18n-placeholder="placeholders.newSection"
-                class="form-input"
-              />
-              <button id="addTodoSectionBtn" class="btn-primary">
-                <i class="fas fa-plus"></i>
-                <span data-i18n="buttons.addSection">Bölüm Ekle</span>
-              </button>
-            </div>
-            <div id="todosSectionsContainer" class="card-list">
-              <!-- Sections and todos will be populated here -->
-            </div>
+            <div id="todosSectionsContainer" class="card-list"></div>
           </div>
         </div>
 
