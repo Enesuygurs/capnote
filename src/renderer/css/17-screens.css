@@ -241,6 +241,12 @@
   color: var(--text-secondary);
 }
 
+/* A locked note has no actions (favorite, edit, copy, history, export, archive, delete) until it
+   is opened */
+.note-viewer.is-locked .viewer-actions {
+  display: none;
+}
+
 /* A locked note's page and a locked folder's page: the same lock message at the same place, a
    fixed distance under the header (not centered, which moved it with what is under the page),
    its lock on a soft circle of the lock color */
