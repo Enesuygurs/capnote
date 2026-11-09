@@ -6,7 +6,10 @@ export class ViewerFeature {
   displayNote(note) {
     // Showing a note (another one, or this one again) ends a version preview
     if (!note.isVersionPreview) this.clearVersionPreview();
-    this.viewerTitle.textContent = this.displayTitle(note);
+    // An open note's own page shows its title (elsewhere a locked one's title may be hidden)
+    this.viewerTitle.textContent = this.isNoteLockedForView(note)
+      ? this.displayTitle(note)
+      : note.title || i18n.t('messages.untitledNote');
     this.updateArchiveView?.();
 
     // A locked note shows only its lock page: none of the note's actions until it is opened

@@ -18,12 +18,13 @@ export class LockMetaFeature {
   }
 
   // A locked note shows no title now: it is locked and its title is hidden (or still encrypted)
+  // A locked note shows no title: while it is locked, and with the setting on also while it is
+  // open (only its own page and the editor show the title then). A note locked with its folder
+  // shows its title once the folder is open (the folder's lock keeps it out of sight before).
   isNoteTitleHidden(note) {
-    return (
-      !!note?.isLocked &&
-      this.isNoteLockedForView(note) &&
-      (!!note.sealedMeta || this.hidesLockedTitles())
-    );
+    if (!note?.isLocked) return false;
+    if (this.isNoteLockedForView(note)) return !!note.sealedMeta || this.hidesLockedTitles();
+    return this.hidesLockedTitles() && !note.lockedByFolder;
   }
 
   isFolderNameHidden(folder) {
