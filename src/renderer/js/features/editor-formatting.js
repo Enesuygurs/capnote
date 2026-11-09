@@ -150,6 +150,51 @@ export class EditorFormattingFeature {
     this.captureEditorSelection();
   }
 
+  // Give the selected text a style, a piece of text at a time inside its own line, so lines, list
+  // items and tasks keep their shape (wrapping the whole selection in one element breaks them)
+  styleSelectedText(property, value) {
+    const selection = window.getSelection();
+    if (!selection || !selection.rangeCount) return false;
+    const range = selection.getRangeAt(0);
+    if (range.collapsed || !this.richEditor.contains(range.commonAncestorContainer)) return false;
+    const root =
+      range.commonAncestorContainer.nodeType === Node.TEXT_NODE
+        ? range.commonAncestorContainer.parentNode
+        : range.commonAncestorContainer;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
+      if (!range.intersectsNode(n) || !n.data.length) continue;
+      // Spaces between blocks (in a list, between tasks) are not text of a line
+      if (!n.data.trim() && n.parentElement?.matches('ul, ol, .checklist, .checklist-item'))
+        continue;
+      nodes.push(n);
+    }
+    if (!nodes.length) return false;
+    const spans = [];
+    nodes.forEach((node) => {
+      let piece = node;
+      const start = node === range.startContainer ? range.startOffset : 0;
+      const end = node === range.endContainer ? range.endOffset : node.length;
+      if (end <= start) return;
+      if (end < piece.length) piece.splitText(end);
+      if (start > 0) piece = piece.splitText(start);
+      const span = document.createElement('span');
+      span.style[property] = value;
+      piece.replaceWith(span);
+      span.appendChild(piece);
+      spans.push(span);
+    });
+    if (!spans.length) return false;
+    const after = document.createRange();
+    after.setStartBefore(spans[0]);
+    after.setEndAfter(spans[spans.length - 1]);
+    selection.removeAllRanges();
+    selection.addRange(after);
+    this.trackContentChanges();
+    return true;
+  }
+
   applyFontSize(sizeValue) {
     const selection = window.getSelection();
     if (selection.rangeCount === 0) return;
@@ -158,20 +203,7 @@ export class EditorFormattingFeature {
     if (range.collapsed) return;
 
     try {
-      // Create a span with the font size
-      const span = document.createElement('span');
-      span.style.fontSize = sizeValue;
-
-      // Extract contents and wrap in span
-      const contents = range.extractContents();
-      span.appendChild(contents);
-      range.insertNode(span);
-
-      // Restore selection
-      selection.removeAllRanges();
-      const newRange = document.createRange();
-      newRange.selectNodeContents(span);
-      selection.addRange(newRange);
+      this.styleSelectedText('fontSize', sizeValue);
     } catch {
       // Fallback to execCommand
       const sizeNum = parseInt(sizeValue);
@@ -199,43 +231,8 @@ export class EditorFormattingFeature {
     // If nothing is selected, do nothing (don't apply to whole editor)
     if (range.collapsed) return;
 
-    // Check if selection contains any input elements (like checkboxes)
-    const fragment = range.cloneContents();
-    const tempDiv = document.createElement('div');
-    tempDiv.appendChild(fragment);
-
-    // Don't apply if there are any input elements (checkboxes)
-    if (tempDiv.querySelector('input')) {
-      // Selection contains input/checkbox, abort
-      selection.removeAllRanges();
-      return;
-    }
-
     try {
-      // Create a span with background color
-      const span = document.createElement('span');
-      span.style.backgroundColor = colorValue;
-
-      // Extract selected contents
-      const contents = range.extractContents();
-
-      // If contents is empty, don't apply
-      if (!contents.textContent.trim() && !contents.querySelector('img, br')) {
-        return;
-      }
-
-      // Wrap contents in span
-      span.appendChild(contents);
-      range.insertNode(span);
-
-      // Restore selection on the new span
-      selection.removeAllRanges();
-      const newRange = document.createRange();
-      newRange.selectNodeContents(span);
-      selection.addRange(newRange);
-
-      // Mark as changed
-      this.trackContentChanges();
+      this.styleSelectedText('backgroundColor', colorValue);
     } catch (e) {
       console.warn('Background color application failed:', e);
       // Don't use fallback for checkboxes - it will also break them
