@@ -289,6 +289,9 @@ export class EditorInsertFeature {
       return;
     }
 
+    // Addresses in it become links (when automatic formatting is on)
+    if (this.pasteWithLinks?.(text)) return;
+
     // Insert pasted text as plain text (preserve newlines). Do NOT auto-create <pre><code> blocks.
     // Only special-case pasting when inside an existing <code> (handled above).
     // Use execCommand insertText to preserve simple plaintext insertion behavior in contenteditable.
