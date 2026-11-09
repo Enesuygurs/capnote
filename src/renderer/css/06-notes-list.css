@@ -4,11 +4,36 @@
 .notes-list-empty {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-2) var(--space-3);
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-2);
   color: var(--text-muted);
   font-size: var(--fs-sm);
+  text-align: center;
+}
+
+.notes-list-empty p {
+  margin: 0;
+}
+
+/* An empty list: the message in the middle of the panel, both ways (the list stretches down to
+   the panel's bottom under the "Notlar" heading) */
+.sidebar-content:has(.notes-list-empty),
+.sidebar-content:has(.notes-list-empty) .sidebar-nav,
+.sidebar-content:has(.notes-list-empty) .sidebar-nav > .nav-section:has(.notes-list-empty),
+.sidebar-content:has(.notes-list-empty) .notes-list-container,
+.sidebar-content:has(.notes-list-empty) .notes-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-content:has(.notes-list-empty) .sidebar-nav,
+.sidebar-content:has(.notes-list-empty) .sidebar-nav > .nav-section:has(.notes-list-empty),
+.sidebar-content:has(.notes-list-empty) .notes-list-container,
+.sidebar-content:has(.notes-list-empty) .notes-list,
+.notes-list .notes-list-empty {
+  flex: 1;
 }
 
 .notes-list-container {
