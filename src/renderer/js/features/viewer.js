@@ -9,6 +9,9 @@ export class ViewerFeature {
     this.viewerTitle.textContent = this.displayTitle(note);
     this.updateArchiveView?.();
 
+    // A locked note shows only its lock page: none of the note's actions until it is opened
+    this.noteViewer?.classList.toggle('is-locked', this.isNoteLockedForView(note));
+
     // Check if note is locked and not temporarily unlocked
     if (this.isNoteLockedForView(note)) {
       // The password is asked on the note's own page, under its lock
