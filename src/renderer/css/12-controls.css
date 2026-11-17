@@ -374,6 +374,19 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
   max-width: 320px;
 }
 
+/* The "/" menu: a column of commands, scrolling past about nine */
+.slash-menu {
+  width: 240px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.slash-menu .menu-item i {
+  width: 16px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
 /* A long title is cut with an ellipsis; the icon keeps its width, so every icon lines up */
 .note-link-menu .menu-item i {
   flex-shrink: 0;

@@ -115,6 +115,9 @@ export const NOTE_DIALOGS = /* HTML */ `
 
   <!-- Notes suggested while typing "[[" in the editor -->
   <div id="noteLinkMenu" class="context-menu menu note-link-menu hidden" role="listbox"></div>
+
+  <!-- The "/" menu: what can go on a line, typed "/" at its start -->
+  <div id="slashMenu" class="context-menu menu slash-menu hidden" role="listbox"></div>
   <div id="noteFileMenu" class="context-menu menu hidden" role="menu">
     <button type="button" class="menu-item" data-action="open">
       <i class="fas fa-up-right-from-square"></i><span data-i18n="noteFiles.open">Aç</span>

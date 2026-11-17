@@ -682,5 +682,12 @@
     "pathButton": "Dosya Yolu",
     "dropToOpen": "Not olarak aç",
     "unsupported": "Desteklenmeyen dosya: {name}. Yalnızca .md, .txt ve .html dosyaları açılabilir"
+  },
+  "slashMenu": {
+    "noteLink": "Not bağlantısı",
+    "noMatch": "Eşleşen komut yok",
+    "task": "Görev listesi",
+    "bullets": "Madde listesi",
+    "numbers": "Numaralı liste"
   }
 }
