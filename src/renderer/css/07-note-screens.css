@@ -1019,3 +1019,112 @@
   gap: var(--space-1);
   margin-top: var(--space-2);
 }
+
+/* ============ Comparing a version with now ============
+   Added lines and words on a green tint, removed ones on a red tint and crossed out; unchanged
+   lines in the text color; long unchanged runs fold into one row */
+.version-diff-summary {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+/* The comparison button while the comparison is shown */
+#versionDiffBtn.active {
+  background: color-mix(in srgb, var(--accent-color) 22%, transparent);
+  color: var(--accent-text);
+}
+
+.history-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.version-diff {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.diff-row {
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.diff-row.is-added {
+  background: color-mix(in srgb, var(--tone-green) 16%, transparent);
+}
+
+.diff-row.is-removed {
+  background: color-mix(in srgb, var(--tone-red) 12%, transparent);
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.diff-ins {
+  text-decoration: none;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--tone-green) 24%, transparent);
+}
+
+.diff-del {
+  border-radius: 3px;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--tone-red) 16%, transparent);
+}
+
+.diff-title {
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+}
+
+.diff-row.kind-h1,
+.diff-row.kind-h2,
+.diff-row.kind-h3 {
+  margin-top: var(--space-2);
+  font-weight: 600;
+}
+
+.diff-row.kind-h1 {
+  font-size: var(--fs-xl);
+}
+
+.diff-row.kind-h2 {
+  font-size: var(--fs-lg);
+}
+
+.diff-row.kind-li::before {
+  content: '• ';
+  color: var(--text-muted);
+}
+
+.diff-row.kind-code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.diff-row.kind-blockquote {
+  font-style: italic;
+}
+
+.diff-fold {
+  align-self: flex-start;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.diff-fold:hover {
+  background: var(--tint-hover);
+  color: var(--text-secondary);
+}
+
+.diff-none {
+  color: var(--text-muted);
+}
