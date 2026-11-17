@@ -32,6 +32,7 @@ import { NoteLinksFeature } from './features/note-links.js';
 import { SlashMenuFeature } from './features/slash-menu.js';
 import { NoteFilesFeature } from './features/note-files.js';
 import { FolderLockFeature } from './features/folder-lock.js';
+import { IdleLockFeature } from './features/idle-lock.js';
 import { LockMetaFeature } from './features/lock-meta.js';
 import { ListConvertFeature } from './features/list-convert.js';
 import { TaskPriorityFeature } from './features/task-priority.js';
@@ -288,6 +289,7 @@ export class CapnoteApp {
     this.onNoteDeleteSelect = document.getElementById('onNoteDeleteSelect');
     this.startupPageSelect = document.getElementById('startupPageSelect');
     this.relockOnSelect = document.getElementById('relockOnSelect');
+    this.idleLockSelect = document.getElementById('idleLockSelect');
     this.hideLockedTitlesToggle = document.getElementById('hideLockedTitlesToggle');
     this.lockedMoodToggle = document.getElementById('lockedMoodToggle');
     this.autoSaveToggle = document.getElementById('autoSaveToggle');
@@ -464,6 +466,7 @@ export class CapnoteApp {
     this.setupTaskPriority();
     this.setupAutoLinks();
     this.setupFolderLock();
+    this.setupIdleLock();
     this.setupTags();
     this.setupArchive();
     this.setupDashboard();
@@ -738,6 +741,7 @@ applyFeatures(CapnoteApp, [
   SlashMenuFeature,
   NoteFilesFeature,
   FolderLockFeature,
+  IdleLockFeature,
   LockMetaFeature,
   ListConvertFeature,
   TaskPriorityFeature,

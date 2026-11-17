@@ -26,6 +26,7 @@ import { setQuickNoteShortcut, registerQuickNoteIpc } from './quick-note.js';
 import { registerDataTransferIpc } from './data-transfer.js';
 import { registerNoteFilesIpc } from './note-files.js';
 import { registerLockedImagesIpc } from './locked-images.js';
+import { registerIdleIpc } from './idle.js';
 import { filesFromArgv, openFiles, registerFileIpc, setContextMenu } from './files.js';
 
 // Development mode is 'npm run dev' from a source checkout: hot reload and DevTools
@@ -153,6 +154,7 @@ registerQuickNoteIpc({ settings: () => getDataStore().read('settings') });
 registerDataTransferIpc();
 registerNoteFilesIpc();
 registerLockedImagesIpc();
+registerIdleIpc();
 registerFileIpc({
   settings: () => getDataStore().read('settings'),
   notes: () => getDataStore().read('notes'),

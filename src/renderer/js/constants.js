@@ -25,6 +25,9 @@ export const DEFAULT_SETTINGS = {
   onNoteDelete: 'lastNote',
   // When an opened locked note locks again: 'leave' (another note opens) or 'quit' (the app closes)
   relockOn: 'leave',
+  // Opened locks close after this many minutes with no input on the computer (0: never), and when
+  // the screen locks
+  idleLockMinutes: 5,
   // Locked notes and folders show no title: their titles are encrypted too
   hideLockedTitles: false,
   // Locked notes' moods and weather count in the overview's spreads and calendar

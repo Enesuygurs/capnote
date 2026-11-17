@@ -105,6 +105,7 @@ export class SettingsFeature {
     if (settings.startupPage === 'notifications') settings.startupPage = 'reminders';
     if (this.startupPageSelect) this.startupPageSelect.value = settings.startupPage;
     if (this.relockOnSelect) this.relockOnSelect.value = settings.relockOn;
+    if (this.idleLockSelect) this.idleLockSelect.value = String(settings.idleLockMinutes ?? 5);
     if (this.hideLockedTitlesToggle)
       this.hideLockedTitlesToggle.checked = !!settings.hideLockedTitles;
     if (this.lockedMoodToggle)
@@ -210,6 +211,10 @@ export class SettingsFeature {
     this.lockedMoodToggle?.addEventListener('change', (e) => {
       this.setSetting('lockedMoodInOverview', e.currentTarget.checked);
       if (!this.welcomeScreen.classList.contains('hidden')) this.renderDashboard();
+    });
+
+    this.idleLockSelect?.addEventListener('change', (e) => {
+      this.setSetting('idleLockMinutes', Number(e.target.value) || 0);
     });
 
     this.relockOnSelect?.addEventListener('change', (e) => {

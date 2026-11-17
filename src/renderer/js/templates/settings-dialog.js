@@ -78,6 +78,21 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
+                  <label data-i18n="settings.idleLock">Boşta kalınca kilitle</label>
+                  <small data-i18n="settings.idleLockDesc"
+                    >Ekran kilitlenince veya bilgisayar boşta kalınca kilitleri kapatır</small
+                  >
+                </div>
+                <select id="idleLockSelect" class="select-small">
+                  <option value="0" data-i18n="settings.idleLockOff">Kapalı</option>
+                  <option value="1" data-i18n="settings.idleLock1">1 dakika</option>
+                  <option value="5" data-i18n="settings.idleLock5">5 dakika</option>
+                  <option value="15" data-i18n="settings.idleLock15">15 dakika</option>
+                  <option value="30" data-i18n="settings.idleLock30">30 dakika</option>
+                </select>
+              </div>
+              <div class="setting-item">
+                <div class="setting-info">
                   <label data-i18n="settings.onNoteDelete">Not silindiğinde</label>
                   <small data-i18n="settings.onNoteDeleteDesc"
                     >Bir not silindikten sonra gösterilecek sayfayı belirler</small

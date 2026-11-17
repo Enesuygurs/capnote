@@ -41,15 +41,16 @@ export class LockMetaFeature {
     return folder.name;
   }
 
-  // Encrypt the note's title and details with its password (setting on), or drop them (off)
-  async sealNoteMeta(note, password) {
+  // Encrypt the note's title and details with its password (setting on), or drop them (off);
+  // `from` is the note as it was when its saving began, if it has changed since
+  async sealNoteMeta(note, password, from = note) {
     if (!note || !password) return;
     if (!this.hidesLockedTitles()) {
       delete note.sealedMeta;
       return;
     }
     const meta = {};
-    META_FIELDS.forEach((key) => (meta[key] = note[key] ?? null));
+    META_FIELDS.forEach((key) => (meta[key] = from[key] ?? null));
     note.sealedMeta = await encrypt(JSON.stringify(meta), password);
   }
 
