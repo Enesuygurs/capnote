@@ -30,6 +30,8 @@ async function runCase(file, scratch) {
   }
   // saveAs: the file type the save dialog picks ("md" instead of the suggested one)
   if (test.saveAs) extraEnv.CAPNOTE_TEST_SAVE_AS = test.saveAs;
+  // firstRun: the app starts as a new install would (welcome note, system language)
+  if (test.firstRun) extraEnv.CAPNOTE_NO_WELCOME = '';
 
   if (test.seed) {
     const seeded = await launch({ script: asScript(test.seed), userData, extraEnv });
