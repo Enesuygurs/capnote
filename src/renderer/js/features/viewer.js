@@ -63,8 +63,6 @@ export class ViewerFeature {
 
     // Restore checkbox states in viewer
     this.restoreCheckboxStatesInViewer();
-    // Dated tasks say when they are due
-    this.refreshDueLabels(this.viewerText);
 
     // Save last viewed note
     this.saveLastViewedNote(note.id);
