@@ -49,7 +49,7 @@ export async function run() {
 }
 
 export const expected = {
-  menu: ['Boş not', 'Günlük', 'Toplantı notu', 'Haftalık plan'],
+  menu: ['Boş not', 'Günlük', 'Toplantı notu', 'Haftalık plan', 'Kitap notu'],
   menuOpen: true,
   menuClosed: true,
   editorOpen: true,

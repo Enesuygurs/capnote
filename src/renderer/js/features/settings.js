@@ -436,6 +436,7 @@ export class SettingsFeature {
       this.reminders = [];
       this.notifications = [];
       this.todoSections = [];
+      this.userTemplates = [];
       this.currentNote = null;
       this.unlockedNotes.clear();
 
@@ -448,6 +449,7 @@ export class SettingsFeature {
         this.saveReminders(),
         this.saveNotifications(),
         this.saveTodos(),
+        this.saveUserTemplates(),
         this.persist('settings', this.settings),
       ]);
 

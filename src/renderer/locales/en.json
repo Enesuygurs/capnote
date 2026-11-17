@@ -533,7 +533,22 @@
     "meetingActions": "Action items",
     "weeklyTitle": "Weekly plan · {from} – {to}",
     "weeklyGoals": "Goals this week",
-    "weeklyNotes": "Notes"
+    "weeklyNotes": "Notes",
+    "book": "Book notes",
+    "bookTitle": "Book notes",
+    "bookAbout": "About the book",
+    "bookAuthor": "Author",
+    "bookStarted": "Started",
+    "bookSummary": "Summary",
+    "bookQuotes": "Quotes",
+    "bookThoughts": "My thoughts",
+    "bookRating": "My rating",
+    "saveAs": "Save as template",
+    "saved": "Template “{name}” saved",
+    "updated": "Template “{name}” updated",
+    "removed": "Template “{name}” deleted",
+    "remove": "Delete template",
+    "untitled": "Untitled template"
   },
   "markdown": {
     "exported": "{count} notes exported to \"{folder}\"",

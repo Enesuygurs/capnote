@@ -16,6 +16,7 @@ export class BackupFeature {
       reminders: this.reminders || [],
       notifications: this.notifications || [],
       todos: this.todoSections || [],
+      templates: this.userTemplates || [],
       settings: {},
     };
 
@@ -28,6 +29,9 @@ export class BackupFeature {
     const attachmentNames = new Set();
     exportData.notes.forEach((note) =>
       (note.attachments || []).forEach((name) => attachmentNames.add(name))
+    );
+    exportData.templates.forEach((t) =>
+      this.extractUploadNames(t.content).forEach((name) => attachmentNames.add(name))
     );
     if (attachmentNames.size > 0) {
       exportData.attachments = await window.electronAPI.uploads.read([...attachmentNames]);
@@ -311,6 +315,17 @@ export class BackupFeature {
             target.todos.push({ ...todo, id: this.newId(), text, completed: !!todo.completed });
           });
         });
+      }
+
+      // The user's templates come with the notes, merged by name (one already here is kept)
+      if (Array.isArray(data.templates) && importOptions.notes) {
+        const names = new Set(this.userTemplates.map((t) => t.name));
+        data.templates.forEach((template) => {
+          if (!template || typeof template.content !== 'string' || names.has(template.name)) return;
+          this.userTemplates.push({ ...template, id: this.newId() });
+          names.add(template.name);
+        });
+        await this.saveUserTemplates();
       }
 
       // Restore the files referenced by the imported notes

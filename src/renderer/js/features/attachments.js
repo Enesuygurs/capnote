@@ -45,6 +45,10 @@ export class AttachmentsFeature {
         if (h.version) this.extractUploadNames(h.version.content).forEach((n) => keep.add(n));
       })
     );
+    // And the images of the user's templates
+    (this.userTemplates || []).forEach((t) =>
+      this.extractUploadNames(t.content).forEach((n) => keep.add(n))
+    );
     try {
       await window.electronAPI.uploads.cleanup([...keep]);
     } catch (err) {
