@@ -1,16 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
-  <!-- App icon: a wide amber gem on a cream tile, facets in five tones of the default accent -->
-  <defs>
-    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.22" />
-    </filter>
-  </defs>
-  <rect x="12" y="12" width="232" height="232" rx="56" fill="#FFFBEB" />
-  <g filter="url(#shadow)">
-    <path d="M128 58 L210 104 L128 206 L46 104 Z" fill="#F59E0B" />
-    <path d="M46 104 H210 L128 58 Z" fill="#FBBF24" />
-    <path d="M94 104 L128 58 L162 104 Z" fill="#FDE68A" />
-    <path d="M94 104 L128 206 L162 104 Z" fill="#D97706" />
-    <path d="M46 104 L128 206 L94 104 Z" fill="#F59E0B" opacity="0.85" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="34 38 188 188">
+  <!-- App icon: a wide gem, no tile; its facets in close tones of the default accent (#F59E0B) -->
+  <path d="M128 58 L210 104 L128 206 L46 104 Z" fill="#F59E0B" />
+  <path d="M46 104 H210 L128 58 Z" fill="#F6AA28" />
+  <path d="M94 104 L128 58 L162 104 Z" fill="#F7B648" />
+  <path d="M94 104 L128 206 L162 104 Z" fill="#D88B0A" />
+  <path d="M46 104 L128 206 L94 104 Z" fill="#E6950A" />
 </svg>
