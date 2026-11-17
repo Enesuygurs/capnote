@@ -42,6 +42,7 @@ export class NotificationsFeature {
     if (!this.notificationsList) return;
     // On the reminders page: the section shows only when something came due
     this.notificationsSection?.classList.toggle('hidden', this.notifications.length === 0);
+    this.updateRemindersEmptyState?.();
     if (this.markAllReadBtn) this.markAllReadBtn.hidden = !this.notifications.some((n) => !n.read);
 
     if (this.notifications.length === 0) {

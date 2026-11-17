@@ -97,6 +97,13 @@ export class RemindersFeature {
     return i18n.t(`reminder.${keys[idx]}`);
   }
 
+  // The page's one message when nothing is to come and nothing came due
+  updateRemindersEmptyState() {
+    const upcoming = this.reminders.some((r) => !r.dismissed && new Date(r.datetime) > new Date());
+    const came = (this.notifications || []).length > 0;
+    document.getElementById('remindersEmpty')?.classList.toggle('hidden', upcoming || came);
+  }
+
   updateRemindersView() {
     if (!this.remindersList) return;
 
@@ -104,8 +111,11 @@ export class RemindersFeature {
       (r) => !r.dismissed && new Date(r.datetime) > new Date()
     );
 
+    // The section shows only with reminders to come
+    document.getElementById('upcomingSection')?.classList.toggle('hidden', !activeReminders.length);
+    this.updateRemindersEmptyState();
     if (activeReminders.length === 0) {
-      this.remindersList.innerHTML = `<div class="empty-state empty-state-large"><i class="fas fa-bell-slash"></i><p>${i18n.t('messages.noActiveReminders')}</p></div>`;
+      this.remindersList.innerHTML = '';
       return;
     }
 
