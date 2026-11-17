@@ -265,8 +265,9 @@ export class RemindersFeature {
       (r) => r.noteId === this.currentNote.id && !r.dismissed && new Date(r.datetime) > new Date()
     );
 
+    // No reminder: nothing is shown under the form
     if (noteReminders.length === 0) {
-      this.noteRemindersList.innerHTML = `<div class="note-no-reminder">${i18n.t('stats.noReminder')}</div>`;
+      this.noteRemindersList.innerHTML = '';
       return;
     }
 

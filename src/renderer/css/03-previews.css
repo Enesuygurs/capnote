@@ -128,12 +128,18 @@
   accent-color: var(--accent-color);
 }
 
-/* In the middle of the first line (the text's font and line height, so 1lh is a line of it); more
-   specific than the app's checkbox rule, which sets no margin */
+/* In the middle of the first line (the text's font and line height, so 1lh is a line of it), 1px
+   higher: the letters sit a little low in their line, so a box in its exact middle looked lower
+   than the text. More specific than the app's checkbox rule, which sets no margin */
 .checklist .checklist-item input[type='checkbox'] {
   font: inherit;
   line-height: inherit;
-  margin-top: calc((1lh - 16px) / 2);
+  margin-top: calc((1lh - 16px) / 2 - 1px);
+}
+
+/* Read view: a task's text is not selected; a click on it ticks the task */
+.formatted-content .checklist-item label {
+  user-select: none;
 }
 
 .checklist-item label {
