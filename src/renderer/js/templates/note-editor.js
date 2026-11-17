@@ -259,7 +259,7 @@ export const NOTE_EDITOR = /* HTML */ `
                   <div
                     class="emoji-tabs"
                     role="tablist"
-                    data-i18n-aria-label="emojiCategories.all"
+                    data-i18n-aria-label="emojiCategories.label"
                     aria-label="Emoji kategorileri"
                   >
                     <button

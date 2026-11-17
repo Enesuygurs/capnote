@@ -233,6 +233,8 @@ export class ReminderFormFeature {
   }
 
   setupReminderForm() {
+    // The buttons' words in the app's language from the start
+    this.renderReminderWhen();
     this.reminderDateBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       this.toggleReminderPicker(this.reminderPicker, this.reminderDateBtn);

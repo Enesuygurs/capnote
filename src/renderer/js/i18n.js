@@ -97,6 +97,10 @@ class I18n {
     titleElements.forEach((element) => {
       const key = element.getAttribute('data-i18n-title');
       element.title = this.t(key);
+      // A button with only an icon is read out by its title too (unless it has its own label)
+      if (!element.textContent.trim() && !element.hasAttribute('data-i18n-aria-label')) {
+        element.setAttribute('aria-label', element.title);
+      }
     });
 
     // Update all elements with data-i18n-aria-label attribute
