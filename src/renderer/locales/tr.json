@@ -22,7 +22,6 @@
     "confirm": "Onayla",
     "create": "Oluştur",
     "add": "Ekle",
-    "addSection": "Bölüm Ekle",
     "export": "Dışa Aktar",
     "import": "İçe Aktar",
     "duplicate": "Çoğalt",
@@ -34,7 +33,6 @@
   "titles": {
     "home": "Ana Sayfa",
     "addFolder": "Klasör Oluştur",
-    "search": "Ara",
     "sort": "Sırala",
     "bold": "Kalın",
     "italic": "İtalik",
@@ -48,13 +46,7 @@
     "bulletList": "Madde listesi ekle",
     "taskList": "Görev listesi ekle",
     "numberedList": "Numaralı liste ekle",
-    "insertTable": "Tablo ekle",
-    "insertDate": "Tarih ekle",
-    "insertTime": "Saat ekle",
-    "insertImage": "Görsel ekle (Gözat)",
     "markdownPreview": "Markdown önizleme",
-    "codeBlock": "Kod bloğu ekle",
-    "emoji": "Emoji Ekle",
     "toggleSidebar": "Yan paneli aç/kapat",
     "favorite": "Favorilere ekle/çıkar",
     "history": "Not geçmişini göster",
@@ -77,11 +69,8 @@
     "appleGreen": "Elma Yeşili",
     "purple": "Mor",
     "blue": "Mavi",
-    "options": "Seçenekler",
     "strikethrough": "Üstü çizili",
     "link": "Bağlantı ekle (Ctrl+K)",
-    "quote": "Alıntı",
-    "divider": "Ayırıcı çizgi",
     "focusMode": "Odak modu",
     "focusModeExit": "Odak modundan çık (Esc)",
     "toggleFold": "Daralt / genişlet"
@@ -94,13 +83,7 @@
     "folderName": "Klasör adını girin...",
     "password": "Şifre girin...",
     "searchEmoji": "Emoji ara...",
-    "markdown": "Markdown girin...",
-    "newTodo": "Yeni görev ekle...",
-    "newSection": "Yeni bölüm ekle..."
-  },
-  "actions": {
-    "edit": "Düzenle",
-    "delete": "Sil"
+    "markdown": "Markdown girin..."
   },
   "stats": {
     "words": "kelime",
@@ -257,25 +240,14 @@
     "needTime": "Lütfen bir saat seçin"
   },
   "notifications": {
-    "title": "Bildirimler",
-    "subtitle": "Zamanı gelen hatırlatmalar",
     "remindersTitle": "Hatırlatmalar",
     "remindersSubtitle": "Zamanı gelen ve yaklaşan hatırlatmalar",
     "incoming": "Gelenler",
     "upcoming": "Yaklaşanlar"
   },
   "todos": {
-    "todosTitle": "Görevler",
     "todosSubtitle": "Notlarınızdaki görevler",
     "noTodos": "Notlarınızda tamamlanmamış görev yok",
-    "todoAdded": "Görev eklendi",
-    "todoDeleted": "Görev silindi",
-    "todoUpdated": "Görev güncellendi",
-    "todoCompleted": "Görev tamamlandı",
-    "sectionAdded": "Bölüm eklendi",
-    "sectionDeleted": "Bölüm silindi",
-    "noTodosInSection": "Bu bölümde görev yok",
-    "taskCount": "{count} görev",
     "noTodosHint": "Bir notta görev listesi oluşturduğunuzda burada görünür.",
     "showDone": "Tamamlananları göster",
     "hideDone": "Tamamlananları gizle",
@@ -380,9 +352,7 @@
     "view": "Görüntüle",
     "deleteNotification": "Sil",
     "completed": "Tamamlandı",
-    "reminderDue": "Hatırlatma zamanı geldi:",
     "reminderMissed": "Kaçırılan hatırlatma:",
-    "reminderNotification": "Hatırlatma:",
     "renameFolder": "Klasörü Yeniden Adlandır",
     "confirmDeleteFolder": "klasörü silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?",
     "confirmDeleteFolderWithNotes": "klasörü ve içindeki {count} not kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istiyor musunuz?",
@@ -390,7 +360,6 @@
     "confirmDeleteAllFolders": "Tüm klasörleri silmek istiyor musunuz? İçlerindeki notlar korunacak.",
     "confirmResetApp": "Uygulamayı sıfırlamak istiyor musunuz? Notlar, klasörler ve ayarlar varsayılanlara dönecek. Bu işlem geri alınamaz.",
     "untitledNote": "Başlıksız Not",
-    "noNotifications": "Henüz bildirim yok",
     "copyCode": "Kodu kopyala",
     "copied": "Kopyalandı",
     "darkModeEnabled": "Karanlık mod etkinleştirildi",
@@ -563,8 +532,7 @@
   "markdown": {
     "exported": "{count} not \"{folder}\" klasörüne aktarıldı",
     "lockedSkipped": "{count} kilitli not dışa aktarılmadı",
-    "imported": "{count} not içe aktarıldı",
-    "importFailed": "Markdown dosyaları içe aktarılamadı"
+    "imported": "{count} not içe aktarıldı"
   },
   "transfer": {
     "exportLabel": "Dışa aktar",
@@ -607,10 +575,6 @@
     "newFolder": "Klasör oluştur"
   },
   "toolbar": {
-    "colors": "Renkler",
-    "textColor": "Yazı rengi",
-    "bgColor": "Vurgu rengi",
-    "align": "Hizalama",
     "lists": "Listeler",
     "insert": "Ekle",
     "quote": "Alıntı",
@@ -630,7 +594,6 @@
   },
   "history": {
     "current": "Şu anki sürüm",
-    "earlier": "Önceki sürüm",
     "view": "Görüntüle",
     "versionOf": "{date} tarihli sürüm",
     "restore": "Bu sürüme dön",

@@ -53,6 +53,7 @@ npm run lint     # ESLint
 npm run format   # Prettier
 npm run icons    # regenerate the icons from assets/icons/source/*.svg
 npm test         # app tests (starts the real app per test)
+npm run test:unit    # fast tests of the pure modules, no app (about a second)
 npm run test:visual  # compare screenshots of every screen
 ```
 
@@ -62,7 +63,9 @@ Interface changes follow the design rules in [docs/DESIGN.md](docs/DESIGN.md): o
 
 ## Tests
 
-Each file in `tests/cases` starts the real app with an empty data folder, runs a script inside the window and compares the result with the `expected` value in the same file (a regular expression or a function can stand in for values that change, such as dates). Tests that need existing data, for example data left by an older version, write it in a `seed` step first. `npm test -- search` runs only the tests whose name contains "search"; `--print` shows every result.
+Each file in `tests/cases` starts the real app with an empty data folder, runs a script inside the window and compares the result with the `expected` value in the same file (a regular expression or a function can stand in for values that change, such as dates). Tests that need existing data, for example data left by an older version, write it in a `seed` step first. `npm test -- search` runs only the tests whose name contains "search"; `--print` shows every result. A test with `firstRun = true` starts as a new install would (the welcome note, the system's language); the others start empty and in Turkish.
+
+`npm run test:unit` runs `tests/unit` with Node's own test runner: the modules that need no Electron (upload file names, the data files, the folder colors), in about a second.
 
 `npm run test:visual` captures every screen and dialog in both themes and compares them pixel by pixel with the screenshots accepted earlier on the same machine (font rendering differs between machines, so they are not in git). The first run, or `npm run test:visual -- --accept` after a wanted change, accepts the current screenshots; differences are saved as images in `tests/visual/diff`.
 

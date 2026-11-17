@@ -22,7 +22,6 @@
     "confirm": "Confirm",
     "create": "Create",
     "add": "Add",
-    "addSection": "Add Section",
     "export": "Export",
     "import": "Import",
     "duplicate": "Duplicate",
@@ -34,7 +33,6 @@
   "titles": {
     "home": "Home",
     "addFolder": "Create Folder",
-    "search": "Search",
     "sort": "Sort",
     "bold": "Bold",
     "italic": "Italic",
@@ -48,13 +46,7 @@
     "bulletList": "Add bullet list",
     "taskList": "Add task list",
     "numberedList": "Add numbered list",
-    "insertTable": "Insert table",
-    "insertDate": "Insert date",
-    "insertTime": "Insert time",
-    "insertImage": "Insert image (Browse)",
     "markdownPreview": "Markdown preview",
-    "codeBlock": "Insert code block",
-    "emoji": "Add Emoji",
     "toggleSidebar": "Toggle sidebar",
     "favorite": "Add/remove from favorites",
     "history": "Show note history",
@@ -77,11 +69,8 @@
     "appleGreen": "Apple Green",
     "purple": "Purple",
     "blue": "Blue",
-    "options": "Options",
     "strikethrough": "Strikethrough",
     "link": "Add link (Ctrl+K)",
-    "quote": "Quote",
-    "divider": "Divider",
     "focusMode": "Focus mode",
     "focusModeExit": "Leave focus mode (Esc)",
     "toggleFold": "Collapse / expand"
@@ -94,13 +83,7 @@
     "folderName": "Enter folder name...",
     "password": "Enter password...",
     "searchEmoji": "Search emoji...",
-    "markdown": "Enter markdown...",
-    "newTodo": "Add new task...",
-    "newSection": "Add new section..."
-  },
-  "actions": {
-    "edit": "Edit",
-    "delete": "Delete"
+    "markdown": "Enter markdown..."
   },
   "stats": {
     "words": "words",
@@ -257,25 +240,14 @@
     "needTime": "Please pick a time"
   },
   "notifications": {
-    "title": "Notifications",
-    "subtitle": "Reminders that came due",
     "remindersTitle": "Reminders",
     "remindersSubtitle": "Reminders that came due and those to come",
     "incoming": "Came due",
     "upcoming": "Upcoming"
   },
   "todos": {
-    "todosTitle": "Tasks",
     "todosSubtitle": "The tasks in your notes",
     "noTodos": "No open tasks in your notes",
-    "todoAdded": "Task added",
-    "todoDeleted": "Task deleted",
-    "todoUpdated": "Task updated",
-    "todoCompleted": "Task completed",
-    "sectionAdded": "Section added",
-    "sectionDeleted": "Section deleted",
-    "noTodosInSection": "No tasks in this section",
-    "taskCount": "{count} tasks",
     "noTodosHint": "Task lists you write in a note show here.",
     "showDone": "Show completed",
     "hideDone": "Hide completed",
@@ -380,9 +352,7 @@
     "view": "View",
     "deleteNotification": "Delete",
     "completed": "Completed",
-    "reminderDue": "Reminder time:",
     "reminderMissed": "Missed reminder:",
-    "reminderNotification": "Reminder:",
     "renameFolder": "Rename Folder",
     "confirmDeleteFolder": "folder will be deleted. This action cannot be undone. Do you want to continue?",
     "confirmDeleteFolderWithNotes": "folder and its {count} notes will be permanently deleted. This action cannot be undone. Do you want to continue?",
@@ -390,7 +360,6 @@
     "confirmDeleteAllFolders": "Delete all folders? The notes inside them will be kept.",
     "confirmResetApp": "Reset the app? Notes, folders and settings return to their defaults. This cannot be undone.",
     "untitledNote": "Untitled Note",
-    "noNotifications": "No notifications yet",
     "copyCode": "Copy code",
     "copied": "Copied",
     "darkModeEnabled": "Dark mode enabled",
@@ -563,8 +532,7 @@
   "markdown": {
     "exported": "{count} notes exported to \"{folder}\"",
     "lockedSkipped": "{count} locked notes were not exported",
-    "imported": "{count} notes imported",
-    "importFailed": "The Markdown files could not be imported"
+    "imported": "{count} notes imported"
   },
   "transfer": {
     "exportLabel": "Export",
@@ -607,10 +575,6 @@
     "newFolder": "Create folder"
   },
   "toolbar": {
-    "colors": "Colors",
-    "textColor": "Text color",
-    "bgColor": "Highlight",
-    "align": "Alignment",
     "lists": "Lists",
     "insert": "Insert",
     "quote": "Quote",
@@ -630,7 +594,6 @@
   },
   "history": {
     "current": "Current version",
-    "earlier": "Earlier version",
     "view": "View",
     "versionOf": "The version of {date}",
     "restore": "Restore this version",
