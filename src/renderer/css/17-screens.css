@@ -181,11 +181,14 @@
   background: var(--tint-hover);
 }
 
-.task-row input[type='checkbox'] {
-  margin-top: 2px;
+/* Level with the text's first line, as in a note (measured); more specific than the app's checkbox
+   rule, which sets no margin */
+.task-group-list .task-row input[type='checkbox'] {
+  margin-top: 1px;
 }
 
 .task-row span {
+  user-select: none;
   flex: 1;
   min-width: 0;
   word-break: break-word;

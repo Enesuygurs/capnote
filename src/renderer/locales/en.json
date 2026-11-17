@@ -105,8 +105,7 @@
     "words": "words",
     "characters": "characters",
     "readingTime": "min read",
-    "readingTimeSeconds": "sec read",
-    "noReminder": "No reminder for this note"
+    "readingTimeSeconds": "sec read"
   },
   "sort": {
     "dateDesc": "Newest first",
@@ -354,7 +353,7 @@
     "folderColorUpdated": "Folder color updated",
     "setPasswordForNote": "Set password for note",
     "enterPasswordToOpen": "Enter password to open note",
-    "noteIsLocked": "This note is locked",
+    "noteIsLocked": "Locked Note",
     "newFolder": "New Folder",
     "maxPinnedNotes": "Maximum {count} notes can be pinned",
     "addToFavorites": "Add to favorites",

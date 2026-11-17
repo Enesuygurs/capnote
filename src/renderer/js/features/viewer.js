@@ -379,6 +379,16 @@ export class ViewerFeature {
       this.scheduleAutoSave();
     });
 
+    // Viewer: a click on a task's text ticks its own box (not through the label's id, which the
+    // editor's copy of the note can share)
+    this.viewerText.addEventListener('click', (e) => {
+      const label = e.target.closest?.('.checklist-item > label');
+      if (!label || e.target.closest('a')) return;
+      e.preventDefault();
+      const box = label.parentElement.querySelector(':scope > input[type="checkbox"]');
+      if (box && !box.disabled) box.click();
+    });
+
     // Viewer: write only the toggled checkbox state back into the stored content.
     // The viewer DOM itself must never be saved (it contains UI such as copy buttons).
     this.viewerText.addEventListener('change', (e) => {

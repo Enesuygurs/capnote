@@ -105,8 +105,7 @@
     "words": "kelime",
     "characters": "karakter",
     "readingTime": "dk okuma",
-    "readingTimeSeconds": "sn okuma",
-    "noReminder": "Bu not için hatırlatma yok"
+    "readingTimeSeconds": "sn okuma"
   },
   "sort": {
     "dateDesc": "Önce en yeni",
@@ -354,7 +353,7 @@
     "folderColorUpdated": "Klasör rengi güncellendi",
     "setPasswordForNote": "Not için şifre belirleyin",
     "enterPasswordToOpen": "Notu açmak için şifre girin",
-    "noteIsLocked": "Bu not kilitli",
+    "noteIsLocked": "Kilitli Not",
     "newFolder": "Yeni Klasör",
     "maxPinnedNotes": "En fazla {count} not sabitlenebilir",
     "addToFavorites": "Favorilere ekle",

@@ -738,6 +738,10 @@
   margin-top: var(--space-1);
 }
 
+.note-reminders-list:empty {
+  display: none;
+}
+
 .note-reminder-item {
   display: flex;
   align-items: center;
@@ -777,11 +781,6 @@
   color: var(--text-muted);
   font-size: var(--fs-xs);
   font-variant-numeric: tabular-nums;
-}
-
-.note-no-reminder {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
 }
 
 /* ============ Images in the editor ============ */
