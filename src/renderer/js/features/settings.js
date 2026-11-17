@@ -243,6 +243,7 @@ export class SettingsFeature {
     if (this.autoSaveToggle) {
       this.autoSaveToggle.addEventListener('change', (e) => {
         this.setSetting('autoSave', e.target.checked);
+        if (this.isEditorOpen()) this.updateSaveButtonState();
         const message = e.target.checked
           ? i18n.t('messages.autoSaveEnabled')
           : i18n.t('messages.autoSaveDisabled');

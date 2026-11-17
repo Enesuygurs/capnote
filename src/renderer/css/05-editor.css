@@ -845,3 +845,11 @@
 .block-selection[hidden] {
   display: none;
 }
+
+/* With automatic saving: when the note was last saved, in muted text before the buttons */
+.save-status {
+  margin-right: var(--space-2);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
