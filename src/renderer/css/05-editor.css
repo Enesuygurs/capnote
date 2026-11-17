@@ -846,10 +846,9 @@
   display: none;
 }
 
-/* With automatic saving: when the note was last saved, in muted text before the buttons */
-.save-status {
-  margin-right: var(--space-2);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  white-space: nowrap;
+/* The Save / Saved button keeps one width while it turns into a circle and back, so the header
+   does not jump */
+.save-btn {
+  min-width: 104px;
+  justify-content: center;
 }

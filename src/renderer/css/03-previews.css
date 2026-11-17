@@ -137,9 +137,14 @@
   margin-top: calc((1lh - 16px) / 2 - 1px);
 }
 
-/* Read view: a task's text is not selected; a click on it ticks the task */
-.formatted-content .checklist-item label {
+/* Read view: no text is selected (a double-click opens the editor, a click on a task ticks it);
+   text is selected and copied in the editor. The password field of a lock page still is. */
+.note-viewer {
   user-select: none;
+}
+
+.note-viewer input {
+  user-select: text;
 }
 
 .checklist-item label {

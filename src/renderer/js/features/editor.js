@@ -215,8 +215,8 @@ export class EditorFeature {
   }
 
   // Save is open once the note's body has something in it; a title, a mood, tags or a font change
-  // alone are not enough. With automatic saving the button is Done (always open) and a status says
-  // when the note was saved.
+  // alone are not enough. With automatic saving the button closes the editor (always open) and
+  // shows how the saving goes.
   updateSaveButtonState() {
     const hasChanges = this.hasUnsavedChanges();
     this.updateSaveMode();
@@ -233,40 +233,44 @@ export class EditorFeature {
     }
   }
 
-  // The button says Save or Done as automatic saving is off or on
-  updateSaveMode() {
+  // The button's words: one of the translation keys (kept on it, so a language change follows)
+  setSaveLabel(key) {
     const label = this.saveNoteBtn?.querySelector('span');
     if (!label) return;
-    const key = this.settings?.autoSave ? 'buttons.done' : 'buttons.save';
     if (label.dataset.i18n !== key) {
       label.dataset.i18n = key;
       label.textContent = i18n.t(key);
     }
-    if (!this.settings?.autoSave) this.saveStatus?.classList.add('hidden');
   }
 
-  // "Saving…" while a change waits for the automatic save, then "Saved · 20:49"; nothing for a new
-  // note not written in yet
+  // Without automatic saving the button is Save
+  updateSaveMode() {
+    if (this.settings?.autoSave) return;
+    this.setSaveLabel('buttons.save');
+    this.showSaveSpinner(false);
+  }
+
+  showSaveSpinner(on) {
+    this.saveNoteBtn?.querySelector('.save-spinner')?.classList.toggle('hidden', !on);
+    this.saveNoteBtn?.querySelector('span')?.classList.toggle('hidden', on);
+    this.saveNoteBtn?.classList.toggle('is-saving', on);
+    if (on) this.saveNoteBtn?.setAttribute('aria-label', i18n.t('saveStatus.saving'));
+    else this.saveNoteBtn?.removeAttribute('aria-label');
+  }
+
+  // With automatic saving: a turning circle while a change waits to be saved, then "Saved"; "Done"
+  // on a new note not written in yet
   updateSaveStatus() {
     const hasChanges = this.changedSinceLastSave();
-    const status = this.saveStatus;
     const note = this.currentNote;
-    if (!status) return;
     const fresh = note && note.id === this.freshNoteId && this.isStoredNoteEmpty(note);
     if (!note || (fresh && !hasChanges)) {
-      status.classList.add('hidden');
+      this.showSaveSpinner(false);
+      this.setSaveLabel('buttons.done');
       return;
     }
-    status.classList.remove('hidden');
-    if (hasChanges) {
-      status.textContent = i18n.t('saveStatus.saving');
-      return;
-    }
-    const time = new Date(note.updatedAt || Date.now()).toLocaleTimeString(this.getLocale(), {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-    status.textContent = i18n.t('saveStatus.saved', { time });
+    this.showSaveSpinner(hasChanges);
+    this.setSaveLabel('saveStatus.saved');
   }
 
   // Whether the editor holds something not saved yet (by the last save, automatic or not)
