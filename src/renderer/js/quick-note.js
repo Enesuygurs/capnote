@@ -122,4 +122,5 @@ i18n.ready.then(() => {
   const mod = api?.platform === 'darwin' ? '⌘' : 'Ctrl';
   hint.textContent = i18n.t('quickNote.hint', { mod });
 });
-text.focus();
+// The title first; Tab (or Enter) goes on to the text
+title.focus();
