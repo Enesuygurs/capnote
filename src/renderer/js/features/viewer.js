@@ -430,12 +430,36 @@ export class ViewerFeature {
     });
   }
 
+  // Edit the note on screen with the caret at a point of its text (a double-click there). Not on
+  // a link, a box, a button or a task's text (a click on it ticks the task); not on an earlier
+  // version or a note still locked.
+  async editAtPoint(e) {
+    const note = this.currentNote;
+    if (!note || note.isVersionPreview || this.versionPreview || this.isNoteLockedForView(note)) {
+      return;
+    }
+    if (e.target.closest('a, input, button, img, .checklist-item > label')) return;
+    const range = document.caretRangeFromPoint?.(e.clientX, e.clientY);
+    const offset =
+      range && this.viewerText.contains(range.startContainer)
+        ? this.textOffsetIn(this.viewerText, range)
+        : null;
+    window.getSelection()?.removeAllRanges();
+    await this.editCurrentNote();
+    if (offset !== null && this.isEditorOpen() && !this.isMarkdownEditing?.()) {
+      this.placeCaretAtTextOffset(this.richEditor, offset);
+    }
+  }
+
   // Note history dialog
   setupViewerEvents() {
     // History button opens history modal (instead of clicking date)
     this.historyBtn = document.getElementById('historyBtn');
 
     this.historyBtn?.addEventListener('click', () => this.openNoteHistory());
+
+    // A double-click on the note's text opens it for editing, the caret where it was clicked
+    this.viewerText.addEventListener('dblclick', (e) => this.editAtPoint(e));
     this.versionDiffBtn?.addEventListener('click', () => this.toggleVersionDiff());
     this.versionListBtn?.addEventListener('click', () => this.openNoteHistory());
     this.versionCloseBtn?.addEventListener('click', () => this.endVersionPreview());
