@@ -701,6 +701,6 @@
   },
   "saveStatus": {
     "saving": "Kaydediliyor…",
-    "saved": "Kaydedildi · {time}"
+    "saved": "Kaydedildi"
   }
 }

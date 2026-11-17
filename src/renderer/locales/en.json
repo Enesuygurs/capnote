@@ -701,6 +701,6 @@
   },
   "saveStatus": {
     "saving": "Saving…",
-    "saved": "Saved · {time}"
+    "saved": "Saved"
   }
 }
