@@ -1,13 +1,11 @@
 // The tasks page: every task of every note in one place. It keeps no list of its own: it reads the
-// task lists written in the notes and ticking a task here ticks it in its note. Open tasks with a
-// due date come first, in Overdue, Today and Upcoming (each with its note's name); the others are
-// grouped by note (the note opens from its group). Notes that cannot be read now (locked, in a locked folder),
+// task lists written in the notes, grouped by note (the note opens from its group), and ticking a
+// task here ticks it in its note. Notes that cannot be read now (locked, in a locked folder),
 // archived notes and file notes are left out. The header's icon counts the tasks still open.
 //
 // The older to-do page kept its own sections; what was in them moves into a note on start.
 
 import { i18n } from '../i18n.js';
-import { isoDay } from './task-dates.js';
 
 export class TodosFeature {
   // The notes whose tasks show here
@@ -31,81 +29,7 @@ export class TodosFeature {
       text: (item.querySelector('label')?.textContent || '').trim(),
       done: !!item.querySelector('input[type="checkbox"]')?.hasAttribute('checked'),
       priority: item.dataset.priority || '',
-      due: item.dataset.due || '',
-      repeat: item.dataset.repeat || '',
     }));
-  }
-
-  // One task's row: its box, its text, and (if asked) when it is due and the note it is in
-  taskRow(note, task, { showNote = false } = {}) {
-    const row = document.createElement('label');
-    row.className = 'task-row';
-    row.classList.toggle('is-done', task.done);
-    row.dataset.noteId = note.id;
-    row.dataset.index = task.index;
-    if (task.priority) row.dataset.priority = task.priority;
-    if (task.due) row.dataset.due = task.due;
-    if (task.repeat) row.dataset.repeat = task.repeat;
-    row.innerHTML = '<input type="checkbox"><span class="task-row-text"></span>';
-    const box = row.querySelector('input');
-    box.checked = task.done;
-    row.querySelector('.task-row-text').textContent = task.text || '…';
-    box.addEventListener('change', () => this.setTaskDone(note, task, box.checked));
-    const info = task.due ? this.dueInfo(task.due) : null;
-    if (info) {
-      const due = document.createElement('small');
-      due.className = 'task-row-due';
-      due.dataset.dueState = task.done ? 'done' : info.state;
-      due.textContent = task.repeat ? `↻ ${info.label}` : info.label;
-      if (task.repeat) due.title = this.repeatLabel(task.repeat);
-      row.appendChild(due);
-    }
-    if (showNote) {
-      const link = document.createElement('button');
-      link.type = 'button';
-      link.className = 'task-row-note';
-      link.innerHTML = '<i class="fas fa-file-lines"></i><span></span>';
-      link.querySelector('span').textContent = this.displayTitle(note);
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.selectNote(note);
-      });
-      row.appendChild(link);
-    }
-    return row;
-  }
-
-  // Overdue, Today and Upcoming: the open tasks that have a date
-  renderDateGroups(box, entries) {
-    const today = isoDay(new Date());
-    const rank = (t) => (t.priority ? Number(t.priority) : 9);
-    const order = (x, y) =>
-      x.task.due.localeCompare(y.task.due) ||
-      rank(x.task) - rank(y.task) ||
-      x.task.index - y.task.index;
-    const groups = [
-      ['overdue', 'fa-calendar-xmark', entries.filter((e) => e.task.due < today)],
-      ['today', 'fa-calendar-day', entries.filter((e) => e.task.due === today)],
-      ['upcoming', 'fa-calendar-week', entries.filter((e) => e.task.due > today)],
-    ];
-    groups.forEach(([name, icon, list]) => {
-      if (!list.length) return;
-      const section = document.createElement('section');
-      section.className = `list-card task-group task-date-group is-${name}`;
-      section.innerHTML = `<div class="task-group-title"><i class="fas ${icon}"></i><span></span><small></small></div><div class="task-group-list"></div>`;
-      section.querySelector('.task-group-title span').textContent = i18n.t(`todos.group_${name}`);
-      section.querySelector('.task-group-title small').textContent = i18n.t('todos.openCount', {
-        count: list.length,
-      });
-      const rows = section.querySelector('.task-group-list');
-      list
-        .sort(order)
-        .forEach(({ note, task }) =>
-          rows.appendChild(this.taskRow(note, task, { showNote: true }))
-        );
-      box.appendChild(section);
-    });
   }
 
   renderTodosSections() {
@@ -117,18 +41,12 @@ export class TodosFeature {
         this.showDoneTasks ? 'todos.hideDone' : 'todos.showDone'
       );
     }
-    // Open tasks with a date go to the date groups; the rest stay with their notes
-    const dated = [];
     const groups = this.taskNotes()
       .map((note) => {
         const tasks = this.tasksOfNote(note).filter((t) => t.text || !t.done);
-        tasks
-          .filter((t) => t.due && !t.done && t.text)
-          .forEach((task) => dated.push({ note, task }));
         // The most urgent first (P1, P2, P3, then the rest), in their order otherwise
         const rank = (t) => (t.priority ? Number(t.priority) : 9);
         const shown = tasks
-          .filter((t) => !(t.due && !t.done && t.text))
           .filter((t) => this.showDoneTasks || !t.done)
           .sort((a, b) => rank(a) - rank(b) || a.index - b.index);
         return { note, tasks: shown, all: tasks };
@@ -140,13 +58,12 @@ export class TodosFeature {
           new Date(a.note.updatedAt || a.note.createdAt)
       );
     box.innerHTML = '';
-    if (!groups.length && !dated.length) {
+    if (!groups.length) {
       box.innerHTML = `<div class="empty-state empty-state-large"><i class="fas fa-list-check"></i><p></p><small></small></div>`;
       box.querySelector('p').textContent = i18n.t('todos.noTodos');
       box.querySelector('small').textContent = i18n.t('todos.noTodosHint');
       return;
     }
-    this.renderDateGroups(box, dated);
     groups.forEach(({ note, tasks, all }) => {
       const section = document.createElement('section');
       section.className = 'list-card task-group';
@@ -161,22 +78,26 @@ export class TodosFeature {
         .querySelector('.task-group-title')
         .addEventListener('click', () => this.selectNote(note));
       const list = section.querySelector('.task-group-list');
-      tasks.forEach((task) => list.appendChild(this.taskRow(note, task)));
+      tasks.forEach((task) => {
+        const row = document.createElement('label');
+        row.className = 'task-row';
+        row.classList.toggle('is-done', task.done);
+        row.dataset.noteId = note.id;
+        row.dataset.index = task.index;
+        if (task.priority) row.dataset.priority = task.priority;
+        row.innerHTML = '<input type="checkbox"><span></span>';
+        const box = row.querySelector('input');
+        box.checked = task.done;
+        row.querySelector('span').textContent = task.text || '…';
+        box.addEventListener('change', () => this.setTaskDone(note, task, box.checked));
+        list.appendChild(row);
+      });
       box.appendChild(section);
     });
   }
 
-  // Tick (or untick) a task in its note (a repeating one moves on to its next time instead)
+  // Tick (or untick) a task in its note
   async setTaskDone(note, task, done) {
-    if (done && task.repeat) {
-      const element = this.todosSectionsContainer?.querySelector(
-        `.task-row[data-note-id="${CSS.escape(String(note.id))}"][data-index="${task.index}"]`
-      );
-      if (element) {
-        setTimeout(() => this.advanceRepeatingTask({ note, index: task.index, element }), 350);
-        return;
-      }
-    }
     const body = this.parseInertHtml(note.content || '');
     const item = body.querySelectorAll('.checklist-item')[task.index];
     const label = (item?.querySelector('label')?.textContent || '').trim();

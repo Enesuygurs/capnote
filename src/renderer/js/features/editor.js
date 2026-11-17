@@ -110,8 +110,6 @@ export class EditorFeature {
 
     // Restore checkbox states from HTML attributes
     this.restoreCheckboxStates();
-    // Dated tasks say when they are due
-    this.refreshDueLabels(this.richEditor);
 
     this.selectedMood = note.mood;
     this.selectedWeather = note.weather;
@@ -197,9 +195,7 @@ export class EditorFeature {
 
     return {
       title: this.noteTitle.value.trim(),
-      content: this.isMarkdownEditing()
-        ? this.markdownEditor.value
-        : this.withoutDueLabels(this.richEditor.innerHTML),
+      content: this.isMarkdownEditing() ? this.markdownEditor.value : this.richEditor.innerHTML,
       mood: this.selectedMood,
       weather: this.selectedWeather,
       tags: this.tags,
