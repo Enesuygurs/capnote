@@ -6,6 +6,7 @@
 // in red once it is late; the tasks page groups the dated tasks into Overdue, Today and Upcoming.
 
 import { i18n } from '../i18n.js';
+import { findRepeatPhrase } from './task-repeat.js';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const TR_DAYS = ['pazar', 'pazartesi', 'salı', 'çarşamba', 'perşembe', 'cuma', 'cumartesi'];
@@ -191,7 +192,8 @@ export class TaskDatesFeature {
     const label = item?.querySelector(':scope > label');
     if (!label || !this.richEditor.contains(item)) return false;
     const text = label.textContent;
-    const found = findDuePhrase(text);
+    // A repeat ("her pazartesi") sets the rule and the first date; else a date
+    const found = findRepeatPhrase(text) || findDuePhrase(text);
     if (!found) return false;
     const rest = (text.slice(0, found.start) + text.slice(found.end)).trim();
     if (!rest) return false;
@@ -234,6 +236,7 @@ export class TaskDatesFeature {
       else this.placeCaret(label, label.childNodes.length);
     }
     item.dataset.due = found.iso;
+    if (found.rule) item.dataset.repeat = found.rule;
     this.refreshDueLabels(item.parentElement);
     this.trackContentChanges();
     return true;
@@ -256,7 +259,11 @@ export class TaskDatesFeature {
   async setTaskDue(target, iso) {
     await this.changeTask(target, (item) => {
       if (iso) item.dataset.due = iso;
-      else delete item.dataset.due;
+      else {
+        // No date, no repeat either
+        delete item.dataset.due;
+        delete item.dataset.repeat;
+      }
     });
     if (target.live) this.refreshDueLabels(this.richEditor);
   }

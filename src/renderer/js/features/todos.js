@@ -32,6 +32,7 @@ export class TodosFeature {
       done: !!item.querySelector('input[type="checkbox"]')?.hasAttribute('checked'),
       priority: item.dataset.priority || '',
       due: item.dataset.due || '',
+      repeat: item.dataset.repeat || '',
     }));
   }
 
@@ -43,6 +44,8 @@ export class TodosFeature {
     row.dataset.noteId = note.id;
     row.dataset.index = task.index;
     if (task.priority) row.dataset.priority = task.priority;
+    if (task.due) row.dataset.due = task.due;
+    if (task.repeat) row.dataset.repeat = task.repeat;
     row.innerHTML = '<input type="checkbox"><span class="task-row-text"></span>';
     const box = row.querySelector('input');
     box.checked = task.done;
@@ -53,7 +56,8 @@ export class TodosFeature {
       const due = document.createElement('small');
       due.className = 'task-row-due';
       due.dataset.dueState = task.done ? 'done' : info.state;
-      due.textContent = info.label;
+      due.textContent = task.repeat ? `↻ ${info.label}` : info.label;
+      if (task.repeat) due.title = this.repeatLabel(task.repeat);
       row.appendChild(due);
     }
     if (showNote) {
@@ -162,8 +166,17 @@ export class TodosFeature {
     });
   }
 
-  // Tick (or untick) a task in its note
+  // Tick (or untick) a task in its note (a repeating one moves on to its next time instead)
   async setTaskDone(note, task, done) {
+    if (done && task.repeat) {
+      const element = this.todosSectionsContainer?.querySelector(
+        `.task-row[data-note-id="${CSS.escape(String(note.id))}"][data-index="${task.index}"]`
+      );
+      if (element) {
+        setTimeout(() => this.advanceRepeatingTask({ note, index: task.index, element }), 350);
+        return;
+      }
+    }
     const body = this.parseInertHtml(note.content || '');
     const item = body.querySelectorAll('.checklist-item')[task.index];
     const label = (item?.querySelector('label')?.textContent || '').trim();

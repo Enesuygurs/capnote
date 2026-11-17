@@ -296,7 +296,16 @@
     "due_tomorrow": "Tomorrow",
     "due_nextweek": "Next week",
     "due_pick": "Pick a date…",
-    "due_clear": "Remove date"
+    "due_clear": "Remove date",
+    "repeat_daily": "Every day",
+    "repeat_weekdays": "Every weekday",
+    "repeat_weekly": "Every week",
+    "repeat_monthly": "Every month",
+    "repeat_yearly": "Every year",
+    "repeat_days": "Every {count} days",
+    "repeat_weeks": "Every {count} weeks",
+    "repeat_clear": "Remove repeat",
+    "repeatNext": "Next time: {when}"
   },
   "emojiCategories": {
     "all": "All",
