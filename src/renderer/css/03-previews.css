@@ -625,3 +625,8 @@ li.foldable.is-folded > ol,
   opacity: 0;
   pointer-events: none;
 }
+
+/* A repeating task's date label starts with a turning arrow */
+.checklist-item[data-repeat][data-due-label]::after {
+  content: '↻ ' attr(data-due-label);
+}

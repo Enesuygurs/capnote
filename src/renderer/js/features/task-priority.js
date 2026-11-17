@@ -70,6 +70,13 @@ export class TaskPriorityFeature {
     menu.querySelectorAll('[data-priority]').forEach((item) => {
       item.classList.toggle('active', item.dataset.priority === current);
     });
+    // The repeat: the rule it has marked, "remove" only when it has one
+    const repeat = ((target.live || target.element)?.dataset.repeat || '').split(':')[0];
+    menu.querySelectorAll('[data-repeat-action]').forEach((item) => {
+      const rule = item.dataset.repeatAction;
+      if (rule === 'clear') item.hidden = !repeat;
+      else item.classList.toggle('active', rule === repeat);
+    });
     // The date: the choice it is on marked, "remove" only when it has one
     const due = this.currentDueOf(target);
     menu.querySelectorAll('[data-due-action]').forEach((item) => {
@@ -121,7 +128,14 @@ export class TaskPriorityFeature {
       dueItem('tomorrow', 'fa-sun') +
       dueItem('nextweek', 'fa-calendar-week') +
       dueItem('pick', 'fa-calendar') +
-      dueItem('clear', 'fa-calendar-xmark');
+      dueItem('clear', 'fa-calendar-xmark') +
+      '<div class="menu-divider" role="separator"></div>' +
+      ['daily', 'weekly', 'monthly', 'clear']
+        .map(
+          (rule) =>
+            `<button type="button" class="menu-item" data-repeat-action="${rule}" role="menuitem"><i class="fas ${rule === 'clear' ? 'fa-ban' : 'fa-repeat'}"></i><span></span></button>`
+        )
+        .join('');
     document.body.appendChild(menu);
     this.taskPriorityMenu = menu;
     const label = () => {
@@ -131,17 +145,27 @@ export class TaskPriorityFeature {
       menu.querySelectorAll('[data-due-action]').forEach((item) => {
         item.querySelector('span').textContent = i18n.t(`tasks.due_${item.dataset.dueAction}`);
       });
+      menu.querySelectorAll('[data-repeat-action]').forEach((item) => {
+        item.querySelector('span').textContent = i18n.t(
+          `tasks.repeat_${item.dataset.repeatAction}`
+        );
+      });
     };
     label();
     this.relabelTaskPriorityMenu = label;
     menu.addEventListener('mousedown', (e) => e.preventDefault());
     menu.addEventListener('click', (e) => {
-      const item = e.target.closest('[data-priority], [data-due-action]');
+      const item = e.target.closest('[data-priority], [data-due-action], [data-repeat-action]');
       const target = this.taskPriorityTarget;
       this.hideTaskPriorityMenu();
       if (!item || !target) return;
       if (item.dataset.priority !== undefined) {
         this.setTaskPriority(target, item.dataset.priority);
+        return;
+      }
+      if (item.dataset.repeatAction) {
+        const rule = item.dataset.repeatAction;
+        this.setTaskRepeat(target, rule === 'clear' ? '' : rule);
         return;
       }
       const action = item.dataset.dueAction;
