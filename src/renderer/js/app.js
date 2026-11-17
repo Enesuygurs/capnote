@@ -29,6 +29,7 @@ import { EditorBlocksFeature } from './features/editor-blocks.js';
 import { EditorHistoryFeature } from './features/editor-history.js';
 import { EditorToolsFeature } from './features/editor-tools.js';
 import { NoteLinksFeature } from './features/note-links.js';
+import { SlashMenuFeature } from './features/slash-menu.js';
 import { NoteFilesFeature } from './features/note-files.js';
 import { FolderLockFeature } from './features/folder-lock.js';
 import { LockMetaFeature } from './features/lock-meta.js';
@@ -316,6 +317,7 @@ export class CapnoteApp {
     this.tableModal = document.getElementById('tableModal');
     this.linkModal = document.getElementById('linkModal');
     this.noteLinkMenu = document.getElementById('noteLinkMenu');
+    this.slashMenu = document.getElementById('slashMenu');
     this.templateMenu = document.getElementById('templateMenu');
     this.newNoteTemplatesBtn = document.getElementById('newNoteTemplatesBtn');
     this.tagsScreen = document.getElementById('tagsScreen');
@@ -455,6 +457,7 @@ export class CapnoteApp {
     this.setupEditorHistory();
     this.setupEditorTools();
     this.setupNoteLinks();
+    this.setupSlashMenu();
     this.setupNoteFiles();
     this.setupTasksPage();
     this.setupTaskPriority();
@@ -731,6 +734,7 @@ applyFeatures(CapnoteApp, [
   EditorHistoryFeature,
   EditorToolsFeature,
   NoteLinksFeature,
+  SlashMenuFeature,
   NoteFilesFeature,
   FolderLockFeature,
   LockMetaFeature,
