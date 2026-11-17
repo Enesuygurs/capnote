@@ -374,15 +374,27 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
   max-width: 320px;
 }
 
-/* The "/" menu: a column of commands, scrolling past about nine */
+/* The "/" menu: a column of commands, scrolling past about ten; its rows as tall as other menus
+   (32px) with 14px text, as they are read while typing */
 .slash-menu {
-  width: 240px;
-  max-height: 340px;
+  width: 260px;
+  max-height: 372px;
   overflow-y: auto;
 }
 
-.slash-menu .menu-item i {
-  width: 16px;
+/* More specific than the compact right-click menu items further down; the rows keep their
+   height (the menu scrolls) instead of shrinking to fit it */
+.context-menu.slash-menu .menu-item {
+  flex-shrink: 0;
+  height: var(--control-sm);
+  gap: var(--space-3);
+  padding: 0 var(--space-3);
+  font-size: var(--fs-base);
+}
+
+.context-menu.slash-menu .menu-item i {
+  width: 18px;
+  font-size: 15px;
   text-align: center;
   color: var(--text-secondary);
 }
@@ -472,4 +484,10 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
 .user-template:hover .user-template-remove,
 .user-template:focus-within .user-template-remove {
   opacity: 1;
+}
+
+/* Only its color changes under the pointer, on the row's own hover */
+.user-template .user-template-remove:hover {
+  background: none;
+  color: var(--text-strong);
 }

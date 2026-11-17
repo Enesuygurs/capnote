@@ -943,14 +943,21 @@
    An earlier version shown in the viewer: an accent-tinted banner under the header says which
    version it is, with the list, the current version and a restore; the note's own actions are
    hidden while it is shown */
+/* 16px above and below it, so the note's text scrolling under it never touches it */
 .version-banner {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin: var(--space-4) var(--gutter) 0;
+  margin: var(--space-4) var(--gutter);
   padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--accent-tint);
+}
+
+/* Under the banner the text starts at the same place as before (the banner's 16px below it and
+   16px of the page's own) */
+.note-viewer.is-version-preview .viewer-content {
+  padding-top: var(--space-4);
 }
 
 .version-banner-icon {
