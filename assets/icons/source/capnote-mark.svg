@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 44 176 176">
-  <!-- The app's mark inside the app (sidebar, quick note, year summary): the icon's gem, no tile -->
-  <path d="M128 58 L210 104 L128 206 L46 104 Z" fill="#F59E0B" />
-  <path d="M46 104 H210 L128 58 Z" fill="#FBBF24" />
-  <path d="M94 104 L128 58 L162 104 Z" fill="#FDE68A" />
-  <path d="M94 104 L128 206 L162 104 Z" fill="#D97706" />
-  <path d="M46 104 L128 206 L94 104 Z" fill="#F59E0B" opacity="0.85" />
-</svg>

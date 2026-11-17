@@ -224,7 +224,7 @@ Under the figures, the writing calendar: a heat map with a square per day of the
 
 **Sidebar footer**: Settings fills the row; the archive and the note graph (pages, not list filters) sit beside it as 36px icon buttons in `--text-muted`, an accent tint while their page is open.
 
-**App icon** (`assets/icons/source/capnote.svg`, rendered by `npm run icons`): a wide gem on a cream tile (`#FFFBEB`, 56/256 corners), its facets in five tones of the default accent (`#FDE68A` table, `#FBBF24` crown, `#F59E0B` sides, `#D97706` pavilion) with a soft drop shadow. Every file the system shows (window, taskbar, tray on Windows, installer, `.ico` 16–256px) is drawn from it. Inside the app (the sidebar's 28px brand, the quick note, the year summary) the mark is the same gem with no tile (`capnote-mark.svg`), so it sits on the light and dark sidebar alike. The macOS menu bar icon (`tray-template.svg`) is the gem in black with its facet lines cut out.
+**App icon** (`assets/icons/source/capnote.svg`, rendered by `npm run icons`): a wide gem with no tile, its facets in close tones of the default accent `#F59E0B` (the table `#F7B648` and crown `#F6AA28` a little lighter, the sides the accent, the pavilion `#E6950A` and `#D88B0A` a little darker), so it reads as one color. Every size the system shows (window, taskbar, tray on Windows, installer, `.ico` 16–256px) and the app's own mark (the sidebar's 28px brand, the quick note, the year summary) are drawn from it. The macOS menu bar icon (`tray-template.svg`) is the gem in black with its facet lines cut out.
 
 **Toast**: `--surface-raised`, bottom center, its icon colored by kind.
 
