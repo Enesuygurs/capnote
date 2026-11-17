@@ -279,13 +279,24 @@
     "showDone": "Show completed",
     "hideDone": "Hide completed",
     "openCount": "{count} open",
-    "migratedTitle": "To-dos"
+    "migratedTitle": "To-dos",
+    "group_overdue": "Overdue",
+    "group_today": "Today",
+    "group_upcoming": "Upcoming"
   },
   "tasks": {
     "priority1": "Priority 1 · Urgent",
     "priority2": "Priority 2 · High",
     "priority3": "Priority 3 · Medium",
-    "priorityNone": "No priority"
+    "priorityNone": "No priority",
+    "dueToday": "Today",
+    "dueTomorrow": "Tomorrow",
+    "dueYesterday": "Yesterday",
+    "due_today": "Today",
+    "due_tomorrow": "Tomorrow",
+    "due_nextweek": "Next week",
+    "due_pick": "Pick a date…",
+    "due_clear": "Remove date"
   },
   "emojiCategories": {
     "all": "All",

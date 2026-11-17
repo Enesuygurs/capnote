@@ -279,13 +279,24 @@
     "showDone": "Tamamlananları göster",
     "hideDone": "Tamamlananları gizle",
     "openCount": "{count} açık",
-    "migratedTitle": "Yapılacaklar"
+    "migratedTitle": "Yapılacaklar",
+    "group_overdue": "Gecikmiş",
+    "group_today": "Bugün",
+    "group_upcoming": "Yaklaşan"
   },
   "tasks": {
     "priority1": "Öncelik 1 · Acil",
     "priority2": "Öncelik 2 · Yüksek",
     "priority3": "Öncelik 3 · Orta",
-    "priorityNone": "Öncelik yok"
+    "priorityNone": "Öncelik yok",
+    "dueToday": "Bugün",
+    "dueTomorrow": "Yarın",
+    "dueYesterday": "Dün",
+    "due_today": "Bugün",
+    "due_tomorrow": "Yarın",
+    "due_nextweek": "Gelecek hafta",
+    "due_pick": "Tarih seç…",
+    "due_clear": "Tarihi kaldır"
   },
   "emojiCategories": {
     "all": "Tümü",
