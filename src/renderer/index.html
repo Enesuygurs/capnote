@@ -357,13 +357,18 @@
             </div>
             <div class="page-actions">
               <button id="markAllReadBtn" class="btn-tinted btn-small">
-                <i class="fas fa-check-double"></i>
+                <i class="fas fa-check"></i>
                 <span data-i18n="buttons.markAllRead">Tümünü okundu işaretle</span>
               </button>
             </div>
           </div>
           <div class="page-body">
-            <section class="page-section">
+            <!-- Nothing to come and nothing came: one message for the page -->
+            <div id="remindersEmpty" class="empty-state empty-state-large hidden">
+              <i class="fas fa-bell-slash"></i>
+              <p data-i18n="messages.noActiveReminders">Aktif hatırlatma bulunmuyor</p>
+            </div>
+            <section class="page-section hidden" id="upcomingSection">
               <h3 class="section-label page-section-label" data-i18n="notifications.upcoming">
                 Yaklaşanlar
               </h3>
