@@ -52,6 +52,13 @@ export const NOTE_DIALOGS = /* HTML */ `
       <i></i>
       <span data-i18n="noteTemplates.weekly">Haftalık plan</span>
     </button>
+    <button class="menu-item" data-template="book" role="menuitem">
+      <i></i>
+      <span data-i18n="noteTemplates.book">Kitap notu</span>
+    </button>
+    <!-- The user's own templates (saved from a note), filled when the menu opens -->
+    <div class="menu-divider hidden" role="separator" id="userTemplatesDivider"></div>
+    <div id="userTemplatesList"></div>
   </div>
 
   <!-- The day of a reminder: a month calendar -->
@@ -364,6 +371,10 @@ export const APP_DIALOGS = /* HTML */ `
     <button class="menu-item" data-action="archive" role="menuitem">
       <i class="fas fa-box-archive"></i>
       <span data-i18n="archive.archive">Arşivle</span>
+    </button>
+    <button class="menu-item" data-action="saveTemplate" role="menuitem">
+      <i class="fas fa-shapes"></i>
+      <span data-i18n="noteTemplates.saveAs">Şablon olarak kaydet</span>
     </button>
     <div class="menu-divider" role="separator"></div>
     <button class="menu-item menu-item-danger" data-action="delete" role="menuitem">

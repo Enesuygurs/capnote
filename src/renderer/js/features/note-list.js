@@ -719,8 +719,10 @@ export class NoteListFeature {
       this.isNoteLockedForView(note);
     this.noteContextMenu.querySelector('[data-action="rename"]').disabled =
       this.isNoteLockedForView(note);
-    // A file note is its file: it is not locked, copied or archived
-    ['lock', 'duplicate', 'archive'].forEach((action) => {
+    // A locked note's text never goes into a template (templates are not encrypted)
+    this.noteContextMenu.querySelector('[data-action="saveTemplate"]').disabled = !!note.isLocked;
+    // A file note is its file: it is not locked, copied, archived or made a template
+    ['lock', 'duplicate', 'archive', 'saveTemplate'].forEach((action) => {
       this.noteContextMenu.querySelector(`[data-action="${action}"]`).hidden =
         this.isFileNote(note);
     });
@@ -837,6 +839,7 @@ export class NoteListFeature {
           ),
         duplicate: () => this.duplicateNote(note),
         archive: () => this.setArchived([note], true),
+        saveTemplate: () => this.saveNoteAsTemplate(note),
         delete: () => this.deleteNoteById(noteId),
       };
       actions[item.dataset.action]?.();

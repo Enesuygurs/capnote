@@ -1,5 +1,7 @@
-// Note templates: a new note can start as a journal entry, meeting notes or a weekly plan instead
-// of an empty page. The text is in the language the app is in.
+// Note templates: a new note can start as a journal entry, meeting notes, a weekly plan or book
+// notes instead of an empty page (their text in the language the app is in), or as one of the
+// user's own templates: a note saved as a template (its note menu), kept in the "templates"
+// collection. A template keeps the note's text and look; its tasks start unticked.
 
 import { i18n } from '../i18n.js';
 
@@ -60,7 +62,142 @@ export class TemplatesFeature {
           );
         },
       },
+      book: {
+        icon: 'fa-book-open',
+        tone: 'rose',
+        title: () => i18n.t('noteTemplates.bookTitle'),
+        html: () =>
+          `<h3>${t('bookAbout')}</h3>` +
+          `<ul><li><b>${t('bookAuthor')}:</b> </li>` +
+          `<li><b>${t('bookStarted')}:</b> ${this.escapeHtml(longDate(new Date()))}</li></ul>` +
+          `<h3>${t('bookSummary')}</h3><p><br></p>` +
+          `<h3>${t('bookQuotes')}</h3><blockquote><br></blockquote>` +
+          `<h3>${t('bookThoughts')}</h3><p><br></p>` +
+          `<h3>${t('bookRating')}</h3><p>☆☆☆☆☆</p>`,
+      },
     };
+  }
+
+  // ============ The user's templates ============
+  loadUserTemplates() {
+    const stored = this.storedData?.templates;
+    this.userTemplates = Array.isArray(stored)
+      ? stored.filter((t) => t && typeof t.content === 'string')
+      : [];
+  }
+
+  async saveUserTemplates() {
+    await this.persist('templates', this.userTemplates || []);
+  }
+
+  // A note's text as a template: its tasks unticked (each gets a new id when used)
+  templateContentOf(note) {
+    const body = this.parseInertHtml(note.content || '');
+    body
+      .querySelectorAll('input[type="checkbox"]')
+      .forEach((box) => box.removeAttribute('checked'));
+    return body.innerHTML;
+  }
+
+  // Save a note as a template, named after its title; one with that name already is replaced
+  async saveNoteAsTemplate(note) {
+    if (!note || note.isLocked || this.isFileNote?.(note)) return;
+    // The open note's latest text first
+    if (note === this.currentNote && this.isEditorOpen?.()) this.saveNote(true);
+    const name = (note.title || '').trim() || i18n.t('noteTemplates.untitled');
+    const template = {
+      id: this.newId(),
+      name,
+      content: this.templateContentOf(note),
+      formatting: { ...this.getDefaultFormatting(), ...(note.formatting || {}) },
+      tags: [...(note.tags || [])],
+      createdAt: new Date().toISOString(),
+    };
+    const same = this.userTemplates.findIndex((t) => t.name === name);
+    if (same >= 0) this.userTemplates[same] = { ...template, id: this.userTemplates[same].id };
+    else this.userTemplates.push(template);
+    await this.saveUserTemplates();
+    this.showNotification(
+      i18n.t(same >= 0 ? 'noteTemplates.updated' : 'noteTemplates.saved', { name }),
+      'success'
+    );
+  }
+
+  async removeUserTemplate(id) {
+    const template = this.userTemplates.find((t) => t.id === id);
+    if (!template) return;
+    this.userTemplates = this.userTemplates.filter((t) => t.id !== id);
+    await this.saveUserTemplates();
+    this.showNotification(i18n.t('noteTemplates.removed', { name: template.name }), 'success');
+  }
+
+  // A new note from one of the user's templates: its text with fresh task ids, and its tags
+  createNoteFromUserTemplate(id) {
+    const template = this.userTemplates.find((t) => t.id === id);
+    this.createNewNote();
+    if (!template) return;
+    this.noteTitle.value = template.name;
+    this.showTitleInList();
+    const body = this.parseInertHtml(template.content);
+    body.querySelectorAll('.checklist-item').forEach((item) => {
+      const box = item.querySelector('input[type="checkbox"]');
+      const label = item.querySelector('label');
+      if (!box || !label) return;
+      const fresh = document.createElement('div');
+      fresh.innerHTML = this.checklistItemHtml();
+      box.id = fresh.querySelector('input').id;
+      label.setAttribute('for', box.id);
+    });
+    this.richEditor.innerHTML = body.innerHTML;
+    this.tags = Array.isArray(template.tags) ? [...template.tags] : [];
+    this.updateTagsDisplay();
+    this.restoreCheckboxStates();
+    this.updateWordCount();
+    this.trackContentChanges();
+    this.resetEditorHistory?.();
+    const first = this.richEditor.querySelector('p, li, label');
+    if (first) this.placeCaret(first, 0);
+  }
+
+  // The user's templates under the built-in ones, each with a button that deletes it
+  renderUserTemplates() {
+    const list = document.getElementById('userTemplatesList');
+    const divider = document.getElementById('userTemplatesDivider');
+    if (!list) return;
+    list.innerHTML = '';
+    divider?.classList.toggle('hidden', !this.userTemplates.length);
+    [...this.userTemplates]
+      .sort((a, b) => a.name.localeCompare(b.name, this.getLocale()))
+      .forEach((template) => {
+        const row = document.createElement('div');
+        row.className = 'menu-item user-template';
+        row.setAttribute('role', 'menuitem');
+        row.tabIndex = 0;
+        row.innerHTML =
+          '<i class="fas fa-shapes tone-accent"></i><span></span>' +
+          '<button type="button" class="btn-icon btn-icon-xs user-template-remove">' +
+          '<i class="fas fa-xmark"></i></button>';
+        row.querySelector('span').textContent = template.name;
+        const remove = row.querySelector('.user-template-remove');
+        remove.title = i18n.t('noteTemplates.remove');
+        remove.setAttribute('aria-label', i18n.t('noteTemplates.remove'));
+        remove.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          await this.removeUserTemplate(template.id);
+          this.renderUserTemplates();
+          if (!this.userTemplates.length) this.templateMenu.classList.add('hidden');
+        });
+        const open = (e) => {
+          e.stopPropagation();
+          this.templateMenu.classList.add('hidden');
+          this.createNoteFromUserTemplate(template.id);
+        };
+        row.addEventListener('click', open);
+        row.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') open(e);
+        });
+        list.appendChild(row);
+      });
   }
 
   // A new note filled from a template, ready to write in
@@ -87,6 +224,7 @@ export class TemplatesFeature {
       menu.classList.add('hidden');
       return;
     }
+    this.renderUserTemplates();
     const rect = this.newNoteTemplatesBtn.closest('.new-note-split').getBoundingClientRect();
     this.positionMenu(menu, rect.left, rect.bottom + 4);
     menu.style.minWidth = `${rect.width}px`;

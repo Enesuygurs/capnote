@@ -461,3 +461,15 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
   position: absolute;
   z-index: var(--z-dropdown);
 }
+
+/* A template of the user's in the new-note menu: its name, then a small button that deletes it
+   (shown with the pointer on the row) */
+.user-template .user-template-remove {
+  margin-left: auto;
+  opacity: 0;
+}
+
+.user-template:hover .user-template-remove,
+.user-template:focus-within .user-template-remove {
+  opacity: 1;
+}

@@ -10,7 +10,15 @@
 import fs from 'fs';
 import path from 'path';
 
-const COLLECTIONS = ['notes', 'folders', 'reminders', 'notifications', 'todos', 'settings'];
+const COLLECTIONS = [
+  'notes',
+  'folders',
+  'reminders',
+  'notifications',
+  'todos',
+  'templates',
+  'settings',
+];
 const DAILY_BACKUPS_TO_KEEP = 7;
 // What a restore brings back: the user's data, not their settings
 const RESTORED = COLLECTIONS.filter((key) => key !== 'settings');

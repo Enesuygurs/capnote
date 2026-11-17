@@ -104,6 +104,7 @@ export class CapnoteApp {
     await this.loadReminders();
     await this.loadNotifications();
     await this.loadTodos();
+    this.loadUserTemplates();
     this.initializeElements();
     this.setupEventListeners();
     this.setupSettingsEventListeners();
