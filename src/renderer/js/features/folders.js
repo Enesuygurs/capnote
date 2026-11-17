@@ -1,5 +1,6 @@
 // Folders: create, rename, color, reorder, delete and moving notes between them
 
+import { nextFolderColor } from '../folder-palette.js';
 import { i18n } from '../i18n.js';
 
 export class FoldersFeature {
@@ -166,7 +167,7 @@ export class FoldersFeature {
       id: this.newId(),
       name: name,
       createdAt: new Date().toISOString(),
-      color: this.getRandomFolderColor(),
+      color: this.getNewFolderColor(),
       expanded: true,
     };
     if (parentId) {
@@ -197,7 +198,7 @@ export class FoldersFeature {
     }
   }
 
-  getRandomFolderColor() {
+  getNewFolderColor() {
     // If sync-to-accent is enabled, return the accent color
     if (this.settings.syncFolderAccent) {
       return (
@@ -207,30 +208,8 @@ export class FoldersFeature {
       );
     }
 
-    // Vivid, mid-light colors that read on both themes: no dark or washed-out shades
-    const colors = [
-      '#3B82F6', // blue
-      '#0EA5E9', // sky
-      '#06B6D4', // cyan
-      '#14B8A6', // teal
-      '#22C55E', // green
-      '#84CC16', // lime
-      '#EAB308', // yellow
-      '#F59E0B', // amber
-      '#F97316', // orange
-      '#EF4444', // red
-      '#F43F5E', // rose
-      '#EC4899', // pink
-      '#D946EF', // fuchsia
-      '#A855F7', // purple
-      '#8B5CF6', // violet
-      '#6366F1', // indigo
-    ];
-    // Prefer a color no other folder has yet
-    const used = new Set(this.folders.map((f) => String(f.color || '').toUpperCase()));
-    const free = colors.filter((c) => !used.has(c));
-    const pool = free.length ? free : colors;
-    return pool[Math.floor(Math.random() * pool.length)];
+    // One family of tones (folder-palette.js): the one farthest from the folders' colors now
+    return nextFolderColor(this.folders.map((f) => f.color));
   }
 
   updateFoldersList() {

@@ -317,6 +317,16 @@ body {
   color: var(--text-on-accent);
 }
 
+/* A narrow window (under 1160px, down to the smallest, 960px) takes a little room from the
+   sidebar and the page margins, so the editor's toolbar stays on one line as long as it can (then
+   it goes on to a second line) */
+@media (max-width: 1159px) {
+  :root {
+    --sidebar-width: 248px;
+    --gutter: var(--space-5);
+  }
+}
+
 /* Tone classes: set the --tone an element (or its icon rules) colors with */
 .tone-rose {
   --tone: var(--tone-rose);

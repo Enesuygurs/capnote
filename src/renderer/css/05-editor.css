@@ -51,6 +51,13 @@
   flex-shrink: 0;
 }
 
+/* A narrow window: the groups a little closer, so the toolbar keeps one line down to ~1085px */
+@media (max-width: 1159px) {
+  .formatting-toolbar {
+    column-gap: var(--space-2);
+  }
+}
+
 .format-group {
   display: flex;
   align-items: center;

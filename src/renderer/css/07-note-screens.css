@@ -337,6 +337,7 @@
   color: var(--text-strong);
 }
 
+/* On one line; a narrow window lets a long label take a second line rather than cut it */
 .stat-tile-label {
   overflow: hidden;
   white-space: nowrap;
@@ -390,6 +391,14 @@
 
 /* A narrow window (a small screen) stacks the cards, each at a fixed height */
 @media (max-width: 1150px) {
+  .stat-tile {
+    align-content: start;
+  }
+
+  .stat-tile-label {
+    white-space: normal;
+  }
+
   .dashboard .page-body {
     display: block;
   }
