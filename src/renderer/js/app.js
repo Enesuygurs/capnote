@@ -654,6 +654,8 @@ export class CapnoteApp {
     this.relabelTaskPriorityMenu?.();
     this.updateTagsDisplay();
     this.renderUpdateState();
+    // The reminder form's date and time buttons ("Date", "Time" until one is chosen)
+    this.renderReminderWhen();
 
     if (this.currentNote) {
       if (this.isViewerOpen()) this.displayNote(this.currentNote);
@@ -661,7 +663,8 @@ export class CapnoteApp {
         this.updateWordCount();
         this.updateCurrentDate();
         this.updateNoteRemindersDisplay();
-        this.renderReminderWhen();
+        // "Saved · 20:49" and Done in the new language
+        this.updateSaveButtonState();
       }
       if (this.noteHistoryModal && !this.noteHistoryModal.classList.contains('hidden')) {
         this.openNoteHistory();
