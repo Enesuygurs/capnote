@@ -187,7 +187,8 @@ body.resizing .modal {
 
   /* Layout */
   --titlebar-height: 40px;
-  --sidebar-width: 280px;
+  /* One width at every window size */
+  --sidebar-width: 264px;
   --gutter: var(--space-8);
 
   /* Motion */
@@ -317,12 +318,11 @@ body {
   color: var(--text-on-accent);
 }
 
-/* A narrow window (under 1160px, down to the smallest, 960px) takes a little room from the
-   sidebar and the page margins, so the editor's toolbar stays on one line as long as it can (then
-   it goes on to a second line) */
+/* A narrow window (under 1160px, down to the smallest, 960px) takes a little room from the page
+   margins, so the editor's toolbar stays on one line as long as it can (then it goes on to a
+   second line); the sidebar keeps its width */
 @media (max-width: 1159px) {
   :root {
-    --sidebar-width: 248px;
     --gutter: var(--space-5);
   }
 }

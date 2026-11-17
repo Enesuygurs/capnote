@@ -103,8 +103,9 @@ function saveWindowState(win) {
   }
 }
 
-// The smallest window: under 1160px the sidebar and margins get narrower (01-base.css) and the
-// editor's toolbar takes a second line once it must; a shorter window scrolls the overview
+// The smallest window: under 1160px the page margins get narrower (01-base.css) and the editor's
+// toolbar takes a second line once it must (under about 1100px); a shorter window scrolls the
+// overview
 const MIN_SIZE = { width: 960, height: 720 };
 
 // Window background before the page paints: the app's light and dark --chrome colors

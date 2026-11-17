@@ -51,7 +51,7 @@
   flex-shrink: 0;
 }
 
-/* A narrow window: the groups a little closer, so the toolbar keeps one line down to ~1085px */
+/* A narrow window: the groups a little closer, so the toolbar keeps one line down to ~1100px */
 @media (max-width: 1159px) {
   .formatting-toolbar {
     column-gap: var(--space-2);
