@@ -110,7 +110,12 @@ const MIN_SIZE = { width: 960, height: 720 };
 // Window background before the page paints: the app's light and dark --chrome colors
 const BACKGROUND = { light: '#f1f2f4', dark: '#121212' };
 
-function createMainWindow({ darkMode = false, devTools = false, hidden = false } = {}) {
+function createMainWindow({
+  darkMode = false,
+  accent = '',
+  devTools = false,
+  hidden = false,
+} = {}) {
   // Determine icon path (prefer .ico on Windows if available)
   let iconPath = path.join(ICONS_DIR, 'capnote-512.png');
   if (process.platform === 'win32') {
@@ -152,7 +157,14 @@ function createMainWindow({ darkMode = false, devTools = false, hidden = false }
   });
 
   lockDownNavigation(mainWindow);
-  mainWindow.loadFile(path.join(RENDERER_DIR, 'index.html'));
+  // The theme and accent go in the address: the page applies them before it is first drawn
+  // (js/theme-boot.js), so a dark app never flashes light while its settings load
+  mainWindow.loadFile(path.join(RENDERER_DIR, 'index.html'), {
+    query: {
+      theme: darkMode ? 'dark' : 'light',
+      ...(/^#[0-9a-f]{6}$/i.test(accent || '') && { accent }),
+    },
+  });
 
   mainWindow.once('ready-to-show', () => {
     // Hidden (started at login): it stays in the tray; maximized again when it is first shown

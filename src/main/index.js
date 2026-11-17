@@ -90,6 +90,12 @@ function readDarkModePreference() {
   return !!(settings && settings.darkMode);
 }
 
+// The chosen accent color, for the window's first paint
+function readAccentPreference() {
+  const settings = getDataStore().read('settings');
+  return (settings && settings.accentColor) || '';
+}
+
 // Drawing with the graphics card is on unless turned off in the settings; off, Capnote uses a little
 // less memory (about 20-30 MB). It can only change before the app is ready, so a change in the
 // settings applies after a restart.
@@ -170,6 +176,7 @@ app.whenReady().then(() => {
   // Started with Windows: only the tray icon, the window opens from there
   createMainWindow({
     darkMode: readDarkModePreference(),
+    accent: readAccentPreference(),
     devTools: isDev,
     hidden: startedAtLogin(),
   });
@@ -184,7 +191,7 @@ app.whenReady().then(() => {
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-      createMainWindow({ darkMode: readDarkModePreference() });
+      createMainWindow({ darkMode: readDarkModePreference(), accent: readAccentPreference() });
     } else if (getMainWindow()) {
       getMainWindow().show();
     }
