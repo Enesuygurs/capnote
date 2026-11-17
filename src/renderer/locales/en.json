@@ -716,5 +716,21 @@
     "task": "Task list",
     "bullets": "Bulleted list",
     "numbers": "Numbered list"
+  },
+  "welcome": {
+    "title": "Welcome to Capnote",
+    "intro": "Capnote keeps your notes, tasks and reminders in one place. Everything is stored only on this computer.",
+    "startTitle": "Getting started",
+    "tipNew": "<b>Ctrl+N</b> opens a new note, <b>Ctrl+F</b> searches your notes.",
+    "tipEdit": "To edit a note, double-click its text or press <b>Ctrl+E</b>.",
+    "tipSlash": "Type <b>/</b> at the start of a line to add a heading, a list, a table or a code block.",
+    "tipLink": "Type <b>[[</b> and pick a note to link notes together.",
+    "tipQuick": "While Capnote runs in the background, <b>Ctrl+Alt+N</b> opens the quick note window.",
+    "tipMenu": "Right-click a note to lock it, save it as a template or archive it.",
+    "tryTitle": "Try it",
+    "try1": "Tick this task",
+    "try2": "Create your first note",
+    "try3": "Choose a theme and an accent color in Settings",
+    "outro": "You can delete this note whenever you like."
   }
 }

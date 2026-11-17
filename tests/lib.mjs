@@ -48,6 +48,9 @@ export function launch({ script, userData, extraEnv = {} }) {
   fs.writeFileSync(scriptFile, script);
   const env = {
     ...process.env,
+    // No welcome note and no system language: every test starts from an empty, Turkish app
+    // (a test that checks the first start clears this)
+    CAPNOTE_NO_WELCOME: '1',
     ...extraEnv,
     CAPNOTE_TEST_SCRIPT: scriptFile,
     CAPNOTE_TEST_USERDATA: userData,

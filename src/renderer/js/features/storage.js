@@ -6,8 +6,9 @@ import { toMoodKey, toWeatherKey } from '../data/moods.js';
 
 export class StorageFeature {
   async initStorage() {
-    const { initialized, data } = await window.electronAPI.storage.load();
+    const { initialized, welcome, data } = await window.electronAPI.storage.load();
     this.storedData = data || {};
+    this.isFirstRun = false;
     if (initialized) {
       await this.loadSettingsData();
       return;
@@ -30,6 +31,14 @@ export class StorageFeature {
     }
     legacy.forEach(([, legacyKey]) => localStorage.removeItem(legacyKey));
     await this.loadSettingsData();
+    // A truly new install (nothing moved over from the older storage): the system's language, and
+    // a welcome note once the app is ready
+    const movedOver = legacy.some(([key]) => this.storedData[key] !== undefined);
+    if (welcome && !movedOver) {
+      this.isFirstRun = true;
+      this.settings.language = this.systemLanguage();
+      await this.persist('settings', this.settings);
+    }
   }
 
   // Persist one collection; failures are reported instead of silently losing data

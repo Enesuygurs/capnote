@@ -109,7 +109,10 @@ function registerStorageIpc() {
 
   ipcMain.handle('storage:load', () => {
     const storage = getDataStore();
-    return { initialized: storage.isInitialized(), data: storage.readAll() };
+    const initialized = storage.isInitialized();
+    // A new install opens on a welcome note in the system's language (not in the app tests)
+    const welcome = !initialized && !process.env.CAPNOTE_NO_WELCOME;
+    return { initialized, welcome, data: storage.readAll() };
   });
 
   ipcMain.handle('storage:save', (event, key, value) => {

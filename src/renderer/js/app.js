@@ -47,6 +47,7 @@ import { QuickNoteFeature } from './features/quick-note.js';
 import { NoteGraphFeature } from './features/note-graph.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
+import { WelcomeFeature } from './features/welcome.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
 import { FoldingFeature } from './features/folding.js';
 import { i18n } from './i18n.js';
@@ -131,6 +132,8 @@ export class CapnoteApp {
 
     // The page chosen in the settings: the last note, home, a new note, to-dos or notifications
     this.openStartupPage();
+    // The first start opens on the welcome note
+    if (this.isFirstRun) await this.addWelcomeNote();
     // A file Capnote was started on opens over it
     this.setupFileNotes();
   }
@@ -760,5 +763,6 @@ applyFeatures(CapnoteApp, [
   NoteGraphFeature,
   DashboardFeature,
   TemplatesFeature,
+  WelcomeFeature,
   MarkdownIoFeature,
 ]);

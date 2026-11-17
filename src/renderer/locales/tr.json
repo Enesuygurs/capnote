@@ -716,5 +716,21 @@
     "task": "Görev listesi",
     "bullets": "Madde listesi",
     "numbers": "Numaralı liste"
+  },
+  "welcome": {
+    "title": "Capnote'a hoş geldiniz",
+    "intro": "Capnote notlarınızı, görevlerinizi ve hatırlatmalarınızı tek bir yerde tutar. Her şey yalnızca bu bilgisayarda saklanır.",
+    "startTitle": "Başlarken",
+    "tipNew": "<b>Ctrl+N</b> yeni bir not açar, <b>Ctrl+F</b> notlarınızda arar.",
+    "tipEdit": "Bir notu düzenlemek için metnine çift tıklayın ya da <b>Ctrl+E</b> tuşlarına basın.",
+    "tipSlash": "Satır başında <b>/</b> yazarak başlık, liste, tablo veya kod bloğu ekleyebilirsiniz.",
+    "tipLink": "<b>[[</b> yazıp bir notun adını seçerek notları birbirine bağlayabilirsiniz.",
+    "tipQuick": "Capnote arka planda çalışırken <b>Ctrl+Alt+N</b> hızlı not penceresini açar.",
+    "tipMenu": "Bir nota sağ tıklayarak onu kilitleyebilir, şablon olarak kaydedebilir veya arşivleyebilirsiniz.",
+    "tryTitle": "Deneyin",
+    "try1": "Bu görevi işaretleyin",
+    "try2": "İlk notunuzu oluşturun",
+    "try3": "Ayarlar bölümünden temayı ve vurgu rengini seçin",
+    "outro": "Bu notu dilediğiniz zaman silebilirsiniz."
   }
 }
