@@ -103,9 +103,9 @@ function saveWindowState(win) {
   }
 }
 
-// The smallest window: the overview fits without scrolling, with every mood and weather in use
-// and a few notes on this day (measured with the sidebar shown)
-const MIN_SIZE = { width: 1200, height: 970 };
+// The smallest window: the editor's formatting toolbar stays on one line beside the sidebar
+// (measured); a shorter window scrolls the overview instead of fitting it
+const MIN_SIZE = { width: 1160, height: 720 };
 
 // Window background before the page paints: the app's light and dark --chrome colors
 const BACKGROUND = { light: '#f1f2f4', dark: '#121212' };

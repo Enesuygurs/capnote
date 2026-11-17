@@ -9,7 +9,10 @@
 /* ============ Sidebar ============
    Three parts: a fixed top (header, new note, search, filter), the scrolling list and a fixed
    bottom (settings) */
+/* Selecting a note's text with the pointer does not run into the list beside it (the search
+   field's text still selects) */
 .sidebar {
+  user-select: none;
   width: var(--sidebar-width);
   flex-shrink: 0;
   display: flex;
@@ -20,6 +23,10 @@
     opacity var(--transition-normal);
   z-index: var(--z-sidebar);
   position: relative;
+}
+
+.sidebar :is(input, textarea, [contenteditable='true']) {
+  user-select: text;
 }
 
 .sidebar.hidden {

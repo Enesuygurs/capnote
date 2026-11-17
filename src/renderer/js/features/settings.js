@@ -200,6 +200,10 @@ export class SettingsFeature {
     this.hideLockedTitlesToggle?.addEventListener('change', (e) => {
       this.setSetting('hideLockedTitles', e.currentTarget.checked);
       this.applyHiddenTitlesSetting();
+      // Names encrypted earlier need the password: they show once their folder or note is opened
+      if (!e.currentTarget.checked && this.hasSealedClosedNames()) {
+        this.showNotification(i18n.t('folderLock.namesOnNextOpen'), 'info');
+      }
     });
 
     // Locked notes in the overview's mood and weather

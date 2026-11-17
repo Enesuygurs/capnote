@@ -200,6 +200,14 @@ export class LockMetaFeature {
     copy.attachments = this.extractUploadNames(copy.content);
   }
 
+  // Locked folders and notes, closed now, whose names are encrypted (shown once opened)
+  hasSealedClosedNames() {
+    return (
+      this.folders.some((f) => f.isLocked && f.sealedName && this.isFolderLockedForView(f.id)) ||
+      this.notes.some((n) => n.isLocked && n.sealedMeta && this.isNoteLockedForView(n))
+    );
+  }
+
   // The setting changed: the notes and folders open now follow it at once
   async applyHiddenTitlesSetting() {
     const jobs = [];
