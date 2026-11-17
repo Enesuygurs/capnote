@@ -29,6 +29,7 @@ import { EditorBlocksFeature } from './features/editor-blocks.js';
 import { EditorHistoryFeature } from './features/editor-history.js';
 import { EditorToolsFeature } from './features/editor-tools.js';
 import { NoteLinksFeature } from './features/note-links.js';
+import { VersionDiffFeature } from './features/version-diff.js';
 import { SlashMenuFeature } from './features/slash-menu.js';
 import { NoteFilesFeature } from './features/note-files.js';
 import { FolderLockFeature } from './features/folder-lock.js';
@@ -238,6 +239,8 @@ export class CapnoteApp {
     this.historyBody = document.getElementById('historyBody');
     this.versionBanner = document.getElementById('versionBanner');
     this.versionBannerDate = document.getElementById('versionBannerDate');
+    this.versionDiffBtn = document.getElementById('versionDiffBtn');
+    this.versionDiffSummary = document.getElementById('versionDiffSummary');
     this.versionListBtn = document.getElementById('versionListBtn');
     this.versionCloseBtn = document.getElementById('versionCloseBtn');
     this.versionRestoreBtn = document.getElementById('versionRestoreBtn');
@@ -738,6 +741,7 @@ applyFeatures(CapnoteApp, [
   EditorHistoryFeature,
   EditorToolsFeature,
   NoteLinksFeature,
+  VersionDiffFeature,
   SlashMenuFeature,
   NoteFilesFeature,
   FolderLockFeature,

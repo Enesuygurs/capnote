@@ -636,7 +636,12 @@
     "previewTitle": "You are looking at an earlier version",
     "backToList": "History",
     "showCurrent": "Current version",
-    "words": "{count} words"
+    "words": "{count} words",
+    "compare": "Show changes",
+    "showChanges": "Changes",
+    "noChanges": "No changes since this version",
+    "unchangedLines": "{count} unchanged lines",
+    "diffSummary": "{added} added, {removed} removed"
   },
   "summary": {
     "open": "Year in review",

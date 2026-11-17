@@ -209,12 +209,25 @@ export class ViewerFeature {
       view.innerHTML = '<i class="fas fa-eye"></i> <span></span>';
       view.querySelector('span').textContent = i18n.t('history.view');
       view.addEventListener('click', () => this.previewNoteVersion(note, version, savedAt));
+      // Or straight to what changed since
+      const compare = document.createElement('button');
+      compare.type = 'button';
+      compare.className = 'btn-icon btn-icon-sm history-compare';
+      compare.innerHTML = '<i class="fas fa-code-compare"></i>';
+      compare.title = i18n.t('history.compare');
+      compare.setAttribute('aria-label', i18n.t('history.compare'));
+      compare.addEventListener('click', () =>
+        this.previewNoteVersion(note, version, savedAt, { diff: true })
+      );
+      const actions = document.createElement('div');
+      actions.className = 'history-actions';
+      actions.append(compare, view);
       timeline.appendChild(
         row({
           kind: 'version',
           title: this.historyDate(savedAt),
           text: version.title || i18n.t('messages.untitledNote'),
-          action: view,
+          action: actions,
         })
       );
     });
@@ -244,8 +257,9 @@ export class ViewerFeature {
   }
 
   // An earlier version shown in the viewer in place of the note, read-only, under a banner that
-  // says which version it is and offers the list, the current version and a restore
-  previewNoteVersion(note, version, savedAt) {
+  // says which version it is and offers the comparison with now, the list, the current version
+  // and a restore (diff: open it as the comparison)
+  previewNoteVersion(note, version, savedAt, { diff = false } = {}) {
     this.hideModal(this.noteHistoryModal);
     const preview = {
       ...note,
@@ -263,6 +277,10 @@ export class ViewerFeature {
     this.versionBannerDate.textContent = i18n.t('history.versionOf', {
       date: this.historyDate(savedAt),
     });
+    this.versionDiffBtn?.classList.remove('active');
+    this.versionDiffBtn?.setAttribute('aria-pressed', 'false');
+    this.versionDiffSummary?.classList.add('hidden');
+    if (diff) this.toggleVersionDiff(true);
   }
 
   clearVersionPreview() {
@@ -418,6 +436,7 @@ export class ViewerFeature {
     this.historyBtn = document.getElementById('historyBtn');
 
     this.historyBtn?.addEventListener('click', () => this.openNoteHistory());
+    this.versionDiffBtn?.addEventListener('click', () => this.toggleVersionDiff());
     this.versionListBtn?.addEventListener('click', () => this.openNoteHistory());
     this.versionCloseBtn?.addEventListener('click', () => this.endVersionPreview());
     this.versionRestoreBtn?.addEventListener('click', () => this.restorePreviewedVersion());

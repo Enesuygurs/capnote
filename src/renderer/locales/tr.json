@@ -636,7 +636,12 @@
     "previewTitle": "Eski bir sürüme bakıyorsun",
     "backToList": "Geçmiş",
     "showCurrent": "Güncel sürüm",
-    "words": "{count} kelime"
+    "words": "{count} kelime",
+    "compare": "Değişiklikleri göster",
+    "showChanges": "Değişiklikler",
+    "noChanges": "Bu sürümden bu yana değişiklik yok",
+    "unchangedLines": "{count} değişmeyen satır",
+    "diffSummary": "{added} ekleme, {removed} silme"
   },
   "summary": {
     "open": "Yıllık özet",

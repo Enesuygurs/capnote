@@ -528,7 +528,12 @@
             <div class="version-banner-text">
               <strong data-i18n="history.previewTitle">Eski bir sürüme bakıyorsun</strong>
               <span id="versionBannerDate"></span>
+              <span id="versionDiffSummary" class="version-diff-summary hidden"></span>
             </div>
+            <button class="btn-secondary btn-small" id="versionDiffBtn" aria-pressed="false">
+              <i class="fas fa-code-compare"></i>
+              <span data-i18n="history.showChanges">Değişiklikler</span>
+            </button>
             <button class="btn-secondary btn-small" id="versionListBtn">
               <i class="fas fa-list"></i> <span data-i18n="history.backToList">Geçmiş</span>
             </button>
