@@ -165,6 +165,7 @@ export class CapnoteApp {
     // Butonlar
     this.homeBtn = document.getElementById('homeBtn');
     this.saveNoteBtn = document.getElementById('saveNoteBtn');
+    this.saveStatus = document.getElementById('saveStatus');
     this.cancelNoteBtn = document.getElementById('cancelNoteBtn');
     this.editNoteBtn = document.getElementById('editNoteBtn');
     this.deleteNoteBtn = document.getElementById('deleteNoteBtn');

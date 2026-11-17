@@ -1,5 +1,6 @@
 // Escape keeps a new note that has something in it (only the Cancel button deletes a new note),
-// removes an empty new note, and drops unsaved changes of a note being edited
+// removes an empty new note; on a note being edited it is Done with automatic saving (the change
+// kept) and drops the unsaved change without it
 export async function run() {
   const a = window.app;
   const esc = () =>
@@ -27,6 +28,12 @@ export async function run() {
   await a.editCurrentNote();
   a.noteTitle.value = 'Changed';
   esc();
+  r.editKept = a.notes[0].title;
+
+  a.settings.autoSave = false;
+  await a.editCurrentNote();
+  a.noteTitle.value = 'Not kept';
+  esc();
   r.editDropped = a.notes[0].title;
   return r;
 }
@@ -35,5 +42,6 @@ export const expected = {
   kept: { notes: ['Draft'], viewer: true, content: '<p>written</p>' },
   stillThere: 1,
   emptyGone: ['Draft'],
-  editDropped: 'Draft',
+  editKept: 'Changed',
+  editDropped: 'Changed',
 };

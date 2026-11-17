@@ -28,7 +28,8 @@
     "duplicate": "Duplicate",
     "markAllRead": "Mark all as read",
     "testNotifications": "Test notifications",
-    "removeLink": "Remove link"
+    "removeLink": "Remove link",
+    "done": "Done"
   },
   "titles": {
     "home": "Home",
@@ -408,7 +409,8 @@
     "exportFailed": "Export failed",
     "passwordToDelete": "Enter the password to delete this locked note",
     "invalidLink": "Enter a valid web or e-mail address",
-    "shortcutInUse": "Ctrl+Alt+N is used by another app"
+    "shortcutInUse": "Ctrl+Alt+N is used by another app",
+    "changesReverted": "Changes undone"
   },
   "templates": {
     "tableHeader": "Header {n}"
@@ -732,5 +734,9 @@
     "try2": "Create your first note",
     "try3": "Choose a theme and an accent color in Settings",
     "outro": "You can delete this note whenever you like."
+  },
+  "saveStatus": {
+    "saving": "Saving…",
+    "saved": "Saved · {time}"
   }
 }

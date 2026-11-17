@@ -28,7 +28,8 @@
     "duplicate": "Çoğalt",
     "markAllRead": "Tümünü okundu işaretle",
     "testNotifications": "Bildirimleri test et",
-    "removeLink": "Bağlantıyı kaldır"
+    "removeLink": "Bağlantıyı kaldır",
+    "done": "Bitti"
   },
   "titles": {
     "home": "Ana Sayfa",
@@ -408,7 +409,8 @@
     "exportFailed": "Dışa aktarma başarısız oldu",
     "passwordToDelete": "Kilitli notu silmek için şifresini girin",
     "invalidLink": "Geçerli bir web ya da e-posta adresi girin",
-    "shortcutInUse": "Ctrl+Alt+N başka bir uygulama tarafından kullanılıyor"
+    "shortcutInUse": "Ctrl+Alt+N başka bir uygulama tarafından kullanılıyor",
+    "changesReverted": "Değişiklikler geri alındı"
   },
   "templates": {
     "tableHeader": "Başlık {n}"
@@ -732,5 +734,9 @@
     "try2": "İlk notunuzu oluşturun",
     "try3": "Ayarlar bölümünden temayı ve vurgu rengini seçin",
     "outro": "Bu notu dilediğiniz zaman silebilirsiniz."
+  },
+  "saveStatus": {
+    "saving": "Kaydediliyor…",
+    "saved": "Kaydedildi · {time}"
   }
 }

@@ -35,7 +35,10 @@ export const NOTE_EDITOR = /* HTML */ `
             <i class="fas fa-expand"></i>
           </button>
         </div>
+        <!-- With automatic saving: when the note was last saved (in place of a Save button) -->
+        <span id="saveStatus" class="save-status hidden" aria-live="polite"></span>
         <button id="cancelNoteBtn" class="btn-secondary" data-i18n="buttons.cancel">İptal</button>
+        <!-- Save; with automatic saving, Done (closes the editor, the changes kept) -->
         <button id="saveNoteBtn" class="btn-primary">
           <span data-i18n="buttons.save">Kaydet</span>
         </button>

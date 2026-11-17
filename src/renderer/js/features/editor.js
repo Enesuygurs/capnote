@@ -83,6 +83,8 @@ export class EditorFeature {
 
   loadNoteInEditor(note) {
     this.clearSavedSelection();
+    // What Cancel goes back to
+    this.editStartState = this.noteSnapshot(note);
     this.renderNoteFiles(note);
     this.noteTitle.value = note.title;
     // Load either raw markdown or HTML depending on note.isMarkdown
@@ -213,15 +215,86 @@ export class EditorFeature {
   }
 
   // Save is open once the note's body has something in it; a title, a mood, tags or a font change
-  // alone are not enough
+  // alone are not enough. With automatic saving the button is Done (always open) and a status says
+  // when the note was saved.
   updateSaveButtonState() {
     const hasChanges = this.hasUnsavedChanges();
+    this.updateSaveMode();
+    if (this.settings?.autoSave) {
+      this.enableSaveButton();
+      this.updateSaveStatus();
+      return;
+    }
 
     if (!this.noteBodyHasContent() || (!hasChanges && this.isAutoSaved)) {
       this.disableSaveButton();
     } else {
       this.enableSaveButton();
     }
+  }
+
+  // The button says Save or Done as automatic saving is off or on
+  updateSaveMode() {
+    const label = this.saveNoteBtn?.querySelector('span');
+    if (!label) return;
+    const key = this.settings?.autoSave ? 'buttons.done' : 'buttons.save';
+    if (label.dataset.i18n !== key) {
+      label.dataset.i18n = key;
+      label.textContent = i18n.t(key);
+    }
+    if (!this.settings?.autoSave) this.saveStatus?.classList.add('hidden');
+  }
+
+  // "Saving…" while a change waits for the automatic save, then "Saved · 20:49"; nothing for a new
+  // note not written in yet
+  updateSaveStatus() {
+    const hasChanges = this.changedSinceLastSave();
+    const status = this.saveStatus;
+    const note = this.currentNote;
+    if (!status) return;
+    const fresh = note && note.id === this.freshNoteId && this.isStoredNoteEmpty(note);
+    if (!note || (fresh && !hasChanges)) {
+      status.classList.add('hidden');
+      return;
+    }
+    status.classList.remove('hidden');
+    if (hasChanges) {
+      status.textContent = i18n.t('saveStatus.saving');
+      return;
+    }
+    const time = new Date(note.updatedAt || Date.now()).toLocaleTimeString(this.getLocale(), {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    status.textContent = i18n.t('saveStatus.saved', { time });
+  }
+
+  // Whether the editor holds something not saved yet (by the last save, automatic or not)
+  changedSinceLastSave() {
+    const saved = this.lastSavedContent;
+    if (!saved) return true;
+    const now = this.getCurrentNoteContent();
+    return (
+      now.title !== saved.title ||
+      now.content !== saved.content ||
+      now.mood !== saved.mood ||
+      now.weather !== saved.weather ||
+      JSON.stringify([...(now.tags || [])].sort()) !==
+        JSON.stringify([...(saved.tags || [])].sort()) ||
+      !this.areFormattingsEqual(now.formatting, saved.formatting)
+    );
+  }
+
+  // A note's title, text and details, to go back to
+  noteSnapshot(note) {
+    return {
+      title: note?.title || '',
+      content: note?.content || '',
+      mood: note?.mood ?? null,
+      weather: note?.weather ?? null,
+      tags: [...(note?.tags || [])],
+      formatting: { ...(note?.formatting || {}) },
+    };
   }
 
   hasUnsavedChanges() {
@@ -264,18 +337,15 @@ export class EditorFeature {
     return !hasTitle && !hasContent && !hasMood && !hasWeather && !hasTags && !hasFiles;
   }
 
+  // The look of an open or closed button comes from the stylesheet (.btn-primary:disabled)
   enableSaveButton() {
     this.saveNoteBtn.disabled = false;
     this.saveNoteBtn.classList.remove('disabled');
-    this.saveNoteBtn.style.opacity = '1';
-    this.saveNoteBtn.style.cursor = 'pointer';
   }
 
   disableSaveButton() {
     this.saveNoteBtn.disabled = true;
     this.saveNoteBtn.classList.add('disabled');
-    this.saveNoteBtn.style.opacity = '0.5';
-    this.saveNoteBtn.style.cursor = 'not-allowed';
   }
 
   markAsSaved() {
