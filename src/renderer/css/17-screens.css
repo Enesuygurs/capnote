@@ -187,7 +187,7 @@
   margin-top: 1px;
 }
 
-.task-row span {
+.task-row .task-row-text {
   user-select: none;
   flex: 1;
   min-width: 0;
@@ -195,8 +195,8 @@
   transition: color 180ms ease;
 }
 
-.task-row.is-done span,
-.task-row:has(input:checked) span {
+.task-row.is-done .task-row-text,
+.task-row:has(input:checked) .task-row-text {
   text-decoration: line-through;
   color: var(--text-muted);
 }
@@ -674,4 +674,73 @@
 
 .graph-empty p {
   max-width: 360px;
+}
+
+/* ============ Tasks with dates ============
+   The date groups' titles in their tone (overdue red, today the accent); a row's date and note
+   after its text */
+.task-date-group .task-group-title i {
+  font-size: var(--fs-md);
+}
+
+.task-date-group.is-overdue .task-group-title i {
+  color: var(--tone-red);
+}
+
+.task-date-group.is-today .task-group-title i {
+  color: var(--accent-color);
+}
+
+.task-row-due {
+  flex-shrink: 0;
+  margin-top: 1px;
+  padding: 0 var(--space-2);
+  height: 20px;
+  line-height: 20px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--tint-hover);
+}
+
+.task-row-due[data-due-state='today'] {
+  color: var(--accent-text);
+  background: color-mix(in srgb, var(--accent-color) 16%, transparent);
+}
+
+.task-row-due[data-due-state='overdue'] {
+  color: var(--tone-red);
+  background: color-mix(in srgb, var(--tone-red) 12%, transparent);
+}
+
+.task-row-due[data-due-state='done'] {
+  color: var(--text-muted);
+  background: none;
+}
+
+.task-row-note {
+  display: flex;
+  flex-shrink: 1;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 40%;
+  min-width: 0;
+  height: 22px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.task-row-note span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.task-row-note:hover {
+  background: var(--tint-hover);
+  color: var(--text-secondary);
 }

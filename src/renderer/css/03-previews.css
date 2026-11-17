@@ -580,3 +580,48 @@ li.foldable.is-folded > ol,
   background: var(--tint-hover);
   font-weight: 600;
 }
+
+/* A task's due date: a small label after its text (Today, Tomorrow, Friday, 15 Dec); red once it
+   is late, the accent for today, muted later; faded when the task is done */
+.checklist-item[data-due-label]::after {
+  content: attr(data-due-label);
+  flex-shrink: 0;
+  align-self: flex-start;
+  margin-top: calc((1lh - 20px) / 2);
+  padding: 0 var(--space-2);
+  height: 20px;
+  line-height: 20px;
+  border-radius: var(--radius-sm);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: var(--tint-hover);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.checklist-item[data-due-state='today']::after {
+  color: var(--accent-text);
+  background: color-mix(in srgb, var(--accent-color) 16%, transparent);
+}
+
+.checklist-item[data-due-state='overdue']::after {
+  color: var(--tone-red);
+  background: color-mix(in srgb, var(--tone-red) 12%, transparent);
+}
+
+.checklist-item:has(> input:checked)[data-due-label]::after {
+  color: var(--text-muted);
+  background: none;
+}
+
+/* The calendar a task's date is picked on: the input itself is not seen */
+.task-due-input {
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}

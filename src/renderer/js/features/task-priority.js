@@ -1,7 +1,8 @@
 // Task priorities, as in task managers: P1 (urgent, red), P2 (high, orange), P3 (medium, blue)
 // or none. A task keeps it as data-priority on its .checklist-item and its box takes the color.
 // It is set from a small flag that shows beside a task under the pointer, or with a right-click on
-// the task: in the editor, in a note being read and on the tasks page.
+// the task: in the editor, in a note being read and on the tasks page. The same menu sets the
+// task's due date (task-dates.js).
 
 import { i18n } from '../i18n.js';
 
@@ -34,10 +35,14 @@ export class TaskPriorityFeature {
   }
 
   async setTaskPriority(target, level) {
-    const apply = (item) => {
+    await this.changeTask(target, (item) => {
       if (level) item.dataset.priority = level;
       else delete item.dataset.priority;
-    };
+    });
+  }
+
+  // A change to a task: in the editor at once, else in its note's saved text
+  async changeTask(target, apply) {
     if (target.live) {
       apply(target.live);
       this.trackContentChanges();
@@ -64,6 +69,13 @@ export class TaskPriorityFeature {
     const current = this.currentPriorityOf(target);
     menu.querySelectorAll('[data-priority]').forEach((item) => {
       item.classList.toggle('active', item.dataset.priority === current);
+    });
+    // The date: the choice it is on marked, "remove" only when it has one
+    const due = this.currentDueOf(target);
+    menu.querySelectorAll('[data-due-action]').forEach((item) => {
+      const action = item.dataset.dueAction;
+      if (action === 'clear') item.hidden = !due;
+      else item.classList.toggle('active', !!due && this.dueChoice(action) === due);
     });
     this.positionMenu(menu, x, y);
   }
@@ -97,24 +109,44 @@ export class TaskPriorityFeature {
     const menu = document.createElement('div');
     menu.className = 'context-menu menu hidden task-priority-menu';
     menu.setAttribute('role', 'menu');
-    menu.innerHTML = LEVELS.map(
-      (level) =>
-        `<button type="button" class="menu-item" data-priority="${level}" role="menuitem"><i class="fas fa-flag"></i><span></span></button>`
-    ).join('');
+    const dueItem = (action, icon) =>
+      `<button type="button" class="menu-item" data-due-action="${action}" role="menuitem"><i class="fas ${icon}"></i><span></span></button>`;
+    menu.innerHTML =
+      LEVELS.map(
+        (level) =>
+          `<button type="button" class="menu-item" data-priority="${level}" role="menuitem"><i class="fas fa-flag"></i><span></span></button>`
+      ).join('') +
+      '<div class="menu-divider" role="separator"></div>' +
+      dueItem('today', 'fa-calendar-day') +
+      dueItem('tomorrow', 'fa-sun') +
+      dueItem('nextweek', 'fa-calendar-week') +
+      dueItem('pick', 'fa-calendar') +
+      dueItem('clear', 'fa-calendar-xmark');
     document.body.appendChild(menu);
     this.taskPriorityMenu = menu;
-    const label = () =>
+    const label = () => {
       menu.querySelectorAll('[data-priority]').forEach((item) => {
         item.querySelector('span').textContent = this.taskPriorityLabel(item.dataset.priority);
       });
+      menu.querySelectorAll('[data-due-action]').forEach((item) => {
+        item.querySelector('span').textContent = i18n.t(`tasks.due_${item.dataset.dueAction}`);
+      });
+    };
     label();
     this.relabelTaskPriorityMenu = label;
     menu.addEventListener('mousedown', (e) => e.preventDefault());
     menu.addEventListener('click', (e) => {
-      const item = e.target.closest('[data-priority]');
+      const item = e.target.closest('[data-priority], [data-due-action]');
       const target = this.taskPriorityTarget;
       this.hideTaskPriorityMenu();
-      if (item && target) this.setTaskPriority(target, item.dataset.priority);
+      if (!item || !target) return;
+      if (item.dataset.priority !== undefined) {
+        this.setTaskPriority(target, item.dataset.priority);
+        return;
+      }
+      const action = item.dataset.dueAction;
+      if (action === 'pick') this.pickTaskDue(target);
+      else this.setTaskDue(target, action === 'clear' ? '' : this.dueChoice(action));
     });
     document.addEventListener('mousedown', (e) => {
       if (!menu.contains(e.target) && e.target !== this.taskFlag) this.hideTaskPriorityMenu();
