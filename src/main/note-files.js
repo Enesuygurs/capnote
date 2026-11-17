@@ -6,15 +6,14 @@ import fs from 'fs';
 import path from 'path';
 import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { uploadsDir } from './paths.js';
+import { safeUploadName, newUploadName } from './upload-names.js';
 
 const MAX_NOTE_FILES_BYTES = 250 * 1024 * 1024;
 
 // Only plain file names inside the uploads folder are accepted from the renderer
 function uploadFile(name) {
-  if (typeof name !== 'string') return null;
-  const base = path.basename(name);
-  if (!base || base !== name || base === '.' || base === '..') return null;
-  return path.join(uploadsDir(), base);
+  const safe = safeUploadName(name);
+  return safe && path.join(uploadsDir(), safe);
 }
 
 // Copy the files at these paths into the uploads folder while they fit in `room` bytes.
@@ -33,9 +32,7 @@ async function copyIntoUploads(paths, room) {
         result.tooBig.push(title);
         continue;
       }
-      // A timestamp and a random part keep names apart; only safe characters in the name
-      const plain = title.replace(/[^\p{L}\p{N}._-]/gu, '_');
-      const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${plain}`;
+      const name = newUploadName(title);
       await fs.promises.copyFile(srcPath, path.join(uploadsDir(), name));
       left -= stat.size;
       result.added.push({ name, title, size: stat.size });

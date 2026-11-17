@@ -11,6 +11,7 @@ import path from 'path';
 import { promisify } from 'util';
 import { ipcMain } from 'electron';
 import { uploadsDir } from './paths.js';
+import { safeUploadName } from './upload-names.js';
 
 const SUFFIX = '.cnlock';
 const MAGIC = Buffer.from('CNL1');
@@ -33,11 +34,7 @@ const openPasswords = new Map();
 // name -> decrypted bytes, while open (each image is decrypted once)
 const openCache = new Map();
 
-const safeName = (name) => {
-  if (typeof name !== 'string') return null;
-  const base = path.basename(name);
-  return base && base === name && base !== '.' && base !== '..' ? base : null;
-};
+const safeName = safeUploadName;
 const plainPath = (name) => path.join(uploadsDir(), name);
 const lockedPath = (name) => path.join(uploadsDir(), name + SUFFIX);
 const isImageName = (name) => IMAGE.test(name);

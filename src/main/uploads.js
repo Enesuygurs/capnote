@@ -7,6 +7,7 @@ import path from 'path';
 import { pathToFileURL } from 'url';
 import { ipcMain, protocol, net } from 'electron';
 import { uploadsDir } from './paths.js';
+import { safeUploadName, newUploadName } from './upload-names.js';
 import { lockedImageResponse, LOCKED_IMAGE_SUFFIX } from './locked-images.js';
 
 // Largest file accepted into the uploads folder
@@ -37,13 +38,6 @@ function uploadPathFromUrl(url) {
   }
 }
 
-// Only plain file names inside the uploads folder are accepted from the renderer
-function safeUploadName(name) {
-  if (typeof name !== 'string') return null;
-  const base = path.basename(name);
-  return base && base === name && base !== '.' && base !== '..' ? base : null;
-}
-
 // Serves capnote-file URLs; must run once the app is ready
 function handleUploadProtocol() {
   protocol.handle('capnote-file', async (request) => {
@@ -66,10 +60,7 @@ function registerUploadIpc({ keepAlso = () => [] } = {}) {
       if (!stat.isFile() || stat.size > MAX_UPLOAD_BYTES) return null;
 
       fs.mkdirSync(uploadsDir(), { recursive: true });
-      // Prefix with a timestamp and a random part to avoid collisions
-      // Only letters, digits, dot, dash and underscore, so the name reads the same in every URL
-      const plainName = path.basename(srcPath).replace(/[^\p{L}\p{N}._-]/gu, '_');
-      const targetName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${plainName}`;
+      const targetName = newUploadName(srcPath);
       fs.copyFileSync(srcPath, path.join(uploadsDir(), targetName));
       return `capnote-file://upload/${encodeURIComponent(targetName)}`;
     } catch (err) {

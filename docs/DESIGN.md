@@ -12,29 +12,29 @@ The window has two layers:
 ```
 +----------------------------------------------------------------------+
 | [=]                           Capnote                [-] [o] [x]     |
-| [mark] Capnote [t][b] +------------------------------------------+   |
+| [gem] Capnote  [t][b] +------------------------------------------+   |
 | [+ New note]          | Title                          [actions] |   |
 | [search]              | meta                                     |   |
 | [All | Today | Favs]  |------------------------------------------|   |
 | NOTES 5      [+] [s]  | page body                                |   |
 | rows                  |                                          |   |
 |                       |                                          |   |
-| [gear Settings]       +------------------------------------------+   |
+| [gear Settings] [a][g]+------------------------------------------+   |
 +----------------------------------------------------------------------+
 ```
 
 **Sidebar** (`--sidebar-width`, 12px side padding), in three parts:
 
-1. Fixed top, 8px apart: the header (44px: the app mark and name on the left, also the home button, filling the width up to the tools, its name in a dark gray; to-dos, reminders and notifications as 32px icon buttons on the right, each in the tone of its page's header icon (to-dos blue, reminders amber, notifications red): neutral at rest, tinted with the tone when its page is open, the count on the corner filled with the tone, and the name as a tooltip), the new note button, the search field and the list filter (a segmented control).
+1. Fixed top, 8px apart: the header (44px: the app mark and name on the left, also the home button, filling the width up to the tools, its name in a dark gray; tasks and reminders as 32px icon buttons on the right, each in the tone of its page's header icon (tasks violet, reminders amber; the reminders page holds what came due as well as what is to come): neutral at rest, tinted with the tone when its page is open, the count on the corner filled with the tone, and the name as a tooltip and as what a screen reader reads), the new note button, the search field and the list filter (a segmented control).
 2. Scrolling list: the `NOTES` section header and the rows of notes and folders. A note's actions are in its right-click menu; rows have no buttons. Dragging a note onto another places it before or after it (an insertion line shows where) and switches the list to the custom order. In the custom order the unpinned folders share the root list with the folderless notes: a folder dragged onto a note goes before or after it, and notes and folders are numbered together (a folder without a place goes after everything); in the other orders the folders are below the notes. A double-click renames a note or a folder in place (the row becomes the field; Enter or leaving it saves, Escape cancels). Ctrl/Cmd+click selects notes or folders, never both (picking the other kind starts a new selection); right-click on the selection opens its menu, which shows only the actions that fit what is selected (notes: favorite, pin, duplicate, take out of folder; folders: pin; both: delete). Dragging a selected note moves the whole selection. Escape or a click on an empty part of the list clears it. Pinned folders sit above the notes, with a small gold pin. Pinned notes and folders cannot be dragged: the drag is refused and the row shakes (320ms, none with reduced motion); a dragged selection leaves its pinned notes in place. A folder opens and closes with a 200ms height and fade transition.
-3. Fixed bottom: settings, one full-width row, left-aligned with the list rows.
+3. Fixed bottom: settings on the left, left-aligned with the list rows, and two icon buttons on the right: the archive and the note graph.
 
 **Every screen in the panel** has the same structure:
 
-- `.page-header`: an optional `.page-icon` (a 44px tile in the screen's tone, on to-dos and notifications), the title (`.page-title`, 24/32 semibold) with a subtitle (`.page-subtitle`, 13/20, right under the title) or a meta line (`.page-meta`, 4px below) under it, and actions (`.page-actions`) on the right. Padding is 20px vertically and `--gutter` (32px) horizontally, with a divider below. A body with parts uses `.page-section`s, each under a `.page-section-label` (a section label with an optional count), 32px apart (the body's gap, so a hidden section leaves no space); a section with nothing in it is hidden.
+- `.page-header`: an optional `.page-icon` (a 44px tile in the screen's tone: the overview, tasks, reminders, tags, the graph, the archive), the title (`.page-title`, 24/32 semibold) with a subtitle (`.page-subtitle`, 13/20, right under the title) or a meta line (`.page-meta`, 4px below) under it, and actions (`.page-actions`) on the right. Padding is 20px vertically and `--gutter` (32px) horizontally, with a divider below. A body with parts uses `.page-section`s, each under a `.page-section-label` (a section label with an optional count), 32px apart (the body's gap, so a hidden section leaves no space); a section with nothing in it is hidden.
 - `.page-body`: scrolls, 24px top padding, `--gutter` on the other sides.
 
-The viewer, the editor, to-dos, reminders and notifications all use this header, so the title is in the same place on every screen. The editor's toolbar belongs to its header region: header, then toolbar, with no lines above or below it; its own soft tint (`--note-header`) sets it apart.
+The viewer, the editor and every page (tasks, reminders, tags, graph, archive) use this header, so the title is in the same place on every screen. The editor's toolbar belongs to its header region: header, then toolbar, with no lines above or below it; its own soft tint (`--note-header`) sets it apart.
 
 ## 2. No borders
 

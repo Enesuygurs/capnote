@@ -118,6 +118,7 @@ export const expectedFiles = {
       'notifications',
       'reminders',
       'settings',
+      'templates',
       'todos',
       'version',
     ],

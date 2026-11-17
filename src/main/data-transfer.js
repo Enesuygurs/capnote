@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { uploadsDir } from './paths.js';
+import { newUploadName } from './upload-names.js';
 
 // A backup holds its images, so it may be larger than a Markdown file
 const MAX_MARKDOWN_BYTES = 5 * 1024 * 1024;
@@ -29,8 +30,7 @@ function importImage(file) {
   const stat = fs.statSync(file);
   if (!stat.isFile() || stat.size > MAX_IMAGE_BYTES || !IMAGE_FILE.test(file)) return null;
   fs.mkdirSync(uploadsDir(), { recursive: true });
-  const plain = path.basename(file).replace(/[^\p{L}\p{N}._-]/gu, '_');
-  const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${plain}`;
+  const name = newUploadName(file);
   fs.copyFileSync(file, path.join(uploadsDir(), name));
   return `capnote-file://upload/${encodeURIComponent(name)}`;
 }
