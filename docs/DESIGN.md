@@ -224,7 +224,7 @@ Under the figures, the writing calendar: a heat map with a square per day of the
 
 **Sidebar footer**: Settings fills the row; the archive and the note graph (pages, not list filters) sit beside it as 36px icon buttons in `--text-muted`, an accent tint while their page is open.
 
-**App icon** (`assets/icons/source/capnote.svg`, rendered by `npm run icons`): a capsule, after the name, with no tile and in one flat color (`#F59E0B`, the default accent), like the app's solid icons: turned 45 degrees, one half solid with a highlight cut out of it, the other its outline with two lines of writing in it. Simple enough to stay sharp at 16px, so every size, the sidebar's 28px among them, is drawn from it.
+**App icon** (`assets/icons/source/capnote.svg`, rendered by `npm run icons`): a wide gem on a cream tile (`#FFFBEB`, 56/256 corners), its facets in five tones of the default accent (`#FDE68A` table, `#FBBF24` crown, `#F59E0B` sides, `#D97706` pavilion) with a soft drop shadow. Every file the system shows (window, taskbar, tray on Windows, installer, `.ico` 16–256px) is drawn from it. Inside the app (the sidebar's 28px brand, the quick note, the year summary) the mark is the same gem with no tile (`capnote-mark.svg`), so it sits on the light and dark sidebar alike. The macOS menu bar icon (`tray-template.svg`) is the gem in black with its facet lines cut out.
 
 **Toast**: `--surface-raised`, bottom center, its icon colored by kind.
 

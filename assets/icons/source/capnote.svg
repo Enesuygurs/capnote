@@ -1,32 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
-  <!-- Capnote app icon: a capsule in one flat amber, turned 45 degrees. One half is solid with a
-       highlight cut out of it; the other is its outline with two lines of writing in it. Simple
-       enough to be sharp at 16px, so every size is drawn from it.
-       Rendered to PNG/ICO by scripts/build-icons.mjs. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <!-- App icon: a wide amber gem on a cream tile, facets in five tones of the default accent -->
   <defs>
-    <mask id="highlight">
-      <rect x="-200" y="-200" width="1424" height="1424" fill="#FFFFFF" />
-      <path
-        d="M232 448 A116 116 0 0 1 324 392 H360"
-        fill="none"
-        stroke="#000000"
-        stroke-width="44"
-        stroke-linecap="round"
-      />
-    </mask>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#000000" flood-opacity="0.22" />
+    </filter>
   </defs>
-  <g transform="rotate(-45 512 512)">
-    <path d="M512 288 H320 A224 224 0 0 0 320 736 H512 Z" fill="#F59E0B" mask="url(#highlight)" />
-    <path
-      d="M512 320 H704 A192 192 0 0 1 704 704 H512 Z"
-      fill="none"
-      stroke="#F59E0B"
-      stroke-width="64"
-      stroke-linejoin="round"
-    />
-    <g fill="#F59E0B">
-      <rect x="580" y="450" width="170" height="44" rx="22" />
-      <rect x="580" y="530" width="120" height="44" rx="22" />
-    </g>
+  <rect x="12" y="12" width="232" height="232" rx="56" fill="#FFFBEB" />
+  <g filter="url(#shadow)">
+    <path d="M128 58 L210 104 L128 206 L46 104 Z" fill="#F59E0B" />
+    <path d="M46 104 H210 L128 58 Z" fill="#FBBF24" />
+    <path d="M94 104 L128 58 L162 104 Z" fill="#FDE68A" />
+    <path d="M94 104 L128 206 L162 104 Z" fill="#D97706" />
+    <path d="M46 104 L128 206 L94 104 Z" fill="#F59E0B" opacity="0.85" />
   </g>
 </svg>
