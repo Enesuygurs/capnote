@@ -22,9 +22,11 @@ export class LockFeature {
     if (!note.isLocked || !password) return;
     const request = {};
     this.sealRequests.set(note, request);
-    const encrypted = await encrypt(note.content || '', password);
+    // The note as it is now: it may lock (and blank) while this is being encrypted
+    const snapshot = { ...note };
+    const encrypted = await encrypt(snapshot.content || '', password);
     // Its title and details too, when titles of locked notes are hidden, and new images
-    await this.sealNoteMeta(note, password);
+    await this.sealNoteMeta(note, password, snapshot);
     await this.sealNoteImages(note, password);
     if (this.sealRequests.get(note) !== request) return;
     note.encrypted = encrypted;

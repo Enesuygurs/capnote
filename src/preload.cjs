@@ -23,6 +23,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     load: () => ipcRenderer.invoke('storage:load'),
     save: (key, value) => ipcRenderer.invoke('storage:save', key, value),
   },
+  // Away from the computer: seconds with no input anywhere, and the screen locking or sleep
+  system: {
+    idleSeconds: () => ipcRenderer.invoke('system:idle-seconds'),
+    onAway: (callback) => ipcRenderer.on('system:away', () => callback()),
+  },
   // The automatic daily backups
   backups: {
     list: () => ipcRenderer.invoke('backups:list'),
