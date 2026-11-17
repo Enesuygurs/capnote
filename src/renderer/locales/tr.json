@@ -453,7 +453,8 @@
     "lockedWithFolder": "Bu not, bulunduğu klasörün kilidiyle korunuyor. Kilidi klasörün menüsünden yönetebilirsiniz.",
     "isLocked": "Bu klasör kilitli",
     "subtitle": "Kilitli klasör",
-    "hiddenName": "Kilitli klasör"
+    "hiddenName": "Kilitli klasör",
+    "namesOnNextOpen": "Şifrelenmiş adlar, ilgili klasör veya not bir sonraki açılışında görünür."
   },
   "blockStyle": {
     "p": "Metin",

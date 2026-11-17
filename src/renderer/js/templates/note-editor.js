@@ -37,7 +37,6 @@ export const NOTE_EDITOR = /* HTML */ `
         </div>
         <button id="cancelNoteBtn" class="btn-secondary" data-i18n="buttons.cancel">İptal</button>
         <button id="saveNoteBtn" class="btn-primary">
-          <i class="fas fa-check"></i>
           <span data-i18n="buttons.save">Kaydet</span>
         </button>
       </div>

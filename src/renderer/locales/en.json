@@ -453,7 +453,8 @@
     "lockedWithFolder": "This note is protected by its folder's lock. Manage the lock from the folder's menu.",
     "isLocked": "This folder is locked",
     "subtitle": "Locked folder",
-    "hiddenName": "Locked folder"
+    "hiddenName": "Locked folder",
+    "namesOnNextOpen": "Encrypted names appear the next time their folder or note is opened."
   },
   "blockStyle": {
     "p": "Text",

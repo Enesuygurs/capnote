@@ -349,12 +349,12 @@
 /* The overview fills the page and does not scroll: the figures on top; then the calendar (its
    days near square) beside the words per month; then mood and weather side by side, half the
    width each, sharing the rest of the height. A card's size comes from the layout, never from its
-   data: what does not fit scrolls inside the card. The smallest window (window.js) fits it all;
-   on a shorter screen the page scrolls past 440px. */
+   data: what does not fit scrolls inside the card. A short window does not squeeze the cards: the
+   page scrolls once they are at their smallest (the calendar's weeks, a few rows of mood). */
 .dashboard .page-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto minmax(440px, 1fr);
+  grid-template-rows: auto minmax(656px, 1fr);
 }
 
 .dashboard-grid {
@@ -362,7 +362,7 @@
   /* Both rows split in the middle, so the cards line up; the calendar grows with the window in
      both directions, so its days stay near square */
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: minmax(380px, 1.4fr) minmax(0, 1fr);
+  grid-template-rows: minmax(400px, 1.4fr) minmax(240px, 1fr);
   gap: var(--space-4);
   min-height: 0;
 }
