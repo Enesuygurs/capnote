@@ -324,9 +324,16 @@ export class NoteListFeature {
   // The icon shows a locked or pinned note; a heart on the right marks a favorite.
   createNoteItem(note, inFolder = false) {
     const div = document.createElement('div');
-    div.className = inFolder
-      ? 'nav-subitem folder-note-item note-item fade-in'
-      : 'note-item fade-in';
+    div.className = inFolder ? 'nav-subitem folder-note-item note-item' : 'note-item';
+    // Only a note new to the list fades in: the list is drawn again on every change, and the rows
+    // already there must not blink (nor anything on the app's first drawing)
+    if (!this.listedNoteIds) {
+      this.listedNoteIds = new Set();
+      // The first drawing (this one) shows its rows at once; later ones animate only new notes
+      setTimeout(() => (this.listedNoteIdsReady = true));
+    }
+    if (this.listedNoteIdsReady && !this.listedNoteIds.has(note.id)) div.classList.add('fade-in');
+    this.listedNoteIds.add(note.id);
     div.draggable = true;
     div.setAttribute('data-note-id', note.id);
     div.classList.toggle('active', !!this.currentNote && this.currentNote.id === note.id);

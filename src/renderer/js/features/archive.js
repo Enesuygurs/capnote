@@ -211,9 +211,13 @@ export class ArchiveFeature {
     const archived = !!this.currentNote?.isArchived;
     this.viewerArchived?.classList.toggle('hidden', !archived);
     if (this.archiveViewBtn) {
-      const label = i18n.t(archived ? 'archive.unarchive' : 'archive.archive');
-      this.archiveViewBtn.title = label;
-      this.archiveViewBtn.setAttribute('aria-label', label);
+      const key = archived ? 'archive.unarchive' : 'archive.archive';
+      const text = this.archiveViewBtn.querySelector('span');
+      // Its words in the viewer's menu (kept on it, so a language change follows)
+      if (text) {
+        text.dataset.i18n = key;
+        text.textContent = i18n.t(key);
+      }
       this.archiveViewBtn.classList.toggle('active', archived);
       this.archiveViewBtn.querySelector('i').className =
         `fas ${archived ? 'fa-box-open' : 'fa-box-archive'}`;

@@ -478,9 +478,9 @@
     "title": "Genel bakış",
     "notes": "Not",
     "activeDays": "Yazılan gün",
-    "streak": "Süren seri (gün)",
-    "longestStreak": "En uzun seri (gün)",
-    "wordsLast30Days": "Kelime (30 gün)",
+    "streak": "Süren seri",
+    "longestStreak": "En uzun seri",
+    "wordsLast30Days": "Kelime",
     "today": "Bugün",
     "prevMonth": "Önceki ay",
     "nextMonth": "Sonraki ay",
@@ -702,5 +702,11 @@
   "saveStatus": {
     "saving": "Kaydediliyor…",
     "saved": "Kaydedildi"
+  },
+  "viewerMenu": {
+    "more": "Diğer işlemler",
+    "duplicate": "Çoğalt",
+    "history": "Geçmiş",
+    "export": "Dışa aktar"
   }
 }

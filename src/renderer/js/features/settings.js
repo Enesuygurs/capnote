@@ -61,12 +61,15 @@ export class SettingsFeature {
 
   showSettingsModal() {
     this.showModal(this.settingsModal);
+    this.refreshSelectTriggers?.();
     this.renderAutoBackups();
     this.updateIconSettingsState();
   }
 
   loadSettings() {
     const settings = this.settings;
+    // The drop-down buttons show the values set below
+    setTimeout(() => this.refreshSelectTriggers?.());
     if (this.languageSelect) this.languageSelect.value = settings.language;
     if (i18n.getLanguage() !== settings.language) {
       i18n.setLanguage(settings.language);

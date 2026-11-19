@@ -508,18 +508,6 @@
               <button id="editNoteBtn" class="btn-icon" data-i18n-title="buttons.edit">
                 <i class="fas fa-edit"></i>
               </button>
-              <button id="duplicateNoteBtn" class="btn-icon" data-i18n-title="buttons.duplicate">
-                <i class="fas fa-clone"></i>
-              </button>
-              <button id="historyBtn" class="btn-icon" data-i18n-title="titles.history">
-                <i class="fas fa-history"></i>
-              </button>
-              <button id="exportNoteBtn" class="btn-icon" data-i18n-title="buttons.export">
-                <i class="fas fa-download"></i>
-              </button>
-              <button id="archiveViewBtn" class="btn-icon" data-i18n-title="archive.archive">
-                <i class="fas fa-box-archive"></i>
-              </button>
               <button
                 id="deleteNoteBtn"
                 class="btn-icon btn-icon-danger"
@@ -527,6 +515,36 @@
               >
                 <i class="fas fa-trash"></i>
               </button>
+              <!-- The other actions, in a menu -->
+              <div class="viewer-more">
+                <button
+                  id="viewerMoreBtn"
+                  class="btn-icon"
+                  data-i18n-title="viewerMenu.more"
+                  aria-haspopup="menu"
+                  aria-expanded="false"
+                >
+                  <i class="fas fa-ellipsis"></i>
+                </button>
+                <div id="viewerMoreMenu" class="context-menu menu hidden" role="menu">
+                  <button id="duplicateNoteBtn" class="menu-item" role="menuitem">
+                    <i class="fas fa-clone"></i>
+                    <span data-i18n="viewerMenu.duplicate">Çoğalt</span>
+                  </button>
+                  <button id="historyBtn" class="menu-item" role="menuitem">
+                    <i class="fas fa-history"></i>
+                    <span data-i18n="viewerMenu.history">Geçmiş</span>
+                  </button>
+                  <button id="exportNoteBtn" class="menu-item" role="menuitem">
+                    <i class="fas fa-download"></i>
+                    <span data-i18n="viewerMenu.export">Dışa aktar</span>
+                  </button>
+                  <button id="archiveViewBtn" class="menu-item" role="menuitem">
+                    <i class="fas fa-box-archive"></i>
+                    <span data-i18n="archive.archive">Arşivle</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
           <!-- An earlier version shown in place of the note: what it is, and the ways out -->

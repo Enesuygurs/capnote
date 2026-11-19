@@ -17,6 +17,10 @@ export const NOTE_EDITOR = /* HTML */ `
           <span id="wordCount">0 <span data-i18n="stats.words">kelime</span></span>
           <span id="charCount">0 <span data-i18n="stats.characters">karakter</span></span>
           <span id="editorReadingTime">~0 <span data-i18n="stats.readingTime">dk okuma</span></span>
+          <!-- With automatic saving: how the saving goes (a turning circle, then a tick) -->
+          <span id="saveIndicator" class="save-indicator hidden" aria-live="polite">
+            <i class="fas" aria-hidden="true"></i><span></span>
+          </span>
         </div>
       </div>
       <div class="page-actions editor-actions">
@@ -36,10 +40,8 @@ export const NOTE_EDITOR = /* HTML */ `
           </button>
         </div>
         <button id="cancelNoteBtn" class="btn-secondary" data-i18n="buttons.cancel">İptal</button>
-        <!-- Save; with automatic saving it closes the editor (the changes kept) and says how the
-             saving goes: a turning circle while a change waits, then "Saved" -->
-        <button id="saveNoteBtn" class="btn-primary save-btn">
-          <i class="fas fa-circle-notch fa-spin save-spinner hidden" aria-hidden="true"></i>
+        <!-- Save; with automatic saving, Done (closes the editor, the changes kept) -->
+        <button id="saveNoteBtn" class="btn-primary">
           <span data-i18n="buttons.save">Kaydet</span>
         </button>
       </div>

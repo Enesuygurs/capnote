@@ -491,3 +491,53 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
   background: none;
   color: var(--text-strong);
 }
+
+/* ============ Drop-down lists (select-menus.js) ============
+   The <select> is hidden; its button looks as it did (the field with its chevron) and opens a menu
+   like the app's others, above the dialog it is in, the chosen item ticked */
+.select-native {
+  display: none;
+}
+
+.select-trigger {
+  display: inline-flex;
+  align-items: center;
+  max-width: 220px;
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.select-trigger-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.select-trigger.open,
+.select-trigger:focus-visible {
+  background-color: var(--tint-selected);
+}
+
+.context-menu.select-menu {
+  z-index: calc(var(--z-modal) + 10);
+}
+
+.select-menu .menu-item {
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.select-menu .menu-item.active {
+  color: var(--text-strong);
+  font-weight: 500;
+}
+
+.select-menu .select-menu-check {
+  font-size: var(--fs-xs);
+  color: var(--accent-color);
+  visibility: hidden;
+}
+
+.select-menu .menu-item.active .select-menu-check {
+  visibility: visible;
+}
