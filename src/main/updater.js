@@ -11,6 +11,7 @@ const updatesSupported = () => app.isPackaged && process.platform !== 'darwin';
 
 // status: unsupported | idle | checking | none | downloading | ready | error
 let state = { status: 'idle' };
+let installing = false;
 let notifyRenderer = () => {};
 
 function setState(next) {
@@ -67,8 +68,14 @@ function registerUpdateIpc() {
   });
   // Quitting runs the installer; the app starts again afterwards
   ipcMain.handle('updates:install', () => {
-    if (state.status === 'ready') autoUpdater.quitAndInstall();
+    if (state.status === 'ready') {
+      installing = true;
+      autoUpdater.quitAndInstall();
+    }
   });
 }
 
-export { startUpdater, registerUpdateIpc };
+// The app is closing to install an update (the page saved its note before asking for it)
+const isInstallingUpdate = () => installing;
+
+export { startUpdater, registerUpdateIpc, isInstallingUpdate };

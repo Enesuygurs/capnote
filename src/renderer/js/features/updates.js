@@ -26,6 +26,8 @@ export class UpdatesFeature {
 
     this.updateActionBtn?.addEventListener('click', async () => {
       if (this.updateState?.status === 'ready') {
+        // The open note is saved before the app closes for the installer
+        await this.saveBeforeQuit();
         await api.updates.install();
         return;
       }

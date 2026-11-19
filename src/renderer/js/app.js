@@ -167,9 +167,7 @@ export class CapnoteApp {
 
     // Butonlar
     this.homeBtn = document.getElementById('homeBtn');
-    this.saveNoteBtn = document.getElementById('saveNoteBtn');
-    this.saveIndicator = document.getElementById('saveIndicator');
-    this.cancelNoteBtn = document.getElementById('cancelNoteBtn');
+    this.readViewBtn = document.getElementById('readViewBtn');
     this.editNoteBtn = document.getElementById('editNoteBtn');
     this.deleteNoteBtn = document.getElementById('deleteNoteBtn');
     this.favoriteViewBtn = document.getElementById('favoriteViewBtn');
@@ -302,7 +300,6 @@ export class CapnoteApp {
     this.idleLockSelect = document.getElementById('idleLockSelect');
     this.hideLockedTitlesToggle = document.getElementById('hideLockedTitlesToggle');
     this.lockedMoodToggle = document.getElementById('lockedMoodToggle');
-    this.autoSaveToggle = document.getElementById('autoSaveToggle');
     this.autoFormatToggle = document.getElementById('autoFormatToggle');
 
     // Folder elements
@@ -667,8 +664,6 @@ export class CapnoteApp {
         this.updateWordCount();
         this.updateCurrentDate();
         this.updateNoteRemindersDisplay();
-        // "Saved · 20:49" and Done in the new language
-        this.updateSaveButtonState();
       }
       if (this.noteHistoryModal && !this.noteHistoryModal.classList.contains('hidden')) {
         this.openNoteHistory();

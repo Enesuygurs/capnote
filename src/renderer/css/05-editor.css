@@ -845,20 +845,3 @@
 .block-selection[hidden] {
   display: none;
 }
-
-/* With automatic saving: at the end of the line under the title, how the saving goes */
-.save-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  color: var(--text-muted);
-}
-
-.save-indicator i {
-  font-size: var(--fs-xs);
-  color: var(--tone-green);
-}
-
-.save-indicator.is-saving i {
-  color: var(--text-muted);
-}

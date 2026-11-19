@@ -27,8 +27,7 @@
     "duplicate": "Duplicate",
     "markAllRead": "Mark all as read",
     "testNotifications": "Test notifications",
-    "removeLink": "Remove link",
-    "done": "Done"
+    "removeLink": "Remove link"
   },
   "titles": {
     "home": "Home",
@@ -73,7 +72,8 @@
     "link": "Add link (Ctrl+K)",
     "focusMode": "Focus mode",
     "focusModeExit": "Leave focus mode (Esc)",
-    "toggleFold": "Collapse / expand"
+    "toggleFold": "Collapse / expand",
+    "readView": "Reading view"
   },
   "placeholders": {
     "noteTitle": "Note title...",
@@ -145,8 +145,6 @@
     "versionLabel": "Version",
     "language": "Language",
     "languageDesc": "Changes the interface language",
-    "autoSave": "Auto Save",
-    "autoSaveDesc": "Saves notes automatically as you type",
     "autoFormat": "Automatic formatting",
     "autoFormatDesc": "Turns line markers into lists and addresses into links",
     "relockOn": "Re-lock",
@@ -315,8 +313,6 @@
     "reminderDeleted": "Reminder deleted",
     "reminderPrefix": "Reminder:",
     "noteCopied": "Note duplicated",
-    "autoSaveEnabled": "Auto save enabled",
-    "autoSaveDisabled": "Auto save disabled",
     "noteCopySuffix": " (Copy)",
     "codeCopied": "Code copied to clipboard",
     "copyFailed": "Copy failed",
@@ -379,8 +375,7 @@
     "exportFailed": "Export failed",
     "passwordToDelete": "Enter the password to delete this locked note",
     "invalidLink": "Enter a valid web or e-mail address",
-    "shortcutInUse": "Ctrl+Alt+N is used by another app",
-    "changesReverted": "Changes undone"
+    "shortcutInUse": "Ctrl+Alt+N is used by another app"
   },
   "templates": {
     "tableHeader": "Header {n}"
@@ -698,10 +693,6 @@
     "try2": "Create your first note",
     "try3": "Choose a theme and an accent color in Settings",
     "outro": "You can delete this note whenever you like."
-  },
-  "saveStatus": {
-    "saving": "Saving…",
-    "saved": "Saved"
   },
   "viewerMenu": {
     "more": "More actions",

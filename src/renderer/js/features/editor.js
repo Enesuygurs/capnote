@@ -83,8 +83,6 @@ export class EditorFeature {
 
   loadNoteInEditor(note) {
     this.clearSavedSelection();
-    // What Cancel goes back to
-    this.editStartState = this.noteSnapshot(note);
     this.renderNoteFiles(note);
     this.noteTitle.value = note.title;
     // Load either raw markdown or HTML depending on note.isMarkdown
@@ -214,90 +212,9 @@ export class EditorFeature {
     });
   }
 
-  // Save is open once the note's body has something in it; a title, a mood, tags or a font change
-  // alone are not enough. With automatic saving the button is Done (always open) and the line under
-  // the title shows how the saving goes.
-  updateSaveButtonState() {
-    const hasChanges = this.hasUnsavedChanges();
-    this.updateSaveMode();
-    if (this.settings?.autoSave) {
-      this.enableSaveButton();
-      this.updateSaveStatus();
-      return;
-    }
-
-    if (!this.noteBodyHasContent() || (!hasChanges && this.isAutoSaved)) {
-      this.disableSaveButton();
-    } else {
-      this.enableSaveButton();
-    }
-  }
-
-  // The button's words: one of the translation keys (kept on it, so a language change follows)
-  setSaveLabel(key) {
-    const label = this.saveNoteBtn?.querySelector('span');
-    if (!label) return;
-    if (label.dataset.i18n !== key) {
-      label.dataset.i18n = key;
-      label.textContent = i18n.t(key);
-    }
-  }
-
-  // The button is Save, or Done with automatic saving
-  updateSaveMode() {
-    this.setSaveLabel(this.settings?.autoSave ? 'buttons.done' : 'buttons.save');
-    if (!this.settings?.autoSave) this.saveIndicator?.classList.add('hidden');
-  }
-
-  // With automatic saving, at the end of the line under the title: a turning circle and
-  // "Saving…" while a change waits, then a tick and "Saved"; nothing on a new note not written in
-  updateSaveStatus() {
-    const box = this.saveIndicator;
-    if (!box) return;
-    const hasChanges = this.changedSinceLastSave();
-    const note = this.currentNote;
-    const fresh = note && note.id === this.freshNoteId && this.isStoredNoteEmpty(note);
-    if (!note || (fresh && !hasChanges)) {
-      box.classList.add('hidden');
-      return;
-    }
-    box.classList.remove('hidden');
-    box.classList.toggle('is-saving', hasChanges);
-    box.querySelector('i').className = hasChanges
-      ? 'fas fa-circle-notch fa-spin'
-      : 'fas fa-circle-check';
-    box.querySelector('span').textContent = i18n.t(
-      hasChanges ? 'saveStatus.saving' : 'saveStatus.saved'
-    );
-  }
-
-  // Whether the editor holds something not saved yet (by the last save, automatic or not)
-  changedSinceLastSave() {
-    const saved = this.lastSavedContent;
-    if (!saved) return true;
-    const now = this.getCurrentNoteContent();
-    return (
-      now.title !== saved.title ||
-      now.content !== saved.content ||
-      now.mood !== saved.mood ||
-      now.weather !== saved.weather ||
-      JSON.stringify([...(now.tags || [])].sort()) !==
-        JSON.stringify([...(saved.tags || [])].sort()) ||
-      !this.areFormattingsEqual(now.formatting, saved.formatting)
-    );
-  }
-
-  // A note's title, text and details, to go back to
-  noteSnapshot(note) {
-    return {
-      title: note?.title || '',
-      content: note?.content || '',
-      mood: note?.mood ?? null,
-      weather: note?.weather ?? null,
-      tags: [...(note?.tags || [])],
-      formatting: { ...(note?.formatting || {}) },
-    };
-  }
+  // Notes save themselves as they are written: there is no Save button to keep up to date (the
+  // callers stay, for what may show the state later)
+  updateSaveButtonState() {}
 
   hasUnsavedChanges() {
     if (!this.originalNoteState) return true;
@@ -339,30 +256,27 @@ export class EditorFeature {
     return !hasTitle && !hasContent && !hasMood && !hasWeather && !hasTags && !hasFiles;
   }
 
-  // The look of an open or closed button comes from the stylesheet (.btn-primary:disabled)
-  enableSaveButton() {
-    this.saveNoteBtn.disabled = false;
-    this.saveNoteBtn.classList.remove('disabled');
-  }
-
-  disableSaveButton() {
-    this.saveNoteBtn.disabled = true;
-    this.saveNoteBtn.classList.add('disabled');
-  }
-
   markAsSaved() {
     this.lastSavedContent = this.getCurrentNoteContent();
     this.isAutoSaved = true;
     this.updateSaveButtonState();
   }
 
+  // The app is quitting (or installing an update): what the editor holds is saved now, without
+  // waiting for the automatic save
+  async saveBeforeQuit() {
+    this.cancelAutoSave?.();
+    if (this.currentNote && this.isEditorOpen() && !this.isCurrentNoteEmpty()) {
+      if (this.hasUnsavedChanges()) this.saveNote(true);
+    }
+    await this.saveNotes();
+  }
+
   setupAutoSave() {
+    window.electronAPI?.onSaveBeforeQuit?.(() => this.saveBeforeQuit());
     let autoSaveTimer;
 
     this.scheduleAutoSave = () => {
-      // Check if auto-save is enabled
-      if (!this.settings.autoSave) return;
-
       clearTimeout(autoSaveTimer);
       autoSaveTimer = setTimeout(() => {
         if (this.currentNote && this.isEditorOpen() && this.hasUnsavedChanges()) {

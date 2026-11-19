@@ -133,18 +133,6 @@ export const SETTINGS_DIALOG = /* HTML */ `
               </div>
               <div class="setting-item">
                 <div class="setting-info">
-                  <label data-i18n="settings.autoSave">Otomatik Kaydetme</label>
-                  <small data-i18n="settings.autoSaveDesc"
-                    >Notları yazarken otomatik olarak kaydeder</small
-                  >
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="autoSaveToggle" checked />
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
                   <label data-i18n="settings.autoFormat">Otomatik biçimlendirme</label>
                   <small data-i18n="settings.autoFormatDesc"
                     >Satır başı işaretlerini listeye, adresleri bağlantıya dönüştürür</small

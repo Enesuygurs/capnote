@@ -98,7 +98,6 @@ export const expected = {
     accentColor: null,
     syncFolderAccent: false,
     folderColorsBackup: null,
-    autoSave: true,
     onNoteDelete: 'lastNote',
     startupPage: 'lastNote',
     nativeNotifications: true,
