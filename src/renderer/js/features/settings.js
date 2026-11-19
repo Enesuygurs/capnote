@@ -21,7 +21,6 @@ export class SettingsFeature {
       accentColor: get('accentColor') || undefined,
       syncFolderAccent: bool(get('syncFolderAccent')),
       folderColorsBackup,
-      autoSave: bool(get('settings.autoSave')),
       onNoteDelete: get('settings.onNoteDelete') || undefined,
       nativeNotifications: bool(get('settings.nativeNotifications')),
       editorSidebarVisible: bool(get('editorSidebarVisible')),
@@ -113,7 +112,6 @@ export class SettingsFeature {
       this.hideLockedTitlesToggle.checked = !!settings.hideLockedTitles;
     if (this.lockedMoodToggle)
       this.lockedMoodToggle.checked = settings.lockedMoodInOverview !== false;
-    if (this.autoSaveToggle) this.autoSaveToggle.checked = settings.autoSave;
     if (this.autoFormatToggle) this.autoFormatToggle.checked = settings.autoFormat;
     if (this.closeToTrayToggle) this.closeToTrayToggle.checked = settings.closeToTray;
     if (this.fileContextMenuToggle) this.fileContextMenuToggle.checked = settings.fileContextMenu;
@@ -243,16 +241,6 @@ export class SettingsFeature {
     );
 
     // Auto save toggle
-    if (this.autoSaveToggle) {
-      this.autoSaveToggle.addEventListener('change', (e) => {
-        this.setSetting('autoSave', e.target.checked);
-        if (this.isEditorOpen()) this.updateSaveButtonState();
-        const message = e.target.checked
-          ? i18n.t('messages.autoSaveEnabled')
-          : i18n.t('messages.autoSaveDisabled');
-        this.showNotification(message, 'success');
-      });
-    }
   }
 
   setAccentColor(hex, options = { persist: true }) {

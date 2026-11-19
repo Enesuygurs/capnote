@@ -17,14 +17,14 @@ export const NOTE_EDITOR = /* HTML */ `
           <span id="wordCount">0 <span data-i18n="stats.words">kelime</span></span>
           <span id="charCount">0 <span data-i18n="stats.characters">karakter</span></span>
           <span id="editorReadingTime">~0 <span data-i18n="stats.readingTime">dk okuma</span></span>
-          <!-- With automatic saving: how the saving goes (a turning circle, then a tick) -->
-          <span id="saveIndicator" class="save-indicator hidden" aria-live="polite">
-            <i class="fas" aria-hidden="true"></i><span></span>
-          </span>
         </div>
       </div>
       <div class="page-actions editor-actions">
         <div class="editor-view-tools">
+          <!-- Back to reading the note (it is saved as it is written; Escape does the same) -->
+          <button class="format-btn" id="readViewBtn" data-i18n-title="titles.readView">
+            <i class="fas fa-book-open"></i>
+          </button>
           <button
             class="format-btn"
             id="toggleMarkdownBtn"
@@ -39,11 +39,6 @@ export const NOTE_EDITOR = /* HTML */ `
             <i class="fas fa-expand"></i>
           </button>
         </div>
-        <button id="cancelNoteBtn" class="btn-secondary" data-i18n="buttons.cancel">İptal</button>
-        <!-- Save; with automatic saving, Done (closes the editor, the changes kept) -->
-        <button id="saveNoteBtn" class="btn-primary">
-          <span data-i18n="buttons.save">Kaydet</span>
-        </button>
       </div>
     </div>
 

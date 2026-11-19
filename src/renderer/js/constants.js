@@ -19,7 +19,6 @@ export const DEFAULT_SETTINGS = {
   compactList: false,
   folderColorsBackup: null,
   noteSort: 'date-desc',
-  autoSave: true,
   // Line shortcuts while typing: "- " a bulleted list, "1. " a numbered one, "[] " a task...
   autoFormat: true,
   onNoteDelete: 'lastNote',

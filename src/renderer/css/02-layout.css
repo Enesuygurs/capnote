@@ -206,3 +206,26 @@
   overflow-y: auto;
   padding: var(--space-6) var(--gutter) var(--gutter);
 }
+
+/* ============ Moving the window ============
+   Besides the titlebar, the window moves by the sidebar's top and bottom and by every page's
+   header (the empty parts of them). What is clicked in them stays clickable. The note list and the
+   note's text do not move it: a drag area takes every mouse event (scrolling, clicks, double-clicks,
+   dragging notes) from what is in it. */
+.sidebar-top,
+.sidebar-footer,
+.nav-section-header,
+.page-header {
+  -webkit-app-region: drag;
+}
+
+:is(.sidebar-top, .sidebar-footer, .nav-section-header, .page-header)
+  :is(button, input, textarea, select, a, label, [contenteditable], [role='tab'], .chip, .menu) {
+  -webkit-app-region: no-drag;
+}
+
+.menu,
+.context-menu,
+.modal {
+  -webkit-app-region: no-drag;
+}

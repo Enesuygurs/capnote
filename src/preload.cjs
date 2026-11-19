@@ -23,6 +23,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     load: () => ipcRenderer.invoke('storage:load'),
     save: (key, value) => ipcRenderer.invoke('storage:save', key, value),
   },
+  // The app is about to quit: the open note is saved, then the main process is told
+  onSaveBeforeQuit: (callback) =>
+    ipcRenderer.on('app:save-before-quit', async () => {
+      try {
+        await callback();
+      } finally {
+        ipcRenderer.send('app:saved-before-quit');
+      }
+    }),
   // Away from the computer: seconds with no input anywhere, and the screen locking or sleep
   system: {
     idleSeconds: () => ipcRenderer.invoke('system:idle-seconds'),

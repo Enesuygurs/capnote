@@ -316,10 +316,8 @@ export class NotesFeature {
     this.updateFavoriteButtons();
 
     if (!silent) {
-      // Saved with the Save button: no longer a new note that cancelling removes, and what
-      // Cancel goes back to from now on
+      // Saved at once and shown: no longer a new note that leaving empty removes
       this.freshNoteId = null;
-      this.editStartState = this.noteSnapshot(this.currentNote);
       this.showNotification(i18n.t('messages.noteSaved'), 'success');
       this.showViewer();
       this.displayNote(this.currentNote);
@@ -353,29 +351,13 @@ export class NotesFeature {
     this.loadNoteInEditor(this.currentNote);
   }
 
-  // Escape leaves the editor without losing writing: a new note with something in it is kept (the
-  // Cancel button is what deletes a new note), an empty one goes, and a note being edited drops
-  // its unsaved changes as Cancel does
+  // Escape leaves the editor, the writing kept (a new note left empty goes)
   escapeEditor() {
-    // With automatic saving Escape is Done: nothing written is lost
-    if (this.settings.autoSave) {
-      this.finishEditing();
-      return;
-    }
-    const fresh = this.currentNote && this.currentNote.id === this.freshNoteId;
-    if (!fresh || this.isCurrentNoteEmpty()) {
-      this.cancelEdit();
-      return;
-    }
-    this.cancelAutoSave?.();
-    this.saveNote(true);
-    this.freshNoteId = null;
-    this.showViewer();
-    this.displayNote(this.currentNote);
-    this.setActiveNoteInList(this.currentNote.id);
+    this.finishEditing();
   }
 
-  // Done (with automatic saving): the editor closes, the changes kept. A new note left empty goes.
+  // Leaving the editor for the note's reading view: what was written is saved (it saves itself
+  // as it is written anyway). A new note left empty goes.
   finishEditing() {
     const fresh = this.currentNote && this.currentNote.id === this.freshNoteId;
     if (fresh && this.isCurrentNoteEmpty()) {
@@ -385,51 +367,15 @@ export class NotesFeature {
     this.cancelAutoSave?.();
     if (this.hasUnsavedChanges() && !this.isCurrentNoteEmpty()) this.saveNote(true);
     this.freshNoteId = null;
-    this.editStartState = null;
     this.showViewer();
     this.displayNote(this.currentNote);
     this.setActiveNoteInList(this.currentNote.id);
   }
 
-  // Cancel on a note being edited: it goes back to how it was when the editing began (or when it
-  // was last saved with Save), the automatic saves since included; the text left behind stays in
-  // its history. True when something was undone.
-  revertEditing() {
-    const note = this.currentNote;
-    const start = this.editStartState;
-    this.editStartState = null;
-    if (!note || !start || !this.notes.includes(note)) return false;
-    const now = this.noteSnapshot(note);
-    if (JSON.stringify(now) === JSON.stringify(start)) return false;
-    if (now.title !== start.title || now.content !== start.content) {
-      this.recordHistory(note, { merge: false });
-    }
-    Object.assign(note, {
-      title: start.title,
-      content: start.content,
-      mood: start.mood,
-      weather: start.weather,
-      tags: [...start.tags],
-      formatting: { ...start.formatting },
-      attachments: this.extractUploadNames(start.content),
-      updatedAt: new Date().toISOString(),
-    });
-    const counts = this.countWordsAndCharsFromHtml(start.content);
-    note.wordCount = counts.words;
-    note.charCount = counts.chars;
-    this.saveNotes();
-    if (note.isLocked) this.resealNote(note);
-    if (note.filePath) this.writeFileNote(note);
-    this.updateNotesList();
-    this.updateStats();
-    this.showNotification(i18n.t('messages.changesReverted'), 'success');
-    return true;
-  }
-
+  // Leaving the editor without keeping a new note (one left empty): it is removed and the note
+  // before it opens; a note already stored just shows again
   cancelEdit() {
     this.cancelAutoSave?.();
-    // Cancelling a new note (one never saved with the Save button) removes it, with what was
-    // written and saved automatically in it; then the note before it opens
     const fresh = this.currentNote && this.currentNote.id === this.freshNoteId;
     if (fresh) {
       this.freshNoteId = null;
@@ -456,7 +402,6 @@ export class NotesFeature {
     }
 
     if (this.currentNote) {
-      this.revertEditing();
       this.showViewer();
       this.displayNote(this.currentNote);
       this.showTitleInList(this.currentNote.title);
@@ -787,12 +732,7 @@ export class NotesFeature {
 
   // Save/cancel in the editor and the action buttons of the viewer
   setupNoteActionEvents() {
-    // Save, or Done with automatic saving
-    this.saveNoteBtn.addEventListener('click', () =>
-      this.settings.autoSave ? this.finishEditing() : this.saveNote()
-    );
-
-    this.cancelNoteBtn.addEventListener('click', () => this.cancelEdit());
+    this.readViewBtn?.addEventListener('click', () => this.finishEditing());
 
     this.editNoteBtn.addEventListener('click', () => this.editCurrentNote());
 

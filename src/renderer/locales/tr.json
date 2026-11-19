@@ -27,8 +27,7 @@
     "duplicate": "Çoğalt",
     "markAllRead": "Tümünü okundu işaretle",
     "testNotifications": "Bildirimleri test et",
-    "removeLink": "Bağlantıyı kaldır",
-    "done": "Bitti"
+    "removeLink": "Bağlantıyı kaldır"
   },
   "titles": {
     "home": "Ana Sayfa",
@@ -73,7 +72,8 @@
     "link": "Bağlantı ekle (Ctrl+K)",
     "focusMode": "Odak modu",
     "focusModeExit": "Odak modundan çık (Esc)",
-    "toggleFold": "Daralt / genişlet"
+    "toggleFold": "Daralt / genişlet",
+    "readView": "Okuma görünümü"
   },
   "placeholders": {
     "noteTitle": "Not başlığı...",
@@ -145,8 +145,6 @@
     "versionLabel": "Versiyon",
     "language": "Dil",
     "languageDesc": "Arayüz dilini değiştirir",
-    "autoSave": "Otomatik Kaydetme",
-    "autoSaveDesc": "Notları yazarken otomatik olarak kaydeder",
     "autoFormat": "Otomatik biçimlendirme",
     "autoFormatDesc": "Satır başı işaretlerini listeye, adresleri bağlantıya dönüştürür",
     "relockOn": "Yeniden kilitleme",
@@ -315,8 +313,6 @@
     "reminderDeleted": "Hatırlatma silindi",
     "reminderPrefix": "Hatırlatma:",
     "noteCopied": "Not çoğaltıldı",
-    "autoSaveEnabled": "Otomatik kaydetme açıldı",
-    "autoSaveDisabled": "Otomatik kaydetme kapatıldı",
     "noteCopySuffix": " (Kopya)",
     "codeCopied": "Kod panoya kopyalandı",
     "copyFailed": "Kopyalama başarısız",
@@ -379,8 +375,7 @@
     "exportFailed": "Dışa aktarma başarısız oldu",
     "passwordToDelete": "Kilitli notu silmek için şifresini girin",
     "invalidLink": "Geçerli bir web ya da e-posta adresi girin",
-    "shortcutInUse": "Ctrl+Alt+N başka bir uygulama tarafından kullanılıyor",
-    "changesReverted": "Değişiklikler geri alındı"
+    "shortcutInUse": "Ctrl+Alt+N başka bir uygulama tarafından kullanılıyor"
   },
   "templates": {
     "tableHeader": "Başlık {n}"
@@ -698,10 +693,6 @@
     "try2": "İlk notunuzu oluşturun",
     "try3": "Ayarlar bölümünden temayı ve vurgu rengini seçin",
     "outro": "Bu notu dilediğiniz zaman silebilirsiniz."
-  },
-  "saveStatus": {
-    "saving": "Kaydediliyor…",
-    "saved": "Kaydedildi"
   },
   "viewerMenu": {
     "more": "Diğer işlemler",

@@ -21,7 +21,7 @@ import { createTray, registerTrayIpc } from './tray.js';
 import { registerNotificationIpc } from './notifications.js';
 import { registerAutostartIpc, startedAtLogin, refreshLoginItem } from './autostart.js';
 import { registerExportIpc } from './export-pdf.js';
-import { startUpdater, registerUpdateIpc } from './updater.js';
+import { startUpdater, registerUpdateIpc, isInstallingUpdate } from './updater.js';
 import { setQuickNoteShortcut, registerQuickNoteIpc } from './quick-note.js';
 import { registerDataTransferIpc } from './data-transfer.js';
 import { registerNoteFilesIpc } from './note-files.js';
@@ -205,8 +205,24 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('before-quit', () => {
+// Before the app quits, the page saves the note open in the editor (it saves itself 2 seconds after
+// the last keystroke; this keeps those last seconds too). It has 1.5 seconds to answer.
+let savedBeforeQuit = false;
+app.on('before-quit', (event) => {
   markQuitting();
+  const win = getMainWindow();
+  if (savedBeforeQuit || isInstallingUpdate() || !win || win.isDestroyed()) return;
+  event.preventDefault();
+  savedBeforeQuit = true;
+  let quitting = false;
+  const quit = () => {
+    if (quitting) return;
+    quitting = true;
+    app.quit();
+  };
+  ipcMain.once('app:saved-before-quit', quit);
+  setTimeout(quit, 1500);
+  win.webContents.send('app:save-before-quit');
 });
 
 app.on('will-quit', () => globalShortcut.unregisterAll());
