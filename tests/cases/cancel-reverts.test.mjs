@@ -1,6 +1,6 @@
-// With automatic saving: the Save button closes the editor and shows how the saving goes (a
-// turning circle while a change waits, then "Kaydedildi"); the note's text cannot be selected
-// outside the editor;
+// With automatic saving: the button is Done and the line under the title shows how the saving
+// goes ("Kaydediliyor…" while a change waits, then "Kaydedildi"); the note's text cannot be
+// selected outside the editor;
 // Cancel takes a note back to how it was when its editing began, the automatic saves since
 // included (the text left behind stays in its history); Done keeps the changes
 
@@ -15,13 +15,13 @@ export async function run() {
 
   r.viewerSelect = getComputedStyle(a.viewerText).userSelect;
   await a.editCurrentNote();
-  const spinning = () => !a.saveNoteBtn.querySelector('.save-spinner').classList.contains('hidden');
+  const status = () => a.saveIndicator.textContent.trim();
   r.button = a.saveNoteBtn.textContent.trim();
   a.richEditor.innerHTML = '<p>ikinci</p>';
   a.trackContentChanges();
-  r.saving = [spinning(), a.saveNoteBtn.getAttribute('aria-label')];
+  r.saving = status();
   a.saveNote(true); // the automatic save
-  r.savedAgain = [spinning(), a.saveNoteBtn.textContent.trim()];
+  r.savedAgain = [status(), a.saveNoteBtn.textContent.trim()];
   a.cancelEdit();
   r.reverted = note.content;
   r.inHistory = note.history.some((h) => h.version?.content === '<p>ikinci</p>');
@@ -41,9 +41,9 @@ export async function run() {
 
 export const expected = {
   viewerSelect: 'none',
-  button: 'Kaydedildi',
-  saving: [true, 'Kaydediliyor…'],
-  savedAgain: [false, 'Kaydedildi'],
+  button: 'Bitti',
+  saving: 'Kaydediliyor…',
+  savedAgain: ['Kaydedildi', 'Bitti'],
   reverted: '<p>ilk</p>',
   inHistory: true,
   doneKeeps: ['<p>üçüncü</p>', true],

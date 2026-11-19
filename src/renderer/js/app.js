@@ -47,6 +47,7 @@ import { QuickNoteFeature } from './features/quick-note.js';
 import { NoteGraphFeature } from './features/note-graph.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
+import { SelectMenusFeature } from './features/select-menus.js';
 import { WelcomeFeature } from './features/welcome.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
 import { FoldingFeature } from './features/folding.js';
@@ -111,6 +112,8 @@ export class CapnoteApp {
     this.initializeElements();
     this.setupEventListeners();
     this.setupSettingsEventListeners();
+    // The settings' drop-down lists in the app's own look
+    this.enhanceSelects(this.settingsModal);
     this.setupResizeOptimization();
     this.loadSettings();
     // The older to-do page's tasks move into a note (the tasks page reads the notes)
@@ -165,6 +168,7 @@ export class CapnoteApp {
     // Butonlar
     this.homeBtn = document.getElementById('homeBtn');
     this.saveNoteBtn = document.getElementById('saveNoteBtn');
+    this.saveIndicator = document.getElementById('saveIndicator');
     this.cancelNoteBtn = document.getElementById('cancelNoteBtn');
     this.editNoteBtn = document.getElementById('editNoteBtn');
     this.deleteNoteBtn = document.getElementById('deleteNoteBtn');
@@ -653,6 +657,7 @@ export class CapnoteApp {
     this.relabelTaskPriorityMenu?.();
     this.updateTagsDisplay();
     this.renderUpdateState();
+    this.refreshSelectTriggers?.();
     // The reminder form's date and time buttons ("Date", "Time" until one is chosen)
     this.renderReminderWhen();
 
@@ -766,6 +771,7 @@ applyFeatures(CapnoteApp, [
   NoteGraphFeature,
   DashboardFeature,
   TemplatesFeature,
+  SelectMenusFeature,
   WelcomeFeature,
   MarkdownIoFeature,
 ]);

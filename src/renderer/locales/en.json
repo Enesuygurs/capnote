@@ -478,9 +478,9 @@
     "title": "Overview",
     "notes": "Notes",
     "activeDays": "Days written",
-    "streak": "Current streak (days)",
-    "longestStreak": "Longest streak (days)",
-    "wordsLast30Days": "Words (30 days)",
+    "streak": "Current streak",
+    "longestStreak": "Longest streak",
+    "wordsLast30Days": "Words",
     "today": "Today",
     "prevMonth": "Previous month",
     "nextMonth": "Next month",
@@ -702,5 +702,11 @@
   "saveStatus": {
     "saving": "Saving…",
     "saved": "Saved"
+  },
+  "viewerMenu": {
+    "more": "More actions",
+    "duplicate": "Duplicate",
+    "history": "History",
+    "export": "Export"
   }
 }

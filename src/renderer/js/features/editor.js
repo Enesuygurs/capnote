@@ -215,8 +215,8 @@ export class EditorFeature {
   }
 
   // Save is open once the note's body has something in it; a title, a mood, tags or a font change
-  // alone are not enough. With automatic saving the button closes the editor (always open) and
-  // shows how the saving goes.
+  // alone are not enough. With automatic saving the button is Done (always open) and the line under
+  // the title shows how the saving goes.
   updateSaveButtonState() {
     const hasChanges = this.hasUnsavedChanges();
     this.updateSaveMode();
@@ -243,34 +243,32 @@ export class EditorFeature {
     }
   }
 
-  // Without automatic saving the button is Save
+  // The button is Save, or Done with automatic saving
   updateSaveMode() {
-    if (this.settings?.autoSave) return;
-    this.setSaveLabel('buttons.save');
-    this.showSaveSpinner(false);
+    this.setSaveLabel(this.settings?.autoSave ? 'buttons.done' : 'buttons.save');
+    if (!this.settings?.autoSave) this.saveIndicator?.classList.add('hidden');
   }
 
-  showSaveSpinner(on) {
-    this.saveNoteBtn?.querySelector('.save-spinner')?.classList.toggle('hidden', !on);
-    this.saveNoteBtn?.querySelector('span')?.classList.toggle('hidden', on);
-    this.saveNoteBtn?.classList.toggle('is-saving', on);
-    if (on) this.saveNoteBtn?.setAttribute('aria-label', i18n.t('saveStatus.saving'));
-    else this.saveNoteBtn?.removeAttribute('aria-label');
-  }
-
-  // With automatic saving: a turning circle while a change waits to be saved, then "Saved"; "Done"
-  // on a new note not written in yet
+  // With automatic saving, at the end of the line under the title: a turning circle and
+  // "Saving…" while a change waits, then a tick and "Saved"; nothing on a new note not written in
   updateSaveStatus() {
+    const box = this.saveIndicator;
+    if (!box) return;
     const hasChanges = this.changedSinceLastSave();
     const note = this.currentNote;
     const fresh = note && note.id === this.freshNoteId && this.isStoredNoteEmpty(note);
     if (!note || (fresh && !hasChanges)) {
-      this.showSaveSpinner(false);
-      this.setSaveLabel('buttons.done');
+      box.classList.add('hidden');
       return;
     }
-    this.showSaveSpinner(hasChanges);
-    this.setSaveLabel('saveStatus.saved');
+    box.classList.remove('hidden');
+    box.classList.toggle('is-saving', hasChanges);
+    box.querySelector('i').className = hasChanges
+      ? 'fas fa-circle-notch fa-spin'
+      : 'fas fa-circle-check';
+    box.querySelector('span').textContent = i18n.t(
+      hasChanges ? 'saveStatus.saving' : 'saveStatus.saved'
+    );
   }
 
   // Whether the editor holds something not saved yet (by the last save, automatic or not)

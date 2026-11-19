@@ -49,6 +49,10 @@ export class ViewerFeature {
       const btn = document.getElementById(id);
       if (btn) btn.hidden = this.isFileNote(note);
     });
+    // The "more" button only when its menu has something in it
+    if (this.viewerMoreBtn) {
+      this.viewerMoreBtn.hidden = ![...this.viewerMoreMenu.children].some((item) => !item.hidden);
+    }
     // A file note has a "File path" button: its path on hover, a click shows the file in its folder
     if (this.viewerFile) {
       this.viewerFile.classList.toggle('hidden', !note.filePath);
@@ -430,6 +434,57 @@ export class ViewerFeature {
     });
   }
 
+  // The menu of the viewer's other actions (copy, history, export, archive)
+  // (byKeyboard: its first item takes the focus, as a keyboard user goes on from there)
+  toggleViewerMoreMenu(
+    open = this.viewerMoreMenu.classList.contains('hidden'),
+    byKeyboard = false
+  ) {
+    const menu = this.viewerMoreMenu;
+    if (!open) {
+      menu.classList.add('hidden');
+      this.viewerMoreBtn.setAttribute('aria-expanded', 'false');
+      this.viewerMoreBtn.classList.remove('active');
+      return;
+    }
+    const rect = this.viewerMoreBtn.getBoundingClientRect();
+    menu.classList.remove('hidden');
+    const width = menu.getBoundingClientRect().width;
+    this.positionMenu(menu, rect.right - width, rect.bottom + 4);
+    this.viewerMoreBtn.setAttribute('aria-expanded', 'true');
+    this.viewerMoreBtn.classList.add('active');
+    if (byKeyboard) menu.querySelector('.menu-item:not([hidden])')?.focus();
+  }
+
+  setupViewerMoreMenu() {
+    this.viewerMoreBtn = document.getElementById('viewerMoreBtn');
+    this.viewerMoreMenu = document.getElementById('viewerMoreMenu');
+    if (!this.viewerMoreBtn || !this.viewerMoreMenu) return;
+    this.viewerMoreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // A click from the keyboard (Enter, Space) has no pointer position
+      this.toggleViewerMoreMenu(undefined, e.detail === 0);
+    });
+    // A choice closes it (the item's own action runs too)
+    this.viewerMoreMenu.addEventListener('click', () => this.toggleViewerMoreMenu(false));
+    this.viewerMoreMenu.addEventListener('keydown', (e) => {
+      const items = [...this.viewerMoreMenu.querySelectorAll('.menu-item:not([hidden])')];
+      const at = items.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown') items[(at + 1) % items.length]?.focus();
+      else if (e.key === 'ArrowUp') items[(at - 1 + items.length) % items.length]?.focus();
+      else if (e.key === 'Escape') {
+        this.toggleViewerMoreMenu(false);
+        this.viewerMoreBtn.focus();
+      } else return;
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    document.addEventListener('mousedown', (e) => {
+      if (!e.target.closest?.('.viewer-more')) this.toggleViewerMoreMenu(false);
+    });
+    window.addEventListener('blur', () => this.toggleViewerMoreMenu(false));
+  }
+
   // Edit the note on screen with the caret at a point of its text (a double-click there). Not on
   // a link, a box, a button or a task's text (a click on it ticks the task); not on an earlier
   // version or a note still locked.
@@ -457,6 +512,7 @@ export class ViewerFeature {
     this.historyBtn = document.getElementById('historyBtn');
 
     this.historyBtn?.addEventListener('click', () => this.openNoteHistory());
+    this.setupViewerMoreMenu();
 
     // A double-click on the note's text opens it for editing, the caret where it was clicked
     this.viewerText.addEventListener('dblclick', (e) => this.editAtPoint(e));

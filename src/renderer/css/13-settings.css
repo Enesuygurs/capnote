@@ -64,11 +64,11 @@
   color: var(--text-strong);
 }
 
-/* The open tab: its text in the accent, on a plain grey */
+/* The open tab: its text in the strongest text color (white on the dark theme), on a plain grey */
 .settings-tab.active,
 .settings-tab.active:hover {
   background: var(--tint-selected);
-  color: var(--accent-text);
+  color: var(--text-strong);
   font-weight: 500;
 }
 

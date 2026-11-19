@@ -39,7 +39,7 @@ export async function run() {
   r.viewer = {
     open: a.currentNote.title,
     badge: !a.viewerArchived.classList.contains('hidden'),
-    button: a.archiveViewBtn.title,
+    button: a.archiveViewBtn.textContent.trim(),
   };
   a.archiveViewBtn.click();
   await new Promise((res) => setTimeout(res, 50));

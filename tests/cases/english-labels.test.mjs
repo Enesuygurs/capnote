@@ -9,7 +9,7 @@ export async function run() {
     date: document.getElementById('reminderDateText').textContent,
     time: document.getElementById('reminderTimeText').textContent,
     emojiTabs: document.querySelector('.emoji-tabs').getAttribute('aria-label'),
-    iconButton: document.getElementById('historyBtn').getAttribute('aria-label'),
+    iconButton: document.getElementById('editNoteBtn').getAttribute('aria-label'),
   };
 }
 
@@ -17,5 +17,5 @@ export const expected = {
   date: 'Date',
   time: 'Time',
   emojiTabs: 'Emoji categories',
-  iconButton: 'Show note history',
+  iconButton: 'Edit',
 };
