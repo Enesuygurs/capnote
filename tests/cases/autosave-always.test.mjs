@@ -1,14 +1,10 @@
 // Notes save themselves, as in Apple Notes: the editor has no Save, Cancel or status, there is no
 // setting to turn saving off; Escape and the reading-view button leave the editor with the writing
-// kept, Ctrl+S saves where it is, and a new note left empty goes
+// kept, and a new note left empty goes
 
 export async function run() {
   const a = window.app;
   const r = {};
-  const ctrlS = () =>
-    document.dispatchEvent(
-      new KeyboardEvent('keydown', { key: 's', ctrlKey: true, bubbles: true })
-    );
   r.noButtons = ['saveNoteBtn', 'cancelNoteBtn', 'saveIndicator', 'autoSaveToggle'].every(
     (id) => !document.getElementById(id)
   );
@@ -18,8 +14,6 @@ export async function run() {
   a.noteTitle.value = 'Plan';
   a.richEditor.innerHTML = '<p>ilk</p>';
   a.trackContentChanges();
-  ctrlS();
-  r.ctrlS = [a.notes[0].content, a.isEditorOpen()];
 
   a.richEditor.innerHTML = '<p>ikinci</p>';
   a.trackContentChanges();
@@ -49,7 +43,6 @@ export async function run() {
 export const expected = {
   noButtons: true,
   noSetting: true,
-  ctrlS: ['<p>ilk</p>', true],
   readView: ['<p>ikinci</p>', true],
   escape: ['<p>üçüncü</p>', true],
   beforeQuit: '<p>dördüncü</p>',

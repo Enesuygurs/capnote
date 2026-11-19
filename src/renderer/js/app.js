@@ -48,6 +48,7 @@ import { NoteGraphFeature } from './features/note-graph.js';
 import { DashboardFeature } from './features/dashboard.js';
 import { TemplatesFeature } from './features/templates.js';
 import { SelectMenusFeature } from './features/select-menus.js';
+import { WindowDragFeature } from './features/window-drag.js';
 import { WelcomeFeature } from './features/welcome.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
 import { FoldingFeature } from './features/folding.js';
@@ -114,6 +115,8 @@ export class CapnoteApp {
     this.setupSettingsEventListeners();
     // The settings' drop-down lists in the app's own look
     this.enhanceSelects(this.settingsModal);
+    // The window moves by a note being read and by the space under the note list
+    this.setupWindowDrag();
     this.setupResizeOptimization();
     this.loadSettings();
     // The older to-do page's tasks move into a note (the tasks page reads the notes)
@@ -767,6 +770,7 @@ applyFeatures(CapnoteApp, [
   DashboardFeature,
   TemplatesFeature,
   SelectMenusFeature,
+  WindowDragFeature,
   WelcomeFeature,
   MarkdownIoFeature,
 ]);

@@ -27,6 +27,7 @@ import { registerDataTransferIpc } from './data-transfer.js';
 import { registerNoteFilesIpc } from './note-files.js';
 import { registerLockedImagesIpc } from './locked-images.js';
 import { registerIdleIpc } from './idle.js';
+import { registerWindowDragIpc } from './window-drag.js';
 import { filesFromArgv, openFiles, registerFileIpc, setContextMenu } from './files.js';
 
 // Development mode is 'npm run dev' from a source checkout: hot reload and DevTools
@@ -164,6 +165,7 @@ registerDataTransferIpc();
 registerNoteFilesIpc();
 registerLockedImagesIpc();
 registerIdleIpc();
+registerWindowDragIpc();
 registerFileIpc({
   settings: () => getDataStore().read('settings'),
   notes: () => getDataStore().read('notes'),
