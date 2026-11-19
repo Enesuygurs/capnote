@@ -217,17 +217,18 @@ export class YearSummaryFeature {
     head.querySelector('.summary-year').textContent = s.year;
     card.appendChild(head);
     const figures = document.createElement('div');
-    figures.className = 'summary-figures';
+    // The same tiles as the overview's figures
+    figures.className = 'stat-tiles summary-figures';
     [
       [s.notes, 'summary.notes', 'fa-file-lines', 'blue'],
       [s.words, 'summary.words', 'fa-pen-nib', 'rose'],
       [s.days, 'summary.days', 'fa-calendar-check', 'green'],
     ].forEach(([value, key, icon, tone]) => {
       const figure = document.createElement('div');
-      figure.className = 'summary-figure';
-      figure.innerHTML = `<i class="fas ${icon} tone-${tone}"></i><span class="summary-figure-value"></span><span class="summary-figure-label"></span>`;
-      figure.querySelector('.summary-figure-value').textContent = number(value);
-      figure.querySelector('.summary-figure-label').textContent = i18n.t(key);
+      figure.className = 'stat-tile';
+      figure.innerHTML = `<i class="fas ${icon} tone-${tone}"></i><span class="stat-tile-value"></span><span class="stat-tile-label"></span>`;
+      figure.querySelector('.stat-tile-value').textContent = number(value);
+      figure.querySelector('.stat-tile-label').textContent = i18n.t(key);
       figures.appendChild(figure);
     });
     card.appendChild(figures);

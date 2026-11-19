@@ -74,34 +74,12 @@
   color: var(--accent-text);
 }
 
+/* The year's figures: the overview's tiles, three in a row */
 .summary-figures {
-  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2);
+  margin-bottom: 0;
 }
 
-.summary-figure {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  background: var(--card);
-}
-
-.summary-figure i {
-  color: var(--tone);
-  font-size: var(--fs-md);
-}
-
-.summary-figure-value {
-  color: var(--text-strong);
-  font-size: var(--fs-3xl);
-  font-weight: 600;
-  line-height: 32px;
-}
-
-.summary-figure-label,
 .summary-label {
   color: var(--text-secondary);
   font-size: var(--fs-sm);
