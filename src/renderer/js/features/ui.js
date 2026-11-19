@@ -280,15 +280,6 @@ export class UiFeature {
             e.preventDefault();
             this.createNewNote();
             break;
-          case 's':
-            e.preventDefault();
-            // Saving reads from the editor fields, so it is only valid while editing, and like the
-            // Save button it needs something in the note's body
-            if (this.currentNote && this.isEditorOpen() && !this.isCurrentNoteEmpty()) {
-              this.cancelAutoSave?.();
-              this.saveNote(true);
-            }
-            break;
           case 'f':
             e.preventDefault();
             this.toggleSearch();

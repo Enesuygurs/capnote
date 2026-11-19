@@ -32,6 +32,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
         ipcRenderer.send('app:saved-before-quit');
       }
     }),
+  // Moving the window from places a CSS drag area cannot cover (the window follows the cursor)
+  windowDrag: {
+    start: () => ipcRenderer.send('window:drag-start'),
+    end: () => ipcRenderer.send('window:drag-end'),
+  },
   // Away from the computer: seconds with no input anywhere, and the screen locking or sleep
   system: {
     idleSeconds: () => ipcRenderer.invoke('system:idle-seconds'),
