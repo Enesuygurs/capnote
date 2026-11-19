@@ -36,3 +36,15 @@
 .fade-in {
   animation: fadeIn 0.2s ease;
 }
+
+/* The overview, the settings and the year in review are read, not copied from: no text is
+   selected there (fields keep theirs) */
+#welcomeScreen,
+#summaryScreen,
+#settingsModal {
+  user-select: none;
+}
+
+:is(#welcomeScreen, #summaryScreen, #settingsModal) :is(input, textarea) {
+  user-select: text;
+}
