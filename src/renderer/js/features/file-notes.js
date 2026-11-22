@@ -110,8 +110,11 @@ export class FileNotesFeature {
   async refreshFileNote(note) {
     const file = await window.electronAPI?.files?.read(note.filePath);
     if (!file?.ok) {
-      if (file?.error === 'missing') {
-        this.showNotification(i18n.t('files.missing', { name: this.fileName(note) }), 'warning');
+      // The file is gone: ask whether the note goes too (one question at a time)
+      if (file?.error === 'missing' && this.confirmModal.classList.contains('hidden')) {
+        this.showConfirm(i18n.t('files.missing', { name: this.fileName(note) }), () => {
+          if (this.notes.includes(note)) this.performNoteDeletion(note);
+        });
       }
       return;
     }
@@ -148,7 +151,8 @@ export class FileNotesFeature {
     this.showNotification(i18n.t('files.saveFailed', { name }), 'error');
   }
 
-  // The files of file notes being deleted go to the Recycle Bin (a file already gone is fine)
+  // The files of file notes being deleted go to the Recycle Bin (a file already gone is fine). The
+  // deletion already said "Note deleted"; only a file that could not be deleted is told.
   async trashNoteFiles(notes) {
     const api = window.electronAPI?.files;
     if (!api || !notes.length) return;
@@ -159,10 +163,6 @@ export class FileNotesFeature {
         i18n.t('files.trashFailed', { name: this.fileName(failed[0]) }),
         'error'
       );
-    } else if (notes.length === 1) {
-      this.showNotification(i18n.t('files.trashed', { name: this.fileName(notes[0]) }), 'success');
-    } else {
-      this.showNotification(i18n.t('files.trashedMany', { count: notes.length }), 'success');
     }
   }
 

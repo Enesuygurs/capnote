@@ -281,7 +281,7 @@
   "messages": {
     "dropOutsideFolders": "Take out of folder",
     "noteSaved": "Note saved!",
-    "noteDeleted": "Note deleted!",
+    "noteDeleted": "Note deleted",
     "folderCreated": "Folder \"{name}\" created",
     "folderDeleted": "Folder \"{name}\" and its notes deleted",
     "dataExported": "Data exported",
@@ -656,7 +656,7 @@
     "reveal": "Show in folder",
     "openFailed": "Could not open “{name}”",
     "tooLarge": "“{name}” is too large (10 MB at most)",
-    "missing": "“{name}” was not found; it may have been moved or deleted",
+    "missing": "“{name}” was not found; it may have been moved or deleted. Delete the note?",
     "saveFailed": "Could not save “{name}”",
     "conflict": "“{name}” was changed in another program. Overwrite it?",
     "noLock": "File notes cannot be locked: the text is unencrypted in the file",
@@ -664,12 +664,10 @@
     "contextMenuFailed": "Could not update the right-click menu",
     "deleteFileToo": "Also delete the file",
     "deleteFilesToo": "Also delete the files",
-    "trashed": "Note deleted, “{name}” moved to the Recycle Bin",
-    "trashedMany": "Notes deleted, {count} files moved to the Recycle Bin",
     "trashFailed": "Could not delete “{name}”; the file is still there",
     "pathButton": "File Path",
     "dropToOpen": "Open as a note",
-    "unsupported": "Unsupported file: {name}. Only .md, .txt and .html files can be opened"
+    "unsupported": "Unsupported file: {name}"
   },
   "slashMenu": {
     "noteLink": "Note link",

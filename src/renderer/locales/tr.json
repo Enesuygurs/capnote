@@ -281,7 +281,7 @@
   "messages": {
     "dropOutsideFolders": "Klasörden çıkar",
     "noteSaved": "Not kaydedildi!",
-    "noteDeleted": "Not silindi!",
+    "noteDeleted": "Not silindi",
     "folderCreated": "\"{name}\" klasörü oluşturuldu",
     "folderDeleted": "\"{name}\" klasörü ve içindeki notlar silindi",
     "dataExported": "Veriler dışa aktarıldı",
@@ -656,7 +656,7 @@
     "reveal": "Klasörde göster",
     "openFailed": "“{name}” açılamadı",
     "tooLarge": "“{name}” çok büyük (en fazla 10 MB)",
-    "missing": "“{name}” bulunamadı; taşınmış ya da silinmiş olabilir",
+    "missing": "“{name}” bulunamadı; taşınmış ya da silinmiş olabilir. Not silinsin mi?",
     "saveFailed": "“{name}” kaydedilemedi",
     "conflict": "“{name}” başka bir programda değiştirilmiş. Üzerine yazılsın mı?",
     "noLock": "Dosya notları kilitlenemez: metin dosyada şifresiz duruyor",
@@ -664,12 +664,10 @@
     "contextMenuFailed": "Sağ tık menüsü güncellenemedi",
     "deleteFileToo": "Dosyayı da sil",
     "deleteFilesToo": "Dosyaları da sil",
-    "trashed": "Not silindi, “{name}” Geri Dönüşüm Kutusu'na taşındı",
-    "trashedMany": "Notlar silindi, {count} dosya Geri Dönüşüm Kutusu'na taşındı",
     "trashFailed": "“{name}” silinemedi; dosya yerinde duruyor",
     "pathButton": "Dosya Yolu",
     "dropToOpen": "Not olarak aç",
-    "unsupported": "Desteklenmeyen dosya: {name}. Yalnızca .md, .txt ve .html dosyaları açılabilir"
+    "unsupported": "Desteklenmeyen dosya: {name}"
   },
   "slashMenu": {
     "noteLink": "Not bağlantısı",
