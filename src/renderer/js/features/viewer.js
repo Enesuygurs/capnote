@@ -485,15 +485,16 @@ export class ViewerFeature {
     window.addEventListener('blur', () => this.toggleViewerMoreMenu(false));
   }
 
-  // Edit the note on screen with the caret at a point of its text (a double-click there). Not on
-  // a link, a box, a button or a task's text (a click on it ticks the task); not on an earlier
-  // version or a note still locked.
+  // Edit the note on screen with the caret at a point of its text (a double-click anywhere in the
+  // note: on its text, a task, an image or the empty space around; the caret at the end there).
+  // Not on a link, a field or a button, which have their own clicks; not on an earlier version or
+  // a note still locked. A double-click on a task ticks it twice, so it stays as it was.
   async editAtPoint(e) {
     const note = this.currentNote;
     if (!note || note.isVersionPreview || this.versionPreview || this.isNoteLockedForView(note)) {
       return;
     }
-    if (e.target.closest('a, input, button, img, .checklist-item > label')) return;
+    if (e.target.closest('a, input, button, textarea, .locked-note-message')) return;
     const range = document.caretRangeFromPoint?.(e.clientX, e.clientY);
     const offset =
       range && this.viewerText.contains(range.startContainer)
@@ -501,9 +502,9 @@ export class ViewerFeature {
         : null;
     window.getSelection()?.removeAllRanges();
     await this.editCurrentNote();
-    if (offset !== null && this.isEditorOpen() && !this.isMarkdownEditing?.()) {
-      this.placeCaretAtTextOffset(this.richEditor, offset);
-    }
+    if (!this.isEditorOpen() || this.isMarkdownEditing?.()) return;
+    if (offset !== null) this.placeCaretAtTextOffset(this.richEditor, offset);
+    else this.placeCaretAtEnd(this.richEditor);
   }
 
   // Note history dialog
@@ -515,7 +516,9 @@ export class ViewerFeature {
     this.setupViewerMoreMenu();
 
     // A double-click on the note's text opens it for editing, the caret where it was clicked
-    this.viewerText.addEventListener('dblclick', (e) => this.editAtPoint(e));
+    this.noteViewer
+      .querySelector('.viewer-content')
+      ?.addEventListener('dblclick', (e) => this.editAtPoint(e));
     this.versionDiffBtn?.addEventListener('click', () => this.toggleVersionDiff());
     this.versionListBtn?.addEventListener('click', () => this.openNoteHistory());
     this.versionCloseBtn?.addEventListener('click', () => this.endVersionPreview());

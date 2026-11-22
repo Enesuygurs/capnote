@@ -725,7 +725,7 @@ export class NoteListFeature {
     this.noteContextMenu.querySelector('[data-action="duplicate"]').disabled =
       this.isNoteLockedForView(note);
     this.noteContextMenu.querySelector('[data-action="rename"]').disabled =
-      this.isNoteLockedForView(note);
+      this.isNoteLockedForView(note) || this.isFileNote(note);
     // A locked note's text never goes into a template (templates are not encrypted)
     this.noteContextMenu.querySelector('[data-action="saveTemplate"]').disabled = !!note.isLocked;
     // A file note is its file: it is not locked, copied, archived or made a template

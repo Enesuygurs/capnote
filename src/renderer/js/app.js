@@ -115,7 +115,7 @@ export class CapnoteApp {
     this.setupSettingsEventListeners();
     // The settings' drop-down lists in the app's own look
     this.enhanceSelects(this.settingsModal);
-    // The window moves by a note being read and by the space under the note list
+    // The window moves by the space under the note list too
     this.setupWindowDrag();
     this.setupResizeOptimization();
     this.loadSettings();

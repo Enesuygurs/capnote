@@ -1,18 +1,112 @@
-// Text files edited in Capnote: "Edit with Capnote" in the Windows right-click menu of .md, .txt
-// and .html files opens the file as a file note, and saving the note writes the file back, as a text
-// editor does. The main process reads and writes the files; the page keeps the note.
+// Text files edited in Capnote: "Edit with Capnote" in the Windows right-click menu of text files
+// (Markdown, HTML and plain text, and the everyday text formats: XML, JSON, scripts, settings,
+// logs, source code…) opens the file as a file note, and saving the note writes the file back, as a
+// text editor does. The main process reads and writes the files; the page keeps the note.
 //
 // Files come from the command line: Capnote started on a file, or started again (the second
 // instance hands its command line over). The page asks for the files once it is ready; files that
 // come later are sent to it.
 
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { execFile } from 'child_process';
 import { app, ipcMain, shell } from 'electron';
 import { getMainWindow, showMainWindow } from './window.js';
 
-const EXTENSIONS = ['.md', '.markdown', '.txt', '.html', '.htm'];
+// Markdown and HTML show as such; every other one is plain text
+const EXTENSIONS = [
+  // notes and pages
+  '.md',
+  '.markdown',
+  '.txt',
+  '.text',
+  '.html',
+  '.htm',
+  '.rst',
+  '.adoc',
+  '.tex',
+  '.nfo',
+  // data and settings
+  '.xml',
+  '.xaml',
+  '.json',
+  '.jsonc',
+  '.json5',
+  '.yaml',
+  '.yml',
+  '.toml',
+  '.ini',
+  '.cfg',
+  '.conf',
+  '.config',
+  '.properties',
+  '.env',
+  '.csv',
+  '.tsv',
+  '.log',
+  '.reg',
+  '.manifest',
+  '.srt',
+  '.vtt',
+  '.svg',
+  // scripts
+  '.bat',
+  '.cmd',
+  '.ps1',
+  '.psm1',
+  '.psd1',
+  '.vbs',
+  '.sh',
+  '.bash',
+  '.zsh',
+  '.fish',
+  // source code
+  '.js',
+  '.mjs',
+  '.cjs',
+  '.jsx',
+  '.ts',
+  '.tsx',
+  '.vue',
+  '.svelte',
+  '.css',
+  '.scss',
+  '.sass',
+  '.less',
+  '.py',
+  '.rb',
+  '.php',
+  '.java',
+  '.kt',
+  '.kts',
+  '.swift',
+  '.go',
+  '.rs',
+  '.c',
+  '.h',
+  '.cpp',
+  '.cc',
+  '.hpp',
+  '.cs',
+  '.fs',
+  '.vb',
+  '.lua',
+  '.r',
+  '.pl',
+  '.dart',
+  '.sql',
+  '.graphql',
+  '.proto',
+  '.gradle',
+  '.csproj',
+  '.vbproj',
+  '.sln',
+  '.props',
+  '.targets',
+  '.cshtml',
+  '.razor',
+];
 // The key under each extension's right-click verbs
 const VERB = 'CapnoteEdit';
 const LABELS = { tr: 'Capnote ile düzenle', en: 'Edit with Capnote' };
@@ -27,10 +121,11 @@ const keyOf = (filePath) => path.resolve(filePath).toLowerCase();
 
 const isSupported = (filePath) => EXTENSIONS.includes(path.extname(filePath).toLowerCase());
 
-// The supported files named on a command line (flags, the app and folders are skipped)
+// The supported files named on a command line (flags, the app and folders are skipped). Not
+// packaged, the line starts with Electron and then the app's own entry file (a .js), skipped too.
 function filesFromArgv(argv, cwd = process.cwd()) {
   return argv
-    .slice(1)
+    .slice(app.isPackaged ? 1 : 2)
     .filter((arg) => arg && !arg.startsWith('-'))
     .map((arg) => path.resolve(cwd, arg))
     .filter((filePath) => {
@@ -76,11 +171,21 @@ function openFiles(paths, { show = true } = {}) {
   });
 }
 
-// Write next to the file, then move over it, so a failed write never leaves half a file
+// Write the file in place, so it stays the same file (on the desktop it keeps its spot; a file
+// written beside it and moved over it is a new file there). Its old text is copied aside first and
+// put back if the write fails, so a failed write never leaves half a file.
 function writeFileSafely(filePath, content) {
-  const temp = path.join(path.dirname(filePath), `.${path.basename(filePath)}.capnote-tmp`);
-  fs.writeFileSync(temp, content, 'utf8');
-  fs.renameSync(temp, filePath);
+  const backup = path.join(os.tmpdir(), `capnote-${process.pid}-${path.basename(filePath)}.bak`);
+  const existed = fs.existsSync(filePath);
+  if (existed) fs.copyFileSync(filePath, backup);
+  try {
+    fs.writeFileSync(filePath, content, 'utf8');
+  } catch (err) {
+    if (existed) fs.copyFileSync(backup, filePath);
+    throw err;
+  } finally {
+    if (existed) fs.rmSync(backup, { force: true });
+  }
   return fs.statSync(filePath).mtimeMs;
 }
 
@@ -92,27 +197,44 @@ function regKey(ext) {
 const reg = (args) =>
   new Promise((resolve) => execFile('reg', args, { windowsHide: true }, (err) => resolve(!err)));
 
-// The reg.exe commands that add (or remove) the menu entry for every extension
-function contextMenuCommands(enabled, label, exe) {
-  return EXTENSIONS.flatMap((ext) =>
-    enabled
-      ? [
-          ['add', regKey(ext), '/ve', '/d', label, '/f'],
-          ['add', regKey(ext), '/v', 'Icon', '/d', exe, '/f'],
-          ['add', `${regKey(ext)}\\command`, '/ve', '/d', `"${exe}" "%1"`, '/f'],
-        ]
-      : [['delete', regKey(ext), '/f']]
-  );
+// The menu entry of every extension as one .reg file (one reg.exe run for all of them, not three
+// per extension): its label, the app's icon and the command that opens the file
+function contextMenuRegFile(label, exe) {
+  const text = (value) => `"${String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+  // A .reg file names the hive in full (reg.exe's commands take "HKCU")
+  const key = (ext) => regKey(ext).replace(/^HKCU\\/, 'HKEY_CURRENT_USER\\');
+  const lines = ['Windows Registry Editor Version 5.00', ''];
+  EXTENSIONS.forEach((ext) => {
+    lines.push(`[${key(ext)}]`, `@=${text(label)}`, `"Icon"=${text(exe)}`, '');
+    lines.push(`[${key(ext)}\\command]`, `@=${text(`"${exe}" "%1"`)}`, '');
+  });
+  return lines.join('\r\n');
+}
+
+// The reg.exe commands that remove the menu entry from every extension
+function contextMenuRemoveCommands() {
+  return EXTENSIONS.map((ext) => ['delete', regKey(ext), '/f']);
 }
 
 // Only the installed app registers itself: a source checkout would register Electron's own exe
 async function setContextMenu(enabled, language = 'tr') {
   if (process.platform !== 'win32') return { ok: false, error: 'unsupported' };
   if (!app.isPackaged) return { ok: false, error: 'dev' };
+  if (!enabled) {
+    // Removing a key that is not there fails harmlessly
+    await Promise.all(contextMenuRemoveCommands().map(reg));
+    return { ok: true, enabled };
+  }
   const label = LABELS[language] || LABELS.tr;
-  const results = await Promise.all(contextMenuCommands(enabled, label, process.execPath).map(reg));
-  // Removing a key that is not there fails harmlessly
-  return { ok: !enabled || results.every(Boolean), enabled };
+  const file = path.join(os.tmpdir(), `capnote-menu-${process.pid}.reg`);
+  try {
+    // reg.exe reads .reg files as UTF-16 with a byte order mark
+    fs.writeFileSync(file, '\ufeff' + contextMenuRegFile(label, process.execPath), 'utf16le');
+    const ok = await reg(['import', file]);
+    return { ok, enabled };
+  } finally {
+    fs.rmSync(file, { force: true });
+  }
 }
 
 function registerFileIpc({ settings = () => ({}), notes = () => [] } = {}) {
@@ -205,6 +327,6 @@ export {
   openFiles,
   registerFileIpc,
   setContextMenu,
-  contextMenuCommands,
+  contextMenuRegFile,
   EXTENSIONS,
 };

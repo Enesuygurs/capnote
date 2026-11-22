@@ -192,6 +192,7 @@ export class NotesFeature {
 
     this.showEditor();
     this.noteEditor?.classList.remove('is-file-note', 'is-markdown-note');
+    this.noteTitle.readOnly = false;
     if (this.noteEditor) this.noteEditor.dataset.fileKind = '';
     this.applyEditorSidebar(this.currentNote);
     this.clearEditor();
