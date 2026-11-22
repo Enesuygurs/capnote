@@ -13,6 +13,7 @@ import path from 'path';
 import { execFile } from 'child_process';
 import { app, ipcMain, shell } from 'electron';
 import { getMainWindow, showMainWindow } from './window.js';
+import { readText, writeText, detectTextFormat } from './text-encoding.js';
 
 // Markdown and HTML show as such; every other one is plain text
 const EXTENSIONS = [
@@ -146,7 +147,8 @@ function readFileNote(filePath) {
     path: filePath,
     name: path.basename(filePath),
     ext: path.extname(filePath).slice(1).toLowerCase(),
-    content: fs.readFileSync(filePath, 'utf8'),
+    // Decoded as it is stored (UTF-8, UTF-16 or the Windows code page), with plain line ends
+    content: readText(fs.readFileSync(filePath)).text,
     mtimeMs: stat.mtimeMs,
   };
 }
@@ -174,12 +176,14 @@ function openFiles(paths, { show = true } = {}) {
 // Write the file in place, so it stays the same file (on the desktop it keeps its spot; a file
 // written beside it and moved over it is a new file there). Its old text is copied aside first and
 // put back if the write fails, so a failed write never leaves half a file.
+// It keeps its encoding and line ends (CRLF or LF) as they are on disk.
 function writeFileSafely(filePath, content) {
   const backup = path.join(os.tmpdir(), `capnote-${process.pid}-${path.basename(filePath)}.bak`);
   const existed = fs.existsSync(filePath);
+  const format = existed ? detectTextFormat(fs.readFileSync(filePath)) : undefined;
   if (existed) fs.copyFileSync(filePath, backup);
   try {
-    fs.writeFileSync(filePath, content, 'utf8');
+    fs.writeFileSync(filePath, writeText(content, format));
   } catch (err) {
     if (existed) fs.copyFileSync(backup, filePath);
     throw err;
