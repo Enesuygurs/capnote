@@ -14,100 +14,8 @@ import { execFile } from 'child_process';
 import { app, ipcMain, shell } from 'electron';
 import { getMainWindow, showMainWindow } from './window.js';
 import { readText, writeText, detectTextFormat } from './text-encoding.js';
+import { EXTENSIONS, extensionOf, isSupportedFile } from './file-types.js';
 
-// Markdown and HTML show as such; every other one is plain text
-const EXTENSIONS = [
-  // notes and pages
-  '.md',
-  '.markdown',
-  '.txt',
-  '.text',
-  '.html',
-  '.htm',
-  '.rst',
-  '.adoc',
-  '.tex',
-  '.nfo',
-  // data and settings
-  '.xml',
-  '.xaml',
-  '.json',
-  '.jsonc',
-  '.json5',
-  '.yaml',
-  '.yml',
-  '.toml',
-  '.ini',
-  '.cfg',
-  '.conf',
-  '.config',
-  '.properties',
-  '.env',
-  '.csv',
-  '.tsv',
-  '.log',
-  '.reg',
-  '.manifest',
-  '.srt',
-  '.vtt',
-  '.svg',
-  // scripts
-  '.bat',
-  '.cmd',
-  '.ps1',
-  '.psm1',
-  '.psd1',
-  '.vbs',
-  '.sh',
-  '.bash',
-  '.zsh',
-  '.fish',
-  // source code
-  '.js',
-  '.mjs',
-  '.cjs',
-  '.jsx',
-  '.ts',
-  '.tsx',
-  '.vue',
-  '.svelte',
-  '.css',
-  '.scss',
-  '.sass',
-  '.less',
-  '.py',
-  '.rb',
-  '.php',
-  '.java',
-  '.kt',
-  '.kts',
-  '.swift',
-  '.go',
-  '.rs',
-  '.c',
-  '.h',
-  '.cpp',
-  '.cc',
-  '.hpp',
-  '.cs',
-  '.fs',
-  '.vb',
-  '.lua',
-  '.r',
-  '.pl',
-  '.dart',
-  '.sql',
-  '.graphql',
-  '.proto',
-  '.gradle',
-  '.csproj',
-  '.vbproj',
-  '.sln',
-  '.props',
-  '.targets',
-  '.cshtml',
-  '.razor',
-];
 // The key under each extension's right-click verbs
 const VERB = 'CapnoteEdit';
 const LABELS = { tr: 'Capnote ile düzenle', en: 'Edit with Capnote' };
@@ -120,7 +28,7 @@ const pending = [];
 const known = new Set();
 const keyOf = (filePath) => path.resolve(filePath).toLowerCase();
 
-const isSupported = (filePath) => EXTENSIONS.includes(path.extname(filePath).toLowerCase());
+const isSupported = isSupportedFile;
 
 // The supported files named on a command line (flags, the app and folders are skipped). Not
 // packaged, the line starts with Electron and then the app's own entry file (a .js), skipped too.
@@ -146,7 +54,7 @@ function readFileNote(filePath) {
     ok: true,
     path: filePath,
     name: path.basename(filePath),
-    ext: path.extname(filePath).slice(1).toLowerCase(),
+    ext: extensionOf(filePath).slice(1),
     // Decoded as it is stored (UTF-8, UTF-16 or the Windows code page), with plain line ends
     content: readText(fs.readFileSync(filePath)).text,
     mtimeMs: stat.mtimeMs,
