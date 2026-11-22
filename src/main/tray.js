@@ -7,7 +7,7 @@ import { app, Tray, Menu, nativeImage, ipcMain } from 'electron';
 import { ICONS_DIR } from './paths.js';
 import { getMainWindow, showMainWindow, markQuitting } from './window.js';
 import { openQuickNote, isQuickNoteShortcutOn } from './quick-note.js';
-import { openTrayMenu, registerTrayMenuIpc } from './tray-menu.js';
+import { openTrayMenu, prepareTrayMenu, registerTrayMenuIpc } from './tray-menu.js';
 
 let tray = null;
 let trayLanguage = 'tr';
@@ -155,7 +155,11 @@ function createTray({ settings } = {}) {
     tray = new Tray(icon || undefined);
     tray.setToolTip('Capnote');
     updateTrayMenu();
-    if (customMenu) tray.on('right-click', showCustomMenu);
+    if (customMenu) {
+      tray.on('right-click', showCustomMenu);
+      // Ready before the first right-click, without slowing the start
+      setTimeout(prepareTrayMenu, 1500);
+    }
     tray.on('click', () => {
       if (process.platform === 'darwin') {
         // macOS: Don't auto-show the window on click; show the tray menu instead

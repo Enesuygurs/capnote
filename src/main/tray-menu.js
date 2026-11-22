@@ -1,7 +1,7 @@
 // The tray icon's menu on Windows: the native menu cannot be styled, so it is a small see-through
 // window drawn in the app's theme and accent. It opens at the mouse (above the taskbar, kept on
 // the screen) and closes when it loses focus, on Escape, or once an item is chosen. The window is
-// made once and kept hidden, so it opens at once.
+// made ahead of time (a moment after the tray icon) and kept hidden, so it opens at once.
 
 import path from 'path';
 import { BrowserWindow, ipcMain, screen } from 'electron';
@@ -16,6 +16,10 @@ let menuWindow = null;
 let loaded = null;
 let handlers = {};
 let point = null;
+// When the menu was last shown: right after a right-click the taskbar takes the focus back once,
+// which must not close the menu
+let shownAt = 0;
+const SETTLE_MS = 600;
 
 function createMenuWindow() {
   menuWindow = new BrowserWindow({
@@ -44,7 +48,7 @@ function createMenuWindow() {
   });
   menuWindow.setAlwaysOnTop(true, 'pop-up-menu');
   lockDownNavigation(menuWindow);
-  menuWindow.on('blur', hideTrayMenu);
+  menuWindow.on('blur', onBlur);
   const win = menuWindow;
   win.on('closed', () => {
     if (menuWindow !== win) return;
@@ -52,6 +56,22 @@ function createMenuWindow() {
     loaded = null;
   });
   loaded = menuWindow.loadFile(path.join(RENDERER_DIR, 'tray-menu.html'));
+}
+
+// Losing the focus closes the menu (a click outside it), except right after it opened, when the
+// taskbar still takes the focus from the right-click: then it takes it back
+function onBlur() {
+  if (!menuWindow?.isVisible()) return;
+  if (Date.now() - shownAt < SETTLE_MS) {
+    menuWindow.focus();
+    return;
+  }
+  hideTrayMenu();
+}
+
+// Made ahead of time, so the first right-click opens the menu without waiting for the page
+function prepareTrayMenu() {
+  if (!menuWindow) createMenuWindow();
 }
 
 // state: { theme, accent, version, items: [{ id, label, icon, hint?, danger? } | { separator }] }
@@ -89,6 +109,7 @@ function registerTrayMenuIpc() {
     if (!fromMenu(event)) return;
     const h = Math.min(Math.max(Math.round(Number(height) || 0), 60), 800);
     menuWindow.setBounds(menuBounds(h));
+    shownAt = Date.now();
     menuWindow.show();
     menuWindow.focus();
   });
@@ -105,4 +126,4 @@ function registerTrayMenuIpc() {
   });
 }
 
-export { openTrayMenu, hideTrayMenu, registerTrayMenuIpc };
+export { openTrayMenu, hideTrayMenu, prepareTrayMenu, registerTrayMenuIpc };
