@@ -1,8 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="34 38 188 188">
-  <!-- App icon: a wide gem, no tile; its facets in close tones of the default accent (#F59E0B) -->
-  <path d="M128 58 L210 104 L128 206 L46 104 Z" fill="#F59E0B" />
-  <path d="M46 104 H210 L128 58 Z" fill="#F6AA28" />
-  <path d="M94 104 L128 58 L162 104 Z" fill="#F7B648" />
-  <path d="M94 104 L128 206 L162 104 Z" fill="#D88B0A" />
-  <path d="M46 104 L128 206 L94 104 Z" fill="#E6950A" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="29.7 29.4 196.6 196.6">
+  <!-- App icon: seven lines of a note whose ends trace a capsule, tilted; close tones of the default
+       accent (#F59E0B), lighter at the top and darker at the bottom, no tile -->
+  <g transform="rotate(-30 128 128)">
+    <rect x="55.8" y="76" width="144.5" height="12" rx="6" fill="#F9C46B" />
+    <rect x="36.6" y="93.3" width="182.7" height="12" rx="6" fill="#F7B648" />
+    <rect x="29.3" y="110.6" width="197.5" height="12" rx="6" fill="#F7B648" />
+    <rect x="28.3" y="127.9" width="199.3" height="12" rx="6" fill="#F59E0B" />
+    <rect x="33.5" y="145.2" width="189.1" height="12" rx="6" fill="#F59E0B" />
+    <rect x="47.4" y="162.5" width="161.2" height="12" rx="6" fill="#E6950A" />
+    <rect x="80" y="179.8" width="96" height="12" rx="6" fill="#D88B0A" />
+  </g>
 </svg>

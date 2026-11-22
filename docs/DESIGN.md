@@ -12,7 +12,7 @@ The window has two layers:
 ```
 +----------------------------------------------------------------------+
 | [=]                           Capnote                [-] [o] [x]     |
-| [gem] Capnote  [t][b] +------------------------------------------+   |
+| [mark] Capnote  [t][b] +------------------------------------------+   |
 | [+ New note]          | Title                          [actions] |   |
 | [search]              | meta                                     |   |
 | [All | Today | Favs]  |------------------------------------------|   |
@@ -236,7 +236,7 @@ Under the figures, the writing calendar: a heat map with a square per day of the
 
 **Sidebar footer**: Settings fills the row; the archive and the note graph (pages, not list filters) sit beside it as 36px icon buttons in `--text-muted`, an accent tint while their page is open.
 
-**App icon** (`assets/icons/source/capnote.svg`, rendered by `npm run icons`): a wide gem with no tile, its facets in close tones of the default accent `#F59E0B` (the table `#F7B648` and crown `#F6AA28` a little lighter, the sides the accent, the pavilion `#E6950A` and `#D88B0A` a little darker), so it reads as one color. Every size the system shows (window, taskbar, tray on Windows, installer, `.ico` 16–256px) and the app's own mark (the sidebar's 28px brand, the quick note, the year summary) are drawn from it. The macOS menu bar icon (`tray-template.svg`) is the gem in black with its facet lines cut out.
+**App icon** (`assets/icons/source/capnote.svg`, rendered by `npm run icons`): a note's lines whose rounded ends trace a capsule, tilted 30°, with no tile; seven lines in close tones of the default accent `#F59E0B`, lighter at the top (`#F9C46B`, `#F7B648`) and darker at the bottom (`#E6950A`, `#D88B0A`), so it reads as one color. At 32px and smaller the lines would run together, so those sizes come from `capnote-small.svg`: the same capsule in four thicker lines. The large one draws the window, taskbar and installer icons, the `.ico` from 48px up and the year summary's mark; the small one the `.ico`'s 16–32px, the Windows tray, the sidebar's 28px brand and the quick note. The macOS menu bar icon (`tray-template.svg`) is the small one in black.
 
 **Toast**: `--surface-raised`, bottom center, its icon colored by kind.
 
