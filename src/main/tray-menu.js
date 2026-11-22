@@ -38,6 +38,8 @@ function createMenuWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       preload: TRAY_MENU_PRELOAD_FILE,
+      // Kept hidden between openings; it must still draw the items at once when it opens again
+      backgroundThrottling: false,
     },
   });
   menuWindow.setAlwaysOnTop(true, 'pop-up-menu');
