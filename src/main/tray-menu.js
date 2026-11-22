@@ -16,10 +16,12 @@ let menuWindow = null;
 let loaded = null;
 let handlers = {};
 let point = null;
-// When the menu was last shown: right after a right-click the taskbar takes the focus back once,
-// which must not close the menu
-let shownAt = 0;
-const SETTLE_MS = 600;
+// Windows reports the right-click when the button goes down. The menu shows at once but takes the
+// focus only after the button is up (the mouse leaves the icon or comes onto the menu, or at the
+// latest this long after): taking it while the button is down closes the hidden icons panel, and
+// the button's release then lands on the taskbar, which opens its own menu.
+const ACTIVATE_AFTER_MS = 600;
+let activateTimer = null;
 
 function createMenuWindow() {
   menuWindow = new BrowserWindow({
@@ -58,15 +60,16 @@ function createMenuWindow() {
   loaded = menuWindow.loadFile(path.join(RENDERER_DIR, 'tray-menu.html'));
 }
 
-// Losing the focus closes the menu (a click outside it), except right after it opened, when the
-// taskbar still takes the focus from the right-click: then it takes it back
+// Losing the focus closes the menu (a click outside it)
 function onBlur() {
-  if (!menuWindow?.isVisible()) return;
-  if (Date.now() - shownAt < SETTLE_MS) {
-    menuWindow.focus();
-    return;
-  }
-  hideTrayMenu();
+  if (menuWindow?.isVisible()) hideTrayMenu();
+}
+
+// The menu takes the focus (keys work and a click outside closes it)
+function activateTrayMenu() {
+  clearTimeout(activateTimer);
+  activateTimer = null;
+  if (menuWindow?.isVisible() && !menuWindow.isFocused()) menuWindow.focus();
 }
 
 // Made ahead of time, so the first right-click opens the menu without waiting for the page
@@ -85,6 +88,8 @@ async function openTrayMenu(state, actions) {
 }
 
 function hideTrayMenu() {
+  clearTimeout(activateTimer);
+  activateTimer = null;
   if (menuWindow && menuWindow.isVisible()) menuWindow.hide();
 }
 
@@ -109,9 +114,10 @@ function registerTrayMenuIpc() {
     if (!fromMenu(event)) return;
     const h = Math.min(Math.max(Math.round(Number(height) || 0), 60), 800);
     menuWindow.setBounds(menuBounds(h));
-    shownAt = Date.now();
-    menuWindow.show();
-    menuWindow.focus();
+    // Shown without the focus; it takes it once the button is up
+    menuWindow.showInactive();
+    clearTimeout(activateTimer);
+    activateTimer = setTimeout(activateTrayMenu, ACTIVATE_AFTER_MS);
   });
 
   ipcMain.on('tray-menu:run', (event, id) => {
@@ -121,9 +127,14 @@ function registerTrayMenuIpc() {
     if (typeof run === 'function') run();
   });
 
+  // The mouse came onto the menu: the button is up
+  ipcMain.on('tray-menu:activate', (event) => {
+    if (fromMenu(event)) activateTrayMenu();
+  });
+
   ipcMain.on('tray-menu:close', (event) => {
     if (fromMenu(event)) hideTrayMenu();
   });
 }
 
-export { openTrayMenu, hideTrayMenu, prepareTrayMenu, registerTrayMenuIpc };
+export { openTrayMenu, hideTrayMenu, activateTrayMenu, prepareTrayMenu, registerTrayMenuIpc };

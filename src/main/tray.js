@@ -7,7 +7,12 @@ import { app, Tray, Menu, nativeImage, ipcMain } from 'electron';
 import { ICONS_DIR } from './paths.js';
 import { getMainWindow, showMainWindow, markQuitting } from './window.js';
 import { openQuickNote, isQuickNoteShortcutOn } from './quick-note.js';
-import { openTrayMenu, prepareTrayMenu, registerTrayMenuIpc } from './tray-menu.js';
+import {
+  openTrayMenu,
+  activateTrayMenu,
+  prepareTrayMenu,
+  registerTrayMenuIpc,
+} from './tray-menu.js';
 
 let tray = null;
 let trayLanguage = 'tr';
@@ -127,25 +132,6 @@ function showCustomMenu() {
   );
 }
 
-// Windows reports a right-click on the icon twice: when the button goes down and again when it
-// comes up. The menu opens on the second, once the button is up: opened while it is still down,
-// its release lands on the taskbar, which opens its own menu and takes the focus. When only one
-// comes, the menu opens a moment later.
-const SECOND_REPORT_MS = 350;
-let rightClickTimer = null;
-function onRightClick() {
-  if (rightClickTimer) {
-    clearTimeout(rightClickTimer);
-    rightClickTimer = null;
-    showCustomMenu();
-    return;
-  }
-  rightClickTimer = setTimeout(() => {
-    rightClickTimer = null;
-    showCustomMenu();
-  }, SECOND_REPORT_MS);
-}
-
 // The system's menu (macOS, Linux)
 function updateTrayMenu() {
   if (!tray || customMenu) return;
@@ -175,7 +161,10 @@ function createTray({ settings } = {}) {
     tray.setToolTip('Capnote');
     updateTrayMenu();
     if (customMenu) {
-      tray.on('right-click', onRightClick);
+      // Windows reports it when the button goes down: the menu shows at once and takes the focus
+      // once the button is up (the mouse leaving the icon is one sign of it)
+      tray.on('right-click', showCustomMenu);
+      tray.on('mouse-leave', activateTrayMenu);
       // Ready before the first right-click, without slowing the start
       setTimeout(prepareTrayMenu, 1500);
     }
