@@ -76,6 +76,8 @@ document.addEventListener('keydown', (e) => {
 // A menu that did not get the focus never hears a click outside it; it closes a moment after the
 // mouse leaves it instead (coming back keeps it open)
 let leaveTimer = null;
+// The mouse on the menu: the right button is up, the menu can take the focus
+menu.addEventListener('mouseenter', () => api.activate());
 menu.addEventListener('mouseleave', () => {
   if (document.hasFocus()) return;
   leaveTimer = setTimeout(() => api.close(), 800);
