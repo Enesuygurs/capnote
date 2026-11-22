@@ -1,11 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 44 176 176">
-  <!-- macOS menu bar icon: the gem in black on transparent, its facet lines cut out; macOS recolors
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="28.8 31 204.3 204.3">
+  <!-- macOS menu bar icon: the small app icon's four lines in black on transparent; macOS recolors
        template images for the bar -->
-  <defs>
-    <mask id="facets">
-      <rect x="0" y="0" width="256" height="256" fill="#FFFFFF" />
-      <path d="M46 104 H210 M94 104 L128 58 L162 104 L128 206 L94 104" fill="none" stroke="#000000" stroke-width="9" stroke-linejoin="round" />
-    </mask>
-  </defs>
-  <path d="M128 58 L210 104 L128 206 L46 104 Z" fill="#000000" mask="url(#facets)" />
+  <g transform="rotate(-30 128 128)">
+    <rect x="52.5" y="76" width="150.9" height="22" rx="11" fill="#000000" />
+    <rect x="25.4" y="107.3" width="205.2" height="22" rx="11" fill="#000000" />
+    <rect x="25.4" y="138.5" width="205.2" height="22" rx="11" fill="#000000" />
+    <rect x="52.5" y="169.8" width="150.9" height="22" rx="11" fill="#000000" />
+  </g>
 </svg>
