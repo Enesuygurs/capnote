@@ -18,6 +18,12 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Empty while the window is hidden and until it is shown again (its last picture is then an empty
+   one); it keeps its size, so the window is measured the same */
+.is-empty .tray-menu {
+  visibility: hidden;
+}
+
 .tray-menu {
   display: flex;
   flex-direction: column;
