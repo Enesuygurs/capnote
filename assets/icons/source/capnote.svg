@@ -1,13 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="29.7 29.4 196.6 196.6">
-  <!-- App icon: seven lines of a note whose ends trace a capsule, tilted; close tones of the default
-       accent (#F59E0B), lighter at the top and darker at the bottom, no tile -->
-  <g transform="rotate(-30 128 128)">
-    <rect x="55.8" y="76" width="144.5" height="12" rx="6" fill="#F9C46B" />
-    <rect x="36.6" y="93.3" width="182.7" height="12" rx="6" fill="#F7B648" />
-    <rect x="29.3" y="110.6" width="197.5" height="12" rx="6" fill="#F7B648" />
-    <rect x="28.3" y="127.9" width="199.3" height="12" rx="6" fill="#F59E0B" />
-    <rect x="33.5" y="145.2" width="189.1" height="12" rx="6" fill="#F59E0B" />
-    <rect x="47.4" y="162.5" width="161.2" height="12" rx="6" fill="#E6950A" />
-    <rect x="80" y="179.8" width="96" height="12" rx="6" fill="#D88B0A" />
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="16 16 224 224">
+  <!-- App icon: a white N drawn as a line, with a text caret beside it, on a near-black rounded tile;
+       the caret is the default accent (#F59E0B) -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#27272A" />
+      <stop offset="1" stop-color="#09090B" />
+    </linearGradient>
+  </defs>
+  <rect x="16" y="16" width="224" height="224" rx="56" fill="url(#tile)" />
+  <path d="M82 190 V66 L168 190 V66" fill="none" stroke="#FFFFFF" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" />
+  <rect x="192" y="66" width="14" height="124" rx="7" fill="#F59E0B" />
 </svg>
