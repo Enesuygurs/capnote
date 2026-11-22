@@ -45,11 +45,10 @@ function render(state) {
       return button;
     })
   );
-  // The window takes the menu's height and the margin around it for the shadow
-  requestAnimationFrame(() => {
-    api.size(Math.ceil(menu.getBoundingClientRect().height) + SHADOW_MARGIN * 2);
-    menu.focus();
-  });
+  // The window takes the menu's height and the margin around it for the shadow. Measured at once:
+  // the window is hidden now, and a hidden page gets no animation frames
+  api.size(Math.ceil(menu.getBoundingClientRect().height) + SHADOW_MARGIN * 2);
+  menu.focus();
 }
 
 api.onState(render);
