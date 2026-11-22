@@ -60,9 +60,15 @@ function createMenuWindow() {
   loaded = menuWindow.loadFile(path.join(RENDERER_DIR, 'tray-menu.html'));
 }
 
-// Losing the focus closes the menu (a click outside it)
+// Losing the focus closes the menu (a click outside it). A right-click on the icon while the menu
+// is open closes it too, as the system's menu does: pressing the button takes the focus first,
+// then the right-click comes, which must not open the menu again.
+let closedByBlurAt = 0;
+const SAME_CLICK_MS = 300;
 function onBlur() {
-  if (menuWindow?.isVisible()) hideTrayMenu();
+  if (!menuWindow?.isVisible()) return;
+  closedByBlurAt = Date.now();
+  hideTrayMenu();
 }
 
 // The menu takes the focus (keys work and a click outside closes it)
@@ -80,6 +86,7 @@ function prepareTrayMenu() {
 // state: { theme, accent, version, items: [{ id, label, icon, hint?, danger? } | { separator }] }
 // actions: the function each item id runs
 async function openTrayMenu(state, actions) {
+  if (Date.now() - closedByBlurAt < SAME_CLICK_MS) return;
   handlers = actions || {};
   point = screen.getCursorScreenPoint();
   if (!menuWindow) createMenuWindow();
