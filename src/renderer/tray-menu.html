@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Capnote</title>
+    <link rel="stylesheet" href="fonts.css" />
+    <link
+      rel="stylesheet"
+      href="../../node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/01-base.css" />
+    <link rel="stylesheet" href="css/tray-menu.css" />
+  </head>
+  <body class="tray-menu-page">
+    <div class="tray-menu" id="trayMenu" role="menu" tabindex="-1">
+      <div class="tray-menu-head">
+        <img class="tray-menu-mark" src="../../assets/icons/source/capnote.svg" alt="" />
+        <span class="tray-menu-name">Capnote</span>
+        <span class="tray-menu-version" id="trayMenuVersion"></span>
+      </div>
+      <div class="tray-menu-items" id="trayMenuItems"></div>
+    </div>
+    <script type="module" src="js/tray-menu.js"></script>
+  </body>
+</html>
