@@ -845,3 +845,14 @@
 .block-selection[hidden] {
   display: none;
 }
+
+/* A file's text is written in the same font as the notes (a Markdown note keeps the monospace
+   font of a Markdown editor) */
+.note-editor.is-file-note .markdown-editor {
+  font-family: var(--font-sans);
+}
+
+/* A file note's title is its file's name: not edited, it looks like the title of a note read */
+.note-title-input[readonly] {
+  cursor: default;
+}

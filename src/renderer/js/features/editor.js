@@ -131,6 +131,12 @@ export class EditorFeature {
     // A file note is edited as the file's plain text, as its format is: no rich text toolbar, no
     // sidebar, and of the view buttons only the Markdown preview, for a Markdown file
     this.noteEditor?.classList.toggle('is-file-note', !!note.filePath);
+    // Its title is the file's name: it is not changed here (the file would not follow)
+    this.noteTitle.readOnly = !!note.filePath;
+    // A file's text has no hint while it is empty; a Markdown note keeps "Write Markdown"
+    if (this.markdownEditor) {
+      this.markdownEditor.placeholder = note.filePath ? '' : i18n.t('placeholders.markdown');
+    }
     // Written in Markdown: a .md file, or a Markdown note (a .txt or .html file is edited as text too,
     // but is not Markdown)
     this.noteEditor?.classList.toggle(

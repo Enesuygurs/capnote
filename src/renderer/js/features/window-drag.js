@@ -1,8 +1,7 @@
-// Moving the window by a note being read and by the empty space under the note list. A press and a
-// move of a few pixels there moves the window (the main process follows the cursor); a press
-// without moving is an ordinary click, so double-clicks, ticking tasks, scrolling and right-clicks
-// stay as they are. Not from what is clicked or dragged there (links, tasks, buttons, images,
-// code, note and folder rows), and never in the editor.
+// Moving the window by the empty space under the note list. A press and a move of a few pixels
+// there moves the window (the main process follows the cursor); a press without moving is an
+// ordinary click, so right-clicks and dropping notes stay as they are. Not from what is clicked
+// or dragged there (note and folder rows, buttons).
 
 const START_AFTER_PX = 4;
 
@@ -34,21 +33,16 @@ const OWN_MOUSE = [
 ].join(', ');
 
 export class WindowDragFeature {
-  // Where a press may move the window: the note being read (not a locked note's page, not an
-  // earlier version's comparison) and the sidebar's list area
+  // Where a press may move the window: the sidebar's list area, not its rows
   windowDragAllowed(e) {
     if (e.button !== 0 || e.target.closest(OWN_MOUSE)) return false;
-    if (this.viewerContent?.contains(e.target)) {
-      return this.isViewerOpen() && !e.target.closest('.locked-note-message');
-    }
     return !!this.sidebarContent?.contains(e.target);
   }
 
   setupWindowDrag() {
     const api = window.electronAPI?.windowDrag;
-    this.viewerContent = this.noteViewer?.querySelector('.viewer-content');
     this.sidebarContent = document.querySelector('.sidebar-content');
-    if (!api || !this.viewerContent || !this.sidebarContent) return;
+    if (!api || !this.sidebarContent) return;
     let press = null;
     let moving = false;
     const end = () => {
@@ -69,10 +63,8 @@ export class WindowDragFeature {
       window.getSelection()?.removeAllRanges();
       api.start();
     };
-    [this.viewerContent, this.sidebarContent].forEach((area) => {
-      area.addEventListener('pointerdown', onDown);
-      area.addEventListener('pointermove', onMove);
-    });
+    this.sidebarContent.addEventListener('pointerdown', onDown);
+    this.sidebarContent.addEventListener('pointermove', onMove);
     document.addEventListener('pointerup', end, true);
     document.addEventListener('pointercancel', end, true);
     window.addEventListener('blur', end);

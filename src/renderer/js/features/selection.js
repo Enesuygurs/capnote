@@ -234,6 +234,8 @@ export class SelectionFeature {
   // Double-click on a note row: edit its title right there. Enter or leaving the field saves,
   // Escape keeps the old title.
   startRenameNote(note, row) {
+    // A file note's title is its file's name
+    if (this.isFileNote(note)) return;
     if (this.isNoteTitleHidden(note)) return;
     if (this.isNoteLockedForView(note)) return;
     // The open editor already has the title field
