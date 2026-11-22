@@ -48,13 +48,21 @@ function render(state) {
   // The window takes the menu's height and the margin around it for the shadow. Measured at once:
   // the window is hidden now, and a hidden page gets no animation frames
   api.size(Math.ceil(menu.getBoundingClientRect().height) + SHADOW_MARGIN * 2);
-  menu.focus();
 }
 
 api.onState(render);
 
-// Shown (still see-through): once the new items are on the screen, it can be seen
-api.onShown(() => requestAnimationFrame(() => requestAnimationFrame(() => api.painted())));
+// The menu is drawn empty while the window is away and filled once it is in place at the mouse,
+// so no old picture of it ever shows
+const afterPaint = (callback) => requestAnimationFrame(() => requestAnimationFrame(callback));
+api.onShown(() => {
+  document.body.classList.remove('is-empty');
+  menu.focus();
+});
+api.onHiding(() => {
+  document.body.classList.add('is-empty');
+  afterPaint(() => api.hidden());
+});
 
 list.addEventListener('click', (e) => {
   const item = e.target.closest('.tray-menu-item');

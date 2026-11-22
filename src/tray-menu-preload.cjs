@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('trayMenu', {
   run: (id) => ipcRenderer.send('tray-menu:run', id),
   activate: () => ipcRenderer.send('tray-menu:activate'),
   onShown: (callback) => ipcRenderer.on('tray-menu:shown', () => callback()),
-  painted: () => ipcRenderer.send('tray-menu:painted'),
+  onHiding: (callback) => ipcRenderer.on('tray-menu:hiding', () => callback()),
+  hidden: () => ipcRenderer.send('tray-menu:hidden'),
   close: () => ipcRenderer.send('tray-menu:close'),
 });

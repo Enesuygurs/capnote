@@ -1,7 +1,18 @@
 // The tray icon's menu on Windows: the native menu cannot be styled, so it is a small see-through
 // window drawn in the app's theme and accent. It opens at the mouse (above the taskbar, kept on
-// the screen) and closes when it loses focus, on Escape, or once an item is chosen. The window is
-// drawn once, unseen, a moment after the tray icon and then kept hidden, so it opens at once.
+// the screen) and closes when it loses focus, on Escape, or once an item is chosen.
+//
+// Showing a window makes Windows play its opening animation (a fade of about 200ms), and a frame
+// of the menu can come before the fade starts: the menu flashed, then faded in ("it opens, closes
+// and opens again"), and it seemed slow. So the menu is never shown on the screen: while closed,
+// the window waits shown off the screen (without the focus, letting clicks through, out of
+// Alt+Tab), and opening it moves it to the mouse, which plays no animation. Closing hides it (so
+// the focus goes back where it was) and puts it back off the screen at once.
+//
+// The page draws the menu empty before the window is hidden or moved away and fills it only once
+// it is in place, so no old picture of it ever shows. The window's opacity is never used: with
+// drawing in software (the hardware acceleration setting off) it leaves a see-through window
+// invisible for good.
 
 import path from 'path';
 import { BrowserWindow, ipcMain, screen } from 'electron';
@@ -16,21 +27,18 @@ let menuWindow = null;
 let loaded = null;
 let handlers = {};
 let point = null;
+// Open on the screen (the window itself is always shown, off the screen while closed)
+let open = false;
 // Windows reports the right-click when the button goes down. The menu shows at once but takes the
 // focus only after the button is up (the mouse leaves the icon or comes onto the menu, or at the
 // latest this long after): taking it while the button is down closes the hidden icons panel, and
 // the button's release then lands on the taskbar, which opens its own menu.
 const ACTIVATE_AFTER_MS = 600;
 let activateTimer = null;
-// A window shown again first shows what it showed when it was hidden; the menu is shown see-through
-// and made visible once the page has drawn the new items (or after this long at the latest)
-const REVEAL_AFTER_MS = 200;
-// ...and not sooner than this after it was shown, so the new frame is on the screen
-const REVEAL_NOT_BEFORE_MS = 50;
-let revealTimer = null;
-let shownAt = 0;
-// Drawing the menu once, unseen, at the start: the first right-click then opens it at once
-let warming = false;
+// Closing waits for the page to have drawn the menu empty, this long at the most
+const CLOSE_AFTER_MS = 150;
+let closeTimer = null;
+let closing = false;
 
 function createMenuWindow() {
   menuWindow = new BrowserWindow({
@@ -47,13 +55,15 @@ function createMenuWindow() {
     fullscreenable: false,
     alwaysOnTop: true,
     skipTaskbar: true,
+    // A tool window: never in Alt+Tab, also while it waits off the screen
+    type: 'toolbar',
     show: false,
     title: 'Capnote',
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
       preload: TRAY_MENU_PRELOAD_FILE,
-      // Kept hidden between openings; it must still draw the items at once when it opens again
+      // It must draw the items at once when it opens
       backgroundThrottling: false,
     },
   });
@@ -65,8 +75,25 @@ function createMenuWindow() {
     if (menuWindow !== win) return;
     menuWindow = null;
     loaded = null;
+    open = false;
   });
-  loaded = menuWindow.loadFile(path.join(RENDERER_DIR, 'tray-menu.html'));
+  loaded = menuWindow.loadFile(path.join(RENDERER_DIR, 'tray-menu.html')).then(() => park());
+}
+
+// Off every screen: left of the leftmost display
+function offScreenBounds() {
+  const left = Math.min(...screen.getAllDisplays().map((d) => d.bounds.x));
+  const top = Math.min(...screen.getAllDisplays().map((d) => d.bounds.y));
+  const { height } = menuWindow.getBounds();
+  return { x: left - WIDTH - 2000, y: top, width: WIDTH, height };
+}
+
+// The window waits shown off the screen, without the focus, letting clicks through
+function park() {
+  if (!menuWindow) return;
+  menuWindow.setIgnoreMouseEvents(true);
+  menuWindow.setBounds(offScreenBounds());
+  if (!menuWindow.isVisible()) menuWindow.showInactive();
 }
 
 // Losing the focus closes the menu (a click outside it). A right-click on the icon while the menu
@@ -75,7 +102,7 @@ function createMenuWindow() {
 let closedByBlurAt = 0;
 const SAME_CLICK_MS = 300;
 function onBlur() {
-  if (!menuWindow?.isVisible()) return;
+  if (!open || closing) return;
   closedByBlurAt = Date.now();
   hideTrayMenu();
 }
@@ -84,41 +111,42 @@ function onBlur() {
 function activateTrayMenu() {
   clearTimeout(activateTimer);
   activateTimer = null;
-  if (menuWindow?.isVisible() && !menuWindow.isFocused()) menuWindow.focus();
+  if (open && !closing && menuWindow && !menuWindow.isFocused()) menuWindow.focus();
 }
 
 // state: { theme, accent, version, items: [{ id, label, icon, hint?, danger? } | { separator }] }
 // actions: the function each item id runs
-// warm: draw it once without showing it (at the start), so the first right-click opens it at once
+// warm: only make the window and draw it (at the start), so the first right-click opens it at once
 async function openTrayMenu(state, actions, { warm = false } = {}) {
   if (!warm && Date.now() - closedByBlurAt < SAME_CLICK_MS) return;
-  warming = warm;
   if (!warm) handlers = actions || {};
   point = screen.getCursorScreenPoint();
   if (!menuWindow) createMenuWindow();
   await loaded;
+  if (warm) return;
   menuWindow?.webContents.send('tray-menu:state', state);
 }
 
-// The page has drawn the new items: the menu becomes visible (one drawn only to warm up is hidden)
-function revealTrayMenu() {
-  clearTimeout(revealTimer);
-  revealTimer = null;
-  if (!menuWindow?.isVisible()) return;
-  if (warming) {
-    warming = false;
-    menuWindow.hide();
-    return;
-  }
-  menuWindow.setOpacity(1);
-}
-
+// Closing: the page empties the menu and says when it is drawn empty; then the window is hidden
+// (the focus goes back) and waits off the screen again
 function hideTrayMenu() {
   clearTimeout(activateTimer);
   activateTimer = null;
-  clearTimeout(revealTimer);
-  revealTimer = null;
-  if (menuWindow && menuWindow.isVisible()) menuWindow.hide();
+  if (!menuWindow || !open || closing) return;
+  closing = true;
+  menuWindow.setIgnoreMouseEvents(true);
+  menuWindow.webContents.send('tray-menu:hiding');
+  closeTimer = setTimeout(finishClosing, CLOSE_AFTER_MS);
+}
+
+function finishClosing() {
+  clearTimeout(closeTimer);
+  closeTimer = null;
+  closing = false;
+  open = false;
+  if (!menuWindow) return;
+  menuWindow.hide();
+  park();
 }
 
 // Where the menu goes: its corner at the mouse, opening up and to the right, or to the left when
@@ -137,33 +165,31 @@ function menuBounds(height) {
 function registerTrayMenuIpc() {
   const fromMenu = (event) => menuWindow && event.sender === menuWindow.webContents;
 
-  // The page drew the items and says how tall it is: place the window and show it
+  // The page drew the items (still empty on the screen) and says how tall it is: the window moves
+  // to the mouse and the page fills it
   ipcMain.on('tray-menu:size', (event, height) => {
     if (!fromMenu(event)) return;
+    // Opened again while it was closing: it stays
+    if (closing) {
+      clearTimeout(closeTimer);
+      closeTimer = null;
+      closing = false;
+    }
     const h = Math.min(Math.max(Math.round(Number(height) || 0), 60), 800);
-    // See-through until the page has drawn the new items: what it showed last time never shows
-    menuWindow.setOpacity(0);
     menuWindow.setBounds(menuBounds(h));
-    // Shown without the focus; it takes it once the button is up
-    menuWindow.showInactive();
-    shownAt = Date.now();
+    // Shown off the screen already: moving it plays no animation. Without the focus; it takes it
+    // once the button is up.
+    if (!menuWindow.isVisible()) menuWindow.showInactive();
+    menuWindow.setIgnoreMouseEvents(false);
+    open = true;
     menuWindow.webContents.send('tray-menu:shown');
-    clearTimeout(revealTimer);
-    revealTimer = setTimeout(revealTrayMenu, REVEAL_AFTER_MS);
-    if (warming) return;
     clearTimeout(activateTimer);
     activateTimer = setTimeout(activateTrayMenu, ACTIVATE_AFTER_MS);
   });
 
-  ipcMain.on('tray-menu:painted', (event) => {
-    if (!fromMenu(event)) return;
-    const early = REVEAL_NOT_BEFORE_MS - (Date.now() - shownAt);
-    if (early <= 0) {
-      revealTrayMenu();
-      return;
-    }
-    clearTimeout(revealTimer);
-    revealTimer = setTimeout(revealTrayMenu, early);
+  // The page has drawn the menu empty: the window can go
+  ipcMain.on('tray-menu:hidden', (event) => {
+    if (fromMenu(event) && closing) finishClosing();
   });
 
   ipcMain.on('tray-menu:run', (event, id) => {
