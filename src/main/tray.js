@@ -7,12 +7,7 @@ import { app, Tray, Menu, nativeImage, ipcMain } from 'electron';
 import { ICONS_DIR } from './paths.js';
 import { getMainWindow, showMainWindow, markQuitting } from './window.js';
 import { openQuickNote, isQuickNoteShortcutOn } from './quick-note.js';
-import {
-  openTrayMenu,
-  activateTrayMenu,
-  prepareTrayMenu,
-  registerTrayMenuIpc,
-} from './tray-menu.js';
+import { openTrayMenu, activateTrayMenu, registerTrayMenuIpc } from './tray-menu.js';
 
 let tray = null;
 let trayLanguage = 'tr';
@@ -91,7 +86,7 @@ function quit() {
 
 // Capnote's own menu (Windows): show or hide (whichever applies now), a new note, a quick note
 // (with its shortcut when it is on), notifications, settings, quit
-function showCustomMenu() {
+function showCustomMenu({ warm = false } = {}) {
   const labels = TRAY_LABELS[trayLanguage] || TRAY_LABELS.tr;
   const settings = readSettings() || {};
   const win = getMainWindow();
@@ -128,7 +123,8 @@ function showCustomMenu() {
       notifications: () => openInApp('open-notifications'),
       settings: () => openInApp('open-settings'),
       quit,
-    }
+    },
+    { warm }
   );
 }
 
@@ -166,7 +162,7 @@ function createTray({ settings } = {}) {
       tray.on('right-click', showCustomMenu);
       tray.on('mouse-leave', activateTrayMenu);
       // Ready before the first right-click, without slowing the start
-      setTimeout(prepareTrayMenu, 1500);
+      setTimeout(() => showCustomMenu({ warm: true }), 1500);
     }
     tray.on('click', () => {
       if (process.platform === 'darwin') {

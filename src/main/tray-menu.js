@@ -1,7 +1,7 @@
 // The tray icon's menu on Windows: the native menu cannot be styled, so it is a small see-through
 // window drawn in the app's theme and accent. It opens at the mouse (above the taskbar, kept on
 // the screen) and closes when it loses focus, on Escape, or once an item is chosen. The window is
-// made ahead of time (a moment after the tray icon) and kept hidden, so it opens at once.
+// drawn once, unseen, a moment after the tray icon and then kept hidden, so it opens at once.
 
 import path from 'path';
 import { BrowserWindow, ipcMain, screen } from 'electron';
@@ -22,6 +22,15 @@ let point = null;
 // the button's release then lands on the taskbar, which opens its own menu.
 const ACTIVATE_AFTER_MS = 600;
 let activateTimer = null;
+// A window shown again first shows what it showed when it was hidden; the menu is shown see-through
+// and made visible once the page has drawn the new items (or after this long at the latest)
+const REVEAL_AFTER_MS = 200;
+// ...and not sooner than this after it was shown, so the new frame is on the screen
+const REVEAL_NOT_BEFORE_MS = 50;
+let revealTimer = null;
+let shownAt = 0;
+// Drawing the menu once, unseen, at the start: the first right-click then opens it at once
+let warming = false;
 
 function createMenuWindow() {
   menuWindow = new BrowserWindow({
@@ -78,25 +87,37 @@ function activateTrayMenu() {
   if (menuWindow?.isVisible() && !menuWindow.isFocused()) menuWindow.focus();
 }
 
-// Made ahead of time, so the first right-click opens the menu without waiting for the page
-function prepareTrayMenu() {
-  if (!menuWindow) createMenuWindow();
-}
-
 // state: { theme, accent, version, items: [{ id, label, icon, hint?, danger? } | { separator }] }
 // actions: the function each item id runs
-async function openTrayMenu(state, actions) {
-  if (Date.now() - closedByBlurAt < SAME_CLICK_MS) return;
-  handlers = actions || {};
+// warm: draw it once without showing it (at the start), so the first right-click opens it at once
+async function openTrayMenu(state, actions, { warm = false } = {}) {
+  if (!warm && Date.now() - closedByBlurAt < SAME_CLICK_MS) return;
+  warming = warm;
+  if (!warm) handlers = actions || {};
   point = screen.getCursorScreenPoint();
   if (!menuWindow) createMenuWindow();
   await loaded;
   menuWindow?.webContents.send('tray-menu:state', state);
 }
 
+// The page has drawn the new items: the menu becomes visible (one drawn only to warm up is hidden)
+function revealTrayMenu() {
+  clearTimeout(revealTimer);
+  revealTimer = null;
+  if (!menuWindow?.isVisible()) return;
+  if (warming) {
+    warming = false;
+    menuWindow.hide();
+    return;
+  }
+  menuWindow.setOpacity(1);
+}
+
 function hideTrayMenu() {
   clearTimeout(activateTimer);
   activateTimer = null;
+  clearTimeout(revealTimer);
+  revealTimer = null;
   if (menuWindow && menuWindow.isVisible()) menuWindow.hide();
 }
 
@@ -120,11 +141,29 @@ function registerTrayMenuIpc() {
   ipcMain.on('tray-menu:size', (event, height) => {
     if (!fromMenu(event)) return;
     const h = Math.min(Math.max(Math.round(Number(height) || 0), 60), 800);
+    // See-through until the page has drawn the new items: what it showed last time never shows
+    menuWindow.setOpacity(0);
     menuWindow.setBounds(menuBounds(h));
     // Shown without the focus; it takes it once the button is up
     menuWindow.showInactive();
+    shownAt = Date.now();
+    menuWindow.webContents.send('tray-menu:shown');
+    clearTimeout(revealTimer);
+    revealTimer = setTimeout(revealTrayMenu, REVEAL_AFTER_MS);
+    if (warming) return;
     clearTimeout(activateTimer);
     activateTimer = setTimeout(activateTrayMenu, ACTIVATE_AFTER_MS);
+  });
+
+  ipcMain.on('tray-menu:painted', (event) => {
+    if (!fromMenu(event)) return;
+    const early = REVEAL_NOT_BEFORE_MS - (Date.now() - shownAt);
+    if (early <= 0) {
+      revealTrayMenu();
+      return;
+    }
+    clearTimeout(revealTimer);
+    revealTimer = setTimeout(revealTrayMenu, early);
   });
 
   ipcMain.on('tray-menu:run', (event, id) => {
@@ -144,4 +183,4 @@ function registerTrayMenuIpc() {
   });
 }
 
-export { openTrayMenu, hideTrayMenu, activateTrayMenu, prepareTrayMenu, registerTrayMenuIpc };
+export { openTrayMenu, hideTrayMenu, activateTrayMenu, registerTrayMenuIpc };

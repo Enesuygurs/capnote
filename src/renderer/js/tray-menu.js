@@ -53,6 +53,9 @@ function render(state) {
 
 api.onState(render);
 
+// Shown (still see-through): once the new items are on the screen, it can be seen
+api.onShown(() => requestAnimationFrame(() => requestAnimationFrame(() => api.painted())));
+
 list.addEventListener('click', (e) => {
   const item = e.target.closest('.tray-menu-item');
   if (item) api.run(item.dataset.id);
