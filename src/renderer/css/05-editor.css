@@ -239,12 +239,7 @@
 
 /* A file note has no toolbar: where it would be, a 1px strip in the toolbar's color */
 .note-editor.is-file-note .editor-header {
-  border-bottom: 1px solid color-mix(in srgb, var(--note-header) 55%, var(--surface));
-}
-
-[data-theme='dark'] .note-editor.is-file-note .editor-header,
-.sidebar.hidden + .main-content .note-editor.is-file-note .editor-header {
-  border-bottom-color: var(--note-header);
+  border-bottom: 1px solid var(--note-header);
 }
 
 .rich-editor {
