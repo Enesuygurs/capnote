@@ -26,6 +26,7 @@ import { setQuickNoteShortcut, registerQuickNoteIpc } from './quick-note.js';
 import { registerDataTransferIpc } from './data-transfer.js';
 import { registerNoteFilesIpc } from './note-files.js';
 import { registerLockedImagesIpc } from './locked-images.js';
+import { registerKdfIpc } from './kdf.js';
 import { registerIdleIpc } from './idle.js';
 import { registerWindowDragIpc } from './window-drag.js';
 import { filesFromArgv, openFiles, registerFileIpc, setContextMenu } from './files.js';
@@ -164,6 +165,7 @@ registerQuickNoteIpc({ settings: () => getDataStore().read('settings') });
 registerDataTransferIpc();
 registerNoteFilesIpc();
 registerLockedImagesIpc();
+registerKdfIpc();
 registerIdleIpc();
 registerWindowDragIpc();
 registerFileIpc({

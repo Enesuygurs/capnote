@@ -62,12 +62,18 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Files attached to a note: pick or drop them (copied in while they fit in `room` bytes),
   // open one, save a copy
   // The images of locked notes: encrypt them, show them while the note is open, decrypt them back
+  // A key from a password (scrypt, in the main process) for the page's AES-GCM
+  crypto: {
+    scryptKey: (password, salt, params) =>
+      ipcRenderer.invoke('crypto:scrypt-key', password, salt, params),
+  },
   lockedImages: {
     seal: (names, password) => ipcRenderer.invoke('locked-images:seal', { names, password }),
     unseal: (names, password) => ipcRenderer.invoke('locked-images:unseal', { names, password }),
     open: (names, password) => ipcRenderer.invoke('locked-images:open', { names, password }),
     close: (names) => ipcRenderer.invoke('locked-images:close', names),
     copy: (names) => ipcRenderer.invoke('locked-images:copy', names),
+    forget: () => ipcRenderer.invoke('locked-images:forget'),
   },
   noteFiles: {
     pick: (options) => ipcRenderer.invoke('note-files:pick', options),
@@ -76,7 +82,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
         paths: [...files].map((file) => webUtils.getPathForFile(file)).filter(Boolean),
         room,
       }),
-    open: (name) => ipcRenderer.invoke('note-files:open', name),
+    open: (name, title) => ipcRenderer.invoke('note-files:open', name, title),
     saveAs: (payload) => ipcRenderer.invoke('note-files:save-as', payload),
   },
   // Export a note body to PDF (main process shows the save dialog)

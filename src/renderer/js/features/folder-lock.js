@@ -10,7 +10,7 @@
 // locked folders are decrypted; nothing can be moved into a folder that is locked now.
 
 import { i18n } from '../i18n.js';
-import { encrypt, decrypt } from '../note-crypto.js';
+import { encrypt, decrypt, needsUpgrade } from '../note-crypto.js';
 
 // Encrypted with the folder's password, so the password can be checked
 const LOCK_CHECK = 'capnote-folder-lock';
@@ -177,6 +177,13 @@ export class FolderLockFeature {
       note.content = plain;
       this.unlockedNotes.set(String(note.id), password);
     });
+    // Written by an older version (a weaker key derivation): encrypted again now
+    await Promise.all(
+      opened
+        .filter(({ plain }) => plain !== null)
+        .map(({ note, plain }) => this.upgradeNoteEncryption(note, plain, password))
+    );
+    if (needsUpgrade(folder.lockCheck)) folder.lockCheck = await encrypt(LOCK_CHECK, password);
     await Promise.all(
       opened
         .filter(({ plain }) => plain !== null)

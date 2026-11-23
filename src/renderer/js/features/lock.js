@@ -1,7 +1,7 @@
 // Locked notes: encryption, unlocking and the password dialog
 
 import { i18n } from '../i18n.js';
-import { encrypt, decrypt } from '../note-crypto.js';
+import { encrypt, decrypt, needsUpgrade } from '../note-crypto.js';
 
 export class LockFeature {
   // Older versions stored the lock password in plain text next to plaintext content
@@ -31,6 +31,14 @@ export class LockFeature {
     if (this.sealRequests.get(note) !== request) return;
     note.encrypted = encrypted;
     this.saveNotes();
+  }
+
+  // A note encrypted by an older version (PBKDF2) is encrypted again with the current key
+  // derivation (scrypt) once it is opened with its password. True when it changed.
+  async upgradeNoteEncryption(note, plain, password) {
+    if (!needsUpgrade(note.encrypted)) return false;
+    note.encrypted = await encrypt(plain, password);
+    return true;
   }
 
   // Returns the decrypted content, or null when the password is wrong
@@ -174,6 +182,8 @@ export class LockFeature {
     if (plain === null) return false;
     note.content = plain;
     this.unlockedNotes.set(String(note.id), password);
+    // Written by an older version (a weaker key derivation): encrypted again now
+    const upgraded = await this.upgradeNoteEncryption(note, plain, password);
     // Its images show while it is open (and are encrypted now if they were locked before images
     // were encrypted)
     await this.openNoteImages(note, password);
@@ -181,7 +191,7 @@ export class LockFeature {
     // Its title back, encrypted or not as the setting says now
     const hadMeta = !!note.sealedMeta;
     await this.settleNoteMeta(note, password);
-    if (hadMeta !== !!note.sealedMeta) this.saveNotes();
+    if (upgraded || hadMeta !== !!note.sealedMeta) this.saveNotes();
     // Another note may have been opened while the password was checked
     if (this.currentNote !== note) {
       this.updateNotesList();

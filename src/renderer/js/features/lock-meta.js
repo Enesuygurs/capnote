@@ -137,17 +137,20 @@ export class LockMetaFeature {
     );
   }
 
-  // ============ Images of locked notes ============
-  // A locked note's images are encrypted with its password (in the main process); while it is open
-  // they show, decrypted in memory. An image another note shows too stays as it is.
+  // ============ Files of locked notes ============
+  // A locked note's images and attached files are encrypted with its password (in the main
+  // process); while it is open the images show, decrypted in memory, and an attached file opens
+  // from a decrypted temporary copy. A file another note shows too stays as it is.
   lockedImageApi() {
     return window.electronAPI?.lockedImages || null;
   }
 
   noteImageNames(note) {
-    return (note?.attachments || []).filter((name) =>
+    const images = (note?.attachments || []).filter((name) =>
       /\.(png|jpe?g|gif|webp|bmp|svg|avif|ico)$/i.test(name)
     );
+    const files = (note?.attachedFiles || []).map((file) => file?.name).filter(Boolean);
+    return [...new Set([...images, ...files])];
   }
 
   ownImageNames(note) {
@@ -188,17 +191,22 @@ export class LockMetaFeature {
     if (api && password) await api.unseal(this.noteImageNames(note), password).catch(() => {});
   }
 
-  // A copy of an open locked note gets plain copies of its images (its own files)
+  // A copy of an open locked note gets plain copies of its images and attached files (its own)
   async copyNoteImages(copy, source) {
     const api = this.lockedImageApi();
     if (!api || !source.isLocked) return;
-    const map = await api.copy(this.noteImageNames(source)).catch(() => ({}));
-    Object.entries(map || {}).forEach(([from, to]) => {
+    const map = (await api.copy(this.noteImageNames(source)).catch(() => ({}))) || {};
+    Object.entries(map).forEach(([from, to]) => {
       const a = `capnote-file://upload/${encodeURIComponent(from)}`;
       const b = `capnote-file://upload/${encodeURIComponent(to)}`;
       copy.content = (copy.content || '').split(a).join(b);
     });
     copy.attachments = this.extractUploadNames(copy.content);
+    if (Array.isArray(copy.attachedFiles)) {
+      copy.attachedFiles = copy.attachedFiles.map((file) =>
+        map[file.name] ? { ...file, name: map[file.name] } : file
+      );
+    }
   }
 
   // Locked folders and notes, closed now, whose names are encrypted (shown once opened)

@@ -7,6 +7,7 @@ import path from 'path';
 import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { uploadsDir } from './paths.js';
 import { safeUploadName, newUploadName } from './upload-names.js';
+import { openLockedBytes, openLockedCopy } from './locked-images.js';
 
 const MAX_NOTE_FILES_BYTES = 250 * 1024 * 1024;
 
@@ -59,10 +60,14 @@ function registerNoteFilesIpc() {
   // Files dropped on a note (their paths come from the preload)
   ipcMain.handle('note-files:add', (event, { paths, room } = {}) => copyIntoUploads(paths, room));
 
-  // Open an attached file with its program
-  ipcMain.handle('note-files:open', async (event, name) => {
-    const file = uploadFile(name);
-    if (!file || !fs.existsSync(file)) return { ok: false, error: 'missing' };
+  // Open an attached file with its program (a locked note's, open now: a decrypted copy)
+  ipcMain.handle('note-files:open', async (event, name, title) => {
+    let file = uploadFile(name);
+    if (!file) return { ok: false, error: 'missing' };
+    if (!fs.existsSync(file)) {
+      file = await openLockedCopy(name, title).catch(() => null);
+      if (!file) return { ok: false, error: 'missing' };
+    }
     const error = await shell.openPath(file);
     return error ? { ok: false, error } : { ok: true };
   });
@@ -70,13 +75,17 @@ function registerNoteFilesIpc() {
   // Save a copy where the user picks, under its own name
   ipcMain.handle('note-files:save-as', async (event, { name, title } = {}) => {
     const file = uploadFile(name);
-    if (!file || !fs.existsSync(file)) return { ok: false, error: 'missing' };
+    if (!file) return { ok: false, error: 'missing' };
+    // A locked note's file (open now) is saved decrypted
+    const lockedBytes = fs.existsSync(file) ? null : await openLockedBytes(name).catch(() => null);
+    if (!fs.existsSync(file) && !lockedBytes) return { ok: false, error: 'missing' };
     const win = BrowserWindow.fromWebContents(event.sender);
     const target = await dialog.showSaveDialog(win, {
       defaultPath: typeof title === 'string' && title ? path.basename(title) : path.basename(file),
     });
     if (target.canceled || !target.filePath) return { ok: false, canceled: true };
-    await fs.promises.copyFile(file, target.filePath);
+    if (lockedBytes) await fs.promises.writeFile(target.filePath, lockedBytes);
+    else await fs.promises.copyFile(file, target.filePath);
     return { ok: true };
   });
 }
