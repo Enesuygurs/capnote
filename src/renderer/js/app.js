@@ -186,7 +186,7 @@ export class CapnoteApp {
     this.searchInput = document.getElementById('searchInput');
     // Its shortcut, as the system writes it (Cmd on macOS)
     const shortcut = document.getElementById('searchShortcut');
-    if (shortcut && window.electronAPI?.platform === 'darwin') shortcut.textContent = '⌘K';
+    if (shortcut && window.electronAPI?.platform === 'darwin') shortcut.textContent = '⌘ + K';
     this.tagInput = document.getElementById('tagInput');
     this.tagsList = document.getElementById('tagsList');
 

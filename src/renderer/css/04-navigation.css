@@ -308,6 +308,7 @@ body:has(#templateMenu:not(.hidden)) .new-note-more i {
 
 /* The notes header reads as a name ("Notlar"), not in capitals */
 .nav-section-title > span:first-child {
+  font-size: 13px;
   text-transform: none;
   letter-spacing: 0;
 }
