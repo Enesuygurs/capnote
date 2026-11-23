@@ -117,21 +117,12 @@
   background: var(--surface);
 }
 
-/* A note's header (its title, date and actions) sits on the page; in the editor only the toolbar
-   takes a soft step of the header gray. With the sidebar hidden (one note on its own), and always
-   in the dark theme, the header (and the editor's toolbar) is a neutral gray a shade apart from
-   the text under it. */
-.sidebar.hidden + .main-content .viewer-header,
-.sidebar.hidden + .main-content .editor-header,
-.sidebar.hidden + .main-content .formatting-toolbar,
-[data-theme='dark'] .viewer-header,
-[data-theme='dark'] .editor-header,
-[data-theme='dark'] .formatting-toolbar {
-  background: var(--note-header);
-}
-
+/* A note's header (its title, date and actions) and the editor's toolbar are a neutral gray a
+   shade apart from the text under them, in both themes and with the sidebar shown or hidden */
+.viewer-header,
+.editor-header,
 .formatting-toolbar {
-  background: color-mix(in srgb, var(--note-header) 55%, var(--surface));
+  background: var(--note-header);
 }
 
 /* A screen's own icon before its title (to-dos, reminders, notifications), in the screen's tone */
