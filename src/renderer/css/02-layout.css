@@ -161,6 +161,12 @@
   white-space: nowrap;
 }
 
+/* A note's title (in the viewer and in the editor) is cut about 8 characters before the edge */
+#viewerTitle,
+.note-title-input {
+  padding-right: 8ch;
+}
+
 /* Sits right under the title: no gap, a 20px line */
 .page-subtitle,
 .page-meta {
