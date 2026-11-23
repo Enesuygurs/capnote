@@ -10,7 +10,8 @@
     "favorites": "Favoriler",
     "notes": "Notlar",
     "settings": "Ayarlar",
-    "tags": "Etiketler"
+    "tags": "Etiketler",
+    "pinned": "Sabitlenmiş"
   },
   "buttons": {
     "save": "Kaydet",

@@ -154,6 +154,16 @@
         <!-- Scrolling middle: notes and folders -->
         <div class="sidebar-content">
           <nav class="sidebar-nav">
+            <!-- Pinned notes and folders: their own section, above the notes (hidden when none) -->
+            <div class="nav-section pinned-section hidden" id="pinnedSection">
+              <div class="nav-section-header">
+                <div class="nav-section-title">
+                  <span data-i18n="nav.pinned">Sabitlenmiş</span>
+                  <span class="nav-count" id="navPinnedCount">0</span>
+                </div>
+              </div>
+              <div class="notes-list pinned-list" id="pinnedList"></div>
+            </div>
             <div class="nav-section">
               <div class="nav-section-header">
                 <div class="nav-section-title">

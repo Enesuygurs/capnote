@@ -39,8 +39,9 @@
   outline: none;
 }
 
+/* Focus: the app's soft ring around the field (a changed border showed jagged corners) */
 .find-input:focus {
-  border-color: var(--accent-color);
+  box-shadow: var(--focus-ring);
 }
 
 .find-bar.no-results .find-input[data-find='query'] {

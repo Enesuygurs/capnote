@@ -383,3 +383,8 @@ body:has(#templateMenu:not(.hidden)) .new-note-more i {
 .search-input:focus + .search-shortcut {
   display: none;
 }
+
+/* The pinned section sits over the notes, with the notes' gap below it */
+.pinned-section {
+  margin-bottom: var(--space-2);
+}

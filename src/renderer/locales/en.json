@@ -10,7 +10,8 @@
     "favorites": "Favorites",
     "notes": "Notes",
     "settings": "Settings",
-    "tags": "Tags"
+    "tags": "Tags",
+    "pinned": "Pinned"
   },
   "buttons": {
     "save": "Save",
