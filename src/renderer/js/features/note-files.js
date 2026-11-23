@@ -112,7 +112,7 @@ export class NoteFilesFeature {
   }
 
   async openNoteFile(file) {
-    const result = await window.electronAPI.noteFiles.open(file.name);
+    const result = await window.electronAPI.noteFiles.open(file.name, file.title);
     if (!result?.ok) this.showNotification(i18n.t('noteFiles.missing'), 'error');
   }
 

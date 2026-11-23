@@ -2,6 +2,8 @@
 // (the setting), and at once when the screen locks or the computer sleeps, the locked notes and
 // folders opened in this session lock again. Edits of an open one are encrypted and kept first.
 
+import { forgetKeys } from '../note-crypto.js';
+
 const CHECK_EVERY_MS = 15 * 1000;
 
 export class IdleLockFeature {
@@ -27,6 +29,9 @@ export class IdleLockFeature {
       if (this.unlockedFolders.has(id)) this.relockFolder(this.folderById(id));
     });
     this.relockUnlockedNotes();
+    // No key stays in memory, here or in the main process (with its decrypted file copies)
+    forgetKeys();
+    window.electronAPI?.lockedImages?.forget?.();
     return true;
   }
 
