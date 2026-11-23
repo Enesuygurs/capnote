@@ -532,7 +532,8 @@ export class NoteListFeature {
     const KEY = 'capnote-closed-sections';
     let closed = [];
     try {
-      closed = JSON.parse(localStorage.getItem(KEY) || '[]');
+      const stored = JSON.parse(localStorage.getItem(KEY) || '[]');
+      if (Array.isArray(stored)) closed = stored;
     } catch {}
     const sections = [...document.querySelectorAll('.sidebar-nav .nav-section[data-section]')];
     sections.forEach((section) => {

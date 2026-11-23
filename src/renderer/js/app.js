@@ -109,6 +109,8 @@ export class CapnoteApp {
     this.loadUserTemplates();
     this.initializeElements();
     this.setupEventListeners();
+    // The sections' headers open and close their lists (early: nothing later can keep it from it)
+    this.setupSectionCollapse();
     // Ctrl+F / Ctrl+H in the open note
     this.setupFindReplace();
     // The note map (a setting)
@@ -147,8 +149,6 @@ export class CapnoteApp {
     this.setupTraySync();
     // A note dragged onto the pinned section is pinned
     this.setupPinnedSectionDrop();
-    // The sections' headers open and close their lists
-    this.setupSectionCollapse();
   }
 
   initializeElements() {
