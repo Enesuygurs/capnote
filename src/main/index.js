@@ -182,7 +182,7 @@ app.whenReady().then(() => {
     devTools: isDev,
     hidden: startedAtLogin(),
   });
-  createTray({ settings: () => getDataStore().read('settings') });
+  createTray();
   refreshLoginItem();
   setQuickNoteShortcut(readQuickNotePreference());
   // A file Capnote was started on, and the right-click menu entry (installed app, Windows)

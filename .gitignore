@@ -35,3 +35,6 @@ ehthumbs.db
 
 # Screenshots of the visual test (they depend on the machine)
 /tests/visual/
+
+# Personal to-do notes, kept on this machine only
+/TODO.md
