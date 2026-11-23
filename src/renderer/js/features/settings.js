@@ -99,6 +99,7 @@ export class SettingsFeature {
       document.body.classList.toggle('no-gpu', this.startedWithoutGpu);
     }
     if (this.compactListToggle) this.compactListToggle.checked = settings.compactList;
+    if (this.noteMinimapToggle) this.noteMinimapToggle.checked = !!settings.noteMinimap;
     document.body.classList.toggle('compact-list', !!settings.compactList);
     this.updateIconSettingsState();
 
@@ -236,6 +237,12 @@ export class SettingsFeature {
         this.setSetting('onNoteDelete', e.target.value);
       });
     }
+
+    // The note map at the right of the note's text
+    this.noteMinimapToggle?.addEventListener('change', (e) => {
+      this.setSetting('noteMinimap', e.target.checked);
+      this.refreshMinimap?.();
+    });
 
     // Line shortcuts while typing
     this.autoFormatToggle?.addEventListener('change', (e) =>

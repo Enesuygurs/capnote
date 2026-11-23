@@ -261,6 +261,18 @@ export const SETTINGS_DIALOG = /* HTML */ `
                   <span class="toggle-slider"></span>
                 </label>
               </div>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <label data-i18n="settings.noteMinimap">Not haritası</label>
+                  <small data-i18n="settings.noteMinimapDesc"
+                    >Notun sağında gezinmek için küçük bir önizleme gösterir</small
+                  >
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="noteMinimapToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
             </div>
           </section>
         </div>

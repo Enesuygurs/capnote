@@ -38,8 +38,9 @@ export class ScreensFeature {
       todos: this.todosNav,
     };
     Object.entries(navItems).forEach(([key, el]) => el?.classList.toggle('active', key === name));
-    // The find bar follows the note on screen (or closes)
+    // The find bar and the note map follow the note on screen (or close)
     this.refreshFind?.();
+    this.refreshMinimap?.();
   }
 
   // A page opened from its header button (tags, archive): a second click on the button goes back

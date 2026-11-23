@@ -17,6 +17,8 @@ export const DEFAULT_SETTINGS = {
   hideNoteIcons: false,
   // A tighter note list: smaller rows, a folder tree with arrows and lines
   compactList: false,
+  // A small picture of the whole note at the right of its text, to see and move through it
+  noteMinimap: false,
   folderColorsBackup: null,
   noteSort: 'date-desc',
   // Line shortcuts while typing: "- " a bulleted list, "1. " a numbered one, "[] " a task...

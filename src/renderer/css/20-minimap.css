@@ -1,0 +1,58 @@
+/* The note map (note-minimap.js): a 96px column at the right of the note's scrolling text, with a
+   small picture of the whole note and a box over the part on screen */
+
+.note-minimap {
+  position: fixed;
+  z-index: 4;
+  overflow: hidden;
+  border-left: 1px solid var(--divider);
+  cursor: pointer;
+  user-select: none;
+}
+
+.note-minimap-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+  /* Drawn small, lines read as strokes: no caret, no selection, no placeholder */
+  caret-color: transparent;
+}
+
+.note-minimap-inner.rich-editor:empty::before {
+  content: none;
+}
+
+.note-minimap-plain {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--fs-base, 14px);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+}
+
+/* The part of the note on screen */
+.note-minimap-view {
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: color-mix(in srgb, var(--text-primary) 8%, transparent);
+  pointer-events: none;
+}
+
+.note-minimap:hover .note-minimap-view {
+  background: color-mix(in srgb, var(--text-primary) 13%, transparent);
+}
+
+/* The text keeps clear of the map: room at its right (inside it, for a text that scrolls itself) */
+.minimap-room {
+  margin-right: var(--minimap-room, 0px);
+}
+
+.minimap-room.minimap-room-inside {
+  margin-right: 0;
+  padding-right: var(--minimap-room, 0px);
+}

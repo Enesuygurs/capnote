@@ -272,7 +272,8 @@ export class FindReplaceFeature {
     const box = host.getBoundingClientRect();
     const scrollbar = host.offsetWidth - host.clientWidth;
     f.bar.style.top = `${Math.round(box.top + 8)}px`;
-    f.bar.style.right = `${Math.round(window.innerWidth - box.right + scrollbar + 16)}px`;
+    const map = this.minimapWidth?.() || 0;
+    f.bar.style.right = `${Math.round(window.innerWidth - box.right + scrollbar + map + 16)}px`;
     // The text moves down by the bar's height, so the bar never covers its first lines
     f.target.el.classList.add('find-pushed');
     f.target.el.style.setProperty('--find-bar-space', `${f.bar.offsetHeight + 8}px`);

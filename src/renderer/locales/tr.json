@@ -126,6 +126,8 @@
     "hideNoteIconsDesc": "Kilit ve sabitleme dışındaki not simgelerini gizler",
     "compactList": "Kompakt liste",
     "compactListDesc": "Notları ve klasörleri daha sık, ağaç görünümünde listeler",
+    "noteMinimap": "Not haritası",
+    "noteMinimapDesc": "Notun sağında gezinmek için küçük bir önizleme gösterir",
     "noIconsInCompact": "Kompakt liste açıkken kullanılamaz",
     "startAtLogin": "Başlangıçta çalıştır",
     "startAtLoginDesc": "Capnote oturum açıldığında sistem tepsisinde başlar",
