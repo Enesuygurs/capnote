@@ -155,20 +155,22 @@
         <div class="sidebar-content">
           <nav class="sidebar-nav">
             <!-- Pinned notes and folders: their own section, above the notes (hidden when none) -->
-            <div class="nav-section pinned-section hidden" id="pinnedSection">
+            <div class="nav-section pinned-section hidden" id="pinnedSection" data-section="pinned">
               <div class="nav-section-header">
                 <div class="nav-section-title">
                   <span data-i18n="nav.pinned">Sabitlenmiş</span>
                   <span class="nav-count" id="navPinnedCount">0</span>
+                  <i class="fas fa-chevron-down nav-section-chevron" aria-hidden="true"></i>
                 </div>
               </div>
               <div class="notes-list pinned-list" id="pinnedList"></div>
             </div>
-            <div class="nav-section">
+            <div class="nav-section" data-section="notes">
               <div class="nav-section-header">
                 <div class="nav-section-title">
                   <span data-i18n="nav.notes">Notlar</span>
                   <span class="nav-count" id="navNotesCount">0</span>
+                  <i class="fas fa-chevron-down nav-section-chevron" aria-hidden="true"></i>
                 </div>
                 <div class="nav-section-controls">
                   <button

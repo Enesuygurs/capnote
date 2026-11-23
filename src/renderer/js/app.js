@@ -147,6 +147,8 @@ export class CapnoteApp {
     this.setupTraySync();
     // A note dragged onto the pinned section is pinned
     this.setupPinnedSectionDrop();
+    // The sections' headers open and close their lists
+    this.setupSectionCollapse();
   }
 
   initializeElements() {
