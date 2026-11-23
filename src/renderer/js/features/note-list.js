@@ -12,6 +12,8 @@ export class NoteListFeature {
     }
 
     this.notesList.innerHTML = '';
+    const pinnedList = document.getElementById('pinnedList');
+    if (pinnedList) pinnedList.innerHTML = '';
 
     const filteredNotes = this.getFilteredNotes();
     const sortedNotes = this.getSortedNotes(filteredNotes);
@@ -35,14 +37,30 @@ export class NoteListFeature {
     ]);
     const rest = items.filter((item) => !item.note?.isPinned);
     let hasFolders = false;
-    [...pinned, ...rest].forEach(({ note, folder }) => {
-      if (note) {
-        this.notesList.appendChild(this.createNoteItem(note));
-      } else if (!this.isViewFiltered() || this.getVisibleCountForFolder(folder.id)) {
-        this.notesList.appendChild(this.createFolderElement(folder));
-        hasFolders = true;
-      }
-    });
+    // The pinned ones have their own section above the notes
+    const place =
+      (list) =>
+      ({ note, folder }) => {
+        if (note) {
+          list.appendChild(this.createNoteItem(note));
+          return true;
+        }
+        if (!this.isViewFiltered() || this.getVisibleCountForFolder(folder.id)) {
+          list.appendChild(this.createFolderElement(folder));
+          hasFolders = true;
+          return true;
+        }
+        return false;
+      };
+    const pinnedShown = pinned.filter(place(pinnedList || this.notesList)).length;
+    rest.forEach(place(this.notesList));
+    document
+      .getElementById('pinnedSection')
+      ?.classList.toggle('hidden', !pinnedList || !pinnedShown);
+    this.setCount(document.getElementById('navPinnedCount'), pinnedShown);
+    // The notes' count leaves out the pinned notes (they have their own)
+    const pinnedNotes = pinnedList ? pinned.filter((item) => item.note).length : 0;
+    this.setCount(navCountEl, this.getVisibleNotesCount() - pinnedNotes, { alwaysShow: true });
     if (hasFolders) this.restoreFolderExpansion();
     this.renderEmptyNotesList();
 

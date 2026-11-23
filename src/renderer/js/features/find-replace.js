@@ -169,8 +169,6 @@ export class FindReplaceFeature {
     f.replaceRow.classList.toggle('hidden', !shown);
     f.bar.classList.toggle('is-replacing', shown);
     f.toggle.querySelector('i').className = `fas fa-chevron-${shown ? 'down' : 'right'}`;
-    // Replacing needs the note open for editing
-    if (shown && f.target?.readOnly) this.editForReplace();
     this.placeFindBar();
   }
 
@@ -193,7 +191,6 @@ export class FindReplaceFeature {
 
   // Ctrl+F (find) and Ctrl+H (find and replace) in the open note
   openFind({ replace = false } = {}) {
-    if (replace && this.isViewerOpen?.() && !this.editForReplace()) replace = false;
     const target = this.findTarget();
     if (!target) return false;
     const f = this.find;
@@ -246,8 +243,14 @@ export class FindReplaceFeature {
         this.closeFind();
         return;
       }
+      // The editor was just opened to replace: its matches are already found
+      if (this.find.skipRefresh) {
+        this.find.skipRefresh = false;
+        this.find.target = target;
+        this.placeFindBar();
+        return;
+      }
       this.find.target = target;
-      if (target.readOnly && this.isFindReplaceShown()) this.setFindReplace(false);
       this.placeFindBar();
       this.runFind();
     });
@@ -266,24 +269,16 @@ export class FindReplaceFeature {
   placeFindBar() {
     const f = this.find;
     if (!this.isFindOpen() || !f.target) return;
-    // Always the same place: right under the note's header (the editor's toolbar), at the right of
-    // the note, over the text (which does not move for it)
+    // Always the same place, reading or editing: under the note's header and the room of the
+    // editor's toolbar, at the right of the note (it does not move when the note opens for editing)
     const screen = f.target.el.closest('.note-editor, .note-viewer') || f.target.el;
-    const bars = [...screen.querySelectorAll('.page-header, .formatting-toolbar')].filter(
-      (el) => el.offsetParent !== null
-    );
+    const header = screen.querySelector('.page-header');
+    const toolbar = document.querySelector('#noteEditor .formatting-toolbar');
     const box = screen.getBoundingClientRect();
-    const top = bars.length
-      ? Math.max(...bars.map((el) => el.getBoundingClientRect().bottom))
-      : box.top;
+    const top =
+      (header ? header.getBoundingClientRect().bottom : box.top) + (toolbar?.offsetHeight || 48);
     f.bar.style.top = `${Math.round(top + 8)}px`;
-    // At the right of the note's text (left of the editor's side panel, the scrollbar and the map)
-    const host = scrollParentOf(f.target.el) || f.target.el;
-    const text = host.getBoundingClientRect();
-    const scrollbar = host.offsetWidth - host.clientWidth;
-    const map = this.minimapWidth?.() || 0;
-    const right = Math.min(text.right - scrollbar - map, box.right) - 16;
-    f.bar.style.right = `${Math.round(window.innerWidth - right)}px`;
+    f.bar.style.right = `${Math.round(window.innerWidth - box.right + 24)}px`;
   }
 
   // The text pieces of a rich text, with where each starts in the whole text
@@ -395,7 +390,9 @@ export class FindReplaceFeature {
         : i18n.t('find.count', { current: f.index + 1, total: f.matches.length })
       : '';
     f.bar.classList.toggle('no-results', none);
-    const replaceable = !!f.matches.length && !!f.target && !f.target.readOnly;
+    // A note being read can be replaced in (it opens for editing then), unless it is locked
+    const replaceable =
+      !!f.matches.length && !!f.target && !this.isNoteLockedForView?.(this.currentNote);
     f.bar.querySelectorAll('.find-text-btn').forEach((btn) => (btn.disabled = !replaceable));
   }
 
@@ -435,9 +432,21 @@ export class FindReplaceFeature {
   }
 
   // Replace the current match (and go on to the next)
+  // Replacing in a note being read opens it for editing first (only then), on the same match
+  ensureEditableForReplace() {
+    const f = this.find;
+    if (!f.target?.readOnly) return true;
+    const index = f.index;
+    if (!this.editForReplace()) return false;
+    f.skipRefresh = true;
+    this.runFind({ scroll: false });
+    if (f.matches.length) f.index = Math.min(Math.max(index, 0), f.matches.length - 1);
+    return !!f.matches.length;
+  }
+
   replaceCurrentMatch() {
     const f = this.find;
-    if (!f.matches.length || !f.target || f.target.readOnly) return;
+    if (!f.matches.length || !f.target || !this.ensureEditableForReplace()) return;
     const text = f.replacement.value;
     const match = f.matches[f.index];
     if (f.target.kind === 'plain') {
@@ -463,7 +472,7 @@ export class FindReplaceFeature {
   // Replace every match, as one step
   replaceAllMatches() {
     const f = this.find;
-    if (!f.matches.length || !f.target || f.target.readOnly) return;
+    if (!f.matches.length || !f.target || !this.ensureEditableForReplace()) return;
     const text = f.replacement.value;
     const count = f.matches.length;
     if (f.target.kind === 'plain') {
