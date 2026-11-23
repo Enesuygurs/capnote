@@ -52,6 +52,7 @@ import { WindowDragFeature } from './features/window-drag.js';
 import { WelcomeFeature } from './features/welcome.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
 import { FoldingFeature } from './features/folding.js';
+import { TraySyncFeature } from './features/tray-sync.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -142,6 +143,8 @@ export class CapnoteApp {
     if (this.isFirstRun) await this.addWelcomeNote();
     // A file Capnote was started on opens over it
     this.setupFileNotes();
+    // The tray menu's theme and recent notes
+    this.setupTraySync();
   }
 
   initializeElements() {
@@ -773,4 +776,5 @@ applyFeatures(CapnoteApp, [
   WindowDragFeature,
   WelcomeFeature,
   MarkdownIoFeature,
+  TraySyncFeature,
 ]);

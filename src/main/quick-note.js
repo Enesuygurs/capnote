@@ -92,11 +92,18 @@ function cleanNote(note) {
   return { title, text };
 }
 
+// Whether the shortcut works now (the tray menu shows it beside "Quick note" only then), and who
+// wants to hear when that changes
+const isQuickNoteShortcutOn = () => globalShortcut.isRegistered(ACCELERATOR);
+const shortcutListeners = [];
+const onQuickNoteShortcutChange = (callback) => shortcutListeners.push(callback);
+
 // Turn the shortcut on or off. Registering fails when another app already uses the keys.
 function setQuickNoteShortcut(enabled) {
   if (globalShortcut.isRegistered(ACCELERATOR)) globalShortcut.unregister(ACCELERATOR);
+  const ok = enabled ? globalShortcut.register(ACCELERATOR, openQuickNote) : true;
+  shortcutListeners.forEach((callback) => callback());
   if (!enabled) return { ok: true, enabled: false };
-  const ok = globalShortcut.register(ACCELERATOR, openQuickNote);
   return ok ? { ok: true, enabled: true } : { ok: false, error: 'in-use' };
 }
 
@@ -136,4 +143,10 @@ function registerQuickNoteIpc({ settings } = {}) {
   });
 }
 
-export { setQuickNoteShortcut, registerQuickNoteIpc, openQuickNote };
+export {
+  setQuickNoteShortcut,
+  registerQuickNoteIpc,
+  openQuickNote,
+  isQuickNoteShortcutOn,
+  onQuickNoteShortcutChange,
+};
