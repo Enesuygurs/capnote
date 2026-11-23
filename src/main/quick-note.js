@@ -136,6 +136,4 @@ function registerQuickNoteIpc({ settings } = {}) {
   });
 }
 
-const isQuickNoteShortcutOn = () => globalShortcut.isRegistered(ACCELERATOR);
-
-export { setQuickNoteShortcut, registerQuickNoteIpc, openQuickNote, isQuickNoteShortcutOn };
+export { setQuickNoteShortcut, registerQuickNoteIpc, openQuickNote };
