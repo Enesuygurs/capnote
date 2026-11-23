@@ -184,7 +184,7 @@ export class FileNotesFeature {
       e.preventDefault();
       e.stopPropagation();
       e.dataTransfer.dropEffect = 'copy';
-      list.dataset.dropLabel = i18n.t('files.dropToOpen');
+      delete list.dataset.dropLabel;
       list.classList.add('drag-over');
     };
     area.addEventListener('dragenter', accept, true);

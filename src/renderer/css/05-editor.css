@@ -230,6 +230,18 @@
   position: relative;
 }
 
+/* A note's text in the editor and the viewer: 14px, as notes always were */
+#noteContentEditable,
+#viewerText,
+.note-minimap-inner {
+  font-size: var(--fs-base);
+}
+
+/* A file note has no toolbar: its header keeps the line under it */
+.note-editor.is-file-note .editor-header {
+  border-bottom: 1px solid var(--divider);
+}
+
 .rich-editor {
   position: relative;
   min-height: 100%;

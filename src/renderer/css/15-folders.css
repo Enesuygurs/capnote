@@ -230,6 +230,11 @@
   min-height: var(--control-lg);
 }
 
+/* Files dragged in from outside show no label, only the outline */
+.notes-list-container.drag-over:not([data-drop-label])::before {
+  content: none;
+}
+
 .notes-list-container.drag-over::before {
   content: attr(data-drop-label);
   position: absolute;
