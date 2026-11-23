@@ -313,37 +313,27 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
   font-weight: 600;
 }
 
-/* The sidebar's list filter (All / Today / Favorites): tabs over a line, the chosen one in the
-   accent's text color with a 2px accent bar under it */
+/* The sidebar's list filter (All / Today / Favorites): three pills on the sidebar, the chosen
+   one in a tint of the accent with the accent's text color */
 .segmented.filter-tabs {
-  gap: 0;
+  gap: var(--space-1);
   padding: 0;
-  border-radius: 0;
   background: transparent;
-  border-bottom: 1px solid var(--divider);
 }
 
 .filter-tabs .segment {
-  position: relative;
-  height: 30px;
-  border-radius: 0;
+  height: 28px;
+  border-radius: 999px;
   background: transparent;
+}
+
+.filter-tabs .segment:not(.active):hover {
+  background: var(--field);
 }
 
 .filter-tabs .segment.active {
-  background: transparent;
+  background: var(--accent-tint);
   color: var(--accent-text);
-}
-
-.filter-tabs .segment.active::after {
-  content: '';
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  bottom: -1px;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--accent-color);
 }
 
 /* ============ Menus ============

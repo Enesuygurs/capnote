@@ -109,59 +109,18 @@ export class NoteListFeature {
     row?.scrollIntoView({ block: 'nearest' });
   }
 
+  // The open note is the active row, in every list it shows in (the pinned section, the notes,
+  // folders); every other row loses it (a list redrawn meanwhile may have left more than one)
   setActiveNoteInList(noteId) {
-    // Clear previous active in main notes list
-    const prevActive = this.notesList.querySelector('.note-item.active');
-    if (prevActive && prevActive.getAttribute('data-note-id') !== noteId) {
-      prevActive.classList.remove('active');
-    }
-
-    // Set new active in main notes list
-    const newActive = this.notesList.querySelector(`.note-item[data-note-id="${noteId}"]`);
-    if (newActive) {
-      newActive.classList.add('active');
-    }
-
-    // Also update any folder note lists
-    document.querySelectorAll('.folder-notes-container[data-folder-id]').forEach((container) => {
-      const prev = container.querySelector('.folder-note-item.active');
-      if (prev && prev.getAttribute('data-note-id') !== noteId) {
-        prev.classList.remove('active');
-      }
-      const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
-      if (current) {
-        current.classList.add('active');
-      }
-    });
-
-    // If folder item wasn't found (likely due to render timing), retry once on the next frame
-    const foundInFolder = Array.from(
-      document.querySelectorAll('.folder-notes-container[data-folder-id]')
-    ).some((container) => !!container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`));
-    if (!foundInFolder) {
-      requestAnimationFrame(() => {
-        document
-          .querySelectorAll('.folder-notes-container[data-folder-id]')
-          .forEach((container) => {
-            const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
-            if (current) {
-              current.classList.add('active');
-            }
-          });
+    const id = noteId == null ? null : String(noteId);
+    const mark = () => {
+      document.querySelectorAll('.sidebar .note-item[data-note-id]').forEach((row) => {
+        row.classList.toggle('active', row.getAttribute('data-note-id') === id);
       });
-
-      // Also schedule a fallback after a short delay in case other async updates occur
-      setTimeout(() => {
-        document
-          .querySelectorAll('.folder-notes-container[data-folder-id]')
-          .forEach((container) => {
-            const current = container.querySelector(`.folder-note-item[data-note-id="${noteId}"]`);
-            if (current) {
-              current.classList.add('active');
-            }
-          });
-      }, 50);
-    }
+    };
+    mark();
+    // A folder's notes drawn a moment later (render timing): marked then too
+    requestAnimationFrame(mark);
   }
 
   clearActiveNoteInList() {
