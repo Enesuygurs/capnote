@@ -7,7 +7,9 @@
 
 const MAP_WIDTH = 96;
 // Space kept free at the right of the text for the map
-const MAP_ROOM = MAP_WIDTH + 8;
+const MAP_ROOM = MAP_WIDTH + 20;
+// Space between the map and the scrollbar
+const MAP_GAP = 12;
 const REDRAW_DELAY_MS = 200;
 
 function scrollParentOf(el) {
@@ -76,7 +78,7 @@ export class NoteMinimapFeature {
 
   // How much of the note's right side the map takes now (the find bar keeps clear of it)
   minimapWidth() {
-    return this.minimap?.target ? MAP_WIDTH : 0;
+    return this.minimap?.target ? MAP_WIDTH + MAP_GAP : 0;
   }
 
   isMinimapOn() {
@@ -145,7 +147,7 @@ export class NoteMinimapFeature {
     const scrollbar = m.host.offsetWidth - m.host.clientWidth;
     m.map.style.top = `${Math.round(box.top)}px`;
     m.map.style.height = `${Math.round(box.height)}px`;
-    m.map.style.left = `${Math.round(box.right - scrollbar - MAP_WIDTH)}px`;
+    m.map.style.left = `${Math.round(box.right - scrollbar - MAP_GAP - MAP_WIDTH)}px`;
     m.map.style.width = `${MAP_WIDTH}px`;
   }
 

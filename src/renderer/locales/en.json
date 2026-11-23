@@ -653,7 +653,6 @@
     "deleteFilesToo": "Also delete the files",
     "trashFailed": "Could not delete “{name}”; the file is still there",
     "pathButton": "File Path",
-    "dropToOpen": "Open as a note",
     "unsupported": "Unsupported file: {name}"
   },
   "slashMenu": {

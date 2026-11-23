@@ -653,7 +653,6 @@
     "deleteFilesToo": "Dosyaları da sil",
     "trashFailed": "“{name}” silinemedi; dosya yerinde duruyor",
     "pathButton": "Dosya Yolu",
-    "dropToOpen": "Not olarak aç",
     "unsupported": "Desteklenmeyen dosya: {name}"
   },
   "slashMenu": {
