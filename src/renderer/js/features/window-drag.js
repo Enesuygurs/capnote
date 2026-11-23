@@ -28,6 +28,8 @@ const OWN_MOUSE = [
   '.note-item',
   '.folder-item',
   '.nav-item',
+  // A section's header opens and closes its list: a click there never moves the window
+  '.nav-section-header',
   '[draggable="true"]',
   '[contenteditable="true"]',
 ].join(', ');
