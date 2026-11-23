@@ -119,11 +119,6 @@
   cursor: default;
 }
 
-/* While the bar is open the note's text starts under it */
-.find-pushed {
-  margin-top: var(--find-bar-space, 0px);
-}
-
 /* Every match a soft tint of the accent; the current one the accent itself */
 ::highlight(find-match) {
   background-color: color-mix(in srgb, var(--accent-color) 30%, transparent);

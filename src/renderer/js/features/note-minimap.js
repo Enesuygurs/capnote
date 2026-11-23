@@ -168,7 +168,7 @@ export class NoteMinimapFeature {
     } else {
       // The same styles as the text (the viewer's formatted content, the editor's rich text)
       m.inner.className = `note-minimap-inner ${el.className}`.replace(
-        /\b(hidden|minimap-room|find-pushed)\b/g,
+        /\b(hidden|minimap-room)\b/g,
         ''
       );
       m.inner.innerHTML = el.innerHTML;

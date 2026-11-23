@@ -45,6 +45,7 @@ export class EditorFeature {
     }
   }
 
+  // The note's word and character counts (stored with it; the viewer's strip shows them)
   updateWordCount() {
     // A Markdown note (or a file note) is counted from its text editor; a rich one from the rich
     // editor, whose innerText keeps the visible line breaks
@@ -54,25 +55,6 @@ export class EditorFeature {
     const text = source.replace(/\u00A0/g, ' ');
     const words = this.countWords(text);
     const chars = text.length;
-
-    if (this.wordCount) {
-      this.wordCount.textContent = `${words} ${i18n.t('stats.words')}`;
-    }
-    if (this.charCount) {
-      this.charCount.textContent = `${chars} ${i18n.t('stats.characters')}`;
-    }
-
-    // Editor-side reading time estimate (baseline 200 WPM)
-    const WPM = 200;
-    const seconds = words ? Math.ceil((words / WPM) * 60) : 0;
-    if (this.editorReadingTime) {
-      if (!seconds) this.editorReadingTime.textContent = `0 ${i18n.t('stats.readingTime')}`;
-      else if (seconds < 60)
-        this.editorReadingTime.textContent = `~${seconds} ${i18n.t('stats.readingTimeSeconds')}`;
-      else
-        this.editorReadingTime.textContent = `~${Math.round(seconds / 60)} ${i18n.t('stats.readingTime')}`;
-    }
-
     if (this.currentNote) {
       this.currentNote.wordCount = words;
       this.currentNote.charCount = chars;

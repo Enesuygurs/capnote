@@ -17,8 +17,8 @@ export async function run() {
   a.createFolder?.('Beta');
   return {
     html,
-    editorWords: a.wordCount.textContent,
-    editorChars: a.charCount.textContent,
+    editorWords: a.currentNote.wordCount,
+    editorChars: a.currentNote.charCount,
     folderDrag: a.isDraggingFolder({ dataTransfer: dt1 }),
     noteDrag: a.isDraggingFolder({ dataTransfer: dt2 }),
     noTransfer: a.isDraggingFolder({}),
@@ -31,8 +31,8 @@ export const expected = {
     chars: 37,
     text: 'Merhaba dünya  123, İzmir! çok-güzel ',
   },
-  editorWords: '4 kelime',
-  editorChars: '16 karakter',
+  editorWords: 4,
+  editorChars: 16,
   folderDrag: true,
   noteDrag: false,
   noTransfer: false,

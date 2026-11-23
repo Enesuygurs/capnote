@@ -429,24 +429,12 @@ export const SETTINGS_DIALOG = /* HTML */ `
             <div class="settings-group">
               <div class="setting-item">
                 <div class="setting-info">
-                  <label data-i18n="settings.deleteAllNotes">Tüm Notları Sil</label>
-                  <small data-i18n="settings.deleteAllNotesDesc"
-                    >Tüm kayıtlı notlarınızı kalıcı olarak siler</small
+                  <label data-i18n="settings.deleteAllContent">Tüm İçeriği Sil</label>
+                  <small data-i18n="settings.deleteAllContentDesc"
+                    >Notları, klasörleri, hatırlatmaları ve şablonları siler; ayarlar korunur</small
                   >
                 </div>
-                <button id="clearAllNotesBtn" class="btn-outline btn-small btn-danger">
-                  <i class="fas fa-trash"></i>
-                  <span data-i18n="buttons.delete">Sil</span>
-                </button>
-              </div>
-              <div class="setting-item">
-                <div class="setting-info">
-                  <label data-i18n="settings.deleteAllFolders">Tüm Klasörleri Sil</label>
-                  <small data-i18n="settings.deleteAllFoldersDesc"
-                    >Tüm klasörleri ve klasör ilişkilerini kaldırır</small
-                  >
-                </div>
-                <button id="clearAllFoldersBtn" class="btn-outline btn-small btn-danger">
+                <button id="clearAllDataBtn" class="btn-outline btn-small btn-danger">
                   <i class="fas fa-trash"></i>
                   <span data-i18n="buttons.delete">Sil</span>
                 </button>

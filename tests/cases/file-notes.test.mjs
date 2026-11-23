@@ -25,7 +25,7 @@ export async function run() {
       editor: a.isEditorOpen(),
       text: a.markdownEditor.value,
       toolbarHidden: getComputedStyle(document.querySelector('.formatting-toolbar')).display,
-      words: a.wordCount.textContent,
+      words: a.currentNote.wordCount,
     },
   };
 
@@ -80,7 +80,7 @@ export const expected = {
     editor: true,
     text: '# Plan\n\n- one\n- two\n',
     toolbarHidden: 'none',
-    words: '3 kelime',
+    words: 3,
   },
   again: { sameNote: true, fileNotes: 1, text: '# Plan\n\n- one\n' },
   txt: {
