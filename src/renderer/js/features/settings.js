@@ -56,6 +56,8 @@ export class SettingsFeature {
   setSetting(key, value) {
     this.settings[key] = value;
     this.persist('settings', this.settings);
+    // The tray menu follows the theme
+    this.syncTray?.();
   }
 
   showSettingsModal() {

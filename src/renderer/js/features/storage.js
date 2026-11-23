@@ -160,6 +160,7 @@ export class StorageFeature {
     // Ensure overview stats reflect the latest notes immediately
     this.updateStats();
     await this.persist('notes', this.serializeNotes(), 'messages.notesSaveError');
+    this.syncTray?.();
   }
 
   async saveFolders() {

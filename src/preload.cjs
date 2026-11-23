@@ -10,6 +10,10 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onNewNote: (callback) => ipcRenderer.on('new-note', () => callback()),
   onOpenNotifications: (callback) => ipcRenderer.on('open-notifications', () => callback()),
   onOpenSettings: (callback) => ipcRenderer.on('open-settings', () => callback()),
+  // A note chosen under "Recent notes" in the tray menu
+  onOpenNoteFromTray: (callback) => ipcRenderer.on('tray:open-note', (event, id) => callback(id)),
+  // The tray menu's theme and recent notes ({ dark, recent: [{ id, title }] })
+  trayState: (state) => ipcRenderer.send('tray:state', state),
   // Expose platform string for renderer UI decisions (darwin, win32, linux)
   platform: process.platform,
 
