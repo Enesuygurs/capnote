@@ -488,6 +488,7 @@ export class SettingsFeature {
           this.showNotification(i18n.t('messages.languageChanged'), 'success');
           // Update dynamic content that may not have data-i18n attributes
           this.updateDynamicTranslations();
+          this.translateFindBar?.();
         }
       });
     }

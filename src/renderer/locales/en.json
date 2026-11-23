@@ -665,7 +665,7 @@
     "title": "Welcome to Capnote",
     "intro": "Capnote keeps your notes, tasks and reminders in one place. Everything is stored only on this computer.",
     "startTitle": "Getting started",
-    "tipNew": "<b>Ctrl+N</b> opens a new note, <b>Ctrl+F</b> searches your notes.",
+    "tipNew": "<b>Ctrl+N</b> opens a new note, <b>Ctrl+Shift+F</b> searches your notes; in an open note <b>Ctrl+F</b> finds in it and <b>Ctrl+H</b> finds and replaces.",
     "tipEdit": "To edit a note, double-click its text or press <b>Ctrl+E</b>.",
     "tipSlash": "Type <b>/</b> at the start of a line to add a heading, a list, a table or a code block.",
     "tipLink": "Type <b>[[</b> and pick a note to link notes together.",
@@ -682,5 +682,19 @@
     "duplicate": "Duplicate",
     "history": "History",
     "export": "Export"
+  },
+  "find": {
+    "placeholder": "Find in note",
+    "replacePlaceholder": "Replace",
+    "replace": "Replace",
+    "replaceAll": "Replace all",
+    "toggleReplace": "Show replace (Ctrl+H)",
+    "matchCase": "Match case",
+    "previous": "Previous match (Shift+Enter)",
+    "next": "Next match (Enter)",
+    "close": "Close (Esc)",
+    "noResults": "No results",
+    "count": "{current} of {total}",
+    "replaced": "{count} matches replaced"
   }
 }

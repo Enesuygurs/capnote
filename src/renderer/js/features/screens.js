@@ -9,7 +9,7 @@ export class ScreensFeature {
     this.hideTaskPriorityMenu?.();
     this.hideNoteLinkMenu?.();
     this.hideReminderPickers?.();
-    // An open list (text style, font) or toolbar menu does not wait for the editor to come back
+    // An open list (text style) or toolbar menu does not wait for the editor to come back
     this.closeAllDropdowns?.();
     this.closeToolbarMenus?.();
 
@@ -38,6 +38,8 @@ export class ScreensFeature {
       todos: this.todosNav,
     };
     Object.entries(navItems).forEach(([key, el]) => el?.classList.toggle('active', key === name));
+    // The find bar follows the note on screen (or closes)
+    this.refreshFind?.();
   }
 
   // A page opened from its header button (tags, archive): a second click on the button goes back
