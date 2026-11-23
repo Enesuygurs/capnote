@@ -369,15 +369,9 @@ export class SettingsFeature {
     }, 3000);
   }
 
-  confirmClearAllNotes() {
-    this.showConfirm(i18n.t('messages.confirmDeleteAllNotes'), async () => {
-      await this.clearAllNotes();
-    });
-  }
-
-  confirmClearAllFolders() {
-    this.showConfirm(i18n.t('messages.confirmDeleteAllFolders'), async () => {
-      await this.clearAllFolders();
+  confirmClearAllData() {
+    this.showConfirm(i18n.t('messages.confirmDeleteAllContent'), async () => {
+      await this.clearAllContent({ keepSettings: true });
     });
   }
 
@@ -387,54 +381,9 @@ export class SettingsFeature {
     });
   }
 
-  async clearAllNotes() {
-    try {
-      const removedNoteIds = (this.notes || []).map((n) => n.id);
-
-      this.notes = [];
-      this.currentNote = null;
-      this.unlockedNotes.clear();
-      await this.saveNotes();
-      this.removeNoteReferences(removedNoteIds);
-      // Clear last viewed note
-      this.setSetting('lastViewedNoteId', null);
-      this.updateNotesList();
-      this.updateFoldersList();
-      this.updateStats();
-      this.showWelcome();
-      this.showNotification(i18n.t('messages.allNotesDeleted'), 'success');
-    } catch (err) {
-      console.error('Deleting all notes failed:', err);
-      this.showNotification(i18n.t('messages.notesDeleteError'), 'error');
-    }
-  }
-
-  async clearAllFolders() {
-    try {
-      // Removing folders keeps the notes: they simply become folderless
-      const now = new Date().toISOString();
-      (this.notes || []).forEach((n) => {
-        if (n.folderId) {
-          n.folderId = null;
-          n.updatedAt = now;
-        }
-      });
-      this.folders = [];
-
-      await this.saveNotes();
-      await this.saveFolders();
-
-      this.updateNotesList();
-      this.updateFoldersList();
-      this.updateStats();
-      this.showNotification(i18n.t('messages.allFoldersDeleted'), 'success');
-    } catch (err) {
-      console.error('Deleting all folders failed:', err);
-      this.showNotification(i18n.t('messages.foldersDeleteError'), 'error');
-    }
-  }
-
-  async clearAllContent() {
+  // Every note, folder, reminder, notification, task list and template goes. Resetting the app
+  // also puts the settings back to their defaults; deleting all content keeps them.
+  async clearAllContent({ keepSettings = false } = {}) {
     try {
       // Every collection, including todos, goes back to empty
       this.notes = [];
@@ -446,8 +395,9 @@ export class SettingsFeature {
       this.currentNote = null;
       this.unlockedNotes.clear();
 
-      // Settings go back to defaults, keeping the UI language
-      this.settings = { ...DEFAULT_SETTINGS, language: this.settings.language };
+      // Settings go back to defaults, keeping the UI language (not when only the content goes)
+      if (keepSettings) this.settings.lastViewedNoteId = null;
+      else this.settings = { ...DEFAULT_SETTINGS, language: this.settings.language };
 
       await Promise.all([
         this.saveNotes(),
@@ -460,9 +410,11 @@ export class SettingsFeature {
       ]);
 
       // Undo the inline accent colour, then reflect the defaults everywhere
-      this.setAccentColor(DEFAULT_ACCENT, { persist: false });
-      this.loadSettings();
-      this.loadSidebarPreference();
+      if (!keepSettings) {
+        this.setAccentColor(DEFAULT_ACCENT, { persist: false });
+        this.loadSettings();
+        this.loadSidebarPreference();
+      }
 
       this.updateNotesList();
       this.updateFoldersList();
@@ -475,7 +427,10 @@ export class SettingsFeature {
       this.updateStats();
       this.showWelcome();
 
-      this.showNotification(i18n.t('messages.appReset'), 'success');
+      this.showNotification(
+        i18n.t(keepSettings ? 'messages.allContentDeleted' : 'messages.appReset'),
+        'success'
+      );
     } catch (err) {
       console.error('Resetting the app failed:', err);
       this.showNotification(i18n.t('messages.resetError'), 'error');

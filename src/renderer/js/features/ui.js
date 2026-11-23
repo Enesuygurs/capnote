@@ -41,8 +41,7 @@ export class UiFeature {
     if (this.insertTableConfirmBtn)
       this.insertTableConfirmBtn.addEventListener('click', () => this.handleInsertTable());
     // Clear actions
-    this.clearAllNotesBtn?.addEventListener('click', () => this.confirmClearAllNotes());
-    this.clearAllFoldersBtn?.addEventListener('click', () => this.confirmClearAllFolders());
+    this.clearAllDataBtn?.addEventListener('click', () => this.confirmClearAllData());
     this.clearAllContentBtn?.addEventListener('click', () => this.confirmClearAllContent());
 
     // Modal close buttons
@@ -279,6 +278,12 @@ export class UiFeature {
           case 'n':
             e.preventDefault();
             this.createNewNote();
+            break;
+          case 'k':
+            // Search the notes (while writing a note, Ctrl+K adds a link instead)
+            if (document.activeElement?.closest('#noteContentEditable')) break;
+            e.preventDefault();
+            this.toggleSearch();
             break;
           case 'f':
             e.preventDefault();

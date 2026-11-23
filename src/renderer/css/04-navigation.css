@@ -306,6 +306,12 @@ body:has(#templateMenu:not(.hidden)) .new-note-more i {
   color: var(--text-muted);
 }
 
+/* The notes header reads as a name ("Notlar"), not in capitals */
+.nav-section-title > span:first-child {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 /* Apart enough that two hovered or active buttons do not run into each other */
 .nav-section-controls {
   display: flex;
@@ -353,4 +359,26 @@ body:has(#templateMenu:not(.hidden)) .new-note-more i {
 .nav-count.is-emphasized {
   background: var(--accent-color);
   color: var(--text-on-accent);
+}
+
+/* The search field's shortcut, at its right; it goes while something is typed */
+.search-shortcut {
+  position: absolute;
+  top: 50%;
+  right: var(--space-2);
+  transform: translateY(-50%);
+  padding: 1px 5px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 10.5px;
+  line-height: 14px;
+  pointer-events: none;
+}
+
+.search-input:not(:placeholder-shown) + .search-shortcut,
+.search-input:focus + .search-shortcut {
+  display: none;
 }

@@ -229,7 +229,6 @@ export class FindReplaceFeature {
     this.clearFindMarks();
     f.matches = [];
     f.index = -1;
-    this.unpushFindText();
     // Back to writing where the current match was
     if (f.target && !f.target.readOnly && document.activeElement?.closest('.find-bar')) {
       f.target.el.focus();
@@ -247,7 +246,6 @@ export class FindReplaceFeature {
         this.closeFind();
         return;
       }
-      if (this.find.target?.el !== target.el) this.unpushFindText();
       this.find.target = target;
       if (target.readOnly && this.isFindReplaceShown()) this.setFindReplace(false);
       this.placeFindBar();
@@ -268,22 +266,24 @@ export class FindReplaceFeature {
   placeFindBar() {
     const f = this.find;
     if (!this.isFindOpen() || !f.target) return;
+    // Always the same place: right under the note's header (the editor's toolbar), at the right of
+    // the note, over the text (which does not move for it)
+    const screen = f.target.el.closest('.note-editor, .note-viewer') || f.target.el;
+    const bars = [...screen.querySelectorAll('.page-header, .formatting-toolbar')].filter(
+      (el) => el.offsetParent !== null
+    );
+    const box = screen.getBoundingClientRect();
+    const top = bars.length
+      ? Math.max(...bars.map((el) => el.getBoundingClientRect().bottom))
+      : box.top;
+    f.bar.style.top = `${Math.round(top + 8)}px`;
+    // At the right of the note's text (left of the editor's side panel, the scrollbar and the map)
     const host = scrollParentOf(f.target.el) || f.target.el;
-    const box = host.getBoundingClientRect();
+    const text = host.getBoundingClientRect();
     const scrollbar = host.offsetWidth - host.clientWidth;
-    f.bar.style.top = `${Math.round(box.top + 8)}px`;
     const map = this.minimapWidth?.() || 0;
-    f.bar.style.right = `${Math.round(window.innerWidth - box.right + scrollbar + map + 16)}px`;
-    // The text moves down by the bar's height, so the bar never covers its first lines
-    f.target.el.classList.add('find-pushed');
-    f.target.el.style.setProperty('--find-bar-space', `${f.bar.offsetHeight + 8}px`);
-  }
-
-  unpushFindText() {
-    document.querySelectorAll('.find-pushed').forEach((el) => {
-      el.classList.remove('find-pushed');
-      el.style.removeProperty('--find-bar-space');
-    });
+    const right = Math.min(text.right - scrollbar - map, box.right) - 16;
+    f.bar.style.right = `${Math.round(window.innerWidth - right)}px`;
   }
 
   // The text pieces of a rich text, with where each starts in the whole text

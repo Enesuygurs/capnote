@@ -184,6 +184,9 @@ export class CapnoteApp {
     this.noteTitle = document.getElementById('noteTitle');
     this.richEditor = document.getElementById('noteContentEditable');
     this.searchInput = document.getElementById('searchInput');
+    // Its shortcut, as the system writes it (Cmd on macOS)
+    const shortcut = document.getElementById('searchShortcut');
+    if (shortcut && window.electronAPI?.platform === 'darwin') shortcut.textContent = '⌘K';
     this.tagInput = document.getElementById('tagInput');
     this.tagsList = document.getElementById('tagsList');
 
@@ -258,9 +261,6 @@ export class CapnoteApp {
 
     // Editor meta bilgileri
     this.noteDate = document.getElementById('noteDate');
-    this.wordCount = document.getElementById('wordCount');
-    this.charCount = document.getElementById('charCount');
-    this.editorReadingTime = document.getElementById('editorReadingTime');
 
     // Filter tabs (modern navigation)
     this.filterTabs = document.querySelectorAll('.segment[data-filter]');
@@ -280,8 +280,7 @@ export class CapnoteApp {
     this.settingsNav = document.getElementById('settingsNav');
     this.toggleNativeNotifications = document.getElementById('toggleNativeNotifications');
     this.testNativeNotifBtn = document.getElementById('testNativeNotifBtn');
-    this.clearAllNotesBtn = document.getElementById('clearAllNotesBtn');
-    this.clearAllFoldersBtn = document.getElementById('clearAllFoldersBtn');
+    this.clearAllDataBtn = document.getElementById('clearAllDataBtn');
     this.clearAllContentBtn = document.getElementById('clearAllContentBtn');
     this.darkModeToggle = document.getElementById('darkModeToggle');
     this.languageSelect = document.getElementById('languageSelect');

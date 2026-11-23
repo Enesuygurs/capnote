@@ -165,6 +165,15 @@
   white-space: nowrap;
 }
 
+/* A note's header (viewer and editor, the same so nothing moves between them) is lower than a
+   page's: its title, date and actions take less height */
+.viewer-header,
+.editor-header {
+  min-height: 72px;
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+}
+
 /* A note's title (in the viewer and in the editor) is cut about 8 characters before the edge */
 #viewerTitle,
 .note-title-input {

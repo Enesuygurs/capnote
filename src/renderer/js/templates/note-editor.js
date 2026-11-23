@@ -14,9 +14,6 @@ export const NOTE_EDITOR = /* HTML */ `
         />
         <div class="page-meta note-meta">
           <span id="noteDate"></span>
-          <span id="wordCount">0 <span data-i18n="stats.words">kelime</span></span>
-          <span id="charCount">0 <span data-i18n="stats.characters">karakter</span></span>
-          <span id="editorReadingTime">~0 <span data-i18n="stats.readingTime">dk okuma</span></span>
         </div>
       </div>
       <div class="page-actions editor-actions">
