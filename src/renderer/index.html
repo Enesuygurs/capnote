@@ -127,14 +127,17 @@
             <kbd class="search-shortcut" id="searchShortcut" aria-hidden="true">Ctrl + K</kbd>
           </div>
           <div class="segmented filter-tabs" role="tablist">
-            <button class="segment active" data-filter="all" role="tab" data-i18n="nav.allNotes">
-              Tümü
+            <button class="segment active" data-filter="all" role="tab">
+              <i class="fas fa-layer-group" aria-hidden="true"></i
+              ><span data-i18n="nav.allNotes">Tümü</span>
             </button>
-            <button class="segment" data-filter="today" role="tab" data-i18n="nav.today">
-              Bugün
+            <button class="segment" data-filter="today" role="tab">
+              <i class="fas fa-calendar-day" aria-hidden="true"></i
+              ><span data-i18n="nav.today">Bugün</span>
             </button>
-            <button class="segment" data-filter="favorites" role="tab" data-i18n="nav.favorites">
-              Favoriler
+            <button class="segment" data-filter="favorites" role="tab">
+              <i class="fas fa-heart" aria-hidden="true"></i
+              ><span data-i18n="nav.favorites">Favoriler</span>
             </button>
           </div>
           <!-- The tag the list is filtered by; a click removes the filter -->
