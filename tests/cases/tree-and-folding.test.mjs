@@ -34,7 +34,6 @@ export async function run() {
     updatedAt: t,
     folderId: 'c1',
     tags: [],
-    formatting: a.getDefaultFormatting(),
     history: [],
   });
   a.updateFoldersList();
@@ -91,7 +90,6 @@ export async function run() {
     updatedAt: t,
     folderId: null,
     tags: [],
-    formatting: a.getDefaultFormatting(),
     history: [],
   };
   a.notes.push(note);
