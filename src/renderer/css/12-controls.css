@@ -316,6 +316,7 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
 /* The sidebar's list filter (All / Today / Favorites): three pills on the sidebar, the chosen
    one in a tint of the accent with the accent's text color */
 .segmented.filter-tabs {
+  margin-top: var(--space-1);
   gap: var(--space-1);
   padding: 0;
   background: transparent;

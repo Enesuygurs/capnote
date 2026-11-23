@@ -40,7 +40,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-  padding: 0 var(--space-3) var(--space-3);
+  /* Little room under the list filter, the last thing in it */
+  padding: 0 var(--space-3) var(--space-1);
   flex-shrink: 0;
 }
 
