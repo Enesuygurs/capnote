@@ -5,6 +5,8 @@
 import { forgetKeys } from '../note-crypto.js';
 
 const CHECK_EVERY_MS = 15 * 1000;
+// The keys go this long after everything locked (the last edits are encrypted with them first)
+const FORGET_KEYS_AFTER_MS = 3000;
 
 export class IdleLockFeature {
   idleLockMinutes() {
@@ -29,9 +31,13 @@ export class IdleLockFeature {
       if (this.unlockedFolders.has(id)) this.relockFolder(this.folderById(id));
     });
     this.relockUnlockedNotes();
-    // No key stays in memory, here or in the main process (with its decrypted file copies)
-    forgetKeys();
-    window.electronAPI?.lockedImages?.forget?.();
+    // No key stays in memory, here or in the main process (with its decrypted file copies), once
+    // the edits being encrypted now are written with them
+    clearTimeout(this.forgetKeysTimer);
+    this.forgetKeysTimer = setTimeout(() => {
+      forgetKeys();
+      window.electronAPI?.lockedImages?.forget?.();
+    }, FORGET_KEYS_AFTER_MS);
     return true;
   }
 

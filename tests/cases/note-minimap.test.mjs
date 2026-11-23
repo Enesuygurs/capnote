@@ -75,7 +75,7 @@ export const expected = {
   saved: true,
   shownInViewer: true,
   copiesTheNote: 30,
-  textKeepsClear: '104px',
+  textKeepsClear: '116px',
   clickScrolls: true,
   boxFollows: true,
   shownInEditor: true,

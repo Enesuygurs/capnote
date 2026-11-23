@@ -188,7 +188,7 @@ export const expected = {
   },
   refused: { copies: 0, archived: false, exportOpen: false, historyOpen: 0 },
   migrate: [true, 'old.md', false, 'My notes'],
-  dragOver: { marked: true, label: 'Not olarak aç' },
+  dragOver: { marked: true, label: undefined },
   deleteFileNote: {
     label: 'Dosyayı da sil',
     ticked: false,

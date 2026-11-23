@@ -14,7 +14,6 @@ export async function run() {
       updatedAt: t,
       folderId: null,
       tags: [],
-      formatting: a.getDefaultFormatting(),
       history: [],
       ...extra,
     };
