@@ -39,7 +39,9 @@ export async function run() {
     el.classList.contains('folder-container')
       ? el.querySelector(':scope > .folder-item .nav-text').textContent
       : el.querySelector('.note-item-title')?.textContent;
-  const top = (count = 4) => [...a.notesList.children].slice(0, count).map(rowName);
+  // The pinned section first, then the notes
+  const rows = () => [...document.getElementById('pinnedList').children, ...a.notesList.children];
+  const top = (count = 4) => rows().slice(0, count).map(rowName);
   r.start = top();
 
   // The folder before the first note; then "One" after "Three"
