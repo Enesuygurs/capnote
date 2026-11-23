@@ -313,18 +313,19 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
   font-weight: 600;
 }
 
-/* The sidebar's list filter (All / Today / Favorites): three pills on the sidebar, the chosen
-   one in a tint of the accent with the accent's text color */
+/* The sidebar's list filter (All / Today / Favorites): chips sharing the width, no icons; the
+   chosen one in a tint of the accent with the accent's text color, the others plain */
 .segmented.filter-tabs {
   margin-top: var(--space-1);
-  gap: var(--space-1);
+  gap: 4px;
   padding: 0;
   background: transparent;
 }
 
 .filter-tabs .segment {
   height: 28px;
-  border-radius: 999px;
+  padding: 0 6px;
+  border-radius: var(--radius-md);
   background: transparent;
 }
 

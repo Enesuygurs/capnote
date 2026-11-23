@@ -2,7 +2,6 @@
 // and renaming a note in place
 
 import { i18n } from '../i18n.js';
-import { MAX_PINNED_NOTES } from '../constants.js';
 
 export class SelectionFeature {
   get hasSelection() {
@@ -100,15 +99,8 @@ export class SelectionFeature {
     const notes = this.notes.filter((n) => this.selectedNoteIds.has(n.id));
     const value = !notes.every((n) => n.isPinned);
     if (value) {
-      const free = MAX_PINNED_NOTES - this.notes.filter((n) => n.isPinned).length;
       const toPin = notes.filter((n) => !n.isPinned);
-      if (toPin.length > free) {
-        this.showNotification(
-          i18n.t('messages.maxPinnedNotes').replace('{count}', MAX_PINNED_NOTES),
-          'error'
-        );
-        return;
-      }
+      if (!this.canPinMore(toPin.length)) return;
       toPin.forEach((n) => {
         this.setPinned(n, true);
       });

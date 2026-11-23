@@ -767,6 +767,8 @@ export class FoldersFeature {
     const folders = this.folders.filter((f) => folderIds.includes(f.id) && !this.folderParentId(f));
     if (!folders.length) return;
     const value = !folders.every((f) => f.isPinned);
+    // No more than the pin limit (notes and folders together)
+    if (value && !this.canPinMore(folders.filter((f) => !f.isPinned).length)) return;
     folders.forEach((f) => {
       this.setPinned(f, value);
     });

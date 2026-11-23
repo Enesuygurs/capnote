@@ -5,8 +5,8 @@ export const DEFAULT_ACCENT = '#f59e0b';
 // Version of the stored data layout; backups record it so newer files are not misread
 export const SCHEMA_VERSION = 2;
 
-// How many notes can be pinned at once
-export const MAX_PINNED_NOTES = 10;
+// How many notes and folders can be pinned at once, together
+export const MAX_PINNED_NOTES = 8;
 
 export const DEFAULT_SETTINGS = {
   language: 'tr',
