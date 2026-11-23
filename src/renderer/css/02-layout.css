@@ -169,9 +169,9 @@
    page's: its title, date and actions take less height */
 .viewer-header,
 .editor-header {
-  min-height: 72px;
-  padding-top: var(--space-2);
-  padding-bottom: var(--space-2);
+  min-height: 84px;
+  padding-top: 16px;
+  padding-bottom: 10px;
 }
 
 /* A note's title (in the viewer and in the editor) is cut about 8 characters before the edge */
