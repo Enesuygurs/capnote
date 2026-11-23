@@ -2,6 +2,7 @@
 
 import { i18n } from '../i18n.js';
 import { MOOD_KEYWORDS, WEATHER_KEYWORDS } from '../data/moods.js';
+import { MAX_PINNED_NOTES } from '../constants.js';
 
 export class NoteListFeature {
   updateNotesList() {
@@ -488,6 +489,19 @@ export class NoteListFeature {
     return items.sort((x, y) => this.pinKey(x.note || x.folder) - this.pinKey(y.note || y.folder));
   }
 
+  // How many more can be pinned (notes and folders together count to the limit). Says so when
+  // `wanted` do not fit; true when they do.
+  canPinMore(wanted = 1) {
+    const pinned =
+      this.notes.filter((n) => n.isPinned).length + this.folders.filter((f) => f.isPinned).length;
+    if (pinned + wanted <= MAX_PINNED_NOTES) return true;
+    this.showNotification(
+      i18n.t('messages.maxPinnedNotes', { count: MAX_PINNED_NOTES }),
+      'warning'
+    );
+    return false;
+  }
+
   // A note of the notes (not pinned) dragged over a note of the pinned section
   pinsOnDrop(target) {
     if (!target?.isPinned || target.folderId || !this.draggedNoteId) return false;
@@ -499,7 +513,7 @@ export class NoteListFeature {
   // pinned one, or last). A note from a folder comes out of it into the root list's pinned ones.
   async pinAndPlace(noteId, target, before) {
     const note = this.notes.find((n) => n.id === noteId);
-    if (!note || note.isPinned) return;
+    if (!note || note.isPinned || !this.canPinMore()) return;
     if (note.folderId) note.folderId = null;
     this.setPinned(note, true);
     if (target) {

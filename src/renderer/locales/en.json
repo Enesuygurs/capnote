@@ -315,7 +315,7 @@
     "enterPasswordToOpen": "Enter password to open note",
     "noteIsLocked": "Locked Note",
     "newFolder": "New Folder",
-    "maxPinnedNotes": "Maximum {count} notes can be pinned",
+    "maxPinnedNotes": "At most {count} items can be pinned",
     "addToFavorites": "Add to favorites",
     "removeFromFavorites": "Remove from favorites",
     "addedToFavorites": "Added to favorites!",
