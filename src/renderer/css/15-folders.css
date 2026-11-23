@@ -6,17 +6,6 @@
   margin-left: auto;
 }
 
-/* A pinned folder: a small gold pin before its count */
-.folder-pin {
-  margin-left: auto;
-  font-size: var(--fs-xs);
-  color: var(--tone);
-}
-
-.folder-pin + .folder-count {
-  margin-left: 0;
-}
-
 /* A locked folder: locked now, a lock in place of its folder icon (no count, no arrow); opened, its
    folder icon again and an open lock before its count. The compact list has no icons, so there
    the lock stays at the end of the row either way. */
@@ -28,10 +17,6 @@
   margin-left: auto;
   font-size: var(--fs-xs);
   color: var(--tone);
-}
-
-.folder-pin + .folder-lock {
-  margin-left: 0;
 }
 
 .folder-lock + .folder-count {
@@ -92,11 +77,6 @@
   margin-top: -8px;
   height: 16px;
   line-height: 16px;
-}
-
-/* The pin of a pinned folder moves to the end of the row, where the count was */
-.compact-list .folder-pin {
-  margin-left: auto;
 }
 
 /* What is in a folder: indented, on a line down from the folder's arrow; a small gap after the line,

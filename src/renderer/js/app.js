@@ -145,6 +145,8 @@ export class CapnoteApp {
     this.setupFileNotes();
     // The tray menu's theme and recent notes
     this.setupTraySync();
+    // A note dragged onto the pinned section is pinned
+    this.setupPinnedSectionDrop();
   }
 
   initializeElements() {

@@ -339,7 +339,8 @@ export class NoteListFeature {
   }
 
   // One sidebar entry for a note, used by the root list and inside folders.
-  // The icon shows a locked or pinned note; a heart on the right marks a favorite.
+  // The icon shows a locked note; a heart on the right marks a favorite (pinned notes have their
+  // own section, so they need no pin).
   createNoteItem(note, inFolder = false) {
     const div = document.createElement('div');
     div.className = inFolder ? 'nav-subitem folder-note-item note-item' : 'note-item';
@@ -362,11 +363,9 @@ export class NoteListFeature {
     // Long titles are shortened by CSS; the full title shows as a tooltip
     div.title = title;
 
-    // A pinned note shows its pin (even when locked); a locked one its lock, open while it is opened
-    // for this session
-    const icon = note.isPinned
-      ? 'fas fa-thumbtack tone-gold'
-      : note.isLocked && !note.lockedByFolder
+    // A locked note shows its lock, open while it is opened for this session
+    const icon =
+      note.isLocked && !note.lockedByFolder
         ? this.unlockedNotes.has(String(note.id))
           ? 'fas fa-lock-open tone-lock'
           : 'fas fa-lock tone-lock'
@@ -432,6 +431,15 @@ export class NoteListFeature {
     const takesFolder = () =>
       this.draggedFolderId && !note.folderId && !note.isPinned && !this.pinnedDragItem();
     div.addEventListener('dragover', (e) => {
+      // A note dragged from the notes onto a note of the pinned section: it is pinned there
+      if (this.pinsOnDrop(note)) {
+        e.preventDefault();
+        e.stopPropagation();
+        const before = dropBefore(e);
+        div.classList.toggle('insert-before', before);
+        div.classList.toggle('insert-after', !before);
+        return;
+      }
       // A pinned note or folder dragged: it goes before or after a pinned note of its list only
       const pinned = this.pinnedDragItem();
       if (pinned) {
@@ -462,6 +470,12 @@ export class NoteListFeature {
     div.addEventListener('dragleave', () => div.classList.remove('insert-before', 'insert-after'));
     div.addEventListener('drop', (e) => {
       div.classList.remove('insert-before', 'insert-after');
+      if (this.pinsOnDrop(note)) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.pinAndPlace(this.draggedNoteId, { note }, dropBefore(e));
+        return;
+      }
       const pinned = this.pinnedDragItem();
       if (pinned) {
         if (!this.canPlaceAmongPinned(pinned, { note })) return;
@@ -513,6 +527,53 @@ export class NoteListFeature {
   // The pinned notes and folders of the root list together, in their order
   pinnedListItems(items) {
     return items.sort((x, y) => this.pinKey(x.note || x.folder) - this.pinKey(y.note || y.folder));
+  }
+
+  // A note of the notes (not pinned) dragged over a note of the pinned section
+  pinsOnDrop(target) {
+    if (!target?.isPinned || target.folderId || !this.draggedNoteId) return false;
+    const dragged = this.notes.find((n) => n.id === this.draggedNoteId);
+    return !!dragged && !dragged.isPinned && !dragged.isArchived;
+  }
+
+  // Pin a note dropped on the pinned section and put it where it was dropped (before or after a
+  // pinned one, or last). A note from a folder comes out of it into the root list's pinned ones.
+  async pinAndPlace(noteId, target, before) {
+    const note = this.notes.find((n) => n.id === noteId);
+    if (!note || note.isPinned) return;
+    if (note.folderId) note.folderId = null;
+    this.setPinned(note, true);
+    if (target) {
+      await this.placeAmongPinned({ note }, target, before);
+    } else {
+      await this.saveNotes();
+      this.updateNotesList();
+      this.updateFoldersList();
+    }
+  }
+
+  // The pinned section takes a dragged note dropped on it (not on a row): pinned, last
+  setupPinnedSectionDrop() {
+    const section = document.getElementById('pinnedSection');
+    if (!section) return;
+    const takes = () => {
+      const dragged = this.draggedNoteId && this.notes.find((n) => n.id === this.draggedNoteId);
+      return !!dragged && !dragged.isPinned && !dragged.isArchived;
+    };
+    section.addEventListener('dragover', (e) => {
+      if (!takes()) return;
+      e.preventDefault();
+      section.classList.add('drag-over');
+    });
+    section.addEventListener('dragleave', (e) => {
+      if (!section.contains(e.relatedTarget)) section.classList.remove('drag-over');
+    });
+    section.addEventListener('drop', (e) => {
+      section.classList.remove('drag-over');
+      if (!takes()) return;
+      e.preventDefault();
+      this.pinAndPlace(this.draggedNoteId, null);
+    });
   }
 
   // ============ Reordering the pinned ones ============

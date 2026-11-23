@@ -388,3 +388,11 @@ body:has(#templateMenu:not(.hidden)) .new-note-more i {
 .pinned-section {
   margin-bottom: var(--space-2);
 }
+
+/* A note dragged from the notes onto the pinned section: the section shows it takes it */
+.pinned-section.drag-over {
+  border-radius: var(--radius-md);
+  outline: 2px dashed var(--accent-color);
+  outline-offset: -2px;
+  background: var(--accent-tint);
+}
