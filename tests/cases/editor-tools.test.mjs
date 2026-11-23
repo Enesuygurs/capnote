@@ -1,5 +1,5 @@
 // Every editor tool, used the way a click uses it (toolbar buttons must not take the caret):
-// styles, date, lists, tasks, code blocks, tables, getting past blocks, emoji, paste, images,
+// styles, date, lists, tasks, code blocks, tables, getting past blocks, paste, images,
 // saving and reopening, previews
 
 export async function run() {
@@ -162,15 +162,6 @@ export async function run() {
   type('out');
   r.listExit = ed.innerHTML;
 
-  // Emoji goes in at the caret
-  fresh();
-  caretIn(ed.querySelector('p').firstChild, 5);
-  a.toggleEmojiPanel();
-  await wait(300);
-  a.emojiGrid.querySelector('.emoji-grid-btn').click();
-  r.emojiAtCaret = /^hello\S+ world$/u.test(ed.textContent);
-  a.hideEmojiPanel();
-
   // Pasting text in a code block keeps it plain and in the block
   fresh('<pre><code>a</code></pre>');
   caretIn(ed.querySelector('code').firstChild, 1);
@@ -237,7 +228,6 @@ export const expected = {
   center: 'center',
   color: true,
   listExit: '<ul><li>hello world</li></ul><p>out</p>',
-  emojiAtCaret: true,
   pasteInCode: 'ax\ny',
   image: '<p>hello[img]! world</p>',
   reopened: 'P,PRE,DIV.checklist,UL,P',

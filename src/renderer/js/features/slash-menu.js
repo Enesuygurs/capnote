@@ -50,7 +50,6 @@ export class SlashMenuFeature {
         'image picture photo',
         () => this.browseImageInput?.click(),
       ],
-      ['emoji', 'fa-face-smile', 'toolbar.emoji', 'emoji', () => this.toggleEmojiPanel()],
       ['date', 'fa-calendar-plus', 'toolbar.date', 'date today', () => this.insertDateTime('date')],
       ['time', 'fa-clock', 'toolbar.time', 'time now', () => this.insertDateTime('time')],
     ].map(([name, icon, label, words, run]) => ({ name, icon, label, words, run }));

@@ -166,7 +166,6 @@ export class TodosFeature {
       tags: [],
       isLocked: false,
       folderId: null,
-      formatting: { ...this.getDefaultFormatting() },
       history: [{ type: 'created', ts: now }],
     });
     this.todoSections = [];

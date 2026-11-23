@@ -92,14 +92,8 @@ export class StorageFeature {
         }
         // Older versions persisted the temporary unlock flag; drop it
         delete note.isUnlocked;
-        if (!note.formatting) {
-          note.formatting = this.getDefaultFormatting();
-        } else {
-          note.formatting = {
-            fontFamily: note.formatting.fontFamily || this.defaultFormatting.fontFamily,
-            fontSize: note.formatting.fontSize || this.defaultFormatting.fontSize,
-          };
-        }
+        // Older versions kept a font and a size for the whole note; notes use the app's font now
+        delete note.formatting;
       });
 
       // Sort notes by date

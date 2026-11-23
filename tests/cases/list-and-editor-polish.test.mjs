@@ -1,7 +1,8 @@
 // Pinned notes and folders stay in the order they were pinned (a folder pinned after notes comes
 // after them); an empty mood or weather card has its message in the middle of the card; an image
-// on the clipboard is pasted into the note; the text style, font and size boxes have room between
-// them; and the note icons in the list can be hidden in the settings.
+// on the clipboard is pasted into the note; the toolbar has the text style only (no font or size
+// boxes), and an image, a file and the link side by side in that order; and the note icons in the
+// list can be hidden in the settings.
 
 export async function run() {
   const a = window.app;
@@ -88,17 +89,19 @@ export async function run() {
   }
   a.cancelEdit();
 
-  // Room between the text style, font and size boxes
-  const boxes = ['blockStyle', 'fontFamily', 'fontSize'].map((id) =>
-    document.getElementById(id).getBoundingClientRect()
-  );
+  // The toolbar: no font or size boxes; image, file and link in a row, in that order, not in a menu
   a.createNewNote();
-  const boxes2 = ['blockStyle', 'fontFamily', 'fontSize'].map((id) =>
-    document.getElementById(id).getBoundingClientRect()
+  r.fontBoxes = ['fontFamily', 'fontSize'].filter((id) => document.getElementById(id)).length;
+  const tools = ['browseImageBtn', 'addNoteFileBtn', 'insertLinkBtn'].map((id) =>
+    document.getElementById(id)
   );
-  r.boxGaps = [boxes2[1].left - boxes2[0].right, boxes2[2].left - boxes2[1].right];
+  const boxes = tools.map((el) => el.getBoundingClientRect());
+  r.insertTools = {
+    inMenu: tools.some((el) => !!el.closest('.toolbar-popover')),
+    sameRow: boxes.every((b) => Math.abs(b.top - boxes[0].top) < 1),
+    inOrder: boxes[0].right <= boxes[1].left && boxes[1].right <= boxes[2].left,
+  };
   a.cancelEdit();
-  void boxes;
 
   // Hiding the note icons
   // An ordinary note's icon (a lock or a pin stays when icons are hidden)
@@ -128,7 +131,8 @@ export const expected = {
     cardPositioned: 'relative',
   },
   paste: { image: true, src: true, textPasted: false, loads: true },
-  boxGaps: [8, 8],
+  fontBoxes: 0,
+  insertTools: { inMenu: false, sameRow: true, inOrder: true },
   iconsShown: true,
   iconsHidden: { display: 'none', setting: true },
   iconsBack: true,

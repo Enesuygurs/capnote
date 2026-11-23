@@ -84,7 +84,6 @@ export class FileNotesFeature {
         charCount: counts.chars,
         isLocked: false,
         folderId: null,
-        formatting: { ...this.getDefaultFormatting(), textAlign: 'left' },
         history: [{ type: 'created', ts: now }],
       };
       this.notes.unshift(note);

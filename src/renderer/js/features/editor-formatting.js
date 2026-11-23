@@ -1,4 +1,4 @@
-// Formatting toolbar: fonts, colors, styles and alignment
+// Formatting toolbar: colors, styles and alignment
 
 export class EditorFormattingFeature {
   setupFormattingToolbar() {
@@ -54,9 +54,6 @@ export class EditorFormattingFeature {
       .getElementById('insertTime')
       .addEventListener('click', () => this.insertDateTime('time'));
 
-    // Emoji panel toggle
-    if (this.openEmojiBtn)
-      this.openEmojiBtn.addEventListener('click', (e) => this.toggleEmojiPanel());
     // Browse image button opens hidden file input
     if (this.browseImageBtn && this.browseImageInput) {
       this.browseImageBtn.addEventListener('click', () => this.browseImageInput.click());
@@ -116,12 +113,7 @@ export class EditorFormattingFeature {
     this.richEditor.focus();
 
     try {
-      if (command === 'fontFamily') {
-        document.execCommand('fontName', false, value);
-      } else if (command === 'fontSize') {
-        // Modern approach for font size
-        this.applyFontSize(value);
-      } else if (command === 'color') {
+      if (command === 'color') {
         document.execCommand('foreColor', false, value);
       } else if (command === 'backgroundColor') {
         // Use modern approach for background color for better reliability
@@ -182,28 +174,6 @@ export class EditorFormattingFeature {
     return true;
   }
 
-  applyFontSize(sizeValue) {
-    const selection = window.getSelection();
-    if (selection.rangeCount === 0) return;
-
-    const range = selection.getRangeAt(0);
-    if (range.collapsed) return;
-
-    try {
-      this.styleSelectedText('fontSize', sizeValue);
-    } catch {
-      // Fallback to execCommand
-      const sizeNum = parseInt(sizeValue);
-      if (sizeNum <= 10) document.execCommand('fontSize', false, '1');
-      else if (sizeNum <= 12) document.execCommand('fontSize', false, '2');
-      else if (sizeNum <= 14) document.execCommand('fontSize', false, '3');
-      else if (sizeNum <= 18) document.execCommand('fontSize', false, '4');
-      else if (sizeNum <= 24) document.execCommand('fontSize', false, '5');
-      else if (sizeNum <= 32) document.execCommand('fontSize', false, '6');
-      else document.execCommand('fontSize', false, '7');
-    }
-  }
-
   applyBackgroundColor(colorValue) {
     // Ensure editor has focus and selection is restored
     if (!this.richEditor) return;
@@ -258,15 +228,14 @@ export class EditorFormattingFeature {
   }
 
   // A note opening in the editor starts with a clean toolbar: nothing bold or underlined, the
-  // note's alignment, plain text, the default colors and every list and menu closed. The buttons
+  // text aligned left, plain text, the default colors and every list and menu closed. The buttons
   // otherwise only follow the caret, so the previous note's state would stay on them.
   resetToolbarState() {
     document
       .querySelectorAll('.format-btn[data-format]')
       .forEach((btn) => btn.classList.remove('active'));
-    const align = this.getEditorFormatting().textAlign || 'left';
     document.querySelectorAll('.format-btn[data-align]').forEach((btn) => {
-      btn.classList.toggle('active', btn.dataset.align === align);
+      btn.classList.toggle('active', btn.dataset.align === 'left');
     });
     this.updateCustomDropdown('blockStyle', 'p');
     if (this.textColor) this.textColor.value = '#363636';
@@ -301,21 +270,6 @@ export class EditorFormattingFeature {
         range.commonAncestorContainer.nodeType === Node.TEXT_NODE
           ? range.commonAncestorContainer.parentNode
           : range.commonAncestorContainer;
-
-      // Update font family
-      const fontFamily = window.getComputedStyle(node).fontFamily;
-      if (this.fontFamilyDropdown && fontFamily) {
-        // Clean up font family name
-        const cleanFont = fontFamily.replace(/['"]/g, '').split(',')[0];
-        this.updateCustomDropdown('fontFamily', cleanFont);
-      }
-
-      // Update font size
-      const fontSize = window.getComputedStyle(node).fontSize;
-      if (this.fontSizeDropdown && fontSize) {
-        const sizeValue = parseInt(fontSize);
-        this.updateCustomDropdown('fontSize', sizeValue.toString());
-      }
 
       // Update text color and background color pickers based on selection
       try {
@@ -374,49 +328,9 @@ export class EditorFormattingFeature {
       item.classList.remove('active');
       if (item.dataset.value === value) {
         item.classList.add('active');
-        // The font dropdowns need their own handling
-        if (dropdownId === 'fontFamily' || dropdownId === 'fontSize') {
-          selectSelected.textContent = item.textContent;
-        } else {
-          selectSelected.textContent = item.textContent;
-        }
+        selectSelected.textContent = item.textContent;
       }
     });
-  }
-
-  getDefaultFormatting() {
-    return { ...this.defaultFormatting };
-  }
-
-  setEditorFormatting(formatting = {}) {
-    const applied = { ...this.getDefaultFormatting(), ...(formatting || {}) };
-    this.baseFormatting = { ...applied };
-
-    if (this.richEditor) {
-      this.richEditor.style.fontFamily = applied.fontFamily;
-      this.richEditor.style.fontSize = applied.fontSize;
-    }
-
-    if (this.fontFamilyDropdown) {
-      this.updateCustomDropdown('fontFamily', applied.fontFamily);
-    }
-
-    if (this.fontSizeDropdown) {
-      const numericSize = parseInt(applied.fontSize, 10);
-      if (!Number.isNaN(numericSize)) {
-        this.updateCustomDropdown('fontSize', numericSize.toString());
-      }
-    }
-  }
-
-  getEditorFormatting() {
-    return { ...this.baseFormatting };
-  }
-
-  areFormattingsEqual(a = {}, b = {}) {
-    return (
-      (a.fontFamily || '') === (b.fontFamily || '') && (a.fontSize || '') === (b.fontSize || '')
-    );
   }
 
   setupCustomDropdown() {
@@ -469,14 +383,7 @@ export class EditorFormattingFeature {
           selectSelected.classList.remove('select-arrow-active');
 
           // Handle different dropdown types
-          const dropdownId = customSelect.id;
-          if (dropdownId === 'fontFamily') {
-            this.changeFontFamily(value);
-          } else if (dropdownId === 'fontSize') {
-            this.changeFontSize(value);
-          } else if (dropdownId === 'blockStyle') {
-            this.applyBlockStyle(value);
-          }
+          if (customSelect.id === 'blockStyle') this.applyBlockStyle(value);
         });
       });
     });
@@ -493,41 +400,5 @@ export class EditorFormattingFeature {
 
     selectItems.forEach((item) => item.classList.add('select-hide'));
     selectSelected.forEach((selected) => selected.classList.remove('select-arrow-active'));
-  }
-
-  changeFontFamily(fontFamily) {
-    if (!fontFamily) return;
-
-    this.restoreEditorSelection();
-    this.richEditor.focus();
-    const selection = window.getSelection();
-
-    if (this.shouldApplyToSelection(selection)) {
-      this.applyFormat('fontFamily', fontFamily);
-    } else {
-      const updatedFormatting = { ...this.getEditorFormatting(), fontFamily };
-      this.setEditorFormatting(updatedFormatting);
-      this.trackContentChanges();
-      this.captureEditorSelection();
-    }
-  }
-
-  changeFontSize(fontSize) {
-    if (!fontSize && fontSize !== 0) return;
-
-    const sizeValue = fontSize.toString().endsWith('px') ? fontSize.toString() : `${fontSize}px`;
-
-    this.restoreEditorSelection();
-    this.richEditor.focus();
-    const selection = window.getSelection();
-
-    if (this.shouldApplyToSelection(selection)) {
-      this.applyFormat('fontSize', sizeValue);
-    } else {
-      const updatedFormatting = { ...this.getEditorFormatting(), fontSize: sizeValue };
-      this.setEditorFormatting(updatedFormatting);
-      this.trackContentChanges();
-      this.captureEditorSelection();
-    }
   }
 }

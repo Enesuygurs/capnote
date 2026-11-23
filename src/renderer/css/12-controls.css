@@ -314,7 +314,7 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
 }
 
 /* ============ Menus ============
-   Every popup list: note options, folder context menu, sort, selects, the emoji panel */
+   Every popup list: note options, folder context menu, sort, selects */
 .menu {
   display: flex;
   flex-direction: column;

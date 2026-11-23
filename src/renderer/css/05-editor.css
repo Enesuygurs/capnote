@@ -156,13 +156,9 @@
   text-align: center;
 }
 
-/* Text style, font family and size, as narrow as their longest choice allows */
+/* The text style, as narrow as its longest choice allows */
 .format-custom-select {
   width: 116px;
-}
-
-.format-custom-select#fontSize {
-  width: 72px;
 }
 
 /* Just wide enough for the longest style ("Heading 3"): a narrower gap for the arrow */

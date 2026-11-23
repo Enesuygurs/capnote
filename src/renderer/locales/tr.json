@@ -82,7 +82,6 @@
     "addTag": "Etiket ekle...",
     "folderName": "Klasör adını girin...",
     "password": "Şifre girin...",
-    "searchEmoji": "Emoji ara...",
     "markdown": "Markdown girin..."
   },
   "stats": {
@@ -257,19 +256,6 @@
     "priority2": "Öncelik 2 · Yüksek",
     "priority3": "Öncelik 3 · Orta",
     "priorityNone": "Öncelik yok"
-  },
-  "emojiCategories": {
-    "label": "Emoji kategorileri",
-    "all": "Tümü",
-    "smileys": "Gülücükler",
-    "people": "İnsanlar",
-    "animals": "Hayvanlar",
-    "food": "Yemek",
-    "activities": "Aktiviteler",
-    "travel": "Seyahat",
-    "objects": "Nesneler",
-    "symbols": "Semboller",
-    "flags": "Bayraklar"
   },
   "viewer": {
     "created": "Oluşturuldu:",
@@ -577,7 +563,6 @@
     "table": "Tablo",
     "codeBlock": "Kod bloğu",
     "image": "Görsel",
-    "emoji": "Emoji",
     "date": "Tarih",
     "time": "Saat"
   },

@@ -193,7 +193,6 @@ export class LockFeature {
       mood: note.mood,
       weather: note.weather,
       tags: [...(note.tags || [])],
-      formatting: { ...(note.formatting || this.getDefaultFormatting()) },
     };
     this.displayNote(note);
     // Its lock in the list shows open

@@ -1,5 +1,5 @@
-// In English the labels a screen reader reads are English too: the reminder form's buttons, the
-// emoji tabs, and icon-only buttons (named by their title)
+// In English the labels a screen reader reads are English too: the reminder form's buttons and
+// icon-only buttons (named by their title)
 
 export async function run() {
   const a = window.app;
@@ -8,7 +8,7 @@ export async function run() {
   return {
     date: document.getElementById('reminderDateText').textContent,
     time: document.getElementById('reminderTimeText').textContent,
-    emojiTabs: document.querySelector('.emoji-tabs').getAttribute('aria-label'),
+    imageButton: document.getElementById('browseImageBtn').getAttribute('aria-label'),
     iconButton: document.getElementById('editNoteBtn').getAttribute('aria-label'),
   };
 }
@@ -16,6 +16,6 @@ export async function run() {
 export const expected = {
   date: 'Date',
   time: 'Time',
-  emojiTabs: 'Emoji categories',
+  imageButton: 'Image',
   iconButton: 'Edit',
 };

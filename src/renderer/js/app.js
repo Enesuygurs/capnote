@@ -12,7 +12,6 @@ import { EditorFeature } from './features/editor.js';
 import { EditorFormattingFeature } from './features/editor-formatting.js';
 import { EditorInsertFeature } from './features/editor-insert.js';
 import { PreviewsFeature } from './features/previews.js';
-import { EmojiFeature } from './features/emoji.js';
 import { NoteListFeature } from './features/note-list.js';
 import { FoldersFeature } from './features/folders.js';
 import { RemindersFeature } from './features/reminders.js';
@@ -83,11 +82,6 @@ export class CapnoteApp {
     // Latest re-encryption request per note, so an older result never overwrites a newer one
     this.sealRequests = new WeakMap();
 
-    this.defaultFormatting = {
-      fontFamily: 'Inter',
-      fontSize: '14px',
-    };
-    this.baseFormatting = { ...this.defaultFormatting };
     this.savedSelection = null;
 
     this.init();
@@ -201,8 +195,6 @@ export class CapnoteApp {
     this.browseImageInput = document.getElementById('browseImageInput');
 
     // Formatting toolbar
-    this.fontFamilyDropdown = document.getElementById('fontFamily');
-    this.fontSizeDropdown = document.getElementById('fontSize');
     this.textColor = document.getElementById('textColor');
     this.bgColor = document.getElementById('bgColor');
 
@@ -416,23 +408,6 @@ export class CapnoteApp {
     // Mood and weather buttons
     this.moodBtns = document.querySelectorAll('.mood-btn');
     this.weatherBtns = document.querySelectorAll('.weather-btn');
-    // Emoji toolbar/panel elements
-    this.openEmojiBtn = document.getElementById('openEmojiBtn');
-    this.emojiPanel = document.getElementById('emojiPanel');
-    this.emojiGrid = document.getElementById('emojiGrid');
-    this.emojiSearchInput = document.getElementById('emojiSearchInput');
-
-    // If the emoji panel is placed inside a transformed or positioned ancestor it can
-    // change how `position: fixed` is calculated. Move it to document.body so JS can
-    // place it reliably relative to the viewport using getBoundingClientRect.
-    try {
-      if (this.emojiPanel && this.emojiPanel.parentElement !== document.body) {
-        document.body.appendChild(this.emojiPanel);
-      }
-    } catch (e) {
-      // ignore DOM move errors
-    }
-
     // Password Modal
     this.passwordModal = document.getElementById('passwordModal');
     this.passwordInput = document.getElementById('passwordInput');
@@ -464,7 +439,6 @@ export class CapnoteApp {
     this.setupPreviewEvents();
     this.setupFolderEvents();
     this.setupSelectionEvents();
-    this.setupEmojiOutsideClose();
     this.setupReminderEvents();
     this.setupReminderForm();
     this.setupEditorEvents();
@@ -736,7 +710,6 @@ applyFeatures(CapnoteApp, [
   EditorFormattingFeature,
   EditorInsertFeature,
   PreviewsFeature,
-  EmojiFeature,
   NoteListFeature,
   FoldersFeature,
   RemindersFeature,

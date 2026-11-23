@@ -142,8 +142,6 @@ export class NotesFeature {
       this.searchNotes();
     }
 
-    // Ensure emoji panel is closed when leaving the current note
-    this.hideEmojiPanel();
     // Remember where we came from so cancelling the new note can go back there
     this.noteBeforeNew =
       this.currentNote && this.notes.includes(this.currentNote) ? this.currentNote : null;
@@ -161,10 +159,6 @@ export class NotesFeature {
       charCount: 0,
       isLocked: false,
       folderId: null,
-      formatting: {
-        ...this.getDefaultFormatting(),
-        textAlign: 'left',
-      },
     };
     const folder = folderId && this.folders.find((f) => f.id === folderId);
     if (folder) {
@@ -302,7 +296,6 @@ export class NotesFeature {
     this.currentNote.wordCount = counts.words;
     this.currentNote.charCount = counts.chars;
     this.currentNote.tags = [...this.tags];
-    this.currentNote.formatting = this.getEditorFormatting();
 
     // Update the existing note or add a new one
     this.upsertCurrentNote();
@@ -342,7 +335,6 @@ export class NotesFeature {
       mood: this.currentNote.mood,
       weather: this.currentNote.weather,
       tags: [...(this.currentNote.tags || [])],
-      formatting: { ...(this.currentNote.formatting || this.getDefaultFormatting()) },
     };
 
     // Save last viewed note when editing
@@ -452,7 +444,7 @@ export class NotesFeature {
   // A new note with the content of `note`, in the same folder
   makeDuplicate(note) {
     const now = new Date().toISOString();
-    // A copy has its own tags, formatting and history; it does not share the original's
+    // A copy has its own tags and history; it does not share the original's
     const duplicate = {
       ...note,
       id: this.newId(),
@@ -460,7 +452,6 @@ export class NotesFeature {
       // not a title to store
       title: note.title ? note.title + i18n.t('messages.noteCopySuffix') : '',
       tags: [...(note.tags || [])],
-      formatting: { ...(note.formatting || this.getDefaultFormatting()) },
       attachments: [...(note.attachments || [])],
       attachedFiles: this.noteFiles(note).map((file) => ({ ...file })),
       history: [{ type: 'created', ts: now }],
@@ -553,7 +544,6 @@ export class NotesFeature {
       mood: note.mood,
       weather: note.weather,
       tags: [...(note.tags || [])],
-      formatting: { ...(note.formatting || this.getDefaultFormatting()) },
     };
 
     // Save last viewed note

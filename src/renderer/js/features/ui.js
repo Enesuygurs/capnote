@@ -310,10 +310,6 @@ export class UiFeature {
           else this.hideAllModals();
           return;
         }
-        if (this.emojiPanel && !this.emojiPanel.classList.contains('hidden')) {
-          this.hideEmojiPanel();
-          return;
-        }
         if (this.hasSelection) {
           this.hideSelectionMenu();
           this.clearSelection();

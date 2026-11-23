@@ -88,7 +88,6 @@ export class QuickNoteFeature {
       isLocked: false,
       folderId: null,
       attachments: [],
-      formatting: { ...this.getDefaultFormatting(), textAlign: 'left' },
       history: [{ type: 'created', ts: now }],
     };
     this.notes.unshift(note);
