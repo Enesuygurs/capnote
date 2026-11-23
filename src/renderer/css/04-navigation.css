@@ -396,3 +396,24 @@ body:has(#templateMenu:not(.hidden)) .new-note-more i {
   outline-offset: -2px;
   background: var(--accent-tint);
 }
+
+/* A section's header opens and closes its list (a click on its title side); a small chevron says
+   which way, turned while it is closed */
+.sidebar-nav .nav-section[data-section] > .nav-section-header {
+  cursor: pointer;
+  user-select: none;
+}
+
+.nav-section-chevron {
+  font-size: 9px;
+  color: var(--text-muted);
+  transition: transform 0.15s ease;
+}
+
+.nav-section.is-collapsed .nav-section-chevron {
+  transform: rotate(-90deg);
+}
+
+.nav-section.is-collapsed > :not(.nav-section-header, .sort-dropdown) {
+  display: none;
+}

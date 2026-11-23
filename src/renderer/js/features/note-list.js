@@ -525,6 +525,32 @@ export class NoteListFeature {
     }
   }
 
+  // ============ Opening and closing the sections ============
+  // A click on a section's header (Pinned, Notes; not on its buttons) folds its list away or opens
+  // it again, as a menu. Which ones are closed is remembered on this computer.
+  setupSectionCollapse() {
+    const KEY = 'capnote-closed-sections';
+    let closed = [];
+    try {
+      closed = JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch {}
+    const sections = [...document.querySelectorAll('.sidebar-nav .nav-section[data-section]')];
+    sections.forEach((section) => {
+      section.classList.toggle('is-collapsed', closed.includes(section.dataset.section));
+      const header = section.querySelector('.nav-section-header');
+      header.addEventListener('click', (e) => {
+        if (e.target.closest('.nav-section-controls, button')) return;
+        section.classList.toggle('is-collapsed');
+        const now = sections
+          .filter((s) => s.classList.contains('is-collapsed'))
+          .map((s) => s.dataset.section);
+        try {
+          localStorage.setItem(KEY, JSON.stringify(now));
+        } catch {}
+      });
+    });
+  }
+
   // The pinned section takes a dragged note dropped on it (not on a row): pinned, last
   setupPinnedSectionDrop() {
     const section = document.getElementById('pinnedSection');
