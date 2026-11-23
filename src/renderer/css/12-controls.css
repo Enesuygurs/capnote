@@ -313,29 +313,18 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
   font-weight: 600;
 }
 
-/* The sidebar's list filter (All / Today / Favorites): chips with an icon sharing the width; the
-   chosen one in a tint of the accent (its icon in the accent), the others plain */
+/* The sidebar's list filter (All / Today / Favorites): three pills on the sidebar, the chosen
+   one in a tint of the accent with the accent's text color */
 .segmented.filter-tabs {
-  gap: 4px;
+  gap: var(--space-1);
   padding: 0;
   background: transparent;
 }
 
 .filter-tabs .segment {
-  flex: 1 1 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
   height: 28px;
-  padding: 0 6px;
-  border-radius: var(--radius-md);
+  border-radius: 999px;
   background: transparent;
-}
-
-.filter-tabs .segment i {
-  font-size: 11px;
-  color: var(--text-muted);
 }
 
 .filter-tabs .segment:not(.active):hover {
@@ -345,10 +334,6 @@ input[type='checkbox']:not(.toggle-switch input, .weekday-pill input):focus-visi
 .filter-tabs .segment.active {
   background: var(--accent-tint);
   color: var(--accent-text);
-}
-
-.filter-tabs .segment.active i {
-  color: var(--accent-color);
 }
 
 /* ============ Menus ============
