@@ -11,8 +11,6 @@ export class EditorFeature {
     if (this.markdownPreview) this.hideMarkdownPreview();
     // A preview left open by the previous note hid the text area: show it again
     this.showRichEditor();
-    const baseFormatting = this.currentNote?.formatting || this.getDefaultFormatting();
-    this.setEditorFormatting(baseFormatting);
     this.clearSavedSelection();
     this.clearMoodWeatherSelection();
     this.clearTags();
@@ -103,7 +101,6 @@ export class EditorFeature {
       this.prepareNoteLinks();
       if (this.markdownEditor) this.markdownEditor.value = '';
     }
-    this.setEditorFormatting(note.formatting || this.getDefaultFormatting());
     // The toolbar and the tag field start clean; the toolbar follows the caret from here
     this.resetToolbarState();
     if (this.tagInput) this.tagInput.value = '';
@@ -205,7 +202,6 @@ export class EditorFeature {
       mood: this.selectedMood,
       weather: this.selectedWeather,
       tags: this.tags,
-      formatting: { ...this.getEditorFormatting() },
     };
   }
 
@@ -235,8 +231,7 @@ export class EditorFeature {
       current.content !== this.originalNoteState.content ||
       current.mood !== this.originalNoteState.mood ||
       current.weather !== this.originalNoteState.weather ||
-      JSON.stringify(currentTags) !== JSON.stringify(originalTags) ||
-      !this.areFormattingsEqual(current.formatting, this.originalNoteState.formatting)
+      JSON.stringify(currentTags) !== JSON.stringify(originalTags)
     );
   }
 
@@ -311,13 +306,6 @@ export class EditorFeature {
         this.trackContentChanges(); // Track changes for save button
       });
     });
-
-    // Emoji panel handlers: search and populate grid
-    if (this.emojiSearchInput)
-      this.emojiSearchInput.addEventListener('input', (e) => this.filterEmojiGrid(e.target.value));
-    // initialize tabs then populate grid
-    this.initEmojiTabs();
-    this.populateEmojiGrid();
   }
 
   // Mood and Weather methods
@@ -436,13 +424,6 @@ export class EditorFeature {
 
   clearSavedSelection() {
     this.savedSelection = null;
-  }
-
-  shouldApplyToSelection(selection) {
-    if (!selection || selection.rangeCount === 0) return false;
-    const range = selection.getRangeAt(0);
-    if (range.collapsed) return false;
-    return this.isSelectionInsideEditor(range.commonAncestorContainer);
   }
 
   isSelectionInsideEditor(node) {

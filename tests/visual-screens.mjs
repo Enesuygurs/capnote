@@ -21,7 +21,6 @@ export async function seed() {
     isPinned: false,
     isLocked: false,
     folderId: null,
-    formatting: { fontFamily: 'Inter', fontSize: '14px' },
     history: [{ type: 'created', ts: t0 }],
     ...extra,
   });
@@ -143,7 +142,6 @@ export async function run() {
   };
   const closeAll = async () => {
     a.hideAllModals();
-    a.hideEmojiPanel();
     a.hideContextMenu();
     a.hideSelectionMenu();
     a.templateMenu.classList.add('hidden');
@@ -196,11 +194,6 @@ export async function run() {
     a.resetReminderForm();
     side.scrollTop = 0;
     await wait(200);
-    a.toggleEmojiPanel();
-    await wait(600);
-    await shot(theme + '-05-emoji');
-    a.hideEmojiPanel();
-    await wait(250);
     a.toggleMarkdownMode();
     await shot(theme + '-06-markdown-preview');
     a.toggleMarkdownMode();

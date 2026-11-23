@@ -1,5 +1,4 @@
-// A double-click on a folder's name renames it in place (on its arrow it does not), and the emoji
-// panel closes on a click outside it
+// A double-click on a folder's name renames it in place (on its arrow it does not)
 
 export async function run() {
   const a = window.app;
@@ -35,23 +34,11 @@ export async function run() {
   const renamed = a.folders.find((f) => f.id === 'fr').name;
   const shown = header().querySelector('.nav-text').textContent;
 
-  // Emoji panel closes on an outside click
-  a.createNewNote();
-  a.toggleEmojiPanel();
-  await wait(300);
-  const opened = !a.emojiPanel.classList.contains('hidden');
-  a.noteTitle.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
-  await wait(300);
-  const closed = a.emojiPanel.classList.contains('hidden');
-  a.cancelEdit();
-
-  return { arrowRenames, renamed, shown, opened, closed };
+  return { arrowRenames, renamed, shown };
 }
 
 export const expected = {
   arrowRenames: false,
   renamed: 'New name',
   shown: 'New name',
-  opened: true,
-  closed: true,
 };

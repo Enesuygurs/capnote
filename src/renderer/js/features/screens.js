@@ -5,7 +5,6 @@ import { i18n } from '../i18n.js';
 export class ScreensFeature {
   // Show exactly one of the main screens and highlight its sidebar entry (if it has one)
   showScreen(name) {
-    this.hideEmojiPanel();
     this.placeTaskFlag?.(null);
     this.hideTaskPriorityMenu?.();
     this.hideNoteLinkMenu?.();

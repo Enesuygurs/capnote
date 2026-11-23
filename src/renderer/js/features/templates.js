@@ -109,7 +109,6 @@ export class TemplatesFeature {
       id: this.newId(),
       name,
       content: this.templateContentOf(note),
-      formatting: { ...this.getDefaultFormatting(), ...(note.formatting || {}) },
       tags: [...(note.tags || [])],
       createdAt: new Date().toISOString(),
     };

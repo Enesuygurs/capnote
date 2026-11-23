@@ -106,7 +106,7 @@ Rules:
 
 | Size           | Height | Used by                                                                   |
 | -------------- | ------ | ------------------------------------------------------------------------- |
-| `--control-xs` | 28     | segments, emoji tabs, sidebar section controls, row actions               |
+| `--control-xs` | 28     | segments, sidebar section controls, row actions                           |
 | `--control-sm` | 32     | small buttons, selects, search, toolbar buttons, sidebar rows, menu items |
 | `--control-md` | 36     | buttons, fields, header icon buttons, to-do rows                          |
 | `--control-lg` | 44     | large buttons, export choices                                             |
@@ -115,12 +115,12 @@ Controls next to each other have the same height. Icon buttons are squares: `.bt
 
 ## 6. Shape
 
-| Token           | px  | Use                                                                        |
-| --------------- | --- | -------------------------------------------------------------------------- |
-| `--radius-sm`   | 6   | things 24px or smaller: chips, segments, emoji tabs, small buttons in rows |
-| `--radius-md`   | 8   | controls: buttons, fields, selects, rows, menu items                       |
-| `--radius-lg`   | 12  | containers: the content panel, cards, menus, dialogs, toasts               |
-| `--radius-full` | 999 | counts, toggles, swatches, the unread dot                                  |
+| Token           | px  | Use                                                            |
+| --------------- | --- | -------------------------------------------------------------- |
+| `--radius-sm`   | 6   | things 24px or smaller: chips, segments, small buttons in rows |
+| `--radius-md`   | 8   | controls: buttons, fields, selects, rows, menu items           |
+| `--radius-lg`   | 12  | containers: the content panel, cards, menus, dialogs, toasts   |
+| `--radius-full` | 999 | counts, toggles, swatches, the unread dot                      |
 
 A container's inner items are rounded less than the container by its padding (a 12px menu with 4px padding holds 8px items; an 8px track with 2px padding holds 6px segments).
 
@@ -200,7 +200,7 @@ Under the figures, the writing calendar: a heat map with a square per day of the
 
 **Note links** (`a.note-link`): the chip of the "Linked notes" bar at the same size (24px, 12px text, a note icon and the title, `--radius-sm`) in the accent (`--accent-tint`, `--accent-text`) instead of gray; a link to a deleted note is `--field` with muted, crossed-out text. "Notes that link here" is a fixed bar between the note and its numbers (a divider above, the muted label "Linked notes:" with a link icon, then `.chip.backlink` buttons that scroll sideways); it shows only when another note links here.
 
-**The "/" menu** (`.slash-menu`, `slash-menu.js`): "/" typed at the start of a line (a paragraph, a heading, a list item, a task, a quote, a cell; not in code or a link) opens a 240px menu under the caret, scrolling past about nine items: text and the three headings, the task, bulleted and numbered lists, quote, divider, table, code block, note link (it types "[[" and the note suggestions open), image, emoji, date and time, each a 16px icon in `--text-secondary` and its name. Typing on narrows it (by the name, then by English words such as "h2" or "todo"); the arrows move, Enter, Tab or a click put the command in place of "/…" (an emptied line keeps its `<br>`), Escape closes it for that "/". A "/" in the middle of a line, or one followed by more than three letters that match nothing, stays plain text.
+**The "/" menu** (`.slash-menu`, `slash-menu.js`): "/" typed at the start of a line (a paragraph, a heading, a list item, a task, a quote, a cell; not in code or a link) opens a 240px menu under the caret, scrolling past about nine items: text and the three headings, the task, bulleted and numbered lists, quote, divider, table, code block, note link (it types "[[" and the note suggestions open), image, date and time, each a 16px icon in `--text-secondary` and its name. Typing on narrows it (by the name, then by English words such as "h2" or "todo"); the arrows move, Enter, Tab or a click put the command in place of "/…" (an emptied line keeps its `<br>`), Escape closes it for that "/". A "/" in the middle of a line, or one followed by more than three letters that match nothing, stays plain text.
 
 **Note history** (the viewer's history button): a timeline, the newest first. Each row has a 12px dot on a 2px `--divider` line through the rows, the version's date (13/500 `--text-strong`) with its title under it (12px `--text-muted`, cut with an ellipsis; not its text) and View on the right; the current version has an accent dot with an accent-tint halo and an accent title, the creation a hollow dot; a version whose text was not kept (an older edit) is not listed. View closes the dialog and shows that version in the note itself under an accent-tint banner (a 32px accent square with the history icon, "You are looking at an earlier version" and its date, then History, Current version and the primary Restore this version); the note's own actions are hidden meanwhile. Escape, Current version or another note leaves the preview.
 
@@ -232,7 +232,7 @@ Under the figures, the writing calendar: a heat map with a square per day of the
 
 **Note header** (viewer and editor): the title, the date and the actions sit on the page (`--surface`); in the editor the formatting toolbar takes a soft step of `--note-header` (55% of it over the page). In the dark theme always, and in the light one with the sidebar hidden (one note on its own), the header and the editor's toolbar are `--note-header`, a neutral gray a shade off the page: `#222` in the dark theme, `#f7f7f7` in the light one.
 
-**Editor header**: the view controls (Markdown and HTML preview, the side panel) sit with Cancel and Save, so the formatting toolbar holds only content tools, in one row at the default window size: the text style, bold to strikethrough, the two colors and the four alignments in view, then the rarer tools in `.toolbar-menu`s (font and size, lists, Insert with the link), a button with a small caret whose popover opens under it (a row of icons, a list with names, or labelled fields); it wraps to a second row in a narrow window.
+**Editor header**: the view controls (Markdown and HTML preview, the side panel) sit with Cancel and Save, so the formatting toolbar holds only content tools, in one row at the default window size: the text style (no font or size: a note is always in the app's font), bold to strikethrough, the two colors, the four alignments, the lists (`.toolbar-menu`), then an image, a file and the link side by side, and the rarer tools in the Insert `.toolbar-menu` (quote, divider, table, code block, date, time), a button with a small caret whose popover opens under it (a row of icons, a list with names, or labelled fields); it wraps to a second row in a narrow window.
 
 **Sidebar footer**: Settings fills the row; the archive and the note graph (pages, not list filters) sit beside it as 36px icon buttons in `--text-muted`, an accent tint while their page is open.
 

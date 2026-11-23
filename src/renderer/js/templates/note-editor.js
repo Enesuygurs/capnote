@@ -42,10 +42,10 @@ export const NOTE_EDITOR = /* HTML */ `
       </div>
     </div>
 
-    <!-- Formatting Toolbar: text style and font, character styles, colors, alignment, lists and
-         things to insert (the previews and the side panel are view controls, in the header) -->
-    <!-- The text style with the font and size, bold to strikethrough, colors, alignment and the
-         link in view; lists and the insert tools in small menus that open under their button -->
+    <!-- Formatting Toolbar: the text style, character styles, colors, alignment, lists and things
+         to insert (the previews and the side panel are view controls, in the header). The text
+         style, bold to strikethrough, colors, alignment, an image, a file and the link in view;
+         lists and the other insert tools in small menus that open under their button -->
     <div class="formatting-toolbar">
       <div class="format-group">
         <div class="custom-select format-custom-select" id="blockStyle">
@@ -61,27 +61,6 @@ export const NOTE_EDITOR = /* HTML */ `
             <div data-value="h3" class="select-item select-item-h3" data-i18n="blockStyle.h3">
               Başlık 3
             </div>
-          </div>
-        </div>
-        <div class="custom-select format-custom-select" id="fontFamily">
-          <div class="select-selected">Inter</div>
-          <div class="select-items menu select-hide">
-            <div data-value="Inter" class="select-item active">Inter</div>
-            <div data-value="Crimson Text" class="select-item">Crimson Text</div>
-            <div data-value="Roboto Mono" class="select-item">Roboto Mono</div>
-            <div data-value="Georgia" class="select-item">Georgia</div>
-            <div data-value="Arial" class="select-item">Arial</div>
-          </div>
-        </div>
-        <div class="custom-select format-custom-select" id="fontSize">
-          <div class="select-selected">14px</div>
-          <div class="select-items menu select-hide">
-            <div data-value="12" class="select-item">12px</div>
-            <div data-value="14" class="select-item active">14px</div>
-            <div data-value="16" class="select-item">16px</div>
-            <div data-value="18" class="select-item">18px</div>
-            <div data-value="20" class="select-item">20px</div>
-            <div data-value="24" class="select-item">24px</div>
           </div>
         </div>
       </div>
@@ -165,6 +144,13 @@ export const NOTE_EDITOR = /* HTML */ `
       </div>
 
       <div class="format-group">
+        <button class="format-btn" id="browseImageBtn" data-i18n-title="toolbar.image">
+          <i class="fas fa-image"></i>
+        </button>
+        <input id="browseImageInput" class="hidden" type="file" accept="image/*" />
+        <button class="format-btn" id="addNoteFileBtn" data-i18n-title="noteFiles.add">
+          <i class="fas fa-paperclip"></i>
+        </button>
         <button class="format-btn" id="insertLinkBtn" data-i18n-title="titles.link">
           <i class="fas fa-link"></i>
         </button>
@@ -196,19 +182,6 @@ export const NOTE_EDITOR = /* HTML */ `
               <i class="fas fa-laptop-code"></i>
               <span data-i18n="toolbar.codeBlock">Kod bloğu</span>
             </button>
-            <button class="format-btn" id="browseImageBtn" data-i18n-title="toolbar.image">
-              <i class="fas fa-image"></i>
-              <span data-i18n="toolbar.image">Görsel</span>
-            </button>
-            <input id="browseImageInput" class="hidden" type="file" accept="image/*" />
-            <button class="format-btn" id="addNoteFileBtn" data-i18n-title="noteFiles.add">
-              <i class="fas fa-paperclip"></i>
-              <span data-i18n="noteFiles.add">Dosya ekle</span>
-            </button>
-            <button class="format-btn" id="openEmojiBtn" data-i18n-title="toolbar.emoji">
-              <i class="fas fa-face-smile"></i>
-              <span data-i18n="toolbar.emoji">Emoji</span>
-            </button>
             <button class="format-btn" id="insertDate" data-i18n-title="toolbar.date">
               <i class="fas fa-calendar-plus"></i>
               <span data-i18n="toolbar.date">Tarih</span>
@@ -236,123 +209,6 @@ export const NOTE_EDITOR = /* HTML */ `
           data-i18n-placeholder="placeholders.noteContent"
         ></div>
         <div id="markdownPreview" class="markdown-preview hidden" aria-hidden="true"></div>
-        <!-- Emoji panel (hidden by default) -->
-        <div id="emojiPanel" class="emoji-panel menu hidden">
-          <div class="emoji-panel-header">
-            <input
-              type="text"
-              id="emojiSearchInput"
-              data-i18n-placeholder="placeholders.searchEmoji"
-              placeholder="Emoji ara..."
-            />
-          </div>
-          <!-- Emoji category tabs (clean professional layout) -->
-          <div class="emoji-tabs-wrap professional">
-            <div class="emoji-tabs-shell">
-              <div
-                class="emoji-tabs"
-                role="tablist"
-                data-i18n-aria-label="emojiCategories.label"
-                aria-label="Emoji kategorileri"
-              >
-                <button
-                  class="emoji-tab active"
-                  data-category="all"
-                  role="tab"
-                  aria-selected="true"
-                  data-i18n-aria-label="emojiCategories.all"
-                  aria-label="Tümü"
-                >
-                  <i class="fas fa-th-large" aria-hidden="true"></i>
-                </button>
-                <button
-                  class="emoji-tab"
-                  data-category="smileys"
-                  role="tab"
-                  data-i18n-aria-label="emojiCategories.smileys"
-                  aria-label="Gülücükler"
-                >
-                  <i class="far fa-smile" aria-hidden="true"></i>
-                </button>
-                <button
-                  class="emoji-tab"
-                  data-category="people"
-                  role="tab"
-                  data-i18n-aria-label="emojiCategories.people"
-                  aria-label="İnsanlar"
-                >
-                  <i class="fas fa-user" aria-hidden="true"></i>
-                </button>
-                <button
-                  class="emoji-tab"
-                  data-category="animals"
-                  role="tab"
-                  data-i18n-aria-label="emojiCategories.animals"
-                  aria-label="Hayvanlar"
-                >
-                  <i class="fas fa-paw" aria-hidden="true"></i>
-                </button>
-                <button
-                  class="emoji-tab"
-                  data-category="food"
-                  role="tab"
-                  data-i18n-aria-label="emojiCategories.food"
-                  aria-label="Yemek"
-                >
-                  <i class="fas fa-hamburger" aria-hidden="true"></i>
-                </button>
-                <button
-                  class="emoji-tab"
-                  data-category="activities"
-                  role="tab"
-                  data-i18n-aria-label="emojiCategories.activities"
-                  aria-label="Aktiviteler"
-                >
-                  <i class="fas fa-futbol" aria-hidden="true"></i>
-                </button>
-                <button
-                  class="emoji-tab"
-                  data-category="travel"
-                  role="tab"
-                  data-i18n-aria-label="emojiCategories.travel"
-                  aria-label="Seyahat"
-                >
-                  <i class="fas fa-plane" aria-hidden="true"></i>
-                </button>
-                <button
-                  class="emoji-tab"
-                  data-category="objects"
-                  role="tab"
-                  data-i18n-aria-label="emojiCategories.objects"
-                  aria-label="Nesneler"
-                >
-                  <i class="fas fa-lightbulb" aria-hidden="true"></i>
-                </button>
-                <button
-                  class="emoji-tab"
-                  data-category="symbols"
-                  role="tab"
-                  data-i18n-aria-label="emojiCategories.symbols"
-                  aria-label="Semboller"
-                >
-                  <i class="fas fa-bookmark" aria-hidden="true"></i>
-                </button>
-                <button
-                  class="emoji-tab"
-                  data-category="flags"
-                  role="tab"
-                  data-i18n-aria-label="emojiCategories.flags"
-                  aria-label="Bayraklar"
-                >
-                  <i class="fas fa-flag" aria-hidden="true"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div id="emojiGrid" class="emoji-grid" aria-live="polite">
-            <!-- Emoji buttons populated by JS -->
-          </div>
-        </div>
       </div>
 
       <div class="editor-sidebar">

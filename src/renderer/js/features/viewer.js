@@ -63,8 +63,6 @@ export class ViewerFeature {
       }
     }
 
-    this.applyViewerFormatting(note.formatting);
-
     // Restore checkbox states in viewer
     this.restoreCheckboxStatesInViewer();
 
@@ -384,13 +382,6 @@ export class ViewerFeature {
 
       checkbox.parentNode.replaceChild(newCheckbox, checkbox);
     });
-  }
-
-  applyViewerFormatting(formatting = {}) {
-    if (!this.viewerText) return;
-    const applied = { ...this.getDefaultFormatting(), ...(formatting || {}) };
-    this.viewerText.style.fontFamily = applied.fontFamily;
-    this.viewerText.style.fontSize = applied.fontSize;
   }
 
   setupCheckboxListeners() {

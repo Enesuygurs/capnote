@@ -377,7 +377,6 @@ export class MarkdownIoFeature {
         isPinned: false,
         isLocked: false,
         folderId: null,
-        formatting: this.getDefaultFormatting(),
         history: [{ type: 'created', ts: now }],
       };
       this.notes.unshift(note);

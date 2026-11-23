@@ -82,7 +82,6 @@
     "addTag": "Add tag...",
     "folderName": "Enter folder name...",
     "password": "Enter password...",
-    "searchEmoji": "Search emoji...",
     "markdown": "Enter markdown..."
   },
   "stats": {
@@ -257,19 +256,6 @@
     "priority2": "Priority 2 · High",
     "priority3": "Priority 3 · Medium",
     "priorityNone": "No priority"
-  },
-  "emojiCategories": {
-    "label": "Emoji categories",
-    "all": "All",
-    "smileys": "Smileys",
-    "people": "People",
-    "animals": "Animals",
-    "food": "Food",
-    "activities": "Activities",
-    "travel": "Travel",
-    "objects": "Objects",
-    "symbols": "Symbols",
-    "flags": "Flags"
   },
   "viewer": {
     "created": "Created:",
@@ -577,7 +563,6 @@
     "table": "Table",
     "codeBlock": "Code block",
     "image": "Image",
-    "emoji": "Emoji",
     "date": "Date",
     "time": "Time"
   },
