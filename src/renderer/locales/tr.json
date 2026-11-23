@@ -665,7 +665,7 @@
     "title": "Capnote'a hoş geldiniz",
     "intro": "Capnote notlarınızı, görevlerinizi ve hatırlatmalarınızı tek bir yerde tutar. Her şey yalnızca bu bilgisayarda saklanır.",
     "startTitle": "Başlarken",
-    "tipNew": "<b>Ctrl+N</b> yeni bir not açar, <b>Ctrl+F</b> notlarınızda arar.",
+    "tipNew": "<b>Ctrl+N</b> yeni bir not açar, <b>Ctrl+Shift+F</b> notlarınızda arar; açık bir notta <b>Ctrl+F</b> notun içinde bulur, <b>Ctrl+H</b> bulup değiştirir.",
     "tipEdit": "Bir notu düzenlemek için metnine çift tıklayın ya da <b>Ctrl+E</b> tuşlarına basın.",
     "tipSlash": "Satır başında <b>/</b> yazarak başlık, liste, tablo veya kod bloğu ekleyebilirsiniz.",
     "tipLink": "<b>[[</b> yazıp bir notun adını seçerek notları birbirine bağlayabilirsiniz.",
@@ -682,5 +682,19 @@
     "duplicate": "Çoğalt",
     "history": "Geçmiş",
     "export": "Dışa aktar"
+  },
+  "find": {
+    "placeholder": "Notta bul",
+    "replacePlaceholder": "Değiştir",
+    "replace": "Değiştir",
+    "replaceAll": "Tümünü değiştir",
+    "toggleReplace": "Değiştirmeyi göster (Ctrl+H)",
+    "matchCase": "Büyük/küçük harfe duyarlı",
+    "previous": "Önceki eşleşme (Shift+Enter)",
+    "next": "Sonraki eşleşme (Enter)",
+    "close": "Kapat (Esc)",
+    "noResults": "Sonuç yok",
+    "count": "{current}/{total}",
+    "replaced": "{count} eşleşme değiştirildi"
   }
 }

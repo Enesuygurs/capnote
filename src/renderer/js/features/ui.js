@@ -282,7 +282,15 @@ export class UiFeature {
             break;
           case 'f':
             e.preventDefault();
-            this.toggleSearch();
+            // In an open note: find in it; elsewhere, or with Shift: search the notes
+            if (e.shiftKey || !this.openFind()) this.toggleSearch();
+            break;
+          case 'h':
+            // Find and replace in the open note
+            if (this.currentNote && (this.isViewerOpen() || this.isEditorOpen())) {
+              e.preventDefault();
+              this.openFind({ replace: true });
+            }
             break;
           case 'e':
             e.preventDefault();
@@ -308,6 +316,10 @@ export class UiFeature {
           if (openModal.cancel) openModal.cancel();
           else if (openModal === this.passwordModal) this.hidePasswordModal();
           else this.hideAllModals();
+          return;
+        }
+        if (this.isFindOpen?.()) {
+          this.closeFind();
           return;
         }
         if (this.hasSelection) {

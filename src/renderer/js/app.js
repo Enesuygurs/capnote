@@ -52,6 +52,7 @@ import { WelcomeFeature } from './features/welcome.js';
 import { MarkdownIoFeature } from './features/markdown-io.js';
 import { FoldingFeature } from './features/folding.js';
 import { TraySyncFeature } from './features/tray-sync.js';
+import { FindReplaceFeature } from './features/find-replace.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -107,6 +108,8 @@ export class CapnoteApp {
     this.loadUserTemplates();
     this.initializeElements();
     this.setupEventListeners();
+    // Ctrl+F / Ctrl+H in the open note
+    this.setupFindReplace();
     this.setupSettingsEventListeners();
     // The settings' drop-down lists in the app's own look
     this.enhanceSelects(this.settingsModal);
@@ -750,4 +753,5 @@ applyFeatures(CapnoteApp, [
   WelcomeFeature,
   MarkdownIoFeature,
   TraySyncFeature,
+  FindReplaceFeature,
 ]);

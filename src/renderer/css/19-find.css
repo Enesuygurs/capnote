@@ -1,0 +1,136 @@
+/* Find and replace in the open note (find-replace.js): a compact bar at the top right of the note's
+   text, like a code editor's. The matches are highlights (no change to the note's HTML). */
+
+.find-bar {
+  position: fixed;
+  z-index: 50;
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  padding: 4px;
+  background: var(--surface-raised);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-popover);
+}
+
+.find-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.find-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.find-input {
+  width: 200px;
+  height: 28px;
+  padding: 0 8px;
+  margin-right: 4px;
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--fs-sm);
+  outline: none;
+}
+
+.find-input:focus {
+  border-color: var(--accent-color);
+}
+
+.find-bar.no-results .find-input[data-find='query'] {
+  border-color: var(--error-color);
+}
+
+/* Square icon buttons, 28px */
+.find-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.find-btn:hover {
+  background: var(--tint-hover);
+  color: var(--text-strong);
+}
+
+.find-btn:active {
+  background: var(--tint-strong);
+}
+
+/* Match case: lit while on */
+.find-case {
+  font-weight: 600;
+}
+
+.find-case.active {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+.find-count {
+  min-width: 64px;
+  padding: 0 4px;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.find-bar.no-results .find-count {
+  color: var(--error-color);
+}
+
+/* Replace and Replace all: small text buttons */
+.find-text-btn {
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--tint-hover);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.find-text-btn:hover:not(:disabled) {
+  background: var(--accent-tint);
+  color: var(--accent-text);
+}
+
+.find-text-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* While the bar is open the note's text starts under it */
+.find-pushed {
+  margin-top: var(--find-bar-space, 0px);
+}
+
+/* Every match a soft tint of the accent; the current one the accent itself */
+::highlight(find-match) {
+  background-color: color-mix(in srgb, var(--accent-color) 30%, transparent);
+}
+
+::highlight(find-current) {
+  background-color: var(--accent-color);
+  color: var(--text-on-accent);
+}
