@@ -53,6 +53,7 @@ import { MarkdownIoFeature } from './features/markdown-io.js';
 import { FoldingFeature } from './features/folding.js';
 import { TraySyncFeature } from './features/tray-sync.js';
 import { FindReplaceFeature } from './features/find-replace.js';
+import { NoteMinimapFeature } from './features/note-minimap.js';
 import { i18n } from './i18n.js';
 
 export class CapnoteApp {
@@ -110,6 +111,8 @@ export class CapnoteApp {
     this.setupEventListeners();
     // Ctrl+F / Ctrl+H in the open note
     this.setupFindReplace();
+    // The note map (a setting)
+    this.setupNoteMinimap();
     this.setupSettingsEventListeners();
     // The settings' drop-down lists in the app's own look
     this.enhanceSelects(this.settingsModal);
@@ -289,6 +292,7 @@ export class CapnoteApp {
     this.accentBlueBtn = document.getElementById('accentBlue');
     this.syncFolderAccentToggle = document.getElementById('syncFolderAccentToggle');
     this.hideNoteIconsToggle = document.getElementById('hideNoteIconsToggle');
+    this.noteMinimapToggle = document.getElementById('noteMinimapToggle');
     this.compactListToggle = document.getElementById('compactListToggle');
     // System settings toggles
     this.startAtLoginToggle = document.getElementById('startAtLoginToggle');
@@ -754,4 +758,5 @@ applyFeatures(CapnoteApp, [
   MarkdownIoFeature,
   TraySyncFeature,
   FindReplaceFeature,
+  NoteMinimapFeature,
 ]);

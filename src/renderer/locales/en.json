@@ -126,6 +126,8 @@
     "hideNoteIconsDesc": "Hides note icons except lock and pin",
     "compactList": "Compact list",
     "compactListDesc": "Lists notes and folders in denser rows as a tree",
+    "noteMinimap": "Note map",
+    "noteMinimapDesc": "Shows a small preview at the note's right to move through it",
     "noIconsInCompact": "Unavailable while the compact list is on",
     "startAtLogin": "Start at login",
     "startAtLoginDesc": "Capnote starts in the system tray when you sign in",
