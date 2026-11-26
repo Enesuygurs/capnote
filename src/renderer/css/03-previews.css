@@ -176,7 +176,8 @@ ol[style*='text-align: right'] li {
   list-style-position: inside;
 }
 
-.checklist-item input[type='checkbox']:checked + label {
+.checklist-item input[type='checkbox']:checked + label,
+.checklist-item input[type='checkbox']:checked + label a {
   text-decoration: line-through;
   color: var(--text-muted);
 }
