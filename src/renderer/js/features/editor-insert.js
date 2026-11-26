@@ -309,6 +309,13 @@ export class EditorInsertFeature {
       return;
     }
 
+    // A table copied from a spreadsheet, a document or a page (or text with tabs between its columns)
+    const rows = this.pastedTableRows(e.clipboardData, text);
+    if (rows) {
+      this.insertPastedTable(rows);
+      return;
+    }
+
     // Addresses in it become links (when automatic formatting is on)
     if (this.pasteWithLinks?.(text)) return;
 
@@ -316,6 +323,48 @@ export class EditorInsertFeature {
     // Only special-case pasting when inside an existing <code> (handled above).
     // Use execCommand insertText to preserve simple plaintext insertion behavior in contenteditable.
     document.execCommand('insertText', false, text);
+    this.trackContentChanges();
+  }
+
+  // The rows (arrays of cell texts) of a table on the clipboard: the table of its HTML, else lines
+  // whose columns are separated by tabs (as a spreadsheet copies them). Null when it is not one.
+  pastedTableRows(data, text) {
+    const html = data?.getData('text/html') || '';
+    if (/<table[\s>]/i.test(html)) {
+      const table = new DOMParser().parseFromString(html, 'text/html').querySelector('table');
+      const rows = [...(table?.querySelectorAll('tr') || [])]
+        .map((tr) =>
+          [...tr.children]
+            .filter((c) => /^T[DH]$/.test(c.tagName))
+            .map((c) => c.textContent.replace(/\s+/g, ' ').trim())
+        )
+        .filter((cells) => cells.length);
+      if (rows.length && Math.max(...rows.map((r) => r.length)) > 1) return rows;
+    }
+    // Lines with tabs; blank lines between them are skipped
+    const lines = String(text || '')
+      .split(/\r?\n/)
+      .filter((l) => l.trim());
+    if (lines.length < 2 || !lines.every((l) => l.includes('\t'))) return null;
+    return lines.map((l) => l.split('\t').map((c) => c.trim()));
+  }
+
+  // The first row is the header
+  insertPastedTable(rows) {
+    const width = Math.max(...rows.map((r) => r.length));
+    const cell = (tag, text) =>
+      `<${tag} style="padding:6px;text-align:left">${this.escapeHtml(text) || '<br>'}</${tag}>`;
+    const row = (cells, tag) =>
+      `<tr>${Array.from({ length: width }, (_, i) => cell(tag, cells[i] || '')).join('')}</tr>`;
+    const html =
+      '<table class="inserted-table" border="1" style="border-collapse: collapse; width: 100%;">' +
+      `<thead>${row(rows[0], 'th')}</thead><tbody>${rows
+        .slice(1)
+        .map((r) => row(r, 'td'))
+        .join('')}</tbody></table>`;
+    this.insertBlockAtCaret(html);
+    this.captureEditorSelection();
+    this.updateWordCount();
     this.trackContentChanges();
   }
 

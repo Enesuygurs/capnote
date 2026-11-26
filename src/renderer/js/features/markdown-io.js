@@ -85,7 +85,9 @@ export class MarkdownIoFeature {
     const children = () => [...node.childNodes].flatMap((c) => this.blockMarkdown(c, depth));
 
     if (/^H[1-6]$/.test(tag)) return [`${'#'.repeat(Number(tag[1]))} ${inline()}`];
-    if (tag === 'P') return [inline() || ''].filter((l) => l !== '');
+    // An empty line is kept as one holding &nbsp; where asked (a .md file being written)
+    const blank = () => (this.markdownKeepBlank && !node.querySelector('img') ? ['&nbsp;'] : []);
+    if (tag === 'P') return inline() ? [inline()] : blank();
     if (tag === 'HR') return ['---'];
     if (tag === 'PRE') {
       const lang = (node.querySelector('code')?.className.match(/language-(\S+)/) || [])[1] || '';
@@ -160,18 +162,29 @@ export class MarkdownIoFeature {
       const hasBlocks = [...node.children].some((c) =>
         /^(P|DIV|H[1-6]|UL|OL|PRE|TABLE|BLOCKQUOTE|HR)$/.test(c.tagName)
       );
-      return hasBlocks ? children() : [inline()].filter(Boolean);
+      if (hasBlocks) return children();
+      return inline() ? [inline()] : blank();
     }
     return [this.inlineMarkdown(node).trim()].filter(Boolean);
   }
 
-  htmlToMarkdown(html) {
+  htmlToMarkdown(html, { keepBlank = false } = {}) {
     const body = this.parseInertHtml(this.sanitizeHtml(html || ''));
-    return [...body.childNodes]
-      .flatMap((node) => this.blockMarkdown(node))
-      .join('\n\n')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim();
+    this.markdownKeepBlank = keepBlank;
+    try {
+      return (
+        [...body.childNodes]
+          .flatMap((node) => this.blockMarkdown(node))
+          .join('\n\n')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim()
+          // Empty lines at the very start and end of the text are not kept
+          .replace(/^(?:&nbsp;\n\n)+/, '')
+          .replace(/(?:\n\n&nbsp;)+$/, '')
+      );
+    } finally {
+      this.markdownKeepBlank = false;
+    }
   }
 
   // ============ Export ============
@@ -302,6 +315,12 @@ export class MarkdownIoFeature {
   markdownToNoteHtml(markdown) {
     const html = this.sanitizeHtml(window.marked.parse(markdown, { gfm: true, breaks: false }));
     const body = this.parseInertHtml(html);
+    // A line holding only &nbsp; is an empty line of the editor
+    body.querySelectorAll('p').forEach((p) => {
+      if (!p.querySelector('img') && !p.textContent.replace(/\u00a0/g, '').trim()) {
+        p.innerHTML = '<br>';
+      }
+    });
     body.querySelectorAll('ul').forEach((list) => {
       const items = [...list.children];
       if (
