@@ -191,7 +191,7 @@ export class EditorFeature {
   editorContent() {
     if (this.isLiveMarkdown()) {
       if (this.richEditor.innerHTML === this.liveBaseline) return this.currentNote.content || '';
-      return this.htmlToMarkdown(this.richEditor.innerHTML);
+      return this.htmlToMarkdown(this.richEditor.innerHTML, { keepBlank: true });
     }
     return this.isMarkdownEditing() ? this.markdownEditor.value : this.richEditor.innerHTML;
   }

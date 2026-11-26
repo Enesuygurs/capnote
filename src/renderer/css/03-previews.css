@@ -109,6 +109,20 @@
   margin: var(--space-2) 0;
 }
 
+/* Two lists of tasks one under the other read as one: no gap between them */
+.checklist + .checklist {
+  margin-top: 0;
+}
+
+.checklist:has(+ .checklist) {
+  margin-bottom: 0;
+}
+
+/* A task of a Markdown list kept apart by blank lines holds a paragraph: no room of its own */
+.task-list-item > p {
+  margin: 0;
+}
+
 /* A task: its box on the first line of its text; a long text goes on below as plain lines (the box
    is not centered on the whole text, which left it between two lines). A one-line task is as
    tall as before (a small control). */
