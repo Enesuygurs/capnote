@@ -696,22 +696,5 @@
     "noResults": "Sonuç yok",
     "count": "{current}/{total}",
     "replaced": "{count} eşleşme değiştirildi"
-  },
-  "mdToolbar": {
-    "h1": "Başlık 1",
-    "h2": "Başlık 2",
-    "h3": "Başlık 3",
-    "bold": "Kalın (Ctrl+B)",
-    "italic": "İtalik (Ctrl+I)",
-    "strike": "Üstü çizili",
-    "code": "Satır içi kod",
-    "link": "Bağlantı",
-    "ul": "Madde listesi",
-    "ol": "Numaralı liste",
-    "task": "Görev listesi",
-    "quote": "Alıntı",
-    "codeblock": "Kod bloğu",
-    "table": "Tablo",
-    "hr": "Ayırıcı çizgi"
   }
 }
