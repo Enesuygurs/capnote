@@ -41,6 +41,7 @@ import { TagsFeature } from './features/tags.js';
 import { ArchiveFeature } from './features/archive.js';
 import { ToolbarMenusFeature } from './features/toolbar-menus.js';
 import { FileNotesFeature } from './features/file-notes.js';
+import { MarkdownToolbarFeature } from './features/markdown-toolbar.js';
 import { YearSummaryFeature } from './features/year-summary.js';
 import { QuickNoteFeature } from './features/quick-note.js';
 import { NoteGraphFeature } from './features/note-graph.js';
@@ -468,6 +469,8 @@ export class CapnoteApp {
     this.setupNoteLinks();
     this.setupSlashMenu();
     this.setupNoteFiles();
+    // The Markdown toolbar of a .md file
+    this.setupMarkdownToolbar();
     this.setupTasksPage();
     this.setupTaskPriority();
     this.setupAutoLinks();
@@ -759,6 +762,7 @@ applyFeatures(CapnoteApp, [
   ArchiveFeature,
   ToolbarMenusFeature,
   FileNotesFeature,
+  MarkdownToolbarFeature,
   YearSummaryFeature,
   QuickNoteFeature,
   NoteGraphFeature,
