@@ -211,7 +211,7 @@ function registerFileIpc({ settings = () => ({}), notes = () => [] } = {}) {
       return { ok: false };
     const win = getMainWindow();
     const picked = await dialog.showSaveDialog(win, {
-      defaultPath: `${name.replace(/[\/:*?"<>|]+/g, '_').trim() || 'note'}.md`,
+      defaultPath: `${name.replace(/[\\/:*?"<>|]+/g, '_').trim() || 'note'}.md`,
       filters: [
         { name: 'Markdown', extensions: ['md'] },
         { name: 'Text', extensions: ['txt'] },
