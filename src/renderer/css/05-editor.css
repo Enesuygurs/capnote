@@ -24,8 +24,17 @@
 }
 
 /* ============ Formatting toolbar ============ */
-/* A file note is edited as the file's plain text, so it has no rich text toolbar */
-.note-editor.is-file-note .formatting-toolbar {
+/* A plain text or HTML file note is edited as the file's text, so it has no rich text toolbar; a
+   .md file keeps the toolbar, without what Markdown cannot say (underline, colors, alignment) */
+.note-editor.is-file-note:not([data-file-kind='md']) .formatting-toolbar {
+  display: none;
+}
+
+.note-editor[data-file-kind='md'] :is([data-format='underline'], [data-align], .color-picker) {
+  display: none;
+}
+
+.note-editor[data-file-kind='md'] .format-group:has(.color-picker) {
   display: none;
 }
 

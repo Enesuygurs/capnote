@@ -257,8 +257,9 @@ export class NotesFeature {
     // If markdown editor is visible, save raw markdown; otherwise save HTML from rich editor
     // If the markdown editor is visible (editing markdown), save raw markdown; otherwise save HTML from rich editor
     // A markdown note stays markdown even while a preview hides its editor
-    const isMarkdownMode = this.isMarkdownEditing();
-    const content = isMarkdownMode ? this.markdownEditor.value : this.richEditor.innerHTML;
+    // A .md file stays Markdown (its rich editor is written back as Markdown)
+    const isMarkdownMode = this.isMarkdownEditing() || this.isLiveMarkdown();
+    const content = this.editorContent();
 
     // Saved notes get a history entry when their title or text actually changed; the first
     // writing in a new note (stored empty when it was created) is not an edit
