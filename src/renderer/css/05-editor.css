@@ -25,12 +25,22 @@
 
 /* ============ Formatting toolbar ============ */
 /* A plain text or HTML file note is edited as the file's text, so it has no rich text toolbar; a
-   .md file keeps the toolbar, without what Markdown cannot say (underline, colors, alignment) */
+   .md file keeps the toolbar with what Markdown can say: no underline, colors, alignment, picture
+   or file attachments, date or time */
 .note-editor.is-file-note:not([data-file-kind='md']) .formatting-toolbar {
   display: none;
 }
 
-.note-editor[data-file-kind='md'] :is([data-format='underline'], [data-align], .color-picker) {
+.note-editor[data-file-kind='md']
+  :is(
+    [data-format='underline'],
+    [data-align],
+    .color-picker,
+    #browseImageBtn,
+    #addNoteFileBtn,
+    #insertDate,
+    #insertTime
+  ) {
   display: none;
 }
 
