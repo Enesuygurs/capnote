@@ -69,7 +69,7 @@ export async function run() {
   r.newPin = top(5);
 
   // The heart
-  const heart = a.notesList.querySelector('.note-item-favorite');
+  const heart = document.querySelector('.sidebar .note-item-favorite');
   a.applyTheme(false);
   r.heartLight = getComputedStyle(heart).color;
   a.applyTheme(true);

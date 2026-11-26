@@ -71,7 +71,8 @@ export async function run() {
 
   // Pin a folder: it joins the pinned notes, after the ones pinned before it
   await a.togglePinFolders(['fb']);
-  const rows = [...a.notesList.children];
+  // The pinned ones have a section of their own, above the notes
+  const rows = [...document.getElementById('pinnedList').children, ...a.notesList.children];
   const at = (sel) => rows.findIndex((row) => row.matches(sel) || row.querySelector(sel));
   const folderAt = at('[data-folder-id="fb"]');
   const pinnedFolderOnTop = {
