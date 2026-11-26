@@ -648,7 +648,10 @@
     "deleteFilesToo": "Dosyaları da sil",
     "trashFailed": "“{name}” silinemedi; dosya yerinde duruyor",
     "pathButton": "Dosya Yolu",
-    "unsupported": "Desteklenmeyen dosya: {name}"
+    "unsupported": "Desteklenmeyen dosya: {name}",
+    "saveLocked": "Kilitli not dosya olarak kaydedilemez: metin dosyada şifresiz durur",
+    "alreadyNote": "“{name}” zaten başka bir not",
+    "savedAsFile": "“{name}” dosyası kaydedildi; not artık bu dosya"
   },
   "slashMenu": {
     "noteLink": "Not bağlantısı",
@@ -677,7 +680,8 @@
     "more": "Diğer işlemler",
     "duplicate": "Çoğalt",
     "history": "Geçmiş",
-    "export": "Dışa aktar"
+    "export": "Dışa aktar",
+    "saveAsFile": "Dosya olarak kaydet"
   },
   "find": {
     "placeholder": "Notta bul",

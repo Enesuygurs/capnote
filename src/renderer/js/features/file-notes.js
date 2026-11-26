@@ -96,6 +96,45 @@ export class FileNotesFeature {
     this.editCurrentNote();
   }
 
+  // "Save as file": the open note is written to a .md or .txt file the user picks and becomes a
+  // file note of it, so it goes on being edited here and saved to that file
+  async saveNoteAsFile(note = this.currentNote) {
+    const api = window.electronAPI?.files;
+    if (!api || !note || this.isFileNote(note)) return;
+    if (this.isNoteLockedForView(note) || note.isLocked || note.lockedByFolder) {
+      this.showNotification(i18n.t('files.saveLocked'), 'warning');
+      return;
+    }
+    const markdown = note.isMarkdown ? note.content || '' : this.htmlToMarkdown(note.content || '');
+    const text = note.isMarkdown ? note.content || '' : this.htmlToText(note.content);
+    const result = await api.saveAsNew({ name: this.displayTitle(note), markdown, text });
+    if (result?.canceled) return;
+    if (!result?.ok) {
+      this.showNotification(i18n.t('files.saveFailed', { name: this.displayTitle(note) }), 'error');
+      return;
+    }
+    const other = this.fileNoteFor(result.path);
+    if (other && other !== note) {
+      this.showNotification(i18n.t('files.alreadyNote', { name: result.name }), 'warning');
+      return;
+    }
+    const counts = this.countWordsAndCharsFromHtml(this.escapeHtml(result.content));
+    note.content = result.content;
+    note.isMarkdown = true;
+    note.filePath = result.path;
+    note.fileKind = KINDS[result.ext] || 'txt';
+    note.fileMtime = result.mtimeMs;
+    note.title = result.name;
+    note.wordCount = counts.words;
+    note.charCount = counts.chars;
+    note.updatedAt = new Date().toISOString();
+    this.saveNotes();
+    this.updateNotesList();
+    this.updateStats();
+    this.selectNote(note);
+    this.showNotification(i18n.t('files.savedAsFile', { name: result.name }), 'success');
+  }
+
   // File notes made before titles kept the extension are titled with the file's name without it;
   // they get the full name (a title the user changed stays as it is). True when it changed.
   addExtensionToTitle(note) {

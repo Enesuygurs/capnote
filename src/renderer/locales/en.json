@@ -648,7 +648,10 @@
     "deleteFilesToo": "Also delete the files",
     "trashFailed": "Could not delete “{name}”; the file is still there",
     "pathButton": "File Path",
-    "unsupported": "Unsupported file: {name}"
+    "unsupported": "Unsupported file: {name}",
+    "saveLocked": "A locked note cannot be saved as a file: the text sits unencrypted in it",
+    "alreadyNote": "\"{name}\" is already another note",
+    "savedAsFile": "Saved \"{name}\"; the note is now this file"
   },
   "slashMenu": {
     "noteLink": "Note link",
@@ -677,7 +680,8 @@
     "more": "More actions",
     "duplicate": "Duplicate",
     "history": "History",
-    "export": "Export"
+    "export": "Export",
+    "saveAsFile": "Save as file"
   },
   "find": {
     "placeholder": "Find in note",

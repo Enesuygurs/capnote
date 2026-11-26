@@ -11,7 +11,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import { execFile } from 'child_process';
-import { app, ipcMain, shell } from 'electron';
+import { app, dialog, ipcMain, shell } from 'electron';
 import { getMainWindow, showMainWindow } from './window.js';
 import { readText, writeText, detectTextFormat } from './text-encoding.js';
 import { EXTENSIONS, extensionOf, isSupportedFile } from './file-types.js';
@@ -201,6 +201,34 @@ function registerFileIpc({ settings = () => ({}), notes = () => [] } = {}) {
       opened: supported.length,
       unsupported: list.filter((p) => !supported.includes(p)).map((p) => path.basename(p)),
     };
+  });
+
+  // "Save as file": an ordinary note is written to a .md or .txt file the user picks, and becomes a
+  // file note of it. The page sends the note's text in both forms; the chosen extension decides.
+  ipcMain.handle('files:save-as-new', async (event, payload) => {
+    const { name, markdown, text } = payload || {};
+    if (typeof name !== 'string' || typeof markdown !== 'string' || typeof text !== 'string')
+      return { ok: false };
+    const win = getMainWindow();
+    const picked = await dialog.showSaveDialog(win, {
+      defaultPath: `${name.replace(/[\/:*?"<>|]+/g, '_').trim() || 'note'}.md`,
+      filters: [
+        { name: 'Markdown', extensions: ['md'] },
+        { name: 'Text', extensions: ['txt'] },
+      ],
+    });
+    if (picked.canceled || !picked.filePath) return { ok: false, canceled: true };
+    let filePath = picked.filePath;
+    if (!isSupported(filePath)) filePath += '.md';
+    const ext = extensionOf(filePath).slice(1);
+    const content = ext === 'md' || ext === 'markdown' ? markdown : text;
+    try {
+      const mtimeMs = writeFileSafely(filePath, content);
+      known.add(keyOf(filePath));
+      return { ok: true, path: filePath, name: path.basename(filePath), ext, content, mtimeMs };
+    } catch (err) {
+      return { ok: false, error: String(err.message || err) };
+    }
   });
 
   // Deleting a file note can delete its file too: it goes to the Recycle Bin, not away for good

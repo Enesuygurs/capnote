@@ -45,10 +45,12 @@ export class ViewerFeature {
     this.renderBacklinks(note);
     this.renderNoteFiles(note);
     // A file note is its file, not a full note: no copy, history, export or archive
-    ['duplicateNoteBtn', 'historyBtn', 'exportNoteBtn', 'archiveViewBtn'].forEach((id) => {
-      const btn = document.getElementById(id);
-      if (btn) btn.hidden = this.isFileNote(note);
-    });
+    ['duplicateNoteBtn', 'historyBtn', 'saveAsFileBtn', 'exportNoteBtn', 'archiveViewBtn'].forEach(
+      (id) => {
+        const btn = document.getElementById(id);
+        if (btn) btn.hidden = this.isFileNote(note);
+      }
+    );
     // The "more" button only when its menu has something in it
     if (this.viewerMoreBtn) {
       this.viewerMoreBtn.hidden = ![...this.viewerMoreMenu.children].some((item) => !item.hidden);
