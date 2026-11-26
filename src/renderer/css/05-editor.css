@@ -56,9 +56,10 @@
   display: none;
 }
 
-/* The Markdown preview is only for notes written in Markdown (a .md file); an ordinary note
-   formats headings, rules and lists as they are typed */
-.note-editor:not(.is-markdown-note) #toggleMarkdownBtn {
+/* The Markdown preview is only for notes written in Markdown; an ordinary note formats headings,
+   rules and lists as they are typed. A .md file has none: its reading view shows the same */
+.note-editor:not(.is-markdown-note) #toggleMarkdownBtn,
+.note-editor.is-file-note #toggleMarkdownBtn {
   display: none;
 }
 
