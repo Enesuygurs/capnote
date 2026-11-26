@@ -1,5 +1,5 @@
 // Find and replace in the open note: Ctrl+F finds in the note being read (count, highlights, next
-// and previous, Turkish letters folded one for one), Ctrl+H opens the note for editing and
+// and previous, Turkish letters folded one for one), Ctrl+H shows the replace row (the note opens for editing when something is replaced) and
 // replaces one match or all of them (one undo step each), a plain text note finds and replaces in
 // its text, Escape closes the bar, and with no note open Ctrl+F still searches the notes.
 
@@ -52,19 +52,19 @@ export async function run() {
   r.turkish = count();
   r.currentText =
     CSS.highlights.get('find-current') && [...CSS.highlights.get('find-current')][0].toString();
-  // The viewer cannot replace
+  // The viewer can replace too: the note opens for editing when a replacement is made
   r.viewerReplaceDisabled = bar().querySelector('[data-find="replace"]').disabled;
 
-  // Ctrl+H: the note opens for editing, with the replace row
+  // Ctrl+H: the replace row shows; the note stays as it is read until something is replaced
   ctrl('h');
   await wait(400);
-  r.editing = a.isEditorOpen() && !f.replaceRow.classList.contains('hidden');
+  r.editing = !a.isEditorOpen() && !f.replaceRow.classList.contains('hidden');
   f.query.value = 'elma';
   f.query.dispatchEvent(new Event('input'));
   await wait(50);
   f.replacement.value = 'ARMUT';
   bar().querySelector('[data-find="replace"]').click();
-  await wait(50);
+  await wait(500);
   r.afterOne = { count: count(), text: a.richEditor.textContent };
   bar().querySelector('[data-find="replaceAll"]').click();
   await wait(50);
@@ -131,7 +131,7 @@ export const expected = {
   // The four Turkish i's are one letter; while typing, the current match stays near the last one
   turkish: '2/2',
   currentText: 'ISTANBUL',
-  viewerReplaceDisabled: true,
+  viewerReplaceDisabled: false,
   editing: true,
   afterOne: {
     count: '1/3',

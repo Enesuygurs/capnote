@@ -18,7 +18,7 @@ export async function run() {
     return made;
   };
   const rows = () =>
-    [...a.notesList.children]
+    [...document.getElementById('pinnedList').children, ...a.notesList.children]
       .map((el) =>
         el.classList.contains('note-item')
           ? el.querySelector('.note-item-title')?.textContent

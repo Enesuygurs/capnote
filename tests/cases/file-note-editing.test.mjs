@@ -1,6 +1,6 @@
-// A file note is its file, not a full note: in the editor it has no toolbar, no sidebar and no
-// focus mode, and of the view buttons only the Markdown preview, for a Markdown file; it cannot be
-// copied, archived, exported, locked or looked back through its history, and none of those show.
+// A file note is its file, not a full note: in the editor it has no sidebar and no focus mode (a
+// plain text or HTML file no toolbar, a Markdown file the toolbar of what Markdown says, written as
+// it reads, with no preview button); it cannot be copied, archived, exported, locked or looked back through its history, and none of those show.
 // Its viewer has a "File path" button. Titles keep the extension, also for file notes made before
 // (unless the title was changed); deleting one offers to delete the file too. Dragging files over
 // the notes list shows where they open.
@@ -9,7 +9,6 @@ export async function run() {
   const a = window.app;
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   const shown = (el) => !!el && getComputedStyle(el).display !== 'none';
-  const lit = (el) => el.classList.contains('active');
   const byId = (id) => document.getElementById(id);
   const editorButtons = () => ({
     md: shown(a.toggleMarkdownBtn),
@@ -59,19 +58,13 @@ export async function run() {
   r.sidebarAsked = { shown: shown(a.editorSidebar), settingKept: a.settings.editorSidebarVisible };
   a.cancelEdit();
 
-  // A Markdown file: the Markdown preview, lit only while it is open
+  // A Markdown file: written as it reads in the rich editor, with its toolbar and no preview button
   await open('plan.md', '# Plan');
   const mdNote = a.currentNote;
   r.md = editorButtons();
-  a.toggleMarkdownBtn.click();
-  r.mdOn = {
-    lit: lit(a.toggleMarkdownBtn),
-    preview: !a.markdownPreview.classList.contains('hidden'),
-  };
-  a.toggleMarkdownBtn.click();
-  r.mdOff = {
-    lit: lit(a.toggleMarkdownBtn),
-    editor: !a.markdownEditor.classList.contains('hidden'),
+  r.mdRich = {
+    heading: !!a.richEditor.querySelector('h1'),
+    markdownEditorHidden: a.markdownEditor.classList.contains('hidden'),
   };
   a.saveNote(true);
   r.noHistory = mdNote.history.map((h) => h.type);
@@ -163,9 +156,8 @@ export const expected = {
   title: 'index.html',
   html: noButtons,
   sidebarAsked: { shown: false, settingKept: true },
-  md: { ...noButtons, md: true },
-  mdOn: { lit: true, preview: true },
-  mdOff: { lit: false, editor: true },
+  md: { ...noButtons, toolbar: true },
+  mdRich: { heading: true, markdownEditorHidden: true },
   noHistory: ['created'],
   txt: noButtons,
   // An ordinary note formats Markdown as it is typed: no preview button
