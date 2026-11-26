@@ -310,9 +310,9 @@ export class EditorInsertFeature {
     }
 
     // A table copied from a spreadsheet, a document or a page (or text with tabs between its columns)
-    const rows = this.pastedTableRows(e.clipboardData, text);
-    if (rows) {
-      this.insertPastedTable(rows);
+    const pasted = this.pastedTableRows(e.clipboardData, text);
+    if (pasted) {
+      this.insertPastedTable(pasted);
       return;
     }
 
@@ -339,18 +339,29 @@ export class EditorInsertFeature {
             .map((c) => c.textContent.replace(/\s+/g, ' ').trim())
         )
         .filter((cells) => cells.length);
-      if (rows.length && Math.max(...rows.map((r) => r.length)) > 1) return rows;
+      if (rows.length && Math.max(...rows.map((r) => r.length)) > 1) {
+        return { rows, before: [], after: [] };
+      }
     }
-    // Lines with tabs; blank lines between them are skipped
+    // Lines with tabs; blank lines between them are skipped. Lines without tabs before the first
+    // and after the last tabbed line stay text around the table; one inside it is not a table.
     const lines = String(text || '')
       .split(/\r?\n/)
       .filter((l) => l.trim());
-    if (lines.length < 2 || !lines.every((l) => l.includes('\t'))) return null;
-    return lines.map((l) => l.split('\t').map((c) => c.trim()));
+    const tabbed = lines.map((l, i) => (l.includes('\t') ? i : -1)).filter((i) => i >= 0);
+    if (tabbed.length < 2) return null;
+    const first = tabbed[0];
+    const last = tabbed[tabbed.length - 1];
+    if (tabbed.length !== last - first + 1) return null;
+    return {
+      rows: lines.slice(first, last + 1).map((l) => l.split('\t').map((c) => c.trim())),
+      before: lines.slice(0, first),
+      after: lines.slice(last + 1),
+    };
   }
 
-  // The first row is the header
-  insertPastedTable(rows) {
+  // The first row is the header; text that came with the table goes above and below it
+  insertPastedTable({ rows, before = [], after = [] }) {
     const width = Math.max(...rows.map((r) => r.length));
     const cell = (tag, text) =>
       `<${tag} style="padding:6px;text-align:left">${this.escapeHtml(text) || '<br>'}</${tag}>`;
@@ -362,7 +373,16 @@ export class EditorInsertFeature {
         .slice(1)
         .map((r) => row(r, 'td'))
         .join('')}</tbody></table>`;
-    this.insertBlockAtCaret(html);
+    const table = this.insertBlockAtCaret(html);
+    const line = (text) => {
+      const p = document.createElement('p');
+      p.textContent = text;
+      return p;
+    };
+    if (table) {
+      table.before(...before.map(line));
+      table.after(...after.map(line));
+    }
     this.captureEditorSelection();
     this.updateWordCount();
     this.trackContentChanges();

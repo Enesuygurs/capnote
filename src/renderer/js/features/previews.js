@@ -109,9 +109,10 @@ export class PreviewsFeature {
 
     // A table copied from a spreadsheet or a page is pasted into a Markdown note as a Markdown table
     this.markdownEditor?.addEventListener('paste', (e) => {
-      const rows = this.pastedTableRows(e.clipboardData, e.clipboardData.getData('text/plain'));
-      if (!rows) return;
+      const pasted = this.pastedTableRows(e.clipboardData, e.clipboardData.getData('text/plain'));
+      if (!pasted) return;
       e.preventDefault();
+      const { rows, before, after } = pasted;
       const width = Math.max(...rows.map((r) => r.length));
       const line = (cells) =>
         `| ${Array.from({ length: width }, (_, i) => (cells[i] || '').replace(/\|/g, '\\|')).join(' | ')} |`;
@@ -119,7 +120,8 @@ export class PreviewsFeature {
       const area = this.markdownEditor;
       const lead =
         area.selectionStart > 0 && area.value[area.selectionStart - 1] !== '\n' ? '\n\n' : '';
-      document.execCommand('insertText', false, `${lead}${table.join('\n')}\n`);
+      const parts = [...before, table.join('\n'), ...after];
+      document.execCommand('insertText', false, `${lead}${parts.join('\n\n')}\n`);
     });
 
     if (this.markdownEditor)
