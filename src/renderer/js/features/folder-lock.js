@@ -70,6 +70,8 @@ export class FolderLockFeature {
     if (!this.unlockedFolders) return false;
     let changed = false;
     this.notes.forEach((note) => {
+      // A file note is never encrypted: its text is in its file, in the clear
+      if (note.filePath) return;
       // Its own password, or not readable now: left as it is
       if (note.isLocked && !note.lockedByFolder) return;
       if (this.isNoteLockedForView(note)) return;
@@ -129,6 +131,7 @@ export class FolderLockFeature {
     // locked folder inside this one
     const notes = this.notes.filter((note) => {
       if (!note.folderId || !inside.has(note.folderId)) return false;
+      if (note.filePath) return false;
       if (note.isLocked && !note.lockedByFolder) return false;
       const nearest = this.folderChain(note.folderId).find((f) => f.isLocked || f === folder);
       return nearest === folder && !this.isNoteLockedForView(note);
