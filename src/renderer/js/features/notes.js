@@ -719,5 +719,9 @@ export class NotesFeature {
     this.duplicateNoteBtn.addEventListener('click', () => this.duplicateNote());
 
     this.exportNoteBtn.addEventListener('click', () => this.showExportModal());
+
+    document
+      .getElementById('saveAsFileBtn')
+      ?.addEventListener('click', () => this.saveNoteAsFile());
   }
 }

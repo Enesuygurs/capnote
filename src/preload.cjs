@@ -137,6 +137,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
         Array.from(files, (file) => webUtils.getPathForFile(file))
       ),
     setContextMenu: (enabled) => ipcRenderer.invoke('files:context-menu', enabled),
+    // An ordinary note saved as a .md or .txt file it then is the note of
+    saveAsNew: (payload) => ipcRenderer.invoke('files:save-as-new', payload),
   },
   // Ctrl+Alt+N from anywhere opens the quick note window; its note comes here to be added, or to
   // be opened in the editor
