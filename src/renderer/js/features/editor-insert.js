@@ -3,8 +3,28 @@
 import { i18n } from '../i18n.js';
 
 export class EditorInsertFeature {
-  insertImageAtSelection(src, name) {
+  // A picture in a .md file note lives in the file itself, as data in its Markdown image (the app's
+  // uploads folder is not beside the file): an upload's name becomes its data
+  async imageForFile(src) {
+    const upload = String(src).match(/^capnote-file:\/\/upload\/(.+)$/);
+    if (!upload) return src;
+    let name;
+    try {
+      name = decodeURIComponent(upload[1]);
+    } catch {
+      name = upload[1];
+    }
+    const files = await window.electronAPI?.uploads?.read([name]);
+    const data = files?.[name];
+    if (!data) return src;
+    const ext = (name.split('.').pop() || 'png').toLowerCase();
+    const type = { jpg: 'jpeg', svg: 'svg+xml' }[ext] || ext;
+    return `data:image/${type};base64,${data}`;
+  }
+
+  async insertImageAtSelection(src, name) {
     if (!this.richEditor) return;
+    if (this.isLiveMarkdown?.()) src = await this.imageForFile(src);
     const img = document.createElement('img');
     img.src = src;
     img.alt = name || '';
