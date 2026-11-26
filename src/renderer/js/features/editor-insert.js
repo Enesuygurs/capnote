@@ -348,7 +348,8 @@ export class EditorInsertFeature {
     const lines = String(text || '')
       .split(/\r?\n/)
       .filter((l) => l.trim());
-    const tabbed = lines.map((l, i) => (l.includes('\t') ? i : -1)).filter((i) => i >= 0);
+    // A tab inside the line separates columns; a tab only at its start is indentation (code)
+    const tabbed = lines.map((l, i) => (/\S[^\n]*\t/.test(l) ? i : -1)).filter((i) => i >= 0);
     if (tabbed.length < 2) return null;
     const first = tabbed[0];
     const last = tabbed[tabbed.length - 1];
