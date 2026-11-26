@@ -273,7 +273,9 @@ export class FindReplaceFeature {
     // editor's toolbar, at the right of the note (it does not move when the note opens for editing)
     const screen = f.target.el.closest('.note-editor, .note-viewer') || f.target.el;
     const header = screen.querySelector('.page-header');
-    const toolbar = document.querySelector('#noteEditor .formatting-toolbar');
+    const toolbar = [
+      ...document.querySelectorAll('#noteEditor :is(.formatting-toolbar, .md-toolbar)'),
+    ].find((t) => t.offsetHeight);
     const box = screen.getBoundingClientRect();
     const top =
       (header ? header.getBoundingClientRect().bottom : box.top) + (toolbar?.offsetHeight || 48);

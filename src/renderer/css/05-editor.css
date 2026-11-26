@@ -29,6 +29,27 @@
   display: none;
 }
 
+/* A .md file has a toolbar of its own: buttons that write Markdown into its text */
+.md-toolbar {
+  display: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-2) var(--gutter);
+  flex-shrink: 0;
+  background: var(--note-header);
+}
+
+.note-editor.is-file-note[data-file-kind='md'] .md-toolbar {
+  display: flex;
+}
+
+.md-btn-text {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
 /* A file note has no sidebar and no focus mode */
 .note-editor.is-file-note #toggleSidebar,
 .note-editor.is-file-note #focusModeBtn {
