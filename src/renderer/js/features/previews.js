@@ -107,6 +107,21 @@ export class PreviewsFeature {
       });
     }
 
+    // A table copied from a spreadsheet or a page is pasted into a Markdown note as a Markdown table
+    this.markdownEditor?.addEventListener('paste', (e) => {
+      const rows = this.pastedTableRows(e.clipboardData, e.clipboardData.getData('text/plain'));
+      if (!rows) return;
+      e.preventDefault();
+      const width = Math.max(...rows.map((r) => r.length));
+      const line = (cells) =>
+        `| ${Array.from({ length: width }, (_, i) => (cells[i] || '').replace(/\|/g, '\\|')).join(' | ')} |`;
+      const table = [line(rows[0]), line(Array(width).fill('---')), ...rows.slice(1).map(line)];
+      const area = this.markdownEditor;
+      const lead =
+        area.selectionStart > 0 && area.value[area.selectionStart - 1] !== '\n' ? '\n\n' : '';
+      document.execCommand('insertText', false, `${lead}${table.join('\n')}\n`);
+    });
+
     if (this.markdownEditor)
       this.markdownEditor.addEventListener('input', () => {
         // If preview is visible, live-update it (debounced would be better, but keep simple)
