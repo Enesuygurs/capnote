@@ -39,67 +39,6 @@ export const NOTE_EDITOR = /* HTML */ `
       </div>
     </div>
 
-    <!-- Markdown toolbar: for a .md file, which is edited as its Markdown text; each button writes
-         the Markdown syntax into the text -->
-    <div class="md-toolbar">
-      <div class="format-group">
-        <button class="format-btn" data-md="h1" data-i18n-title="mdToolbar.h1">
-          <span class="md-btn-text">H1</span>
-        </button>
-        <button class="format-btn" data-md="h2" data-i18n-title="mdToolbar.h2">
-          <span class="md-btn-text">H2</span>
-        </button>
-        <button class="format-btn" data-md="h3" data-i18n-title="mdToolbar.h3">
-          <span class="md-btn-text">H3</span>
-        </button>
-      </div>
-
-      <div class="format-group">
-        <button class="format-btn" data-md="bold" data-i18n-title="mdToolbar.bold">
-          <i class="fas fa-bold"></i>
-        </button>
-        <button class="format-btn" data-md="italic" data-i18n-title="mdToolbar.italic">
-          <i class="fas fa-italic"></i>
-        </button>
-        <button class="format-btn" data-md="strike" data-i18n-title="mdToolbar.strike">
-          <i class="fas fa-strikethrough"></i>
-        </button>
-        <button class="format-btn" data-md="code" data-i18n-title="mdToolbar.code">
-          <i class="fas fa-code"></i>
-        </button>
-        <button class="format-btn" data-md="link" data-i18n-title="mdToolbar.link">
-          <i class="fas fa-link"></i>
-        </button>
-      </div>
-
-      <div class="format-group">
-        <button class="format-btn" data-md="ul" data-i18n-title="mdToolbar.ul">
-          <i class="fas fa-list-ul"></i>
-        </button>
-        <button class="format-btn" data-md="ol" data-i18n-title="mdToolbar.ol">
-          <i class="fas fa-list-ol"></i>
-        </button>
-        <button class="format-btn" data-md="task" data-i18n-title="mdToolbar.task">
-          <i class="fas fa-list-check"></i>
-        </button>
-        <button class="format-btn" data-md="quote" data-i18n-title="mdToolbar.quote">
-          <i class="fas fa-quote-right"></i>
-        </button>
-      </div>
-
-      <div class="format-group">
-        <button class="format-btn" data-md="codeblock" data-i18n-title="mdToolbar.codeblock">
-          <i class="fas fa-file-code"></i>
-        </button>
-        <button class="format-btn" data-md="table" data-i18n-title="mdToolbar.table">
-          <i class="fas fa-table"></i>
-        </button>
-        <button class="format-btn" data-md="hr" data-i18n-title="mdToolbar.hr">
-          <i class="fas fa-minus"></i>
-        </button>
-      </div>
-    </div>
-
     <!-- Formatting Toolbar: the text style, character styles, colors, alignment, lists and things
          to insert (the previews and the side panel are view controls, in the header). The text
          style, bold to strikethrough, colors, alignment, an image, a file and the link in view;

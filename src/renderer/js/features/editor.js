@@ -65,8 +65,20 @@ export class EditorFeature {
     this.clearSavedSelection();
     this.renderNoteFiles(note);
     this.noteTitle.value = note.title;
-    // Load either raw markdown or HTML depending on note.isMarkdown
-    if (note.isMarkdown) {
+    // Load either raw markdown or HTML depending on note.isMarkdown. A .md file is written as it
+    // reads: its Markdown becomes the rich text of the editor (and goes back to Markdown on saving)
+    if (this.isLiveMarkdown(note)) {
+      // (the line breaks the parser leaves between blocks would show as empty lines)
+      this.richEditor.innerHTML = this.markdownToNoteHtml(note.content || '').replace(
+        />\s*\n\s*</g,
+        '><'
+      );
+      this.upgradeImagesInEditor();
+      this.prepareNoteLinks();
+      if (this.markdownEditor) this.markdownEditor.value = '';
+      // What the editor holds before any typing: unchanged, the file's own text is kept as it is
+      this.liveBaseline = this.richEditor.innerHTML;
+    } else if (note.isMarkdown) {
       if (this.markdownEditor) {
         this.markdownEditor.value = note.content || '';
       }
@@ -107,8 +119,8 @@ export class EditorFeature {
 
     // Update favorite button state
     this.updateFavoriteButtons();
-    // A file note is edited as the file's plain text, as its format is: no rich text toolbar, no
-    // sidebar, and of the view buttons only the Markdown preview, for a Markdown file
+    // A file note is edited as the file's text, as its format is: no sidebar; a plain text file has
+    // no toolbar, a .md file the toolbar of its Markdown
     this.noteEditor?.classList.toggle('is-file-note', !!note.filePath);
     // Its title is the file's name: it is not changed here (the file would not follow)
     this.noteTitle.readOnly = !!note.filePath;
@@ -130,7 +142,7 @@ export class EditorFeature {
     // The preview starts closed
     this.hideMarkdownPreview();
     // Show appropriate editor (markdownEditor for markdown notes)
-    if (note.isMarkdown) {
+    if (note.isMarkdown && !this.isLiveMarkdown(note)) {
       this.showMarkdownEditor();
     } else {
       this.showRichEditor();
@@ -168,9 +180,26 @@ export class EditorFeature {
     this.scheduleAutoSave?.();
   }
 
+  // A .md file note: edited as rich text that is written back as the file's Markdown
+  isLiveMarkdown(note = this.currentNote) {
+    return !!note?.filePath && note.fileKind === 'md';
+  }
+
+  // The open note's text as it is saved: the Markdown editor's text, the rich editor's HTML, or for
+  // a .md file the rich text as Markdown (the file's own text while nothing was changed, so opening
+  // a file does not reformat it)
+  editorContent() {
+    if (this.isLiveMarkdown()) {
+      if (this.richEditor.innerHTML === this.liveBaseline) return this.currentNote.content || '';
+      return this.htmlToMarkdown(this.richEditor.innerHTML);
+    }
+    return this.isMarkdownEditing() ? this.markdownEditor.value : this.richEditor.innerHTML;
+  }
+
   // Whether the open note is edited as markdown (its preview can hide the markdown editor)
   isMarkdownEditing() {
     if (!this.markdownEditor) return false;
+    if (this.isLiveMarkdown()) return false;
     return !!this.currentNote?.isMarkdown || !this.markdownEditor.classList.contains('hidden');
   }
 
@@ -180,7 +209,7 @@ export class EditorFeature {
 
     return {
       title: this.noteTitle.value.trim(),
-      content: this.isMarkdownEditing() ? this.markdownEditor.value : this.richEditor.innerHTML,
+      content: this.editorContent(),
       mood: this.selectedMood,
       weather: this.selectedWeather,
       tags: this.tags,

@@ -24,30 +24,18 @@
 }
 
 /* ============ Formatting toolbar ============ */
-/* A file note is edited as the file's plain text, so it has no rich text toolbar */
-.note-editor.is-file-note .formatting-toolbar {
+/* A plain text or HTML file note is edited as the file's text, so it has no rich text toolbar; a
+   .md file keeps the toolbar, without what Markdown cannot say (underline, colors, alignment) */
+.note-editor.is-file-note:not([data-file-kind='md']) .formatting-toolbar {
   display: none;
 }
 
-/* A .md file has a toolbar of its own: buttons that write Markdown into its text */
-.md-toolbar {
+.note-editor[data-file-kind='md'] :is([data-format='underline'], [data-align], .color-picker) {
   display: none;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2) var(--space-3);
-  padding: var(--space-2) var(--gutter);
-  flex-shrink: 0;
-  background: var(--note-header);
 }
 
-.note-editor.is-file-note[data-file-kind='md'] .md-toolbar {
-  display: flex;
-}
-
-.md-btn-text {
-  font-size: var(--fs-sm);
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.note-editor[data-file-kind='md'] .format-group:has(.color-picker) {
+  display: none;
 }
 
 /* A file note has no sidebar and no focus mode */
