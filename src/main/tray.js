@@ -219,4 +219,9 @@ function registerTrayIpc() {
   });
 }
 
-export { createTray, registerTrayIpc };
+// The UI language the renderer reported (the tray and the right-click menu follow it)
+function uiLanguage() {
+  return trayLanguage;
+}
+
+export { createTray, registerTrayIpc, uiLanguage };

@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import { app, BrowserWindow, ipcMain, screen, shell } from 'electron';
 import { ICONS_DIR, RENDERER_DIR, PRELOAD_FILE, uploadsDir } from './paths.js';
 import { uploadPathFromUrl } from './uploads.js';
+import { setupContextMenu } from './context-menu.js';
 
 let mainWindow = null;
 let isQuitting = false;
@@ -158,6 +159,7 @@ function createMainWindow({
   });
 
   lockDownNavigation(mainWindow);
+  setupContextMenu(mainWindow);
   // The theme and accent go in the address: the page applies them before it is first drawn
   // (js/theme-boot.js), so a dark app never flashes light while its settings load
   mainWindow.loadFile(path.join(RENDERER_DIR, 'index.html'), {

@@ -441,6 +441,15 @@ export class CapnoteApp {
   }
 
   setupEventListeners() {
+    // Ctrl+A outside a field selects the open note's text only (not the window's labels)
+    document.addEventListener('keydown', (e) => {
+      if (!(e.ctrlKey || e.metaKey) || e.altKey || e.key.toLowerCase() !== 'a') return;
+      const el = document.activeElement;
+      if (el?.closest('input, textarea, select, [contenteditable="true"]')) return;
+      e.preventDefault();
+      const text = document.getElementById('viewerText');
+      if (text && text.offsetParent) window.getSelection()?.selectAllChildren(text);
+    });
     this.setupAppShellEvents();
     this.setupSettingsControls();
     this.setupNoteActionEvents();
